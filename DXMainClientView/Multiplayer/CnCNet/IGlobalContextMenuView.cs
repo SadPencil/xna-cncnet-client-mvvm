@@ -1,22 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IGlobalContextMenuView
 {
-    event Action? PrivateMessageRequested;
-    event Action? FriendToggleRequested;
-    event Action? IgnoreToggleRequested;
-    event Action? InviteRequested;
-    event Action? JoinRequested;
-
+    IGlobalContextMenuViewModel? ViewModel { get; set; }
     void ShowAt(int x, int y);
     void Hide();
-    void SetTargetUserName(string userName);
-    void SetFriendActionText(string text);
-    void SetIgnoreActionText(string text);
-    void SetInviteEnabled(bool enabled);
-    void SetJoinEnabled(bool enabled);
 }

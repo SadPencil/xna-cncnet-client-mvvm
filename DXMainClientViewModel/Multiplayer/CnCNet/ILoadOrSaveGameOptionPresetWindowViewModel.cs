@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ILoadOrSaveGameOptionPresetWindowViewModel
+public interface ILoadOrSaveGameOptionPresetWindowViewModel : INotifyPropertyChanged
 {
     bool IsLoadMode { get; }
     IReadOnlyList<string> PresetNames { get; }

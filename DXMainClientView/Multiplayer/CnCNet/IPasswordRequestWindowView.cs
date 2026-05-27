@@ -1,18 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IPasswordRequestWindowView
 {
-    event Action? PasswordSubmitted;
-    event Action? CancelRequested;
-
+    IPasswordRequestWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetRoomName(string roomName);
-    void ClearPassword();
-    void SetSubmitEnabled(bool enabled);
-    void ShowError(string errorMessage);
 }

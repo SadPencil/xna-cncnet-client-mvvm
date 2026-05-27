@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ITeamStartMappingsPanelViewModel
+public interface ITeamStartMappingsPanelViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> MappingSummaries { get; }
     bool IsEnabled { get; set; }

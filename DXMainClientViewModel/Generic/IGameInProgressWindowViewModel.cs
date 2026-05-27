@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IGameInProgressWindowViewModel
+public interface IGameInProgressWindowViewModel : INotifyPropertyChanged
 {
     string StatusText { get; }
     bool IsGameRunning { get; }

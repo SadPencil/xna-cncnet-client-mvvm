@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IComponentsPanelViewModel
+public interface IComponentsPanelViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> ComponentNames { get; }
     IReadOnlyList<string> ComponentActionTexts { get; }

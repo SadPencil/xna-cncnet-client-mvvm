@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IAudioOptionsPanelViewModel
+public interface IAudioOptionsPanelViewModel : INotifyPropertyChanged
 {
     int ScoreVolume { get; set; }
     int SoundVolume { get; set; }

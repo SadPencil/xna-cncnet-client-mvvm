@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IGameFiltersPanelViewModel
+public interface IGameFiltersPanelViewModel : INotifyPropertyChanged
 {
     bool ShowFriendsOnlyGames { get; set; }
     bool HideLockedGames { get; set; }

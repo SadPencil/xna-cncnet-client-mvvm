@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ITopBarViewModel
+public interface ITopBarViewModel : INotifyPropertyChanged
 {
     string CurrentTimeText { get; }
     string ConnectionStatusText { get; }

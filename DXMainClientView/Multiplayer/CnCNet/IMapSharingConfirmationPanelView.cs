@@ -1,19 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IMapSharingConfirmationPanelView
 {
-    event Action? AcceptRequested;
-    event Action? RejectRequested;
-
+    IMapSharingConfirmationPanelViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetMapName(string mapName);
-    void SetStatusText(string statusText);
-    void SetDownloadProgress(int percentage);
-    void SetAcceptEnabled(bool enabled);
-    void SetRejectVisible(bool visible);
 }

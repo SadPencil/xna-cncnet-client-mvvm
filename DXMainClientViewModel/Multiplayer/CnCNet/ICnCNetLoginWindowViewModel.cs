@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ICnCNetLoginWindowViewModel
+public interface ICnCNetLoginWindowViewModel : INotifyPropertyChanged
 {
     string UserName { get; set; }
     string Password { get; set; }

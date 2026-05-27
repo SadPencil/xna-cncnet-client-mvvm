@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ILANGameCreationWindowViewModel
+public interface ILANGameCreationWindowViewModel : INotifyPropertyChanged
 {
     string GameName { get; set; }
     bool IsLoadGameAvailable { get; }

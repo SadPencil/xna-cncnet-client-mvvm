@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ICnCNetOptionsPanelViewModel
+public interface ICnCNetOptionsPanelViewModel : INotifyPropertyChanged
 {
     bool PingUnofficialTunnels { get; set; }
     bool WriteInstallationPathToRegistry { get; set; }

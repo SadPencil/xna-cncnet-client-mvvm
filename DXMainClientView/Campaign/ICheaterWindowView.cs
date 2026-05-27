@@ -1,17 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface ICheaterWindowView
 {
-    event Action? Confirmed;
-    event Action? Cancelled;
-
+    ICheaterWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetTitle(string title);
-    void SetWarningText(string warningText);
-    void SetConfirmationEnabled(bool enabled);
 }

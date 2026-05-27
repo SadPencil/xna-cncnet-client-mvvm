@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IMainMenuViewModel
+public interface IMainMenuViewModel : INotifyPropertyChanged
 {
     bool IsUpdateNotificationVisible { get; }
     string UpdateNotificationText { get; }

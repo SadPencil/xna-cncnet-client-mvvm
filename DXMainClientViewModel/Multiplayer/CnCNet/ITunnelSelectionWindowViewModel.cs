@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ITunnelSelectionWindowViewModel
+public interface ITunnelSelectionWindowViewModel : INotifyPropertyChanged
 {
     string DescriptionText { get; }
     IReadOnlyList<string> TunnelNames { get; }

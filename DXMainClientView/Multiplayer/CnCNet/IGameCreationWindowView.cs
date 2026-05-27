@@ -1,24 +1,12 @@
 #nullable enable
 
-using System;
-using System.Collections.Generic;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IGameCreationWindowView
 {
-    event Action? CreateRequested;
-    event Action? CancelRequested;
-    event Action? TunnelSelectionRequested;
-
+    IGameCreationWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetGameName(string gameName);
-    void SetMaxPlayerOptions(IEnumerable<string> options);
-    void SetSelectedMaxPlayers(string selectedOption);
-    void SetSkillLevelOptions(IEnumerable<string> options);
-    void SetSelectedSkillLevel(string selectedOption);
-    void SetPasswordRequired(bool required);
-    void SetTunnelName(string tunnelName);
-    void SetCreateEnabled(bool enabled);
 }

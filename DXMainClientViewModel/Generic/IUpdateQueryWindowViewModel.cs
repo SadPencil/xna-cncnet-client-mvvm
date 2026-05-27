@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IUpdateQueryWindowViewModel
+public interface IUpdateQueryWindowViewModel : INotifyPropertyChanged
 {
     string VersionText { get; }
     string UpdateSizeText { get; }

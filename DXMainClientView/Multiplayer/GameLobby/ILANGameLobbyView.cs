@@ -1,12 +1,10 @@
 #nullable enable
 
+using DXMainClientViewModel;
+
 namespace DXMainClientView;
 
 public interface ILANGameLobbyView : IMultiplayerGameLobbyView
 {
-    void SetLocalAddressText(string localAddressText);
-    void SetDiscoveryStatusText(string statusText);
-    void SetHostName(string hostName);
-    void SetReadyButtonText(string text);
-    void SetSharedStateText(string stateText);
+    new ILANGameLobbyViewModel? ViewModel { get; set; }
 }

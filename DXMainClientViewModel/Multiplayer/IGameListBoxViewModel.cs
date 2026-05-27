@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IGameListBoxViewModel
+public interface IGameListBoxViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> GameNames { get; }
     int SelectedGameIndex { get; set; }

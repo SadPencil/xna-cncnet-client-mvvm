@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IPrivacyNotificationViewModel
+public interface IPrivacyNotificationViewModel : INotifyPropertyChanged
 {
     string TitleText { get; }
     string DescriptionText { get; }

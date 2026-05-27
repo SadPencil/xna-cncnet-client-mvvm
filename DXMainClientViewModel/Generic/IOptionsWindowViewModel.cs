@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IOptionsWindowViewModel
+public interface IOptionsWindowViewModel : INotifyPropertyChanged
 {
     int SelectedPanelIndex { get; set; }
     string SelectedPanelName { get; }

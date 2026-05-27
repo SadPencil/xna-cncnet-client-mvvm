@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IStatisticsWindowViewModel
+public interface IStatisticsWindowViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> GameModeNames { get; }
     int SelectedGameModeIndex { get; set; }

@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IDisplayOptionsPanelViewModel
+public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> IngameResolutionOptions { get; }
     int SelectedIngameResolutionIndex { get; set; }

@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ICampaignSelectorViewModel
+public interface ICampaignSelectorViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> CampaignNames { get; }
     int SelectedCampaignIndex { get; set; }

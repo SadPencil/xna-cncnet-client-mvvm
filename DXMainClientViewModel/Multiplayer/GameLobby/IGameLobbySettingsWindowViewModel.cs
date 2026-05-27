@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IGameLobbySettingsWindowViewModel
+public interface IGameLobbySettingsWindowViewModel : INotifyPropertyChanged
 {
     string GameName { get; set; }
     string Password { get; set; }

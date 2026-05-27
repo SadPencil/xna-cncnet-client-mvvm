@@ -1,17 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IUpdateQueryWindowView
 {
-    event Action? UpdateAccepted;
-    event Action? UpdateDeclined;
-
+    IUpdateQueryWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetVersion(string version);
-    void SetUpdateSizeText(string updateSizeText);
-    void SetAcceptEnabled(bool enabled);
 }

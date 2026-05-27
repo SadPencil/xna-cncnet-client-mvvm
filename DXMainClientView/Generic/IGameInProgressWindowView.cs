@@ -1,12 +1,12 @@
 #nullable enable
 
+using DXMainClientViewModel;
+
 namespace DXMainClientView;
 
 public interface IGameInProgressWindowView
 {
+    IGameInProgressWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetVisible(bool visible);
-    void SetMessage(string message);
-    void SetCursorHidden(bool hidden);
 }

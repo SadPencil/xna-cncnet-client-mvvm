@@ -1,15 +1,10 @@
 #nullable enable
 
-using System.Collections.Generic;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface ITunnelListBoxView
 {
-    void SetTunnels(IEnumerable<IReadOnlyList<string>> tunnels);
-    void SetSelectedTunnelAddress(string tunnelAddress);
-    void SetTunnelPing(string tunnelAddress, int ping);
-    void SortByPing();
-    void RefreshList();
-    void ClearTunnels();
+    ITunnelListBoxViewModel? ViewModel { get; set; }
 }

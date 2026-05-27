@@ -1,22 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IOptionsWindowView
 {
-    event Action? SaveRequested;
-    event Action? CancelRequested;
-    event Action<int>? TabChanged;
-    event Action? ForceUpdateRequested;
-
+    IOptionsWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetSelectedTab(int tabIndex);
-    void SetTabEnabled(int tabIndex, bool enabled);
-    void RefreshAllPanels();
-    void ShowRestartRequiredMessage(string message);
-    void ShowSettingsAdjustedMessage(string message);
-    void ShowDownloadCancellationPrompt(string message);
 }

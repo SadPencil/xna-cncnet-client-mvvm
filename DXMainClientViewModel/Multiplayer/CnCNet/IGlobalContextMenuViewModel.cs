@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IGlobalContextMenuViewModel
+public interface IGlobalContextMenuViewModel : INotifyPropertyChanged
 {
     string TargetUserName { get; }
     bool CanInvitePlayer { get; }

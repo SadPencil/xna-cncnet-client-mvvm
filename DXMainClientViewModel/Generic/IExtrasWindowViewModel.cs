@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IExtrasWindowViewModel
+public interface IExtrasWindowViewModel : INotifyPropertyChanged
 {
     bool IsStatisticsAvailable { get; }
     bool IsMapEditorAvailable { get; }

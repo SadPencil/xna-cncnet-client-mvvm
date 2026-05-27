@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IGameOptionsPanelViewModel
+public interface IGameOptionsPanelViewModel : INotifyPropertyChanged
 {
     int ScrollRate { get; set; }
     bool IsScrollCoastingEnabled { get; set; }

@@ -1,10 +1,11 @@
 #nullable enable
+using System.ComponentModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IGameLoadingLobbyViewModel
+public interface IGameLoadingLobbyViewModel : INotifyPropertyChanged
 {
     string GameName { get; }
     string MapName { get; }

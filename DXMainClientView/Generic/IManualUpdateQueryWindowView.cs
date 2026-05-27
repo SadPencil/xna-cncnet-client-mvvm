@@ -1,17 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IManualUpdateQueryWindowView
 {
-    event Action? DownloadRequested;
-    event Action? CloseRequested;
-
+    IManualUpdateQueryWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetVersion(string version);
-    void SetDownloadUrl(string downloadUrl);
-    void SetDownloadEnabled(bool enabled);
 }

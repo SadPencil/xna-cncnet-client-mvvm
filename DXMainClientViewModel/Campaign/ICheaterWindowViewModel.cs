@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface ICheaterWindowViewModel
+public interface ICheaterWindowViewModel : INotifyPropertyChanged
 {
     string TitleText { get; }
     string MessageText { get; }

@@ -1,18 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface ILANGameCreationWindowView
 {
-    event Action? CreateNewGameRequested;
-    event Action? LoadSavedGameRequested;
-    event Action? CancelRequested;
-
+    ILANGameCreationWindowViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetTitle(string title);
-    void SetCreateEnabled(bool enabled);
-    void SetLoadEnabled(bool enabled);
 }

@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel;
 
-public interface IChoiceNotificationBoxViewModel
+public interface IChoiceNotificationBoxViewModel : INotifyPropertyChanged
 {
     string TitleText { get; }
     string SenderName { get; }

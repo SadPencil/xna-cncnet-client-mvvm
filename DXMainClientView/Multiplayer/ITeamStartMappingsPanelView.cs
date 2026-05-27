@@ -1,17 +1,12 @@
 #nullable enable
 
-using System.Collections.Generic;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface ITeamStartMappingsPanelView
 {
+    ITeamStartMappingsPanelViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetMappingCount(int mappingCount);
-    void SetMappingLabel(int mappingIndex, string labelText);
-    void SetMappingOptions(int mappingIndex, IEnumerable<string> options);
-    void SetSelectedMapping(int mappingIndex, string selectedOption);
-    void SetMappingEnabled(int mappingIndex, bool enabled);
-    void ClearMappings();
 }

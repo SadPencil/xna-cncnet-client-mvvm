@@ -1,16 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IPrivacyNotificationView
 {
-    event Action? Accepted;
-
+    IPrivacyNotificationViewModel? ViewModel { get; set; }
     void Show();
     void Hide();
-    void SetVisible(bool visible);
-    void SetMessage(string message);
-    void SetAcceptEnabled(bool enabled);
 }

@@ -1,9 +1,10 @@
 #nullable enable
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace DXMainClientViewModel;
 
-public interface ILoadingScreenViewModel
+public interface ILoadingScreenViewModel : INotifyPropertyChanged
 {
     string StatusText { get; }
     string CurrentTaskText { get; }

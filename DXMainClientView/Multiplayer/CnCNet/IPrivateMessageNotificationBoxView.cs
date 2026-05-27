@@ -1,16 +1,12 @@
 #nullable enable
 
-using System;
+using DXMainClientViewModel;
 
 namespace DXMainClientView;
 
 public interface IPrivateMessageNotificationBoxView
 {
-    event Action? NotificationClicked;
-
-    void ShowNotification(string senderName, string previewText);
+    IPrivateMessageNotificationBoxViewModel? ViewModel { get; set; }
+    void Show();
     void Hide();
-    void SetUnreadCount(int unreadCount);
-    void SetFlashEnabled(bool enabled);
-    void ClearNotification();
 }
