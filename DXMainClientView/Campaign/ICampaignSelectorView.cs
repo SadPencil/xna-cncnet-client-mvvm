@@ -1,8 +1,11 @@
 #nullable enable
 
-using DXMainClientViewModel;
+using DXMainClientView;
 
-namespace DXMainClientView;
+using DXMainClientViewModel;
+using DXMainClientViewModel.Campaign;
+
+namespace DXMainClientView.Campaign;
 
 public interface ICampaignSelectorView
 {

@@ -1,7 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Online;
 
 public interface IUserCollectionService
 {

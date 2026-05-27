@@ -1,7 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 
 public interface IPlayerToGameAssignService
 {

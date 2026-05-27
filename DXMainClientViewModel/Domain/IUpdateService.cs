@@ -1,7 +1,7 @@
 #nullable enable
 using System.Threading.Tasks;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Domain;
 
 public interface IUpdateService
 {

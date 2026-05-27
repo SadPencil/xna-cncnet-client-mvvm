@@ -1,6 +1,8 @@
 #nullable enable
 
-namespace DXMainClientViewModel;
+using DXMainClientViewModel;
+
+namespace DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 
 public interface IGameBroadcastService
 {

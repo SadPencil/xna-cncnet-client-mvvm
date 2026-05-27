@@ -1,9 +1,10 @@
 #nullable enable
 using System.ComponentModel;
 using System.Collections.Generic;
+
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Generic.OptionPanels;
 
 public interface IUpdaterOptionsPanelViewModel : INotifyPropertyChanged
 {

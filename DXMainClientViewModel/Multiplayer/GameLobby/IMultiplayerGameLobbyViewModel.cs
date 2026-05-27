@@ -1,8 +1,9 @@
 #nullable enable
 using System.Collections.Generic;
+
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
 public interface IMultiplayerGameLobbyViewModel : IGameLobbyViewModel
 {

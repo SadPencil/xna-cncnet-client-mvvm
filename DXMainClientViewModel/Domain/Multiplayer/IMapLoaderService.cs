@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Domain.Multiplayer;
 
 public interface IMapLoaderService
 {

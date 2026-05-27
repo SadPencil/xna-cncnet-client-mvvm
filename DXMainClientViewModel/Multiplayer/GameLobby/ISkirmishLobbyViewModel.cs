@@ -1,7 +1,7 @@
 #nullable enable
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
 public interface ISkirmishLobbyViewModel : IGameLobbyViewModel
 {

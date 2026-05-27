@@ -1,8 +1,9 @@
 #nullable enable
 using System.ComponentModel;
+
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Generic.OptionPanels;
 
 public interface IAudioOptionsPanelViewModel : INotifyPropertyChanged
 {

@@ -1,7 +1,7 @@
 #nullable enable
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
 public interface ICnCNetGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
 {

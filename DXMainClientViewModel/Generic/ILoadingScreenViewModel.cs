@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace DXMainClientViewModel;
+namespace DXMainClientViewModel.Generic;
 
 public interface ILoadingScreenViewModel : INotifyPropertyChanged
 {

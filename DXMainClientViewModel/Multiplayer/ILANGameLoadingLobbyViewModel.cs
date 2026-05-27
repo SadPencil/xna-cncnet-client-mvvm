@@ -1,6 +1,8 @@
 #nullable enable
 
-namespace DXMainClientViewModel;
+using DXMainClientViewModel;
+
+namespace DXMainClientViewModel.Multiplayer;
 
 public interface ILANGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
 {

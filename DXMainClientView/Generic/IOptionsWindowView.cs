@@ -1,8 +1,11 @@
 #nullable enable
 
-using DXMainClientViewModel;
+using DXMainClientView;
 
-namespace DXMainClientView;
+using DXMainClientViewModel;
+using DXMainClientViewModel.Generic;
+
+namespace DXMainClientView.Generic;
 
 public interface IOptionsWindowView
 {
