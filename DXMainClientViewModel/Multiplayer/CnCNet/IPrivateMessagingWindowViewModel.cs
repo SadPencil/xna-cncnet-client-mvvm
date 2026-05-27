@@ -1,0 +1,20 @@
+#nullable enable
+using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Input;
+
+namespace DXMainClientViewModel;
+
+public interface IPrivateMessagingWindowViewModel
+{
+    IReadOnlyList<string> ConversationNames { get; }
+    int SelectedConversationIndex { get; set; }
+    string? SelectedConversationName { get; }
+    IReadOnlyList<string> MessageHistory { get; }
+    string DraftMessage { get; set; }
+
+    IRelayCommand SendMessageCommand { get; }
+    IRelayCommand CloseCommand { get; }
+    IRelayCommand RefreshConversationsCommand { get; }
+
+    void Initialize();
+}

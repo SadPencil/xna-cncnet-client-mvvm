@@ -1,0 +1,25 @@
+#nullable enable
+using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Input;
+
+namespace DXMainClientViewModel;
+
+public interface ICnCNetOptionsPanelViewModel
+{
+    bool PingUnofficialTunnels { get; set; }
+    bool WriteInstallationPathToRegistry { get; set; }
+    bool DisableMainMenuHotkeys { get; set; }
+    bool NotifyOnUserListChanges { get; set; }
+    bool DisablePrivateMessagePopups { get; set; }
+    int AllowPrivateMessagesMode { get; set; }
+    bool SkipLoginDialog { get; set; }
+    bool PersistentMode { get; set; }
+    bool AutoConnectOnStartup { get; set; }
+    bool IsDiscordIntegrationEnabled { get; set; }
+    bool IsSteamIntegrationEnabled { get; set; }
+    bool AllowGameInvitesOnlyFromFriends { get; set; }
+    IReadOnlyList<string> FollowedGameNames { get; }
+
+    IRelayCommand LoadSettingsCommand { get; }
+    IRelayCommand SaveSettingsCommand { get; }
+}
