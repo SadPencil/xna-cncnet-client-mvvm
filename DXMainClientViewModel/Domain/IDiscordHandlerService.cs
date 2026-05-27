@@ -1,7 +1,3 @@
-#nullable enable
-
-using DXMainClientViewModel;
-
 namespace DXMainClientViewModel.Domain;
 
 public interface IDiscordHandlerService

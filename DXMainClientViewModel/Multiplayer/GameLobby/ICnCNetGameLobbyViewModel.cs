@@ -1,4 +1,3 @@
-#nullable enable
 using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;

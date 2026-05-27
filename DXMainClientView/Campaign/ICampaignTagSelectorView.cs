@@ -1,8 +1,3 @@
-#nullable enable
-
-using DXMainClientView;
-
-using DXMainClientViewModel;
 using DXMainClientViewModel.Campaign;
 
 namespace DXMainClientView.Campaign;
