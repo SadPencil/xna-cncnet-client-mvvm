@@ -14,6 +14,7 @@ public interface IGameOptionsPanelViewModel : INotifyPropertyChanged
     bool IsBlackChatBackgroundEnabled { get; set; }
     bool IsUndeployWithAltEnabled { get; set; }
     string PlayerName { get; set; }
+    bool ShowHotkeyConfiguration { get; set; }
 
     IRelayCommand OpenHotkeyConfigurationCommand { get; }
     IRelayCommand LoadSettingsCommand { get; }

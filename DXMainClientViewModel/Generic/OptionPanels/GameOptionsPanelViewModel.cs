@@ -1,3 +1,4 @@
+// checked
 using System;
 
 using ClientCore;
@@ -49,9 +50,8 @@ public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsP
     [ObservableProperty]
     private string _playerName = string.Empty;
 
-    // --- Events ---
-
-    public event EventHandler? HotkeyConfigurationRequested;
+    [ObservableProperty]
+    private bool _showHotkeyConfiguration;
 
     // --- Constructor ---
 
@@ -65,7 +65,7 @@ public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsP
     [RelayCommand]
     private void OpenHotkeyConfiguration()
     {
-        HotkeyConfigurationRequested?.Invoke(this, EventArgs.Empty);
+        ShowHotkeyConfiguration = true;
     }
 
     [RelayCommand]
