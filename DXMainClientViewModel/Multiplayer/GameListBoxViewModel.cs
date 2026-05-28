@@ -1,4 +1,4 @@
-
+// checked
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,12 +26,15 @@ namespace DXMainClientViewModel.Multiplayer;
 public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewModel
 {
     private const double GAME_REFRESH_INTERVAL_MS = 1000.0;
-    private const double GAME_LIFETIME_SECONDS = 35.0;
+    private const double DEFAULT_GAME_LIFETIME_SECONDS = 35.0;
 
     private readonly MapLoader mapLoader;
     private readonly string localGameIdentifier;
     private readonly GameCollection gameCollection;
+    private readonly Predicate<GenericHostedGame>? gameMatchesFilter;
     private Timer? refreshTimer;
+
+    public double GameLifetimeSeconds { get; set; } = DEFAULT_GAME_LIFETIME_SECONDS;
 
     // --- State ---
 
@@ -63,11 +66,12 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
 
     // --- Constructor ---
 
-    public GameListBoxViewModel(MapLoader mapLoader, string localGameIdentifier, GameCollection gameCollection)
+    public GameListBoxViewModel(MapLoader mapLoader, string localGameIdentifier, GameCollection gameCollection, Predicate<GenericHostedGame>? gameMatchesFilter = null)
     {
         this.mapLoader = mapLoader;
         this.localGameIdentifier = localGameIdentifier;
         this.gameCollection = gameCollection;
+        this.gameMatchesFilter = gameMatchesFilter;
 
         // Initialize sort options
         _sortOptions.Add("A-Z".L10N("Client:Main:SortAZ"));
@@ -184,7 +188,7 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
     private IEnumerable<GenericHostedGame> GetSortedAndFilteredGames()
     {
         var sortedGames = GetSortedGames();
-        return sortedGames;
+        return gameMatchesFilter == null ? sortedGames : sortedGames.Where(hg => gameMatchesFilter(hg));
     }
 
     private IEnumerable<GenericHostedGame> GetSortedGames()
@@ -213,7 +217,7 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
     {
         for (int i = hostedGames.Count - 1; i >= 0; i--)
         {
-            if (DateTime.Now - hostedGames[i].LastRefreshTime > TimeSpan.FromSeconds(GAME_LIFETIME_SECONDS))
+            if (DateTime.Now - hostedGames[i].LastRefreshTime > TimeSpan.FromSeconds(GameLifetimeSeconds))
                 hostedGames.RemoveAt(i);
         }
     }
