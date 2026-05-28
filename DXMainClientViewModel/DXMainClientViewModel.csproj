@@ -4,13 +4,20 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>DXMainClientViewModel</RootNamespace>
     <AssemblyName>DXMainClientViewModel</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="DiscordRichPresence" />
+    <PackageReference Include="lzo.net" />
     <PackageReference Include="OpenMcdf" />
+    <PackageReference Include="SixLabors.ImageSharp" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 </Project>
