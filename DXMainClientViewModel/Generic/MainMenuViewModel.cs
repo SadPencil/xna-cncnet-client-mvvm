@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -250,6 +251,50 @@ namespace DXMainClientViewModel.Generic
             lastUpdateCheckTime = DateTime.Now;
         }
 
+        [RelayCommand]
+        private void UpdateStatus()
+        {
+            Logger.Log(updateService.VersionState.ToString());
+
+            if (updateService.VersionState == VersionState.OUTDATED ||
+                updateService.VersionState == VersionState.MISMATCHED ||
+                updateService.VersionState == VersionState.UNKNOWN ||
+                updateService.VersionState == VersionState.UPTODATE)
+            {
+                CheckForUpdates();
+            }
+        }
+
+        [RelayCommand]
+        private void OpenVersion()
+        {
+            ProcessLauncher.StartShellProcess(ClientConfiguration.Instance.ChangelogURL);
+        }
+
+        [RelayCommand]
+        private void DeclineUpdate()
+        {
+            UpdateStatusText = "An update is available, click to install.".L10N("Client:Main:UpdateAvailableClickToInstall");
+            IsUpdateStatusEnabled = true;
+            IsUpdateStatusUnderlined = true;
+        }
+
+        [RelayCommand]
+        private void AcceptUpdate()
+        {
+            updateService.StartUpdate();
+            UpdateStatusText = "Updating...".L10N("Client:Main:Updating");
+            AreButtonsEnabled = false;
+        }
+
+        [RelayCommand]
+        private void ForceUpdateCommand()
+        {
+            AreButtonsEnabled = false;
+            updateService.ForceUpdate();
+            UpdateStatusText = "Force updating...".L10N("Client:Main:ForceUpdating");
+        }
+
         #endregion
 
         #region Event Handlers
@@ -365,7 +410,7 @@ namespace DXMainClientViewModel.Generic
 
         #endregion
 
-        #region Public Methods (Lifecycle)
+        #region Lifecycle Methods
 
         public void OnSkirmishLobbyExited()
         {
@@ -382,11 +427,6 @@ namespace DXMainClientViewModel.Generic
 
             if (UserINISettings.Instance.StopMusicOnMenu)
                 MusicPlayRequested?.Invoke();
-        }
-
-        public void OnGameProcessExited()
-        {
-            // Called by View after game process exits
         }
 
         public void OnOptionsWindowClosed()
@@ -457,45 +497,6 @@ namespace DXMainClientViewModel.Generic
                 IsUpdateStatusEnabled = true;
                 IsUpdateStatusUnderlined = true;
             }
-        }
-
-        public void OnUpdateStatusClicked()
-        {
-            Logger.Log(updateService.VersionState.ToString());
-
-            if (updateService.VersionState == VersionState.OUTDATED ||
-                updateService.VersionState == VersionState.MISMATCHED ||
-                updateService.VersionState == VersionState.UNKNOWN ||
-                updateService.VersionState == VersionState.UPTODATE)
-            {
-                CheckForUpdates();
-            }
-        }
-
-        public void OnVersionClicked()
-        {
-            ProcessLauncher.StartShellProcess(ClientConfiguration.Instance.ChangelogURL);
-        }
-
-        public void OnUpdateDeclined()
-        {
-            UpdateStatusText = "An update is available, click to install.".L10N("Client:Main:UpdateAvailableClickToInstall");
-            IsUpdateStatusEnabled = true;
-            IsUpdateStatusUnderlined = true;
-        }
-
-        public void OnUpdateAccepted()
-        {
-            updateService.StartUpdate();
-            UpdateStatusText = "Updating...".L10N("Client:Main:Updating");
-            AreButtonsEnabled = false;
-        }
-
-        public void ForceUpdate()
-        {
-            AreButtonsEnabled = false;
-            updateService.ForceUpdate();
-            UpdateStatusText = "Force updating...".L10N("Client:Main:ForceUpdating");
         }
 
         #endregion

@@ -32,6 +32,11 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     IRelayCommand OpenExtrasCommand { get; }
     IRelayCommand ExitCommand { get; }
     IRelayCommand CheckForUpdatesCommand { get; }
+    IRelayCommand UpdateStatusCommand { get; }
+    IRelayCommand OpenVersionCommand { get; }
+    IRelayCommand DeclineUpdateCommand { get; }
+    IRelayCommand AcceptUpdateCommand { get; }
+    IRelayCommand ForceUpdateCommandCommand { get; }
 
     /// <summary>
     /// Raised when the client should exit.
@@ -109,11 +114,6 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     /// Called when returning from LAN lobby.
     /// </summary>
     void OnLanLobbyExited();
-
-    /// <summary>
-    /// Called when the game process has exited.
-    /// </summary>
-    void OnGameProcessExited();
 
     /// <summary>
     /// Called when options window is closed (disabled).
