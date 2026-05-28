@@ -23,11 +23,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         string iniPath = FindIniFile(windowName);
         if (iniPath == null)
         {
-            Console.WriteLine($"INI Layout: No INI file found for '{windowName}'");
+            Logger.Log($"INI Layout: No INI file found for '{windowName}'");
             return;
         }
 
-        Console.WriteLine($"INI Layout: Loading {iniPath}");
+        Logger.Log($"INI Layout: Loading {iniPath}");
         var iniFile = new CCIniFile(iniPath);
 
         // Apply window-level properties
@@ -45,7 +45,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Apply deferred properties (FillWidth, FillHeight, DistanceFrom*)
         ApplyDeferredProperties(window, iniFile);
 
-        Console.WriteLine($"INI Layout: Applied layout for '{windowName}'");
+        Logger.Log($"INI Layout: Applied layout for '{windowName}'");
     }
 
     private static string FindIniFile(string windowName)
@@ -490,11 +490,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string fullPath = FindTextureFile(texturePath);
             if (fullPath == null)
             {
-                Console.WriteLine($"INI Layout: Texture not found: '{texturePath}'");
+                Logger.Log($"INI Layout: Texture not found: '{texturePath}'");
                 return;
             }
 
-            Console.WriteLine($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
+            Logger.Log($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
             var bitmap = new Bitmap(fullPath);
 
             var brush = new ImageBrush
@@ -515,7 +515,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
+            Logger.Log($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
         }
     }
 
