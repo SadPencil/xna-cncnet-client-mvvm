@@ -10,6 +10,7 @@ using DXMainClientViewModel.Online;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
+// checked
 /// <summary>
 /// ViewModel for the recent player table.
 /// Contains all business logic from RecentPlayerTable.cs except XNA UI rendering.
