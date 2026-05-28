@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using ClientCore;
 using ClientCore.Enums;
