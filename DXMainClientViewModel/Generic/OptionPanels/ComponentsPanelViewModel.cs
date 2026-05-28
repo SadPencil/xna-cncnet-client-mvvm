@@ -1,3 +1,4 @@
+// checked
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,11 +21,13 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// <summary>
 /// ViewModel for the components panel.
 /// Contains all business logic from ComponentsPanel.cs except XNA UI rendering.
+/// Self-sufficient: handles confirmation and notifications via observable properties.
 /// </summary>
 public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPanelViewModel
 {
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private bool downloadCancelled;
+    private CustomComponent? pendingInstallComponent;
 
     // --- Observable state ---
 
@@ -33,6 +36,25 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
 
     [ObservableProperty]
     private bool _isBusy;
+
+    // --- Confirmation dialog state ---
+
+    [ObservableProperty]
+    private bool _isConfirmationVisible;
+
+    [ObservableProperty]
+    private string _confirmationMessage = string.Empty;
+
+    // --- Message box state ---
+
+    [ObservableProperty]
+    private bool _isMessageBoxVisible;
+
+    [ObservableProperty]
+    private string _messageBoxTitle = string.Empty;
+
+    [ObservableProperty]
+    private string _messageBoxMessage = string.Empty;
 
     // --- Observable collections ---
 
@@ -44,12 +66,6 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
 
     private readonly ObservableCollection<string> _componentStatusTexts = new();
     public IReadOnlyList<string> ComponentStatusTexts => _componentStatusTexts;
-
-    // --- Events ---
-
-    public event EventHandler<string>? ConfirmationRequested;
-    public event EventHandler<string>? DownloadCompleted;
-    public event EventHandler<string>? DownloadFailed;
 
     // --- Constructor ---
 
@@ -74,7 +90,7 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         if (localFileInfo.Exists)
             return;
 
-        // Request confirmation from the View
+        // Show confirmation dialog
         string message = string.Format(
             ("To enable {0} the Client will need to download the necessary files to your game directory.\n\n" +
             "This will take an additional {1} of disk space, and the download may take some time\n" +
@@ -82,7 +98,9 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
             "You will not be able to play during the download. Do you wish to continue?").L10N("Client:DTAConfig:UpdateConfirmRequiredText"),
             cc.GUIName, GetSizeString(cc.RemoteSize), GetSizeString(cc.Archived ? cc.RemoteArchiveSize : cc.RemoteSize));
 
-        ConfirmationRequested?.Invoke(this, message);
+        pendingInstallComponent = cc;
+        ConfirmationMessage = message;
+        IsConfirmationVisible = true;
 
         await Task.CompletedTask;
     }
@@ -151,6 +169,31 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         UpdateInstallationButtons();
     }
 
+    [RelayCommand]
+    private void ConfirmYes()
+    {
+        IsConfirmationVisible = false;
+
+        if (pendingInstallComponent != null)
+        {
+            StartDownload(pendingInstallComponent);
+            pendingInstallComponent = null;
+        }
+    }
+
+    [RelayCommand]
+    private void ConfirmNo()
+    {
+        IsConfirmationVisible = false;
+        pendingInstallComponent = null;
+    }
+
+    [RelayCommand]
+    private void DismissMessageBox()
+    {
+        IsMessageBoxVisible = false;
+    }
+
     // --- Public methods ---
 
     public void Initialize()
@@ -176,18 +219,6 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     {
         downloadCancelled = false;
         UpdateInstallationButtons();
-    }
-
-    /// <summary>
-    /// Called when the user confirms an install action.
-    /// </summary>
-    public void ConfirmInstall()
-    {
-        if (SelectedComponentIndex < 0 || Updater.CustomComponents == null)
-            return;
-
-        var cc = Updater.CustomComponents[SelectedComponentIndex];
-        StartDownload(cc);
     }
 
     // --- Helpers ---
@@ -244,13 +275,22 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         if (!success)
         {
             if (!downloadCancelled)
-                DownloadFailed?.Invoke(this, cc.GUIName);
+            {
+                ShowMessageBox(
+                    "Optional Component Download Failed".L10N("Client:DTAConfig:OptionalComponentDownloadFailedTitle"),
+                    string.Format(("Download of optional component {0} failed.\n" +
+                    "See client.log for details.\n\n" +
+                    "If this problem continues, please contact your mod's authors for support.").L10N("Client:DTAConfig:OptionalComponentDownloadFailedText"),
+                    cc.GUIName));
+            }
 
             _componentActionTexts[index] = GetActionText(cc);
         }
         else
         {
-            DownloadCompleted?.Invoke(this, cc.GUIName);
+            ShowMessageBox(
+                "Download Completed".L10N("Client:DTAConfig:DownloadCompleteTitle"),
+                string.Format("Download of optional component {0} completed succesfully.".L10N("Client:DTAConfig:DownloadCompleteText"), cc.GUIName));
             _componentActionTexts[index] = "Uninstall".L10N("Client:DTAConfig:Uninstall");
         }
     }
@@ -294,5 +334,12 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         if (size < 1048576)
             return (size / 1024) + " KB";
         return (size / 1048576) + " MB";
+    }
+
+    private void ShowMessageBox(string title, string message)
+    {
+        MessageBoxTitle = title;
+        MessageBoxMessage = message;
+        IsMessageBoxVisible = true;
     }
 }

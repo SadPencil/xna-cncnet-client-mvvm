@@ -13,11 +13,21 @@ public interface IComponentsPanelViewModel : INotifyPropertyChanged
     int SelectedComponentIndex { get; set; }
     bool IsBusy { get; }
 
+    // Confirmation dialog state
+    bool IsConfirmationVisible { get; }
+    string ConfirmationMessage { get; }
+
+    // Message box state
+    bool IsMessageBoxVisible { get; }
+    string MessageBoxTitle { get; }
+    string MessageBoxMessage { get; }
+
     IAsyncRelayCommand InstallSelectedComponentCommand { get; }
     IAsyncRelayCommand UpdateSelectedComponentCommand { get; }
     IAsyncRelayCommand UninstallSelectedComponentCommand { get; }
     IAsyncRelayCommand CancelDownloadsCommand { get; }
     IRelayCommand RefreshComponentsCommand { get; }
-
-    void Initialize();
+    IRelayCommand ConfirmYesCommand { get; }
+    IRelayCommand ConfirmNoCommand { get; }
+    IRelayCommand DismissMessageBoxCommand { get; }
 }
