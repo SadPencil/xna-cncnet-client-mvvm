@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using ClientCore;
 using DXMainClientView.Services;
 using DXMainClientViewModel;
 using DXMainClientViewModel.Domain.Multiplayer;
@@ -22,6 +23,21 @@ public class Program
     {
         // Set working directory to DXMainClient so ClientCore can find resources.
         SetWorkingDirectoryToGameRoot();
+
+        // Set RESOURCES_DIR to theme path (same as Startup.Execute()).
+        // Without this, GetResourcePath() returns "Resources/" instead of
+        // "Resources/Default Theme/" and theme-specific INI/textures aren't found.
+        InitializeThemeResourcePath();
+
+        Console.WriteLine($"Resource path: {ProgramConstants.GetResourcePath()}");
+        Console.WriteLine($"Base resource path: {ProgramConstants.GetBaseResourcePath()}");
+
+        // Run headless INI overlay test if requested
+        if (args.Length > 0 && args[0] == "test-ini")
+        {
+            IniOverlayTest.Run();
+            return;
+        }
 
         Console.WriteLine("Avalonia client starting.");
 
@@ -115,5 +131,84 @@ public class Program
         }
 
         Console.WriteLine("WARNING: Could not find game root directory. ClientCore initialization may fail.");
+    }
+
+    /// <summary>
+    /// Sets ProgramConstants.RESOURCES_DIR to the theme-specific resource path.
+    /// This is normally done by Startup.Execute() but we need it for INI layout loading.
+    /// </summary>
+    private static void InitializeThemeResourcePath()
+    {
+        try
+        {
+            // Try reading theme from UserINISettings (if initialized)
+            ProgramConstants.RESOURCES_DIR = SafePath.CombineDirectoryPath(
+                ProgramConstants.BASE_RESOURCE_PATH,
+                UserINISettings.Instance.ThemeFolderPath);
+        }
+        catch
+        {
+            // UserINISettings not initialized yet - read theme directly from INI files
+            string themePath = ReadThemePathFromIni();
+            ProgramConstants.RESOURCES_DIR = SafePath.CombineDirectoryPath(
+                ProgramConstants.BASE_RESOURCE_PATH, themePath);
+        }
+
+        // Verify the theme directory exists; fall back to base Resources if not
+        string resourcePath = ProgramConstants.GetResourcePath();
+        if (!Directory.Exists(resourcePath))
+        {
+            Console.WriteLine($"Theme directory not found: {resourcePath}, falling back to base Resources");
+            ProgramConstants.RESOURCES_DIR = ProgramConstants.BASE_RESOURCE_PATH;
+        }
+    }
+
+    /// <summary>
+    /// Reads the theme path directly from ClientDefinitions.ini and UserDefaults.ini
+    /// without requiring UserINISettings to be initialized.
+    /// </summary>
+    private static string ReadThemePathFromIni()
+    {
+        // Read theme list from ClientDefinitions.ini
+        string clientDefsPath = Path.Combine(ProgramConstants.GetBaseResourcePath(), "ClientDefinitions.ini");
+        if (!File.Exists(clientDefsPath))
+            return string.Empty;
+
+        var clientDefs = new IniFile(clientDefsPath);
+        var themesSection = clientDefs.GetSection("Themes");
+        if (themesSection == null || themesSection.Keys.Count == 0)
+            return string.Empty;
+
+        // Get first theme as default
+        string firstThemeEntry = themesSection.Keys[0].Value;
+        string defaultThemeName = firstThemeEntry.Split(',')[0];
+        string defaultThemePath = firstThemeEntry.Contains(',') ? firstThemeEntry.Split(',')[1] : string.Empty;
+
+        // Check if user has a theme preference in UserDefaults.ini or User.ini
+        string themeName = defaultThemeName;
+        foreach (string userIniName in new[] { "UserDefaults.ini", "User.ini" })
+        {
+            string userIniPath = Path.Combine(ProgramConstants.GamePath, userIniName);
+            if (File.Exists(userIniPath))
+            {
+                var userIni = new IniFile(userIniPath);
+                string savedTheme = userIni.GetStringValue("MultiPlayer", "Theme", null);
+                if (!string.IsNullOrEmpty(savedTheme))
+                {
+                    themeName = savedTheme;
+                    break;
+                }
+            }
+        }
+
+        // Find the matching theme path
+        foreach (var key in themesSection.Keys)
+        {
+            var parts = key.Value.Split(',');
+            if (parts.Length >= 2 && parts[0] == themeName)
+                return parts[1];
+        }
+
+        return defaultThemePath;
     }
 }

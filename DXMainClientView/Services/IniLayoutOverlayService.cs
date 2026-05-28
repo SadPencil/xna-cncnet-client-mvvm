@@ -315,8 +315,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             }
         }
 
-        double parentWidth = parent.Width > 0 ? parent.Width : (parent as Window)?.ClientSize.Width ?? 0;
-        double parentHeight = parent.Height > 0 ? parent.Height : (parent as Window)?.ClientSize.Height ?? 0;
+        // Find the nearest ancestor with explicit dimensions (Window or sized control).
+        // Canvas/Panel may not have explicit Width/Height, so walk up to the Window.
+        double parentWidth = GetEffectiveWidth(parent);
+        double parentHeight = GetEffectiveHeight(parent);
 
         // Apply DistanceFromLeftBorder first (sets X)
         if (distLeft.HasValue)
@@ -487,32 +489,29 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             // Search for the texture in resource paths
             string fullPath = FindTextureFile(texturePath);
             if (fullPath == null)
+            {
+                Console.WriteLine($"INI Layout: Texture not found: '{texturePath}'");
                 return;
+            }
 
+            Console.WriteLine($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
             var bitmap = new Bitmap(fullPath);
 
-            if (control is Border border)
+            var brush = new ImageBrush
             {
-                border.Background = new ImageBrush
-                {
-                    Source = bitmap,
-                    Stretch = Stretch.UniformToFill,
-                    TileMode = TileMode.None
-                };
-            }
+                Source = bitmap,
+                Stretch = Stretch.UniformToFill,
+                TileMode = TileMode.None
+            };
+
+            if (control is Window window)
+                window.Background = brush;
+            else if (control is Border border)
+                border.Background = brush;
             else if (control is Panel panel)
-            {
-                panel.Background = new ImageBrush
-                {
-                    Source = bitmap,
-                    Stretch = Stretch.UniformToFill,
-                    TileMode = TileMode.None
-                };
-            }
+                panel.Background = brush;
             else if (control is Image image)
-            {
                 image.Source = bitmap;
-            }
         }
         catch (Exception ex)
         {
@@ -548,7 +547,16 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyDrawMode(Control control, string drawMode)
     {
-        if (control is Border border && border.Background is ImageBrush brush)
+        ImageBrush brush = null;
+
+        if (control is Window window && window.Background is ImageBrush windowBrush)
+            brush = windowBrush;
+        else if (control is Border border && border.Background is ImageBrush borderBrush)
+            brush = borderBrush;
+        else if (control is Panel panel && panel.Background is ImageBrush panelBrush)
+            brush = panelBrush;
+
+        if (brush != null)
         {
             brush.Stretch = drawMode?.ToLower() switch
             {
@@ -606,5 +614,41 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         char first = char.ToLower(value[0]);
         return first == 't' || first == 'y' || first == '1' || first == 'a' || first == 'e';
+    }
+
+    /// <summary>
+    /// Gets the effective width of a control, walking up to the Window if needed.
+    /// Canvas/Panel may not have explicit Width, so we use the Window's Width.
+    /// </summary>
+    private static double GetEffectiveWidth(Control control)
+    {
+        var current = control;
+        while (current != null)
+        {
+            if (!double.IsNaN(current.Width) && current.Width > 0)
+                return current.Width;
+            if (current is Window window)
+                return window.Width > 0 ? window.Width : window.ClientSize.Width;
+            current = current.Parent as Control;
+        }
+        return 0;
+    }
+
+    /// <summary>
+    /// Gets the effective height of a control, walking up to the Window if needed.
+    /// Canvas/Panel may not have explicit Height, so we use the Window's Height.
+    /// </summary>
+    private static double GetEffectiveHeight(Control control)
+    {
+        var current = control;
+        while (current != null)
+        {
+            if (!double.IsNaN(current.Height) && current.Height > 0)
+                return current.Height;
+            if (current is Window window)
+                return window.Height > 0 ? window.Height : window.ClientSize.Height;
+            current = current.Parent as Control;
+        }
+        return 0;
     }
 }
