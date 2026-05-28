@@ -121,8 +121,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         CopyPlayerDataToUI();
     }
 
-    [RelayCommand]
-    private void LaunchGame()
+    protected override void LaunchGame()
     {
         string? error = CheckGameValidity();
 
@@ -136,8 +135,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         GameValidationErrorMessage?.Invoke(this, error);
     }
 
-    [RelayCommand]
-    private void LeaveGame()
+    protected override void LeaveGame()
     {
         Exited?.Invoke(this, EventArgs.Empty);
         ResetDiscordPresence();

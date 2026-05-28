@@ -19,7 +19,7 @@ public interface IGameLoadingLobbyViewModel : INotifyPropertyChanged
 
     IRelayCommand LoadGameCommand { get; }
     IRelayCommand LeaveGameCommand { get; }
-    IRelayCommand SendChatMessageCommand { get; }
+    IRelayCommand<string> SendChatMessageCommand { get; }
 
     void Initialize();
 }
