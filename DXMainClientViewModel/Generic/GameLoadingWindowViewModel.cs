@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -41,16 +42,11 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isVisible;
 
-        /// <summary>
-        /// Raised when a confirmation dialog is needed for deletion.
-        /// The string parameter is the confirmation message.
-        /// </summary>
-        public event Action<string> DeleteConfirmationRequested;
+        [ObservableProperty]
+        private bool showDeleteConfirmation;
 
-        /// <summary>
-        /// Raised when the game process has exited and the window should close.
-        /// </summary>
-        public event Action WindowCloseRequested;
+        [ObservableProperty]
+        private string deleteConfirmationMessage = string.Empty;
 
         public GameLoadingWindowViewModel(
             IGameProcessService gameProcessService,
@@ -76,14 +72,6 @@ namespace DXMainClientViewModel.Generic
         {
             ListSaves();
             IsVisible = true;
-        }
-
-        /// <summary>
-        /// Closes the window.
-        /// </summary>
-        public void Close()
-        {
-            IsVisible = false;
         }
 
         [RelayCommand]
@@ -149,6 +137,7 @@ namespace DXMainClientViewModel.Generic
 
             IsVisible = false;
             gameProcessService.GameProcessExited += OnGameProcessExited;
+            gameProcessService.StartGameProcess();
         }
 
         [RelayCommand]
@@ -158,7 +147,7 @@ namespace DXMainClientViewModel.Generic
                 return;
 
             SavedGame sg = SavedGames[SelectedSavedGameIndex];
-            string message = string.Format(
+            DeleteConfirmationMessage = string.Format(
                 "The following saved game will be deleted permanently:\n\n" +
                 "Filename: {0}\n" +
                 "Saved game name: {1}\n" +
@@ -166,14 +155,14 @@ namespace DXMainClientViewModel.Generic
                 "Are you sure you want to proceed?",
                 sg.FileName, sg.GUIName, sg.LastModified.ToString());
 
-            DeleteConfirmationRequested?.Invoke(message);
+            ShowDeleteConfirmation = true;
         }
 
-        /// <summary>
-        /// Called when the user confirms deletion.
-        /// </summary>
-        public void ConfirmDelete()
+        [RelayCommand]
+        private void ConfirmDelete()
         {
+            ShowDeleteConfirmation = false;
+
             if (SelectedSavedGameIndex < 0 || SelectedSavedGameIndex >= SavedGames.Count)
                 return;
 
@@ -182,6 +171,12 @@ namespace DXMainClientViewModel.Generic
             Logger.Log("Deleting saved game " + sg.FileName);
             SafePath.DeleteFileIfExists(ProgramConstants.GamePath, SAVED_GAMES_DIRECTORY, sg.FileName);
             ListSaves();
+        }
+
+        [RelayCommand]
+        private void CancelDelete()
+        {
+            ShowDeleteConfirmation = false;
         }
 
         [RelayCommand]
@@ -204,7 +199,7 @@ namespace DXMainClientViewModel.Generic
 
             discordHandler.ClearPresence();
 
-            WindowCloseRequested?.Invoke();
+            IsVisible = false;
         }
 
         /// <summary>
