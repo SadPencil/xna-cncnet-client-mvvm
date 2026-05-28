@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Timers;
 
 using ClientCore;
 using ClientCore.Extensions;
@@ -59,6 +60,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private string lastMapName;
     private string lastGameMode;
     private IRCColor chatColor;
+    private Timer gameBroadcastTimer;
 
     private readonly List<string> hostUploadedMaps = new();
     private readonly List<string> chatCommandDownloadedMaps = new();
@@ -181,6 +183,10 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             gameHostInactiveChecker.CloseEvent += GameHostInactiveChecker_CloseEvent;
             gameHostInactiveChecker.WarningRequested += GameHostInactiveChecker_WarningRequested;
         }
+
+        gameBroadcastTimer = new Timer(GAME_BROADCAST_INTERVAL * 1000);
+        gameBroadcastTimer.AutoReset = true;
+        gameBroadcastTimer.Elapsed += GameBroadcastTimer_Elapsed;
     }
 
     protected override int MaxPlayerCount => PlayerLimit;
@@ -279,6 +285,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 string.Format("TOPIC {0} :{1}", channel.ChannelName,
                 ProgramConstants.CNCNET_PROTOCOL_REVISION + ";" + localGame.ToLower()),
                 QueuedMessageType.SYSTEM_MESSAGE, 50));
+
+            gameBroadcastTimer.Interval = INITIAL_GAME_BROADCAST_DELAY * 1000;
+            gameBroadcastTimer.Start();
         }
         else
         {
@@ -316,6 +325,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         connectionManager.ConnectionLost -= ConnectionManager_ConnectionLost;
         connectionManager.Disconnected -= ConnectionManager_Disconnected;
 
+        gameBroadcastTimer?.Stop();
         closed = false;
         DraftMessage = string.Empty;
 
@@ -372,7 +382,10 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
         PlayerInfo pInfo = Players.Find(p => p.Name.Equals(ProgramConstants.PLAYERNAME));
         if (pInfo != null)
+        {
             pInfo.Ping = tunnelHandler.CurrentTunnel.PingInMs;
+            CopyPlayerDataToUI();
+        }
     }
 
     // --- Tunnel ---
@@ -1041,6 +1054,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 pInfo.Ready = readyStatus > 0;
                 pInfo.AutoReady = readyStatus > 1;
 
+                if (pInfo.Name == ProgramConstants.PLAYERNAME)
+                    LaunchButtonText = pInfo.Ready ? BTN_LAUNCH_NOT_READY : BTN_LAUNCH_READY;
+
                 Players.Add(pInfo);
                 i += HUMAN_PLAYER_OPTIONS_LENGTH;
             }
@@ -1445,6 +1461,8 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     protected override void SendChatMessage(string message) => channel.SendChatMessage(message, chatColor);
 
+    public void ChangeChatColor(IRCColor newChatColor) => chatColor = newChatColor;
+
     // --- Notifications ---
 
     private void HandleNotification(string sender, Action handler)
@@ -1561,7 +1579,10 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     {
         PlayerInfo pInfo = Players.Find(p => p.Name.Equals(sender));
         if (pInfo != null)
+        {
             pInfo.Ping = ping;
+            CopyPlayerDataToUI();
+        }
     }
 
     private void FileHashNotification(string sender, string filesHash)
@@ -1604,15 +1625,25 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     protected override void PerformLockGame()
     {
+        AddNotice("You've locked the game room.".L10N("Client:Main:RoomLockedByYou"));
+
         connectionManager.SendCustomMessage(new QueuedMessage(
             string.Format("MODE {0} +i", channel.ChannelName), QueuedMessageType.INSTANT_MESSAGE, -1));
 
         Locked = true;
         LockGameButtonText = "Unlock Game".L10N("Client:Main:UnlockGame");
+        AccelerateGameBroadcasting();
     }
 
     protected override void PerformUnlockGame(bool announce)
     {
+        if (Players.Count >= PlayerLimit)
+        {
+            AddNotice(string.Format(
+                "Cannot unlock game; the player limit ({0}) has been reached.".L10N("Client:Main:RoomCantUnlockAsLimit"), PlayerLimit));
+            return;
+        }
+
         connectionManager.SendCustomMessage(new QueuedMessage(
             string.Format("MODE {0} -i", channel.ChannelName), QueuedMessageType.INSTANT_MESSAGE, -1));
 
@@ -1620,6 +1651,25 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         if (announce)
             AddNotice("The game room has been unlocked.".L10N("Client:Main:GameRoomUnlocked"));
         LockGameButtonText = "Lock Game".L10N("Client:Main:LockGame");
+        AccelerateGameBroadcasting();
+    }
+
+    // --- Game broadcast timer ---
+
+    private void GameBroadcastTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        if (IsHost && !closed)
+            BroadcastGame();
+    }
+
+    private void AccelerateGameBroadcasting()
+    {
+        if (gameBroadcastTimer != null)
+        {
+            gameBroadcastTimer.Stop();
+            gameBroadcastTimer.Interval = GAME_BROADCAST_ACCELERATION * 1000;
+            gameBroadcastTimer.Start();
+        }
     }
 
     // --- Kick/Ban ---

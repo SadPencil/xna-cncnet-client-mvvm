@@ -30,6 +30,9 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     void Clear();
     void LeaveGameLobby();
 
+    // --- Chat color ---
+    void ChangeChatColor(IRCColor chatColor);
+
     // --- Game option broadcasting ---
     List<IGameSessionSetting> GetBroadcastableSettings();
     int GetBroadcastableCheckboxCount();
