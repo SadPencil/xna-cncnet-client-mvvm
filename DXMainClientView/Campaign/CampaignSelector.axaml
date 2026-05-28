@@ -1,0 +1,46 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DXMainClientViewModel.Campaign"
+        x:Class="DXMainClientView.Campaign.CampaignSelector"
+        x:DataType="vm:ICampaignSelectorViewModel"
+        Title="Campaign"
+        Width="800" Height="600"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel>
+    <!-- Bottom buttons -->
+    <StackPanel DockPanel.Dock="Bottom" Margin="12" Orientation="Horizontal"
+                HorizontalAlignment="Center" Spacing="8">
+      <Button Content="Launch"
+              Command="{Binding LaunchCampaignCommand}"
+              IsEnabled="{Binding CanLaunchCampaign}" />
+      <Button Content="Return"
+              Command="{Binding ReturnCommand}"
+              IsVisible="{Binding IsReturnButtonVisible}" />
+      <Button Content="Cancel"
+              Command="{Binding CancelCommand}" />
+    </StackPanel>
+
+    <!-- Difficulty selection -->
+    <StackPanel DockPanel.Dock="Bottom" Margin="12" Orientation="Horizontal" Spacing="8">
+      <TextBlock Text="Difficulty:" VerticalAlignment="Center" />
+      <ComboBox ItemsSource="{Binding DifficultyNames}"
+                SelectedIndex="{Binding SelectedDifficultyIndex}"
+                Width="150" />
+    </StackPanel>
+
+    <!-- Main content -->
+    <Grid ColumnDefinitions="250,*">
+      <!-- Campaign list -->
+      <ListBox Grid.Column="0"
+               ItemsSource="{Binding CampaignListItems}"
+               SelectedIndex="{Binding SelectedCampaignIndex}"
+               Margin="12" />
+
+      <!-- Mission details -->
+      <StackPanel Grid.Column="1" Margin="12" Spacing="8">
+        <TextBlock Text="{Binding MissionDescriptionText}"
+                   TextWrapping="Wrap" />
+      </StackPanel>
+    </Grid>
+  </DockPanel>
+</Window>

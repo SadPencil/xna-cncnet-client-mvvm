@@ -1,0 +1,26 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DXMainClientViewModel.Generic"
+        x:Class="DXMainClientView.Generic.LoadingScreen"
+        x:DataType="vm:ILoadingScreenViewModel"
+        Title="Loading"
+        Width="1280" Height="720"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Background="#000000">
+  <Canvas>
+    <!-- Status text at bottom -->
+    <TextBlock x:Name="lblStatus"
+               Canvas.Left="20" Canvas.Bottom="40"
+               Text="{Binding StatusText}"
+               Foreground="#AAAAAA"
+               FontSize="14" />
+
+    <!-- Current task text -->
+    <TextBlock x:Name="lblCurrentTask"
+               Canvas.Left="20" Canvas.Bottom="20"
+               Text="{Binding CurrentTaskText}"
+               Foreground="#888888"
+               FontSize="12" />
+  </Canvas>
+</Window>
