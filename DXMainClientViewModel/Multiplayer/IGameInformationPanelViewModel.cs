@@ -13,9 +13,13 @@ public interface IGameInformationPanelViewModel : INotifyPropertyChanged
     string GameModeName { get; }
     string PlayerCountText { get; }
     string PingText { get; }
+    string GameVersion { get; }
+    string SkillLevelText { get; }
     bool IsLocked { get; }
     bool IsPasswordProtected { get; }
     bool IsCompatible { get; }
+    bool HasGameInfo { get; }
+    string? MapHash { get; }
     IReadOnlyList<string> PlayerNames { get; }
 
     IRelayCommand RefreshCommand { get; }
