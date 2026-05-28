@@ -46,6 +46,9 @@ public interface IMultiplayerGameLobbyViewModel : IGameLobbyViewModel
     IRelayCommand LockGameCommand { get; }
     IRelayCommand StartingLocationAppliedCommand { get; }
 
+    // --- Warning notices ---
+    void AddWarning(string message);
+
     // --- Events for View to react (one-shot notifications) ---
     event EventHandler<NoticeEventArgs> NoticePosted;
     event EventHandler GetReadySoundRequested;

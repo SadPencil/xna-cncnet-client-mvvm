@@ -24,7 +24,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
     private const int MAX_DICE = 10;
     private const int MAX_DIE_SIDES = 100;
 
-    private readonly Random random;
+    protected readonly Random random;
 
     // --- Chat box commands ---
     protected readonly List<ChatBoxCommand> chatBoxCommands;
