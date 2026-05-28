@@ -25,6 +25,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     bool IsChannelDropdownEnabled { get; }
     bool IsGameSearchEnabled { get; }
     bool IsConnected { get; }
+    bool IsVisible { get; set; }
     IReadOnlyList<string> ColorOptions { get; }
     IReadOnlyList<string> ChannelOptions { get; }
 
@@ -36,20 +37,4 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand SendChatMessageCommand { get; }
     IRelayCommand CycleSortDirectionCommand { get; }
     IRelayCommand ToggleGameFiltersCommand { get; }
-
-    event System.Action? MessageBoxRequested;
-    event System.Action<string, string, System.Action<bool>>? YesNoDialogRequested;
-    event System.Action? SwitchToPrimaryRequested;
-    event System.Action? SwitchToSecondaryRequested;
-    event System.Action? UpdateCheckRequested;
-    event System.Action? LoginWindowRequested;
-    event System.Action? GameCreationPanelShowRequested;
-    event System.Action? GameCreationPanelHideRequested;
-    event System.Action<string, string, string>? GameInviteReceived;
-    event System.Action<string>? SoundPlayRequested;
-
-    void Initialize();
-    void SwitchOn();
-    void SwitchOff();
-    void Clean();
 }

@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -104,6 +105,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     [ObservableProperty]
     private bool isConnected;
+
+    [ObservableProperty]
+    private bool isVisible;
 
     // Events for View to handle UI-specific concerns
     public event Action? MessageBoxRequested;
@@ -224,6 +228,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     public void SwitchOn()
     {
+        IsVisible = true;
+
         if (!connectionManager.IsConnected && !connectionManager.IsAttemptingConnection)
         {
             LoginWindowRequested?.Invoke();
@@ -234,7 +240,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     public void SwitchOff()
     {
-        // Nothing to do - View handles visibility
+        IsVisible = false;
     }
 
     public void Clean()
@@ -335,29 +341,20 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     #region Public Methods (called by orchestrator, not View)
 
-    /// <summary>
-    /// Called when the game search text changes.
-    /// </summary>
-    public void OnGameSearchChanged()
+    partial void OnGameSearchTextChanged(string value)
     {
         SortAndRefreshHostedGames();
     }
 
-    /// <summary>
-    /// Called when the color selection changes.
-    /// </summary>
-    public void OnColorSelectionChanged()
+    partial void OnSelectedColorIndexChanged(int value)
     {
-        UserINISettings.Instance.ChatColor.Value = SelectedColorIndex;
+        UserINISettings.Instance.ChatColor.Value = value;
         UserINISettings.Instance.SaveSettings();
     }
 
-    /// <summary>
-    /// Called when the channel selection changes.
-    /// </summary>
-    public void OnChannelSelectionChanged()
+    partial void OnSelectedChannelIndexChanged(int value)
     {
-        SwitchToChannel(SelectedChannelIndex);
+        SwitchToChannel(value);
     }
 
     /// <summary>
