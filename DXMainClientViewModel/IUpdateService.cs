@@ -80,6 +80,21 @@ namespace DXMainClientViewModel
         event EventHandler<UpdateFailureEventArgs> UpdateFailed;
 
         /// <summary>
+        /// Raised when update progress changes (file name, file percentage, total percentage).
+        /// </summary>
+        event Action<string, int, int> UpdateProgressChanged;
+
+        /// <summary>
+        /// Raised when local file check progress changes (checked count, total count).
+        /// </summary>
+        event Action<int, int> LocalFileCheckProgressChanged;
+
+        /// <summary>
+        /// Raised when a file download completes (archive name).
+        /// </summary>
+        event Action<string> FileDownloadCompleted;
+
+        /// <summary>
         /// Checks local file versions.
         /// </summary>
         void CheckLocalFileVersions();
