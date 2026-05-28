@@ -19,6 +19,7 @@ public interface IGameLoadingLobbyViewModel : INotifyPropertyChanged
     bool IsHost { get; }
     bool CanLoadGame { get; }
     string LoadGameButtonText { get; }
+    string DraftMessage { get; set; }
 
     IRelayCommand LoadGameCommand { get; }
     IRelayCommand LeaveGameCommand { get; }

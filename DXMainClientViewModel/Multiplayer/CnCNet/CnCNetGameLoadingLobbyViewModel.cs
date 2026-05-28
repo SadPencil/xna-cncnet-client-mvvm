@@ -24,6 +24,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for loading saved CnCNet multiplayer games.
 /// Contains all business logic from CnCNetGameLoadingLobby.cs except XNA UI rendering.
 /// </summary>
+// checked
 public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewModel, ICnCNetGameLoadingLobbyViewModel
 {
     private const double GAME_BROADCAST_INTERVAL = 20.0;
@@ -312,7 +313,7 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
             cncnetUserData.IsIgnored(e.Message.SenderIdent) &&
             !e.Message.SenderIsAdmin)
         {
-            AddChatMessage(string.Format("Message blocked from - {0}".L10N("Client:Main:PMBlockedFrom"), e.Message.SenderName));
+            AddChatMessageWithoutSound(string.Format("Message blocked from - {0}".L10N("Client:Main:PMBlockedFrom"), e.Message.SenderName));
         }
         else
         {
@@ -341,6 +342,21 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
     }
 
     // --- Abstract member implementations ---
+
+    protected override void GetReadyNotification()
+    {
+        base.GetReadyNotification();
+        PrimarySwitchRequested?.Invoke(this, EventArgs.Empty);
+        if (IsHost)
+            channel?.SendCTCPMessage(GET_READY_CTCP_COMMAND, QueuedMessageType.GAME_GET_READY_MESSAGE, 0);
+    }
+
+    protected override void NotAllPresentNotification()
+    {
+        base.NotAllPresentNotification();
+        if (IsHost)
+            channel?.SendCTCPMessage(NOT_ALL_PLAYERS_PRESENT_CTCP_COMMAND, QueuedMessageType.GAME_NOTIFICATION_MESSAGE, 0);
+    }
 
     protected override void AddNotice(string message)
     {
@@ -447,7 +463,6 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
             return;
 
         GetReadyNotification();
-        PrimarySwitchRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void HandleNotAllPresentNotification(string sender)

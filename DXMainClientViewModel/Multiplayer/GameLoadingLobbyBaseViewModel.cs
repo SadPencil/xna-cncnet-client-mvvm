@@ -408,6 +408,8 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
         SoundPlayRequested?.Invoke("message.wav");
     }
 
+    protected void AddChatMessageWithoutSound(string message) => _chatMessages.Add(message);
+
     protected virtual string GetIPAddressForPlayer(PlayerInfo pInfo) => "0.0.0.0";
 
     // --- Cleanup ---
