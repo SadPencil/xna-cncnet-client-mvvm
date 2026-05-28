@@ -48,10 +48,4 @@ public interface IMultiplayerGameLobbyViewModel : IGameLobbyViewModel
 
     // --- Warning notices ---
     void AddWarning(string message);
-
-    // --- Events for View to react (one-shot notifications) ---
-    event EventHandler<NoticeEventArgs> NoticePosted;
-    event EventHandler GetReadySoundRequested;
-    event EventHandler MessageSoundRequested;
-    event EventHandler MessageSoundReenableRequested;
 }

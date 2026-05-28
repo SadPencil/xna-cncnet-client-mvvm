@@ -15,6 +15,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
+// checked
 /// <summary>
 /// ViewModel for multiplayer game lobbies (CnCNet and LAN).
 /// Contains all business logic from MultiplayerGameLobby.cs except XNA UI rendering.
@@ -115,13 +116,18 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
     private FileSystemWatcher fsw;
     private bool gameSaved;
 
+    // --- Sound state ---
+    private bool isMessageSoundEnabled = true;
+
     // --- Events ---
     public event EventHandler<NoticeEventArgs> NoticePosted;
-    public event EventHandler GetReadySoundRequested;
-    public event EventHandler MessageSoundRequested;
-    public event EventHandler MessageSoundReenableRequested;
+    public event Action<string>? SoundPlayRequested;
 
-    protected void RaiseMessageSoundRequested() => MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+    protected void RaiseMessageSoundRequested()
+    {
+        if (isMessageSoundEnabled)
+            SoundPlayRequested?.Invoke("message.wav");
+    }
 
     // --- Constructor ---
 
@@ -537,7 +543,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
     {
         chatMessagesList.Add(message);
         ChatMessages = chatMessagesList.ToList();
-        MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+        RaiseMessageSoundRequested();
     }
 
     // --- Player data overrides ---
@@ -852,7 +858,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
     {
         AddNotice("The host wants to start the game but cannot because not all players are ready!".L10N("Client:Main:GetReadyNotification"));
         if (!IsHost && !Players.Find(p => p.Name == ProgramConstants.PLAYERNAME).Ready)
-            GetReadySoundRequested?.Invoke(this, EventArgs.Empty);
+            SoundPlayRequested?.Invoke("getready.wav");
     }
 
     protected virtual void InsufficientPlayersNotification()
@@ -909,7 +915,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
             fsw.EnableRaisingEvents = true;
 
         if (UserINISettings.Instance.StopGameLobbyMessageAudio)
-            MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+            isMessageSoundEnabled = false;
 
         base.StartGame();
     }
@@ -926,7 +932,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
             pInfo.IsInGame = false;
 
         if (UserINISettings.Instance.StopGameLobbyMessageAudio)
-            MessageSoundReenableRequested?.Invoke(this, EventArgs.Empty);
+            isMessageSoundEnabled = true;
 
         base.OnGameProcessExited();
 
