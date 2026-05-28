@@ -13,6 +13,7 @@ public interface ICampaignSelectorViewModel : INotifyPropertyChanged
     string MissionDescriptionText { get; }
     string? MissionPreviewImagePath { get; }
     bool IsControlsEnabled { get; }
+    bool IsVisible { get; }
     bool IsReturnButtonVisible { get; }
 
     // Mission preview paths (View uses these to render preview panel)

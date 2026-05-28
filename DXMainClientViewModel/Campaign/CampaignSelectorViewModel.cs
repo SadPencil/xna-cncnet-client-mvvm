@@ -115,6 +115,9 @@ namespace DXMainClientViewModel.Campaign
         private bool isControlsEnabled = true;
 
         [ObservableProperty]
+        private bool isVisible = true;
+
+        [ObservableProperty]
         private IReadOnlyList<string> difficultyNames = DifficultyNamesArray;
 
         [ObservableProperty]
@@ -506,11 +509,11 @@ namespace DXMainClientViewModel.Campaign
             UserINISettings.Instance.SaveSettings();
 
             if (ClientConfiguration.Instance.ReturnToMainMenuOnMissionLaunch)
-                IsControlsEnabled = false;
+                IsVisible = false;
             else
                 IsControlsEnabled = false;
 
-            discordHandler.SetCampaignPresence(mission.UntranslatedGUIName, difficultyName);
+            discordHandler.SetCampaignPresence(mission.UntranslatedGUIName, difficultyName, mission.IconPath, true);
             gameProcessService.StartGameProcess();
         }
 
