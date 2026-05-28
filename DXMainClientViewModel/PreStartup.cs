@@ -1,11 +1,8 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using ClientCore;
 using ClientCore.I18N;
-using DXMainClientView.Services;
-using DXMainClientViewModel;
 using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Generic;
@@ -13,18 +10,19 @@ using DXMainClientViewModel.Online;
 using Microsoft.Extensions.DependencyInjection;
 using Rampastring.Tools;
 
-namespace DXMainClientView;
+namespace DXMainClientViewModel;
 
 /// <summary>
-/// Initializes client systems before the Avalonia UI starts.
+/// Initializes client systems before the UI starts.
 /// Replicates the original DXMainClient PreStartup + Startup initialization chain.
 /// </summary>
-static class PreStartup
+public static class PreStartup
 {
     /// <summary>
-    /// Initializes all non-UI systems and returns the DI service provider.
+    /// Initializes all non-UI systems, registers domain services in the DI container,
+    /// and returns the service collection for the View layer to add UI-specific services.
     /// </summary>
-    public static ServiceProvider Initialize()
+    public static ServiceCollection Initialize()
     {
         // --- Culture (same as DXMainClient PreStartup) ---
         Translation.InitialUICulture = CultureInfo.CurrentUICulture;
@@ -55,19 +53,19 @@ static class PreStartup
 
         Logger.Initialize(clientUserFilesDirectory.FullName, clientLogFile.Name);
         Logger.WriteLogFile = true;
-        DXMainClientViewModel.Domain.MainClientConstants.LoggerInitialized = true;
+        Domain.MainClientConstants.LoggerInitialized = true;
 
         if (!clientUserFilesDirectory.Exists)
             clientUserFilesDirectory.Create();
 
-        Logger.Log("***Logfile for " + DXMainClientViewModel.Domain.MainClientConstants.GAME_NAME_LONG + " client***");
+        Logger.Log("***Logfile for " + Domain.MainClientConstants.GAME_NAME_LONG + " client***");
 
         string clientVersion = GitVersionInformation.AssemblySemVer;
         Logger.Log("Client version: " + clientVersion);
         Logger.Log(GitVersionInformation.InformationalVersion);
 
         // --- Client configuration (same as DXMainClient PreStartup) ---
-        DXMainClientViewModel.Domain.MainClientConstants.Initialize();
+        Domain.MainClientConstants.Initialize();
 
         Logger.Log("Loading settings.");
         UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
@@ -88,30 +86,24 @@ static class PreStartup
         Logger.Log("Resource path: " + ProgramConstants.GetResourcePath());
         Logger.Log("Base resource path: " + ProgramConstants.GetBaseResourcePath());
 
-        // --- DI container ---
+        // --- DI container with domain services ---
         var services = new ServiceCollection();
         ConfigureServices(services);
-        var serviceProvider = services.BuildServiceProvider();
 
         Logger.Log("PreStartup initialization complete.");
-        return serviceProvider;
+        return services;
     }
 
     private static void ConfigureServices(ServiceCollection services)
     {
         // Core services
         services.AddSingleton<Random>(_ => new Random());
-        services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
-        services.AddSingleton<IUpdateService, StubUpdateService>();
 
         // Domain services
         services.AddSingleton<GameCollection>();
         services.AddSingleton<CnCNetUserData>(_ => new CnCNetUserData(() => { }));
         services.AddSingleton<CnCNetManager>();
         services.AddSingleton<MapLoader>();
-
-        // Layout services
-        services.AddSingleton<IIniLayoutOverlayService, IniLayoutOverlayService>();
 
         // ViewModels
         services.AddTransient<ILoadingScreenViewModel, LoadingScreenViewModel>();
