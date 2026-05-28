@@ -14,6 +14,4 @@ public interface IUpdateWindowViewModel : INotifyPropertyChanged
     bool IsVisible { get; set; }
 
     IRelayCommand CancelCommand { get; }
-
-    void ApplyPendingProgress();
 }

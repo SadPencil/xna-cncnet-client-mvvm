@@ -1,4 +1,4 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -6,12 +6,15 @@ using ClientCore.Extensions;
 using DXMainClientViewModel.Domain;
 using Rampastring.Tools;
 using System;
+using System.Threading;
 
 namespace DXMainClientViewModel.Generic
 {
     /// <summary>
     /// ViewModel for the update window.
-    /// Handles update progress tracking, file download status, and force update.
+    /// Self-sufficient: subscribes to IUpdateService events, applies progress via timer.
+    /// Domain events (UpdateCompleted, UpdateCancelled, UpdateFailed) stay on concrete class
+    /// for orchestrator subscription - NOT on interface.
     /// </summary>
     public partial class UpdateWindowViewModel : ObservableObject, IUpdateWindowViewModel
     {
@@ -37,24 +40,19 @@ namespace DXMainClientViewModel.Generic
         private bool isVisible;
 
         /// <summary>
-        /// Raised when the update completes successfully.
+        /// Domain event: raised when update completes. Orchestrator subscribes directly.
         /// </summary>
         public event Action? UpdateCompleted;
 
         /// <summary>
-        /// Raised when the update is cancelled.
+        /// Domain event: raised when update is cancelled. Orchestrator subscribes directly.
         /// </summary>
         public event Action? UpdateCancelled;
 
         /// <summary>
-        /// Raised when the update fails.
+        /// Domain event: raised when update fails. Orchestrator subscribes directly.
         /// </summary>
         public event Action<string>? UpdateFailed;
-
-        /// <summary>
-        /// Raised when a message box needs to be shown.
-        /// </summary>
-        public event Action<string, string>? MessageBoxRequested;
 
         private bool isStartingForceUpdate;
         private static readonly object locker = new object();
@@ -62,6 +60,7 @@ namespace DXMainClientViewModel.Generic
         private string pendingFileName = string.Empty;
         private int pendingFilePercentage;
         private int pendingTotalPercentage;
+        private Timer? progressTimer;
 
         public UpdateWindowViewModel(
             IUpdateService updateService,
@@ -79,6 +78,49 @@ namespace DXMainClientViewModel.Generic
             updateService.UpdateProgressChanged += OnUpdateProgressChanged;
             updateService.LocalFileCheckProgressChanged += OnLocalFileCheckProgressChanged;
             updateService.FileDownloadCompleted += OnFileDownloadCompleted;
+
+            progressTimer = new Timer(OnProgressTimerTick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(50));
+        }
+
+        private void OnProgressTimerTick(object? state)
+        {
+            lock (locker)
+            {
+                if (!infoUpdated)
+                    return;
+
+                infoUpdated = false;
+
+                uiThreadMarshaller.AddCallback(new Action(() =>
+                {
+                    CurrentFilePercentage = (pendingFilePercentage < 0 || pendingFilePercentage > 100) ? 0 : pendingFilePercentage;
+                    TotalPercentage = (pendingTotalPercentage < 0 || pendingTotalPercentage > 100) ? 0 : pendingTotalPercentage;
+                    CurrentFileName = pendingFileName;
+                    UpdaterStatusText = "Downloading files".L10N("Client:Main:DownloadingFiles");
+                }));
+            }
+        }
+
+        /// <summary>
+        /// Configures the window for a normal update. Called by orchestrator.
+        /// </summary>
+        public void SetData(string newGameVersion)
+        {
+            DescriptionText = string.Format(
+                "Please wait while {0} is updated to version {1}.\nThis window will automatically close once the update is complete.\n\nThe client may also restart after the update has been downloaded.".L10N("Client:Main:UpdateVersionPleaseWait"),
+                MainClientConstants.GAME_NAME_SHORT, newGameVersion);
+            UpdaterStatusText = "Preparing".L10N("Client:Main:StatusPreparing");
+        }
+
+        /// <summary>
+        /// Starts a force update. Called by orchestrator.
+        /// </summary>
+        public void ForceUpdate()
+        {
+            isStartingForceUpdate = true;
+            DescriptionText = string.Format("Force updating {0} to latest version...".L10N("Client:Main:ForceUpdateToLatest"), MainClientConstants.GAME_NAME_SHORT);
+            UpdaterStatusText = "Connecting".L10N("Client:Main:UpdateStatusConnecting");
+            updateService.CheckForUpdates();
         }
 
         [RelayCommand]
@@ -90,48 +132,7 @@ namespace DXMainClientViewModel.Generic
             CloseWindow();
         }
 
-        /// <summary>
-        /// Sets the data for a normal update.
-        /// </summary>
-        public void SetData(string newGameVersion)
-        {
-            DescriptionText = string.Format(
-                "Please wait while {0} is updated to version {1}.\nThis window will automatically close once the update is complete.\n\nThe client may also restart after the update has been downloaded.".L10N("Client:Main:UpdateVersionPleaseWait"),
-                MainClientConstants.GAME_NAME_SHORT, newGameVersion);
-            UpdaterStatusText = "Preparing".L10N("Client:Main:StatusPreparing");
-        }
-
-        /// <summary>
-        /// Starts a force update.
-        /// </summary>
-        public void ForceUpdate()
-        {
-            isStartingForceUpdate = true;
-            DescriptionText = string.Format("Force updating {0} to latest version...".L10N("Client:Main:ForceUpdateToLatest"), MainClientConstants.GAME_NAME_SHORT);
-            UpdaterStatusText = "Connecting".L10N("Client:Main:UpdateStatusConnecting");
-            updateService.CheckForUpdates();
-        }
-
-        /// <summary>
-        /// Applies pending progress changes. Called by the View on each frame.
-        /// </summary>
-        public void ApplyPendingProgress()
-        {
-            lock (locker)
-            {
-                if (!infoUpdated)
-                    return;
-
-                infoUpdated = false;
-
-                CurrentFilePercentage = (pendingFilePercentage < 0 || pendingFilePercentage > 100) ? 0 : pendingFilePercentage;
-                TotalPercentage = (pendingTotalPercentage < 0 || pendingTotalPercentage > 100) ? 0 : pendingTotalPercentage;
-                CurrentFileName = pendingFileName;
-                UpdaterStatusText = "Downloading files".L10N("Client:Main:DownloadingFiles");
-            }
-        }
-
-        #region Event Handlers
+        #region Service Event Handlers
 
         private void OnFileIdentifiersUpdated()
         {
@@ -142,9 +143,6 @@ namespace DXMainClientViewModel.Generic
             {
                 uiThreadMarshaller.AddCallback(new Action(() =>
                 {
-                    MessageBoxRequested?.Invoke(
-                        "Force Update Failure".L10N("Client:Main:ForceUpdateFailureTitle"),
-                        "Checking for updates failed.".L10N("Client:Main:ForceUpdateFailureText"));
                     CloseWindow();
                 }));
                 return;
@@ -153,7 +151,6 @@ namespace DXMainClientViewModel.Generic
             {
                 uiThreadMarshaller.AddCallback(new Action(() =>
                 {
-                    UpdateCancelled?.Invoke();
                     CloseWindow();
                 }));
                 return;
@@ -169,10 +166,10 @@ namespace DXMainClientViewModel.Generic
 
         private void OnLocalFileCheckProgressChanged(int checkedFileCount, int totalFileCount)
         {
-            uiThreadMarshaller.AddCallback(new Action<int>(value =>
+            uiThreadMarshaller.AddCallback(new Action(() =>
             {
-                CurrentFilePercentage = value;
-            }), (checkedFileCount * 100 / totalFileCount));
+                CurrentFilePercentage = checkedFileCount * 100 / totalFileCount;
+            }));
         }
 
         private void OnUpdateProgressChanged(string currFileName, int currFilePercentage, int totalPercentage)
