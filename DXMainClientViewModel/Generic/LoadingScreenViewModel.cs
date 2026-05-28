@@ -58,6 +58,8 @@ namespace DXMainClientViewModel.Generic
             this.cncnetManager = cncnetManager;
             this.mapLoader = mapLoader;
             this.updateService = updateService;
+
+            Initialize();
         }
 
         /// <summary>

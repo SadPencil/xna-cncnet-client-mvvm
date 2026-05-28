@@ -93,15 +93,6 @@ static class PreStartup
         ConfigureServices(services);
         var serviceProvider = services.BuildServiceProvider();
 
-        // --- ViewModel initialization (starts background tasks) ---
-        var loadingScreenVM = serviceProvider.GetRequiredService<ILoadingScreenViewModel>();
-        if (loadingScreenVM is LoadingScreenViewModel concrete)
-        {
-            Logger.Log("Initializing LoadingScreenViewModel...");
-            concrete.Initialize();
-            Logger.Log("LoadingScreenViewModel initialized.");
-        }
-
         Logger.Log("PreStartup initialization complete.");
         return serviceProvider;
     }
