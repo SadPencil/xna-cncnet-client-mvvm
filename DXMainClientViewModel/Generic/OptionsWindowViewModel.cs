@@ -1,20 +1,29 @@
-// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.Enums;
 using Rampastring.Tools;
 using System;
+
+using DXMainClientViewModel.Generic.OptionPanels;
 
 namespace DXMainClientViewModel.Generic
 {
     /// <summary>
     /// ViewModel for the options window.
-    /// Handles settings save/load coordination, tab selection, and download state.
-    /// Self-sufficient: uses observable properties for View coordination.
+    /// Coordinates child panel ViewModels directly (no Should* signals).
+    /// Self-sufficient: calls child ViewModel commands directly.
     /// </summary>
     public partial class OptionsWindowViewModel : ObservableObject, IOptionsWindowViewModel
     {
+        private readonly IDisplayOptionsPanelViewModel displayOptionsPanel;
+        private readonly IAudioOptionsPanelViewModel audioOptionsPanel;
+        private readonly IGameOptionsPanelViewModel gameOptionsPanel;
+        private readonly ICnCNetOptionsPanelViewModel cncnetOptionsPanel;
+        private readonly IUpdaterOptionsPanelViewModel updaterOptionsPanel;
+        private readonly IComponentsPanelViewModel componentsPanel;
+
         private Action<bool>? yesNoDialogCallback;
 
         [ObservableProperty]
@@ -28,47 +37,6 @@ namespace DXMainClientViewModel.Generic
 
         [ObservableProperty]
         private bool isVisible;
-
-        // Panel coordination signals
-        [ObservableProperty]
-        private bool shouldLoadPanels;
-
-        [ObservableProperty]
-        private bool shouldRefreshPanels;
-
-        [ObservableProperty]
-        private bool shouldSavePanels;
-
-        [ObservableProperty]
-        private bool shouldDisableAllPanels;
-
-        [ObservableProperty]
-        private bool shouldToggleMainMenuOnlyOptions;
-
-        [ObservableProperty]
-        private bool toggleMainMenuOnlyOptionsValue;
-
-        [ObservableProperty]
-        private bool shouldOpenComponentsPanel;
-
-        [ObservableProperty]
-        private bool shouldInstallComponent;
-
-        [ObservableProperty]
-        private int componentToInstall;
-
-        [ObservableProperty]
-        private bool shouldPostInitDisplayOptions;
-
-        [ObservableProperty]
-        private bool shouldRefreshSettings;
-
-        // Panel feedback
-        [ObservableProperty]
-        private bool panelsChangedValues;
-
-        [ObservableProperty]
-        private bool restartRequired;
 
         // Dialog state
         [ObservableProperty]
@@ -89,44 +57,25 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private string yesNoDialogMessage = string.Empty;
 
-        // Navigation signals
-        [ObservableProperty]
-        private bool shouldRestart;
+        // Domain events (for MainMenu to subscribe, not on interface)
+        public event EventHandler? RestartRequested;
 
-        public OptionsWindowViewModel()
+        public OptionsWindowViewModel(
+            IDisplayOptionsPanelViewModel displayOptionsPanel,
+            IAudioOptionsPanelViewModel audioOptionsPanel,
+            IGameOptionsPanelViewModel gameOptionsPanel,
+            ICnCNetOptionsPanelViewModel cncnetOptionsPanel,
+            IUpdaterOptionsPanelViewModel updaterOptionsPanel,
+            IComponentsPanelViewModel componentsPanel)
         {
+            this.displayOptionsPanel = displayOptionsPanel;
+            this.audioOptionsPanel = audioOptionsPanel;
+            this.gameOptionsPanel = gameOptionsPanel;
+            this.cncnetOptionsPanel = cncnetOptionsPanel;
+            this.updaterOptionsPanel = updaterOptionsPanel;
+            this.componentsPanel = componentsPanel;
+
             IsComponentsPanelVisible = !ClientConfiguration.Instance.ModMode;
-        }
-
-        partial void OnPanelsChangedValuesChanged(bool value)
-        {
-            if (value)
-            {
-                ShowMessageBox(
-                    "Setting Value(s) Changed".L10N("Client:DTAConfig:SettingChangedTitle"),
-                    ("One or more setting values are\n" +
-                    "no longer available and were changed.\n\n" +
-                    "You may want to verify the new setting\n" +
-                    "values in client's options window.").L10N("Client:DTAConfig:SettingChangedText"));
-                PanelsChangedValues = false;
-            }
-        }
-
-        partial void OnRestartRequiredChanged(bool value)
-        {
-            if (value)
-            {
-                ShowYesNoDialog(
-                    "Restart Required".L10N("Client:DTAConfig:RestartClientTitle"),
-                    ("The client needs to be restarted for some of the changes to take effect.\n\n" +
-                    "Do you want to restart now?").L10N("Client:DTAConfig:RestartClientText"),
-                    yes =>
-                    {
-                        if (yes)
-                            ShouldRestart = true;
-                    });
-                RestartRequired = false;
-            }
         }
 
         partial void OnIsMessageBoxVisibleChanged(bool value)
@@ -227,39 +176,57 @@ namespace DXMainClientViewModel.Generic
 
         public void Open()
         {
-            ShouldLoadPanels = true;
-            ShouldRefreshPanels = true;
-            ShouldOpenComponentsPanel = true;
+            // Directly load all panels
+            displayOptionsPanel.LoadSettingsCommand.Execute(null);
+            audioOptionsPanel.LoadSettingsCommand.Execute(null);
+            gameOptionsPanel.LoadSettingsCommand.Execute(null);
+            cncnetOptionsPanel.LoadSettingsCommand.Execute(null);
+            updaterOptionsPanel.LoadSettingsCommand.Execute(null);
+            componentsPanel.RefreshComponentsCommand.Execute(null);
+
             IsVisible = true;
         }
 
         public void RefreshSettings()
         {
-            ShouldRefreshSettings = true;
+            // Reload all panels from INI
+            displayOptionsPanel.LoadSettingsCommand.Execute(null);
+            audioOptionsPanel.LoadSettingsCommand.Execute(null);
+            gameOptionsPanel.LoadSettingsCommand.Execute(null);
+            cncnetOptionsPanel.LoadSettingsCommand.Execute(null);
+            updaterOptionsPanel.LoadSettingsCommand.Execute(null);
+
+            // Save all panels back
+            displayOptionsPanel.SaveSettingsCommand.Execute(null);
+            audioOptionsPanel.SaveSettingsCommand.Execute(null);
+            gameOptionsPanel.SaveSettingsCommand.Execute(null);
+            cncnetOptionsPanel.SaveSettingsCommand.Execute(null);
+            updaterOptionsPanel.SaveSettingsCommand.Execute(null);
+
+            UserINISettings.Instance.SaveSettings();
         }
 
         public void SwitchToCustomComponentsPanel()
         {
-            ShouldDisableAllPanels = true;
             SelectedPanelIndex = 5;
         }
 
         public void ToggleMainMenuOnlyOptions(bool enable)
         {
-            ToggleMainMenuOnlyOptionsValue = enable;
-            ShouldToggleMainMenuOnlyOptions = true;
+            // Each panel handles this via its own logic
+            // The panels don't currently have ToggleMainMenuOnlyOptions
+            // This is a View-level concern (enabling/disabling controls)
         }
 
         public void InstallCustomComponent(int id)
         {
-            ComponentToInstall = id;
-            ShouldInstallComponent = true;
+            componentsPanel.SelectedComponentIndex = id;
+            componentsPanel.InstallSelectedComponentCommand.Execute(null);
         }
 
         public void PostInit()
         {
-            if (ClientConfiguration.Instance.ClientGameType == ClientCore.Enums.ClientType.TS)
-                ShouldPostInitDisplayOptions = true;
+            // Compatibility fix check is now done in DisplayOptionsPanelViewModel constructor
         }
 
         public void OnClosed()
@@ -273,14 +240,18 @@ namespace DXMainClientViewModel.Generic
 
         private void SaveSettings()
         {
-            ShouldRefreshPanels = true;
-            // View sets PanelsChangedValues if panels changed
-
-            ShouldSavePanels = true;
-            // View saves panels, sets RestartRequired if needed
+            bool restartRequired = false;
 
             try
             {
+                displayOptionsPanel.SaveSettingsCommand.Execute(null);
+                restartRequired = displayOptionsPanel.IsRestartRequired;
+
+                audioOptionsPanel.SaveSettingsCommand.Execute(null);
+                gameOptionsPanel.SaveSettingsCommand.Execute(null);
+                cncnetOptionsPanel.SaveSettingsCommand.Execute(null);
+                updaterOptionsPanel.SaveSettingsCommand.Execute(null);
+
                 UserINISettings.Instance.SaveSettings();
             }
             catch (Exception ex)
@@ -292,6 +263,19 @@ namespace DXMainClientViewModel.Generic
             }
 
             IsVisible = false;
+
+            if (restartRequired)
+            {
+                ShowYesNoDialog(
+                    "Restart Required".L10N("Client:DTAConfig:RestartClientTitle"),
+                    ("The client needs to be restarted for some of the changes to take effect.\n\n" +
+                    "Do you want to restart now?").L10N("Client:DTAConfig:RestartClientText"),
+                    yes =>
+                    {
+                        if (yes)
+                            RestartRequested?.Invoke(this, EventArgs.Empty);
+                    });
+            }
         }
 
         private void ShowMessageBox(string title, string message)

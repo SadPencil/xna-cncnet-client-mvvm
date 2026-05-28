@@ -57,7 +57,7 @@ namespace DXMainClientViewModel.Generic
         private string mainButtonText = "Main Menu (F2)".L10N("Client:Main:MainMenuF2");
 
         [ObservableProperty]
-        private bool shouldBringDown;
+        private bool isExpanded;
 
         [ObservableProperty]
         private int unreadMessageCount;
@@ -175,7 +175,7 @@ namespace DXMainClientViewModel.Generic
         private void OnAttemptedServerChanged(object? sender, AttemptedServerEventArgs e)
         {
             ConnectionStatusText = "CONNECTING...".L10N("Client:Main:StatusConnecting");
-            ShouldBringDown = true;
+            IsExpanded = true;
         }
 
         private void OnWelcomeMessageReceived(object? sender, ServerMessageEventArgs e)

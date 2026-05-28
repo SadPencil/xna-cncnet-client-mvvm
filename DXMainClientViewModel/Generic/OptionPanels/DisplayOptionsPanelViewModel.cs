@@ -132,6 +132,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         this.resolutionProvider = resolutionProvider;
 
         PopulateOptions();
+        CheckCompatibilityFixes();
     }
 
     // --- Commands ---
@@ -438,14 +439,6 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     {
         if (!value)
             IsBorderlessWindowedModeEnabled = false;
-    }
-
-    // --- Public methods (called on concrete class) ---
-
-    public void PostInit()
-    {
-        LoadSettings();
-        CheckCompatibilityFixes();
     }
 
     // --- Helpers ---

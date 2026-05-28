@@ -33,10 +33,7 @@ namespace DXMainClientViewModel.Generic
         private bool isCursorVisible = true;
 
         [ObservableProperty]
-        private bool shouldMinimizeWindow;
-
-        [ObservableProperty]
-        private bool shouldMaximizeWindow;
+        private WindowState windowState = WindowState.Normal;
 
         public GameInProgressWindowViewModel(IGameProcessService gameProcessService)
         {
@@ -88,7 +85,7 @@ namespace DXMainClientViewModel.Generic
 
 #if WINFORMS
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
-                ShouldMinimizeWindow = true;
+                WindowState = WindowState.Minimized;
 #endif
         }
 
@@ -100,7 +97,7 @@ namespace DXMainClientViewModel.Generic
 
 #if WINFORMS
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
-                ShouldMaximizeWindow = true;
+                WindowState = WindowState.Normal;
 #endif
             UserINISettings.Instance.ReloadSettings();
 

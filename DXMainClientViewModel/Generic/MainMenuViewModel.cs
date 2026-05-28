@@ -33,6 +33,8 @@ namespace DXMainClientViewModel.Generic
         private readonly IMusicPlayerService musicPlayer;
         private readonly IUIThreadMarshaller uiThreadMarshaller;
         private readonly CnCNetManager connectionManager;
+        private readonly IOptionsWindowViewModel optionsWindowViewModel;
+        private readonly ITopBarViewModel topBarViewModel;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -94,19 +96,10 @@ namespace DXMainClientViewModel.Generic
         private string yesNoDialogMessage = string.Empty;
 
         [ObservableProperty]
-        private bool shouldOpenOptions;
-
-        [ObservableProperty]
-        private bool shouldSwitchToCustomComponents;
-
-        [ObservableProperty]
         private bool isLanMode;
 
         [ObservableProperty]
-        private bool shouldSwitchToSecondary;
-
-        [ObservableProperty]
-        private bool shouldSwitchToPrimary;
+        private MainMenuPanel activePanel = MainMenuPanel.PRIMARY;
 
         /// <summary>
         /// Domain event: fired when client should exit. App shell subscribes.
@@ -119,7 +112,9 @@ namespace DXMainClientViewModel.Generic
             IDiscordHandlerService discordHandler,
             IMusicPlayerService musicPlayer,
             IUIThreadMarshaller uiThreadMarshaller,
-            CnCNetManager connectionManager)
+            CnCNetManager connectionManager,
+            IOptionsWindowViewModel optionsWindowViewModel,
+            ITopBarViewModel topBarViewModel)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -127,8 +122,14 @@ namespace DXMainClientViewModel.Generic
             this.musicPlayer = musicPlayer;
             this.uiThreadMarshaller = uiThreadMarshaller;
             this.connectionManager = connectionManager;
+            this.optionsWindowViewModel = optionsWindowViewModel;
+            this.topBarViewModel = topBarViewModel;
+
+            // Subscribe to TopBar state changes for panel switching
+            topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
 
             ShowVersionInfo = !ClientConfiguration.Instance.ModMode;
+
             IsMapEditorButtonVisible = !string.IsNullOrEmpty(ClientConfiguration.Instance.MapEditorExePath);
 
             VersionText = updateService.GameVersion;
@@ -235,7 +236,7 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void JoinCnCNet()
         {
-            ShouldSwitchToSecondary = true;
+            ActivePanel = MainMenuPanel.SECONDARY;
         }
 
         [RelayCommand]
@@ -253,7 +254,7 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void OpenOptions()
         {
-            ShouldOpenOptions = true;
+            optionsWindowViewModel.Open();
         }
 
         [RelayCommand]
@@ -427,6 +428,19 @@ namespace DXMainClientViewModel.Generic
 
         #region Event Handlers
 
+        private void OnTopBarPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ITopBarViewModel.LastSwitchType))
+            {
+                ActivePanel = topBarViewModel.LastSwitchType switch
+                {
+                    SwitchType.PRIMARY => MainMenuPanel.PRIMARY,
+                    SwitchType.SECONDARY => MainMenuPanel.SECONDARY,
+                    _ => MainMenuPanel.PRIMARY
+                };
+            }
+        }
+
         private void OnGameProcessStarted()
         {
             IsMusicPlaying = false;
@@ -497,8 +511,8 @@ namespace DXMainClientViewModel.Generic
                 {
                     if (yes)
                     {
-                        ShouldOpenOptions = true;
-                        ShouldSwitchToCustomComponents = true;
+                        optionsWindowViewModel.Open();
+                        optionsWindowViewModel.SwitchToCustomComponentsPanel();
                     }
                 });
         }
@@ -647,7 +661,7 @@ namespace DXMainClientViewModel.Generic
                     yes =>
                     {
                         if (yes)
-                            ShouldOpenOptions = true;
+                            optionsWindowViewModel.Open();
                         else if (customComponentDialogQueued)
                             OnCustomComponentsOutdated();
                     });

@@ -16,7 +16,7 @@ public interface ITopBarViewModel : INotifyPropertyChanged
     bool IsLanMode { get; set; }
     SwitchType LastSwitchType { get; }
     string MainButtonText { get; }
-    bool ShouldBringDown { get; set; }
+    bool IsExpanded { get; }
     int UnreadMessageCount { get; }
 
     IRelayCommand SwitchToPrimaryCommand { get; }

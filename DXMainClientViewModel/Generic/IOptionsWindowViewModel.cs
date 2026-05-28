@@ -11,23 +11,6 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     bool IsComponentDownloadInProgress { get; set; }
     bool IsVisible { get; set; }
 
-    // Panel coordination signals (View observes and acts)
-    bool ShouldLoadPanels { get; set; }
-    bool ShouldRefreshPanels { get; set; }
-    bool ShouldSavePanels { get; set; }
-    bool ShouldDisableAllPanels { get; set; }
-    bool ShouldToggleMainMenuOnlyOptions { get; set; }
-    bool ToggleMainMenuOnlyOptionsValue { get; }
-    bool ShouldOpenComponentsPanel { get; set; }
-    bool ShouldInstallComponent { get; set; }
-    int ComponentToInstall { get; }
-    bool ShouldPostInitDisplayOptions { get; set; }
-    bool ShouldRefreshSettings { get; set; }
-
-    // Panel feedback (View sets after operation)
-    bool PanelsChangedValues { get; set; }
-    bool RestartRequired { get; set; }
-
     // Dialog state
     bool IsMessageBoxVisible { get; }
     string MessageBoxTitle { get; }
@@ -36,9 +19,6 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     string YesNoDialogTitle { get; }
     string YesNoDialogMessage { get; }
 
-    // Navigation signals
-    bool ShouldRestart { get; set; }
-
     IRelayCommand SaveCommand { get; }
     IRelayCommand CancelCommand { get; }
     IRelayCommand OpenComponentsPanelCommand { get; }
@@ -46,4 +26,8 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     IRelayCommand DismissMessageBoxCommand { get; }
     IRelayCommand YesNoDialogYesCommand { get; }
     IRelayCommand YesNoDialogNoCommand { get; }
+
+    // Lifecycle methods called by MainMenuViewModel
+    void Open();
+    void SwitchToCustomComponentsPanel();
 }

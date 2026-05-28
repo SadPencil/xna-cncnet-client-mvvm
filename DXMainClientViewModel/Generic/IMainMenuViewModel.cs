@@ -27,12 +27,9 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     string YesNoDialogTitle { get; }
     string YesNoDialogMessage { get; }
 
-    // Navigation signals
-    bool ShouldOpenOptions { get; set; }
-    bool ShouldSwitchToCustomComponents { get; set; }
-    bool IsLanMode { get; set; }
-    bool ShouldSwitchToSecondary { get; set; }
-    bool ShouldSwitchToPrimary { get; set; }
+    // Navigation state
+    MainMenuPanel ActivePanel { get; }
+    bool IsLanMode { get; }
 
     IRelayCommand StartCampaignCommand { get; }
     IRelayCommand ContinueCampaignCommand { get; }
@@ -55,4 +52,13 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     IRelayCommand DismissMessageBoxCommand { get; }
     IRelayCommand YesNoDialogYesCommand { get; }
     IRelayCommand YesNoDialogNoCommand { get; }
+}
+
+/// <summary>
+/// Represents the active panel in the main menu.
+/// </summary>
+public enum MainMenuPanel
+{
+    PRIMARY,
+    SECONDARY
 }
