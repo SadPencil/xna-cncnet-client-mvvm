@@ -18,7 +18,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for the tunnel list box.
 /// Contains all business logic from TunnelListBox.cs except XNA UI rendering.
 /// </summary>
-public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxViewModel
+public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxViewModel // checked
 {
     private readonly TunnelHandler tunnelHandler;
 
