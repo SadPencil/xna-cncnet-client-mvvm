@@ -1,4 +1,4 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using ClientCore;
 using ClientCore.Extensions;
@@ -7,6 +7,7 @@ using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online;
 using Rampastring.Tools;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,10 +17,10 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the loading screen.
     /// Handles updater initialization, map loading, and startup sequence.
     /// Self-sufficient: polls for task completion internally via timer.
+    /// View observes IsLoading to know when loading is complete.
     /// </summary>
     public partial class LoadingScreenViewModel : ObservableObject, ILoadingScreenViewModel
     {
-        private readonly CnCNetManager cncnetManager;
         private readonly MapLoader mapLoader;
         private readonly IUpdateService updateService;
 
@@ -38,29 +39,12 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isLoading = true;
 
-        /// <summary>
-        /// Raised when the loading is complete and the main menu should be shown.
-        /// </summary>
-        public event Action LoadingComplete;
+        private Task? updaterInitTask;
+        private Task? mapLoadTask;
+        private Timer? pollingTimer;
 
-        /// <summary>
-        /// Raised when the privacy notification should be shown.
-        /// </summary>
-        public event Action PrivacyNotificationRequested;
-
-        /// <summary>
-        /// Raised when CnCNet connection should be initiated.
-        /// </summary>
-        public event Action CnCNetConnectRequested;
-
-        private Task updaterInitTask;
-        private Task mapLoadTask;
-        private Timer pollingTimer;
-        private DateTime lastLogTime = DateTime.MinValue;
-
-        public LoadingScreenViewModel(CnCNetManager cncnetManager, MapLoader mapLoader, IUpdateService updateService)
+        public LoadingScreenViewModel(MapLoader mapLoader, IUpdateService updateService)
         {
-            this.cncnetManager = cncnetManager;
             this.mapLoader = mapLoader;
             this.updateService = updateService;
 
@@ -82,7 +66,7 @@ namespace DXMainClientViewModel.Generic
             pollingTimer = new Timer(OnPollTick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
         }
 
-        private void OnPollTick(object state)
+        private void OnPollTick(object? state)
         {
             PollLoadingStatus();
         }
@@ -116,13 +100,15 @@ namespace DXMainClientViewModel.Generic
                 throw new Exception("Map loading task failed.", mapLoadTask.Exception);
             }
 
-            // Update status text
+            // Update status text (mirrors original logging logic)
             if (!updaterDone && !mapLoadDone)
                 CurrentTaskText = "Waiting for updater initialization and loading maps...";
             else if (!updaterDone)
                 CurrentTaskText = "Waiting for updater initialization...";
             else if (!mapLoadDone)
                 CurrentTaskText = "Waiting for loading maps...";
+            else
+                throw new Exception("Assert failed. No pending tasks. This should not happen.");
         }
 
         private void InitUpdater()
@@ -148,19 +134,7 @@ namespace DXMainClientViewModel.Generic
             ProgramConstants.GAME_VERSION = ClientConfiguration.Instance.ModMode ?
                 "N/A" : updateService.GameVersion;
 
-            if (UserINISettings.Instance.AutomaticCnCNetLogin &&
-                NameValidator.IsNameValid(ProgramConstants.PLAYERNAME, out _) == NameValidationError.None)
-            {
-                CnCNetConnectRequested?.Invoke();
-            }
-
-            if (!UserINISettings.Instance.PrivacyPolicyAccepted)
-            {
-                PrivacyNotificationRequested?.Invoke();
-            }
-
             IsLoading = false;
-            LoadingComplete?.Invoke();
 
             Logger.Log("Startup complete. Client is ready.");
         }
