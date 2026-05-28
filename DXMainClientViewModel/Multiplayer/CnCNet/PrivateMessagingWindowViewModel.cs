@@ -17,6 +17,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
+// checked
 /// <summary>
 /// ViewModel for the private messaging window.
 /// Contains all business logic from PrivateMessagingWindow.cs except XNA UI rendering.
@@ -72,13 +73,13 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [ObservableProperty]
     private bool _isMessagesPanelEnabled = true;
 
+    [ObservableProperty]
+    private bool _isWindowVisible;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _userNames = new();
     public IReadOnlyList<string> UserNames => _userNames;
-
-    private readonly ObservableCollection<string> _conversationNames = new();
-    public IReadOnlyList<string> ConversationNames => _conversationNames;
 
     private readonly ObservableCollection<string> _messageHistory = new();
     public IReadOnlyList<string> MessageHistory => _messageHistory;
@@ -86,25 +87,12 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     private readonly ObservableCollection<string> _recentPlayerNames = new();
     public IReadOnlyList<string> RecentPlayerNames => _recentPlayerNames;
 
-    // --- Interface properties ---
-
-    public int SelectedConversationIndex
-    {
-        get => SelectedUserIndex;
-        set => SelectedUserIndex = value;
-    }
-
-    public string? SelectedConversationName =>
-        SelectedUserIndex >= 0 && SelectedUserIndex < _userNames.Count
-            ? _userNames[SelectedUserIndex] : null;
-
     [ObservableProperty]
     private string _draftMessage = string.Empty;
 
     // --- Events ---
 
-    public event EventHandler? PrivateMessageSoundRequested;
-    public event EventHandler? MessageSoundRequested;
+    public event Action<string>? SoundPlayRequested;
     public event EventHandler<string>? JoinUserRequested;
 
     // --- Constructor ---
@@ -158,7 +146,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         pmUser.Messages.Add(new ChatMessage(sentMessage));
 
         _messageHistory.Add(sentMessage);
-        MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+        SoundPlayRequested?.Invoke("message.wav");
 
         lastConversationPartner = userName;
 
@@ -168,8 +156,38 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [RelayCommand]
     private void Close()
     {
+        IsWindowVisible = false;
         IsNotificationVisible = false;
         privateMessageHandler.ResetUnreadMessageCount();
+    }
+
+    [RelayCommand]
+    private void SwitchOn()
+    {
+        SelectedTabIndex = MESSAGES_INDEX;
+        IsNotificationVisible = false;
+        privateMessageHandler.ResetUnreadMessageCount();
+
+        if (IsWindowVisible)
+        {
+            if (!string.IsNullOrEmpty(lastReceivedPMSender))
+            {
+                int index = FindUserIndexForName(lastReceivedPMSender);
+                if (index > -1)
+                    SelectedUserIndex = index;
+            }
+        }
+        else
+        {
+            IsWindowVisible = true;
+
+            if (!string.IsNullOrEmpty(lastConversationPartner))
+            {
+                int index = FindUserIndexForName(lastConversationPartner);
+                if (index > -1)
+                    SelectedUserIndex = index;
+            }
+        }
     }
 
     [RelayCommand]
@@ -194,6 +212,8 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     public void InitPM(string name)
     {
+        IsWindowVisible = true;
+
         // Check if we've already talked with the user during this session
         int pmUserIndex = privateMessageUsers.FindIndex(
             pmUser => pmUser.IrcUser.Name == name);
@@ -225,11 +245,6 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     }
 
     public void ClearInviteChannelInfo() => SetInviteChannelInfo(string.Empty, string.Empty, string.Empty);
-
-    public void SetJoinUserAction(Action<IRCUser, IMessageView> joinUserAction)
-    {
-        // Store for later use - the View will handle the actual join via JoinUserRequested event
-    }
 
     // --- Tab switching ---
 
@@ -432,7 +447,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         }
 
         _messageHistory.Add(messageText);
-        MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+        SoundPlayRequested?.Invoke("message.wav");
     }
 
     private void ConnectionManager_UserAdded(object? sender, UserEventArgs e)
@@ -501,12 +516,12 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     private void ConnectionManager_UserGameIndexUpdated(object? sender, UserEventArgs e)
     {
-        // In the original, this updates the user's texture. In ViewModel, we just
-        // trigger a refresh if the user is in our list.
         int userIndex = FindUserIndexForName(e.User.Name);
         if (userIndex >= 0)
         {
-            // The View will pick up the change through the observable collection
+            // Force collection refresh so View picks up the updated game icon
+            string name = _userNames[userIndex];
+            _userNames[userIndex] = name;
         }
     }
 
@@ -551,7 +566,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
             privateMessageHandler.IncrementUnreadMessageCount();
         }
 
-        PrivateMessageSoundRequested?.Invoke(this, EventArgs.Empty);
+        SoundPlayRequested?.Invoke("pm.wav");
     }
 
     private void RefreshAllUsers()

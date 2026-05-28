@@ -7,18 +7,26 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
 public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
 {
-    IReadOnlyList<string> ConversationNames { get; }
-    int SelectedConversationIndex { get; set; }
-    string? SelectedConversationName { get; }
+    int SelectedTabIndex { get; set; }
+    IReadOnlyList<string> UserNames { get; }
+    int SelectedUserIndex { get; set; }
+    bool IsMessageInputEnabled { get; }
     IReadOnlyList<string> MessageHistory { get; }
     string DraftMessage { get; set; }
+    bool IsNotificationVisible { get; set; }
+    string NotificationSender { get; }
+    string NotificationMessage { get; }
+    string PlayersLabelText { get; }
+    bool IsRecentPlayersVisible { get; }
+    bool IsMessagesPanelEnabled { get; }
+    IReadOnlyList<string> RecentPlayerNames { get; }
+    bool IsWindowVisible { get; set; }
 
     IRelayCommand SendMessageCommand { get; }
     IRelayCommand CloseCommand { get; }
+    IRelayCommand SwitchOnCommand { get; }
     IRelayCommand RefreshConversationsCommand { get; }
 
-    void Initialize();
-    void InitPM(string userName);
-    void SetInviteChannelInfo(string channelName, string gameRoomName, string password);
+    void SetInviteChannelInfo(string channelName, string gameName, string channelPassword);
     void ClearInviteChannelInfo();
 }
