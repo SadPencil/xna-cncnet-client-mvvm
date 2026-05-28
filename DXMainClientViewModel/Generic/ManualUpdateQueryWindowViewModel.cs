@@ -1,18 +1,19 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
 using ClientCore.Extensions;
-using System;
 
 namespace DXMainClientViewModel.Generic
 {
     /// <summary>
     /// ViewModel for the manual update query window.
-    /// Handles manual download redirect and version info display.
+    /// Self-sufficient: subscribes to IUpdateService to detect manual updates.
     /// </summary>
     public partial class ManualUpdateQueryWindowViewModel : ObservableObject, IManualUpdateQueryWindowViewModel
     {
+        private readonly IUpdateService updateService;
+
         private string downloadUrl = string.Empty;
         private string descriptionTemplate = "Version {0} is available.\n\nManual download and installation is\nrequired.".L10N("Client:Main:ManualDownloadAvailable");
 
@@ -22,18 +23,20 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isVisible;
 
-        /// <summary>
-        /// Raised when the window is closed.
-        /// </summary>
-        public event Action? Closed;
-
-        /// <summary>
-        /// Sets the update info to display.
-        /// </summary>
-        public void SetInfo(string version, string downloadUrl)
+        public ManualUpdateQueryWindowViewModel(IUpdateService updateService)
         {
-            this.downloadUrl = downloadUrl;
-            DescriptionText = string.Format(descriptionTemplate, version);
+            this.updateService = updateService;
+            updateService.FileIdentifiersUpdated += OnFileIdentifiersUpdated;
+        }
+
+        private void OnFileIdentifiersUpdated()
+        {
+            if (updateService.ManualUpdateRequired && !string.IsNullOrEmpty(updateService.ManualDownloadURL))
+            {
+                downloadUrl = updateService.ManualDownloadURL;
+                DescriptionText = string.Format(descriptionTemplate, updateService.ServerGameVersion);
+                IsVisible = true;
+            }
         }
 
         [RelayCommand]
@@ -46,7 +49,6 @@ namespace DXMainClientViewModel.Generic
         private void Close()
         {
             IsVisible = false;
-            Closed?.Invoke();
         }
     }
 }
