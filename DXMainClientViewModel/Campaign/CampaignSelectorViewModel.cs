@@ -1,4 +1,4 @@
-
+// checked
 #nullable enable
 using System;
 using System.Collections.Generic;
@@ -170,6 +170,7 @@ namespace DXMainClientViewModel.Campaign
         private void Cancel()
         {
             SaveSettings();
+            IsVisible = false;
         }
 
         [RelayCommand]
