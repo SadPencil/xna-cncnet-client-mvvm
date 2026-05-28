@@ -16,6 +16,7 @@ using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.LAN;
 using DXMainClientViewModel.Multiplayer.GameLobby.CommandHandlers;
 using DXMainClientViewModel.Online;
+using DXMainClientViewModel.Services;
 using Rampastring.Tools;
 using Timer = System.Timers.Timer;
 
@@ -59,7 +60,6 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     private int chatColorIndex;
     private string localFileHash;
     private string overMessage = string.Empty;
-    private TimeSpan timeSinceGameBroadcast = TimeSpan.Zero;
     private TimeSpan timeSinceLastReceivedCommand = TimeSpan.Zero;
 
     // --- Command handlers ---
@@ -80,8 +80,12 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     public event EventHandler LeaveSoundRequested;
     public event EventHandler ReturnSoundRequested;
 
-    // --- Timer ---
+    // --- Timers ---
     private Timer gameBroadcastTimer;
+    private Timer updateTimer;
+
+    // --- Services ---
+    private readonly IApplicationLifecycleService applicationLifecycleService;
 
     // --- Constructor ---
 
@@ -90,6 +94,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
+        IApplicationLifecycleService applicationLifecycleService,
         Random random,
         LANColor[] chatColors)
         : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)
@@ -97,6 +102,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         this.chatColors = chatColors;
         this.encoding = Encoding.UTF8;
         this.localGame = ClientConfiguration.Instance.LocalGame;
+        this.applicationLifecycleService = applicationLifecycleService;
 
         hostCommandHandlers = new CommandHandlerBase[]
         {
@@ -127,6 +133,12 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         gameBroadcastTimer = new Timer(GAME_BROADCAST_INTERVAL * 1000);
         gameBroadcastTimer.AutoReset = true;
         gameBroadcastTimer.Elapsed += GameBroadcastTimer_Elapsed;
+
+        updateTimer = new Timer(1000); // 1 second tick
+        updateTimer.AutoReset = true;
+        updateTimer.Elapsed += UpdateTimer_Elapsed;
+
+        applicationLifecycleService.ApplicationClosing += OnApplicationClosing;
     }
 
     protected override int MaxPlayerCount => MAX_PLAYER_COUNT;
@@ -176,6 +188,8 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
 
         if (IsHost)
             CopyPlayerDataToUI();
+
+        updateTimer.Start();
     }
 
     public void PostJoin()
@@ -490,6 +504,9 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
 
     public override void Clear()
     {
+        updateTimer.Stop();
+        applicationLifecycleService.ApplicationClosing -= OnApplicationClosing;
+
         if (IsHost)
         {
             GameBroadcast?.Invoke(this, new GameBroadcastEventArgs("GAMECLOSED"));
@@ -703,6 +720,66 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         }
     }
 
+    // --- Update timer (player timeout detection) ---
+
+    private void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        UIThreadMarshaller.AddCallback(new Action(Update));
+    }
+
+    private void Update()
+    {
+        if (leaving)
+            return;
+
+        if (IsHost)
+        {
+            for (int i = 1; i < Players.Count; i++)
+            {
+                LANPlayerInfo lpInfo = (LANPlayerInfo)Players[i];
+                if (!lpInfo.Update(TimeSpan.FromSeconds(1)))
+                {
+                    CleanUpPlayer(lpInfo);
+                    Players.RemoveAt(i);
+                    AddNotice(string.Format("{0} - connection timed out".L10N("Client:Main:PlayerTimeout"), lpInfo.Name));
+                    CopyPlayerDataToUI();
+                    BroadcastPlayerOptions();
+                    BroadcastPlayerExtraOptions();
+                    UpdateDiscordPresence();
+                    i--;
+                }
+            }
+        }
+        else
+        {
+            timeSinceLastReceivedCommand += TimeSpan.FromSeconds(1);
+            if (timeSinceLastReceivedCommand > TimeSpan.FromSeconds(DROPOUT_TIMEOUT))
+            {
+                string localizedMessage = string.Format(
+                    "Connection to the game host timed out. Server address: {0}".L10N("Client:Main:HostConnectTimeOutWithAddress"),
+                    hostEndPoint.Address.ToString());
+                LobbyNotification?.Invoke(this, new LobbyNotificationEventArgs(localizedMessage));
+                LeaveGame(localizedMessage);
+            }
+        }
+    }
+
+    // --- Application lifecycle ---
+
+    private void OnApplicationClosing(object sender, EventArgs e)
+    {
+        if (client != null && client.Connected)
+            Clear();
+    }
+
+    // --- Player extra options ---
+
+    protected override void OnPlayerExtraOptionsChanged()
+    {
+        base.OnPlayerExtraOptionsChanged();
+        BroadcastPlayerExtraOptions();
+    }
+
     [RelayCommand]
     private void BroadcastGameState()
     {
@@ -891,7 +968,29 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         BroadcastPlayerOptions();
     }
 
-    private void HandlePlayerExtraOptionsBroadcast(string data) => PlayerExtraOptions = PlayerExtraOptions.FromMessage(data);
+    private void HandlePlayerExtraOptionsBroadcast(string data)
+    {
+        var oldOptions = PlayerExtraOptions;
+        PlayerExtraOptions = PlayerExtraOptions.FromMessage(data);
+        var newOptions = PlayerExtraOptions;
+
+        if (oldOptions.IsForceRandomSides != newOptions.IsForceRandomSides)
+            AddNotice(newOptions.IsForceRandomSides
+                ? "The game host has disabled side selection".L10N("Client:Main:HostDisableSide")
+                : "The game host has enabled side selection".L10N("Client:Main:HostEnableSide"));
+        if (oldOptions.IsForceRandomColors != newOptions.IsForceRandomColors)
+            AddNotice(newOptions.IsForceRandomColors
+                ? "The game host has disabled color selection".L10N("Client:Main:HostDisableColor")
+                : "The game host has enabled color selection".L10N("Client:Main:HostEnableColor"));
+        if (oldOptions.IsForceRandomStarts != newOptions.IsForceRandomStarts)
+            AddNotice(newOptions.IsForceRandomStarts
+                ? "The game host has disabled start selection".L10N("Client:Main:HostDisableStart")
+                : "The game host has enabled start selection".L10N("Client:Main:HostEnableStart"));
+        if (oldOptions.IsForceNoTeams != newOptions.IsForceNoTeams)
+            AddNotice(newOptions.IsForceNoTeams
+                ? "The game host has disabled team selection".L10N("Client:Main:HostDisableTeam")
+                : "The game host has enabled team selection".L10N("Client:Main:HostEnableTeam"));
+    }
 
     private void HandlePlayerOptionsBroadcast(string data)
     {
