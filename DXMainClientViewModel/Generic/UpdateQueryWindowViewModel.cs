@@ -1,18 +1,20 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
 using ClientCore.Extensions;
-using System;
 
 namespace DXMainClientViewModel.Generic
 {
     /// <summary>
     /// ViewModel for the update query window.
-    /// Handles update acceptance/decline and version info display.
+    /// Self-sufficient: subscribes to IUpdateService to detect updates,
+    /// calls StartUpdate when user accepts.
     /// </summary>
     public partial class UpdateQueryWindowViewModel : ObservableObject, IUpdateQueryWindowViewModel
     {
+        private readonly IUpdateService updateService;
+
         [ObservableProperty]
         private string descriptionText = string.Empty;
 
@@ -22,20 +24,22 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isVisible;
 
-        /// <summary>
-        /// Raised when the user accepts the update.
-        /// </summary>
-        public event Action? UpdateAccepted;
+        public UpdateQueryWindowViewModel(IUpdateService updateService)
+        {
+            this.updateService = updateService;
+            updateService.FileIdentifiersUpdated += OnFileIdentifiersUpdated;
+        }
 
-        /// <summary>
-        /// Raised when the user declines the update.
-        /// </summary>
-        public event Action? UpdateDeclined;
+        private void OnFileIdentifiersUpdated()
+        {
+            if (updateService.VersionState == VersionState.OUTDATED)
+            {
+                SetInfo(updateService.ServerGameVersion, updateService.UpdateSizeInKb);
+                IsVisible = true;
+            }
+        }
 
-        /// <summary>
-        /// Sets the update info to display.
-        /// </summary>
-        public void SetInfo(string version, int updateSize)
+        private void SetInfo(string version, int updateSize)
         {
             DescriptionText = string.Format(
                 "Version {0} is available for download.\nDo you wish to install it?".L10N("Client:Main:VersionAvailable"),
@@ -51,14 +55,13 @@ namespace DXMainClientViewModel.Generic
         private void Accept()
         {
             IsVisible = false;
-            UpdateAccepted?.Invoke();
+            updateService.StartUpdate();
         }
 
         [RelayCommand]
         private void Decline()
         {
             IsVisible = false;
-            UpdateDeclined?.Invoke();
         }
 
         [RelayCommand]
