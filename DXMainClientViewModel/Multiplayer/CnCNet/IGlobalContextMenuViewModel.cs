@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
@@ -11,7 +12,11 @@ public interface IGlobalContextMenuViewModel : INotifyPropertyChanged
     bool CanJoinPlayer { get; }
     bool CanOpenPrivateMessage { get; }
     bool CanAddFriend { get; }
+    bool IsFriend { get; }
     bool IsBlocked { get; }
+    bool IsContextMenuVisible { get; set; }
+
+    IReadOnlyList<string> MenuLinks { get; }
 
     IRelayCommand OpenPrivateMessageCommand { get; }
     IRelayCommand InvitePlayerCommand { get; }
