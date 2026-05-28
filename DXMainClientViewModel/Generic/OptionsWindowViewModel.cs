@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -10,9 +11,12 @@ namespace DXMainClientViewModel.Generic
     /// <summary>
     /// ViewModel for the options window.
     /// Handles settings save/load orchestration, tab selection, and download state.
+    /// Self-sufficient: uses observable properties for View coordination.
     /// </summary>
     public partial class OptionsWindowViewModel : ObservableObject, IOptionsWindowViewModel
     {
+        private Action<bool>? yesNoDialogCallback;
+
         [ObservableProperty]
         private int selectedPanelIndex;
 
@@ -25,38 +29,133 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isVisible;
 
-        // Events for View-specific panel operations
-        public event Action? LoadPanelsRequested;
-        public event Action<Action<bool>>? RefreshPanelsRequested;
-        public event Action<Action<bool>>? SavePanelsRequested;
-        public event Action<bool>? ToggleMainMenuOnlyOptionsRequested;
-        public event Action? DisablePanelsRequested;
-        public event Action? OpenComponentsPanelRequested;
-        public event Action<int>? InstallComponentRequested;
-        public event Action? PostInitRequested;
+        // Panel orchestration signals
+        [ObservableProperty]
+        private bool shouldLoadPanels;
 
-        // Events for dialog/close operations
-        public event Action? ForceUpdateRequested;
-        public event Action<string, string>? MessageBoxRequested;
-        public event Action<string, string, Action<bool>>? YesNoDialogRequested;
-        public event Action? RestartRequested;
-        public event Action? CloseRequested;
+        [ObservableProperty]
+        private bool shouldRefreshPanels;
+
+        [ObservableProperty]
+        private bool shouldSavePanels;
+
+        [ObservableProperty]
+        private bool shouldDisableAllPanels;
+
+        [ObservableProperty]
+        private bool shouldToggleMainMenuOnlyOptions;
+
+        [ObservableProperty]
+        private bool toggleMainMenuOnlyOptionsValue;
+
+        [ObservableProperty]
+        private bool shouldOpenComponentsPanel;
+
+        [ObservableProperty]
+        private bool shouldInstallComponent;
+
+        [ObservableProperty]
+        private int componentToInstall;
+
+        [ObservableProperty]
+        private bool shouldPostInitDisplayOptions;
+
+        [ObservableProperty]
+        private bool shouldRefreshSettings;
+
+        // Panel feedback
+        [ObservableProperty]
+        private bool panelsChangedValues;
+
+        [ObservableProperty]
+        private bool restartRequired;
+
+        // Dialog state
+        [ObservableProperty]
+        private bool isMessageBoxVisible;
+
+        [ObservableProperty]
+        private string messageBoxTitle = string.Empty;
+
+        [ObservableProperty]
+        private string messageBoxMessage = string.Empty;
+
+        [ObservableProperty]
+        private bool isYesNoDialogVisible;
+
+        [ObservableProperty]
+        private string yesNoDialogTitle = string.Empty;
+
+        [ObservableProperty]
+        private string yesNoDialogMessage = string.Empty;
+
+        // Navigation signals
+        [ObservableProperty]
+        private bool shouldRestart;
 
         public OptionsWindowViewModel()
         {
-        }
-
-        public void Initialize()
-        {
             IsComponentsPanelVisible = !ClientConfiguration.Instance.ModMode;
         }
+
+        partial void OnPanelsChangedValuesChanged(bool value)
+        {
+            if (value)
+            {
+                ShowMessageBox(
+                    "Setting Value(s) Changed".L10N("Client:DTAConfig:SettingChangedTitle"),
+                    ("One or more setting values are\n" +
+                    "no longer available and were changed.\n\n" +
+                    "You may want to verify the new setting\n" +
+                    "values in client's options window.").L10N("Client:DTAConfig:SettingChangedText"));
+                PanelsChangedValues = false;
+            }
+        }
+
+        partial void OnRestartRequiredChanged(bool value)
+        {
+            if (value)
+            {
+                ShowYesNoDialog(
+                    "Restart Required".L10N("Client:DTAConfig:RestartClientTitle"),
+                    ("The client needs to be restarted for some of the changes to take effect.\n\n" +
+                    "Do you want to restart now?").L10N("Client:DTAConfig:RestartClientText"),
+                    yes =>
+                    {
+                        if (yes)
+                            ShouldRestart = true;
+                    });
+                RestartRequired = false;
+            }
+        }
+
+        partial void OnIsMessageBoxVisibleChanged(bool value)
+        {
+            if (!value)
+            {
+                MessageBoxTitle = string.Empty;
+                MessageBoxMessage = string.Empty;
+            }
+        }
+
+        partial void OnIsYesNoDialogVisibleChanged(bool value)
+        {
+            if (!value)
+            {
+                YesNoDialogTitle = string.Empty;
+                YesNoDialogMessage = string.Empty;
+                yesNoDialogCallback = null;
+            }
+        }
+
+        #region Commands
 
         [RelayCommand]
         private void Save()
         {
             if (IsComponentDownloadInProgress)
             {
-                YesNoDialogRequested?.Invoke(
+                ShowYesNoDialog(
                     "Downloads in progress".L10N("Client:DTAConfig:DownloadingTitle"),
                     "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu.\n\nAre you sure you want to continue?".L10N("Client:DTAConfig:DownloadingText"),
                     yes =>
@@ -75,18 +174,18 @@ namespace DXMainClientViewModel.Generic
         {
             if (IsComponentDownloadInProgress)
             {
-                YesNoDialogRequested?.Invoke(
+                ShowYesNoDialog(
                     "Downloads in progress".L10N("Client:DTAConfig:DownloadingTitle"),
                     "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu.\n\nAre you sure you want to continue?".L10N("Client:DTAConfig:DownloadingText"),
                     yes =>
                     {
                         if (yes)
-                            CloseRequested?.Invoke();
+                            IsVisible = false;
                     });
                 return;
             }
 
-            CloseRequested?.Invoke();
+            IsVisible = false;
         }
 
         [RelayCommand]
@@ -95,39 +194,72 @@ namespace DXMainClientViewModel.Generic
             SelectedPanelIndex = 5;
         }
 
-        /// <summary>
-        /// Opens the options window. Loads panels, refreshes to check for value changes,
-        /// opens components panel, and makes window visible.
-        /// </summary>
+        [RelayCommand]
+        private void ForceUpdate()
+        {
+            IsVisible = false;
+            // MainMenu subscribes to updateService.ForceUpdate via its own command
+        }
+
+        [RelayCommand]
+        private void DismissMessageBox()
+        {
+            IsMessageBoxVisible = false;
+        }
+
+        [RelayCommand]
+        private void YesNoDialogYes()
+        {
+            IsYesNoDialogVisible = false;
+            yesNoDialogCallback?.Invoke(true);
+        }
+
+        [RelayCommand]
+        private void YesNoDialogNo()
+        {
+            IsYesNoDialogVisible = false;
+            yesNoDialogCallback?.Invoke(false);
+        }
+
+        #endregion
+
+        #region Lifecycle (called on concrete class by MainMenu)
+
         public void Open()
         {
-            LoadPanelsRequested?.Invoke();
-            RefreshOptionPanels();
-            OpenComponentsPanelRequested?.Invoke();
+            ShouldLoadPanels = true;
+            ShouldRefreshPanels = true;
+            ShouldOpenComponentsPanel = true;
             IsVisible = true;
         }
 
-        /// <summary>
-        /// Refreshes settings by loading panels, checking for changes,
-        /// saving panels, and persisting settings.
-        /// </summary>
         public void RefreshSettings()
         {
-            LoadPanelsRequested?.Invoke();
-            RefreshOptionPanels();
-            SavePanelsRequested?.Invoke(_ => { });
-            UserINISettings.Instance.SaveSettings();
+            ShouldRefreshSettings = true;
         }
 
         public void SwitchToCustomComponentsPanel()
         {
-            DisablePanelsRequested?.Invoke();
+            ShouldDisableAllPanels = true;
             SelectedPanelIndex = 5;
         }
 
         public void ToggleMainMenuOnlyOptions(bool enable)
         {
-            ToggleMainMenuOnlyOptionsRequested?.Invoke(enable);
+            ToggleMainMenuOnlyOptionsValue = enable;
+            ShouldToggleMainMenuOnlyOptions = true;
+        }
+
+        public void InstallCustomComponent(int id)
+        {
+            ComponentToInstall = id;
+            ShouldInstallComponent = true;
+        }
+
+        public void PostInit()
+        {
+            if (ClientConfiguration.Instance.ClientGameType == ClientCore.Enums.ClientType.TS)
+                ShouldPostInitDisplayOptions = true;
         }
 
         public void OnClosed()
@@ -135,34 +267,17 @@ namespace DXMainClientViewModel.Generic
             IsVisible = false;
         }
 
-        /// <summary>
-        /// Installs a custom component by ID.
-        /// </summary>
-        public void InstallCustomComponent(int id)
-        {
-            InstallComponentRequested?.Invoke(id);
-        }
+        #endregion
 
-        /// <summary>
-        /// Post-initialization for display options panel (TS client only).
-        /// </summary>
-        public void PostInit()
-        {
-            if (ClientConfiguration.Instance.ClientGameType == ClientCore.Enums.ClientType.TS)
-                PostInitRequested?.Invoke();
-        }
+        #region Private Methods
 
         private void SaveSettings()
         {
-            if (RefreshOptionPanels())
-                return;
+            ShouldRefreshPanels = true;
+            // View sets PanelsChangedValues if panels changed
 
-            bool restartRequired = false;
-
-            SavePanelsRequested?.Invoke(restart =>
-            {
-                restartRequired = restartRequired || restart;
-            });
+            ShouldSavePanels = true;
+            // View saves panels, sets RestartRequired if needed
 
             try
             {
@@ -171,62 +286,29 @@ namespace DXMainClientViewModel.Generic
             catch (Exception ex)
             {
                 Logger.Log("Saving settings failed! Error message: " + ex.ToString());
-                MessageBoxRequested?.Invoke(
+                ShowMessageBox(
                     "Saving Settings Failed".L10N("Client:DTAConfig:SaveSettingFailTitle"),
                     "Saving settings failed! Error message:".L10N("Client:DTAConfig:SaveSettingFailText") + " " + ex.Message);
             }
 
             IsVisible = false;
-
-            if (restartRequired)
-            {
-                YesNoDialogRequested?.Invoke(
-                    "Restart Required".L10N("Client:DTAConfig:RestartClientTitle"),
-                    ("The client needs to be restarted for some of the changes to take effect.\n\n" +
-                    "Do you want to restart now?").L10N("Client:DTAConfig:RestartClientText"),
-                    yes =>
-                    {
-                        if (yes)
-                            RestartRequested?.Invoke();
-                    });
-            }
         }
 
-        /// <summary>
-        /// Refreshes the option panels to account for possible
-        /// changes that could affect their functionality.
-        /// Shows the popup to inform the user if needed.
-        /// </summary>
-        /// <returns>A bool that determines whether the
-        /// settings values were changed.</returns>
-        private bool RefreshOptionPanels()
+        private void ShowMessageBox(string title, string message)
         {
-            bool optionValuesChanged = false;
-
-            RefreshPanelsRequested?.Invoke(changed =>
-            {
-                optionValuesChanged = optionValuesChanged || changed;
-            });
-
-            if (optionValuesChanged)
-            {
-                MessageBoxRequested?.Invoke(
-                    "Setting Value(s) Changed".L10N("Client:DTAConfig:SettingChangedTitle"),
-                    ("One or more setting values are\n" +
-                    "no longer available and were changed.\n\n" +
-                    "You may want to verify the new setting\n" +
-                    "values in client's options window.").L10N("Client:DTAConfig:SettingChangedText"));
-
-                return true;
-            }
-
-            return false;
+            MessageBoxTitle = title;
+            MessageBoxMessage = message;
+            IsMessageBoxVisible = true;
         }
 
-        [RelayCommand]
-        private void ForceUpdate()
+        private void ShowYesNoDialog(string title, string message, Action<bool> callback)
         {
-            ForceUpdateRequested?.Invoke();
+            yesNoDialogCallback = callback;
+            YesNoDialogTitle = title;
+            YesNoDialogMessage = message;
+            IsYesNoDialogVisible = true;
         }
+
+        #endregion
     }
 }

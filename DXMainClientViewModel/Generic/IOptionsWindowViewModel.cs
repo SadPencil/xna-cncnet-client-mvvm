@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
@@ -9,37 +8,42 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
 {
     int SelectedPanelIndex { get; set; }
     bool IsComponentsPanelVisible { get; }
-    bool IsComponentDownloadInProgress { get; }
+    bool IsComponentDownloadInProgress { get; set; }
     bool IsVisible { get; set; }
+
+    // Panel orchestration signals (View observes and acts)
+    bool ShouldLoadPanels { get; set; }
+    bool ShouldRefreshPanels { get; set; }
+    bool ShouldSavePanels { get; set; }
+    bool ShouldDisableAllPanels { get; set; }
+    bool ShouldToggleMainMenuOnlyOptions { get; set; }
+    bool ToggleMainMenuOnlyOptionsValue { get; }
+    bool ShouldOpenComponentsPanel { get; set; }
+    bool ShouldInstallComponent { get; set; }
+    int ComponentToInstall { get; }
+    bool ShouldPostInitDisplayOptions { get; set; }
+    bool ShouldRefreshSettings { get; set; }
+
+    // Panel feedback (View sets after operation)
+    bool PanelsChangedValues { get; set; }
+    bool RestartRequired { get; set; }
+
+    // Dialog state
+    bool IsMessageBoxVisible { get; }
+    string MessageBoxTitle { get; }
+    string MessageBoxMessage { get; }
+    bool IsYesNoDialogVisible { get; }
+    string YesNoDialogTitle { get; }
+    string YesNoDialogMessage { get; }
+
+    // Navigation signals
+    bool ShouldRestart { get; set; }
 
     IRelayCommand SaveCommand { get; }
     IRelayCommand CancelCommand { get; }
     IRelayCommand OpenComponentsPanelCommand { get; }
     IRelayCommand ForceUpdateCommand { get; }
-
-    // Events for View-specific panel operations
-    event Action? LoadPanelsRequested;
-    event Action<Action<bool>>? RefreshPanelsRequested;
-    event Action<Action<bool>>? SavePanelsRequested;
-    event Action<bool>? ToggleMainMenuOnlyOptionsRequested;
-    event Action? DisablePanelsRequested;
-    event Action? OpenComponentsPanelRequested;
-    event Action<int>? InstallComponentRequested;
-    event Action? PostInitRequested;
-
-    // Events for dialog/close operations
-    event Action? ForceUpdateRequested;
-    event Action<string, string>? MessageBoxRequested;
-    event Action<string, string, Action<bool>>? YesNoDialogRequested;
-    event Action? RestartRequested;
-    event Action? CloseRequested;
-
-    void Initialize();
-    void Open();
-    void RefreshSettings();
-    void SwitchToCustomComponentsPanel();
-    void ToggleMainMenuOnlyOptions(bool enable);
-    void OnClosed();
-    void InstallCustomComponent(int id);
-    void PostInit();
+    IRelayCommand DismissMessageBoxCommand { get; }
+    IRelayCommand YesNoDialogYesCommand { get; }
+    IRelayCommand YesNoDialogNoCommand { get; }
 }
