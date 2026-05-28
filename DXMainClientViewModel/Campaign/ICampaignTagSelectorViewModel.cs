@@ -10,6 +10,7 @@ public interface ICampaignTagSelectorViewModel : INotifyPropertyChanged
     IReadOnlyList<string> CampaignTags { get; }
     int SelectedTagIndex { get; set; }
     string? SelectedTagName { get; }
+    bool IsVisible { get; set; }
 
     IRelayCommand SelectTagCommand { get; }
     IRelayCommand ShowAllCampaignsCommand { get; }

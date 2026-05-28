@@ -1,3 +1,4 @@
+// checked
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -84,8 +85,8 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     }
 
     /// <summary>
-    /// Sets the available campaign tags. Called by the parent ViewModel or View
-    /// after discovering tag names from INI-defined UI buttons (ButtonTag_*).
+    /// Sets the available campaign tags. Called by the parent ViewModel
+    /// after discovering tag names from INI configuration.
     /// </summary>
     public void SetTags(IEnumerable<string> tagNames)
     {
