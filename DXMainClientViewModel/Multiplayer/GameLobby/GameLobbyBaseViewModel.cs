@@ -50,7 +50,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     private MatchStatistics matchStatistics;
     private bool disableGameOptionUpdateBroadcast;
-    private GameModeMapFilter gameModeMapFilter;
+    protected GameModeMapFilter gameModeMapFilter;
     private bool searchAllGameModes;
 
     // Internal game option lists (IGameSessionSetting)
@@ -1160,7 +1160,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     }
 
     [RelayCommand]
-    private void ToggleFavorite()
+    protected virtual void ToggleFavorite()
     {
         if (GameModeMap != null)
         {
@@ -1884,7 +1884,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     // --- Game process ---
 
-    private void OnGameProcessExited()
+    protected virtual void OnGameProcessExited()
     {
         UIThreadMarshaller.AddCallback(new Action(() =>
         {
@@ -1910,7 +1910,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     protected abstract bool AllowPlayerOptionsChange();
 
-    protected abstract bool UpdateLaunchGameButtonStatus();
+    protected virtual bool UpdateLaunchGameButtonStatus() => true;
 
     protected abstract void AddNotice(string message);
 
@@ -1955,7 +1955,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     }
 
     // --- IsHost (abstract, subclasses set) ---
-    public abstract bool IsHost { get; }
+    public abstract bool IsHost { get; set; }
 
     // --- Helper ---
     protected string AILevelToName(int aiLevel) => ProgramConstants.GetAILevelName(aiLevel);
