@@ -10,7 +10,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Domain.Multiplayer.LAN
 {
-    class HostedLANGame : GenericHostedGame
+    public class HostedLANGame : GenericHostedGame
     {
         public IPEndPoint EndPoint { get; set; }
 
