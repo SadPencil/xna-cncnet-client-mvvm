@@ -7,13 +7,18 @@ namespace DXMainClientViewModel.Campaign;
 
 public interface ICampaignSelectorViewModel : INotifyPropertyChanged
 {
-    IReadOnlyList<string> CampaignNames { get; }
+    IReadOnlyList<CampaignListItem> CampaignListItems { get; }
     int SelectedCampaignIndex { get; set; }
-    string SelectedCampaignName { get; }
-    string SelectedCampaignDescription { get; }
+    string MissionDescriptionText { get; }
+    string? MissionPreviewImagePath { get; }
+    bool IsMissionPreviewPanelVisible { get; }
+    bool IsReturnButtonVisible { get; }
+    bool IsControlsEnabled { get; }
     IReadOnlyList<string> DifficultyNames { get; }
     int SelectedDifficultyIndex { get; set; }
     bool CanLaunchCampaign { get; }
+
+    ICheaterWindowViewModel CheaterWindow { get; }
 
     IRelayCommand LaunchCampaignCommand { get; }
     IRelayCommand ReturnCommand { get; }
