@@ -500,8 +500,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     public void OnGameCreated(bool isLoadedGame, int loadedGameId = -1)
     {
-        // Called by the orchestrator when a game is created
-        // The actual game lobby setup is handled by the orchestrator
+        // Called by MainMenu when a game is created
+        // The actual game lobby setup is handled by MainMenu
     }
 
     public void OnGameLeft(string? message)

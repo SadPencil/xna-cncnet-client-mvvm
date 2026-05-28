@@ -10,7 +10,7 @@ namespace DXMainClientViewModel.Generic
 {
     /// <summary>
     /// ViewModel for the options window.
-    /// Handles settings save/load orchestration, tab selection, and download state.
+    /// Handles settings save/load coordination, tab selection, and download state.
     /// Self-sufficient: uses observable properties for View coordination.
     /// </summary>
     public partial class OptionsWindowViewModel : ObservableObject, IOptionsWindowViewModel
@@ -29,7 +29,7 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isVisible;
 
-        // Panel orchestration signals
+        // Panel coordination signals
         [ObservableProperty]
         private bool shouldLoadPanels;
 

@@ -14,7 +14,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the update window.
     /// Self-sufficient: subscribes to IUpdateService events, applies progress via timer.
     /// Domain events (UpdateCompleted, UpdateCancelled, UpdateFailed) stay on concrete class
-    /// for orchestrator subscription - NOT on interface.
+    /// for MainMenu subscription - NOT on interface.
     /// </summary>
     public partial class UpdateWindowViewModel : ObservableObject, IUpdateWindowViewModel
     {
@@ -102,7 +102,7 @@ namespace DXMainClientViewModel.Generic
         }
 
         /// <summary>
-        /// Configures the window for a normal update. Called by orchestrator.
+        /// Configures the window for a normal update. Called by MainMenu.
         /// </summary>
         public void SetData(string newGameVersion)
         {
@@ -113,7 +113,7 @@ namespace DXMainClientViewModel.Generic
         }
 
         /// <summary>
-        /// Starts a force update. Called by orchestrator.
+        /// Starts a force update. Called by MainMenu.
         /// </summary>
         public void ForceUpdate()
         {

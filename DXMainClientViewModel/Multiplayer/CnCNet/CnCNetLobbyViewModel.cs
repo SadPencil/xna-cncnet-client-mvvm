@@ -339,7 +339,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     #endregion
 
-    #region Public Methods (called by orchestrator, not View)
+    #region Public Methods (called by MainMenu, not View)
 
     partial void OnGameSearchTextChanged(string value)
     {

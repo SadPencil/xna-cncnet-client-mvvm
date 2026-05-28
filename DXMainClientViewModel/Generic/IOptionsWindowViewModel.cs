@@ -11,7 +11,7 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     bool IsComponentDownloadInProgress { get; set; }
     bool IsVisible { get; set; }
 
-    // Panel orchestration signals (View observes and acts)
+    // Panel coordination signals (View observes and acts)
     bool ShouldLoadPanels { get; set; }
     bool ShouldRefreshPanels { get; set; }
     bool ShouldSavePanels { get; set; }
