@@ -1,3 +1,4 @@
+// checked
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +17,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// <summary>
 /// ViewModel for the updater options panel.
 /// Contains all business logic from UpdaterOptionsPanel.cs except XNA UI rendering.
+/// Self-sufficient: handles confirmation via observable properties.
 /// </summary>
 public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOptionsPanelViewModel
 {
@@ -32,15 +34,22 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
     [ObservableProperty]
     private bool _isForceUpdateEnabled = true;
 
+    // --- Confirmation dialog state ---
+
+    [ObservableProperty]
+    private bool _isConfirmationVisible;
+
+    [ObservableProperty]
+    private string _confirmationMessage = string.Empty;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _updateServerNames = new();
     public IReadOnlyList<string> UpdateServerNames => _updateServerNames;
 
-    // --- Events ---
+    // --- Domain events (on concrete class only, not on interface) ---
 
     public event EventHandler? ForceUpdateRequested;
-    public event EventHandler<string>? ConfirmationRequested;
 
     // --- Constructor ---
 
@@ -100,7 +109,22 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
             "client will proceed to checking for updates.\n\n" +
             "Do you really want to force update?").L10N("Client:DTAConfig:ForceUpdateConfirmText") + "\n";
 
-        ConfirmationRequested?.Invoke(this, message);
+        ConfirmationMessage = message;
+        IsConfirmationVisible = true;
+    }
+
+    [RelayCommand]
+    private void ConfirmYes()
+    {
+        IsConfirmationVisible = false;
+        Updater.ClearVersionInfo();
+        ForceUpdateRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    [RelayCommand]
+    private void ConfirmNo()
+    {
+        IsConfirmationVisible = false;
     }
 
     [RelayCommand]
@@ -141,24 +165,5 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
                 id++;
             }
         }
-    }
-
-    // --- Public methods ---
-
-    /// <summary>
-    /// Called when the user confirms the force update action.
-    /// </summary>
-    public void ConfirmForceUpdate()
-    {
-        Updater.ClearVersionInfo();
-        ForceUpdateRequested?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <summary>
-    /// Enables or disables the force update button.
-    /// </summary>
-    public void SetForceUpdateEnabled(bool enabled)
-    {
-        IsForceUpdateEnabled = enabled;
     }
 }
