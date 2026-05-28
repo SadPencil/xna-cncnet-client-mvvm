@@ -16,6 +16,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
+// checked
 /// <summary>
 /// ViewModel for the CnCNet game creation window.
 /// Contains all business logic from GameCreationWindow.cs except XNA UI rendering.
