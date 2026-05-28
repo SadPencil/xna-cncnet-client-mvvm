@@ -15,7 +15,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the statistics window.
     /// Handles statistics reading, filtering, and calculation.
     /// </summary>
-    public partial class StatisticsWindowViewModel : ObservableObject
+    public partial class StatisticsWindowViewModel : ObservableObject, IStatisticsWindowViewModel
     {
         private readonly MapLoader mapLoader;
         private StatisticsManager sm;

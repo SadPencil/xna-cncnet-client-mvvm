@@ -7,7 +7,7 @@ namespace DXMainClientViewModel.Generic;
 
 public interface IGameLoadingWindowViewModel : INotifyPropertyChanged
 {
-    IReadOnlyList<string> SavedGameNames { get; }
+    List<string> SavedGameNames { get; }
     int SelectedSavedGameIndex { get; set; }
     bool CanLoadGame { get; }
     bool CanDeleteSavedGame { get; }
@@ -16,6 +16,4 @@ public interface IGameLoadingWindowViewModel : INotifyPropertyChanged
     IRelayCommand DeleteSavedGameCommand { get; }
     IRelayCommand CancelCommand { get; }
     IRelayCommand RefreshCommand { get; }
-
-    void Initialize();
 }

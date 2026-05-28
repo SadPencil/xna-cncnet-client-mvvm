@@ -14,7 +14,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the loading screen.
     /// Handles updater initialization, map loading, and startup sequence.
     /// </summary>
-    public partial class LoadingScreenViewModel : ObservableObject
+    public partial class LoadingScreenViewModel : ObservableObject, ILoadingScreenViewModel
     {
         private readonly CnCNetManager cncnetManager;
         private readonly MapLoader mapLoader;

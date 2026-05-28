@@ -12,7 +12,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the update window.
     /// Handles update progress tracking, file download status, and force update.
     /// </summary>
-    public partial class UpdateWindowViewModel : ObservableObject
+    public partial class UpdateWindowViewModel : ObservableObject, IUpdateWindowViewModel
     {
         private readonly IUpdateService updateService;
         private readonly IUIThreadMarshaller uiThreadMarshaller;

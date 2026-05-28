@@ -6,9 +6,9 @@ namespace DXMainClientViewModel.Generic;
 
 public interface IManualUpdateQueryWindowViewModel : INotifyPropertyChanged
 {
-    string VersionText { get; }
-    string DownloadUrl { get; }
+    string DescriptionText { get; }
+    bool IsVisible { get; set; }
 
-    IRelayCommand OpenDownloadPageCommand { get; }
+    IRelayCommand ViewDownloadsCommand { get; }
     IRelayCommand CloseCommand { get; }
 }

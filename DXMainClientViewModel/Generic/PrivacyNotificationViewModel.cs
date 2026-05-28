@@ -10,7 +10,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the privacy notification.
     /// Handles privacy policy acceptance.
     /// </summary>
-    public partial class PrivacyNotificationViewModel : ObservableObject
+    public partial class PrivacyNotificationViewModel : ObservableObject, IPrivacyNotificationViewModel
     {
         [ObservableProperty]
         private string titleText = "Privacy Policy";

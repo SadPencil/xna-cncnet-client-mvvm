@@ -10,7 +10,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the manual update query window.
     /// Handles manual download redirect and version info display.
     /// </summary>
-    public partial class ManualUpdateQueryWindowViewModel : ObservableObject
+    public partial class ManualUpdateQueryWindowViewModel : ObservableObject, IManualUpdateQueryWindowViewModel
     {
         private string downloadUrl = string.Empty;
         private string descriptionTemplate = "Version {0} is available.\n\nManual download and installation is\nrequired.".L10N("Client:Main:ManualDownloadAvailable");

@@ -12,7 +12,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the extras menu window.
     /// Handles map editor launching and credits URL opening.
     /// </summary>
-    public partial class ExtrasWindowViewModel : ObservableObject
+    public partial class ExtrasWindowViewModel : ObservableObject, IExtrasWindowViewModel
     {
         [ObservableProperty]
         private bool isStatisticsAvailable;

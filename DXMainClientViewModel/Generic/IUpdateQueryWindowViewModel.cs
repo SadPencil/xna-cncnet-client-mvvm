@@ -6,11 +6,11 @@ namespace DXMainClientViewModel.Generic;
 
 public interface IUpdateQueryWindowViewModel : INotifyPropertyChanged
 {
-    string VersionText { get; }
+    string DescriptionText { get; }
     string UpdateSizeText { get; }
-    string ChangelogUrl { get; }
+    bool IsVisible { get; set; }
 
-    IRelayCommand AcceptUpdateCommand { get; }
-    IRelayCommand DeclineUpdateCommand { get; }
-    IRelayCommand OpenChangelogCommand { get; }
+    IRelayCommand AcceptCommand { get; }
+    IRelayCommand DeclineCommand { get; }
+    IRelayCommand ViewChangelogCommand { get; }
 }

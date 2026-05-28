@@ -15,7 +15,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the game-in-progress window.
     /// Handles debug log management, screenshot processing, and game process lifecycle.
     /// </summary>
-    public partial class GameInProgressWindowViewModel : ObservableObject
+    public partial class GameInProgressWindowViewModel : ObservableObject, IGameInProgressWindowViewModel
     {
         private const double POWER_SAVING_FPS = 5.0;
 

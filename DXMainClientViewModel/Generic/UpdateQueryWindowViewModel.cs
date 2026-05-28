@@ -10,7 +10,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the update query window.
     /// Handles update acceptance/decline and version info display.
     /// </summary>
-    public partial class UpdateQueryWindowViewModel : ObservableObject
+    public partial class UpdateQueryWindowViewModel : ObservableObject, IUpdateQueryWindowViewModel
     {
         [ObservableProperty]
         private string descriptionText = string.Empty;

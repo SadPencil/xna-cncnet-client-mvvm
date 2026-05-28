@@ -15,7 +15,7 @@ namespace DXMainClientViewModel.Generic
     /// <summary>
     /// ViewModel for loading saved singleplayer games.
     /// </summary>
-    public partial class GameLoadingWindowViewModel : ObservableObject
+    public partial class GameLoadingWindowViewModel : ObservableObject, IGameLoadingWindowViewModel
     {
         private const string SAVED_GAMES_DIRECTORY = "Saved Games";
 

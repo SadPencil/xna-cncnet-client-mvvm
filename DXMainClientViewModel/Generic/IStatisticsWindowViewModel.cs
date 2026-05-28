@@ -7,12 +7,12 @@ namespace DXMainClientViewModel.Generic;
 
 public interface IStatisticsWindowViewModel : INotifyPropertyChanged
 {
-    IReadOnlyList<string> GameModeNames { get; }
+    List<string> GameModeNames { get; }
     int SelectedGameModeIndex { get; set; }
-    IReadOnlyList<string> GameClassNames { get; }
+    List<string> GameClassNames { get; }
     int SelectedGameClassIndex { get; set; }
     bool IncludeSpectatedGames { get; set; }
-    IReadOnlyList<string> StatisticEntrySummaries { get; }
+    List<string> StatisticEntrySummaries { get; }
     string SummaryText { get; }
 
     IRelayCommand RefreshCommand { get; }

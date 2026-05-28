@@ -10,7 +10,7 @@ public interface IExtrasWindowViewModel : INotifyPropertyChanged
     bool IsMapEditorAvailable { get; }
 
     IRelayCommand OpenStatisticsCommand { get; }
-    IAsyncRelayCommand OpenMapEditorCommand { get; }
+    IRelayCommand OpenMapEditorCommand { get; }
     IRelayCommand OpenCreditsCommand { get; }
     IRelayCommand CloseCommand { get; }
 }

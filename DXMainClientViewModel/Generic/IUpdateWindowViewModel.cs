@@ -6,12 +6,12 @@ namespace DXMainClientViewModel.Generic;
 
 public interface IUpdateWindowViewModel : INotifyPropertyChanged
 {
-    string NewVersionText { get; }
-    string StatusText { get; }
-    string CurrentFileText { get; }
-    int CurrentFileProgressPercentage { get; }
-    int TotalProgressPercentage { get; }
+    string DescriptionText { get; }
+    string CurrentFileName { get; }
+    int CurrentFilePercentage { get; }
+    int TotalPercentage { get; }
+    string UpdaterStatusText { get; }
+    bool IsVisible { get; set; }
 
-    IAsyncRelayCommand StartUpdateCommand { get; }
-    IRelayCommand CancelUpdateCommand { get; }
+    IRelayCommand CancelCommand { get; }
 }
