@@ -6,6 +6,6 @@ public interface IGameInProgressWindowViewModel : INotifyPropertyChanged
 {
     bool IsGameInProgress { get; }
     bool IsCursorVisible { get; }
-
-    void Initialize(bool savedIsFixedTimeStep);
+    bool ShouldMinimizeWindow { get; set; }
+    bool ShouldMaximizeWindow { get; set; }
 }

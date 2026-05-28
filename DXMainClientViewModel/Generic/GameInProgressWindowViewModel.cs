@@ -1,4 +1,4 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using ClientCore;
 using ClientCore.Enums;
@@ -14,17 +14,14 @@ namespace DXMainClientViewModel.Generic
 {
     /// <summary>
     /// ViewModel for the game-in-progress window.
+    /// Self-sufficient: subscribes to IGameProcessService events.
     /// Handles debug log management, screenshot processing, and game process lifecycle.
     /// </summary>
     public partial class GameInProgressWindowViewModel : ObservableObject, IGameInProgressWindowViewModel
     {
-        private const double POWER_SAVING_FPS = 5.0;
-
         private readonly IGameProcessService gameProcessService;
 
         private bool nativeCursorUsed = false;
-        private bool savedIsFixedTimeStep;
-
         private List<string> debugSnapshotDirectories;
         private DateTime debugLogLastWriteTime;
         private bool deletingLogFilesFailed = false;
@@ -35,29 +32,15 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isCursorVisible = true;
 
-        /// <summary>
-        /// Raised when the View should set the graphics mode (e.g., after game exit with borderless windowed).
-        /// </summary>
-        public event Action SetGraphicsModeRequested;
+        [ObservableProperty]
+        private bool shouldMinimizeWindow;
 
-        /// <summary>
-        /// Raised when the View should minimize the window.
-        /// </summary>
-        public event Action MinimizeWindowRequested;
-
-        /// <summary>
-        /// Raised when the View should maximize the window.
-        /// </summary>
-        public event Action MaximizeWindowRequested;
+        [ObservableProperty]
+        private bool shouldMaximizeWindow;
 
         public GameInProgressWindowViewModel(IGameProcessService gameProcessService)
         {
             this.gameProcessService = gameProcessService;
-        }
-
-        public void Initialize(bool savedIsFixedTimeStep)
-        {
-            this.savedIsFixedTimeStep = savedIsFixedTimeStep;
 
             if (ClientConfiguration.Instance.ClientGameType == ClientType.Ares)
             {
@@ -105,7 +88,7 @@ namespace DXMainClientViewModel.Generic
 
 #if WINFORMS
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
-                MinimizeWindowRequested?.Invoke();
+                ShouldMinimizeWindow = true;
 #endif
         }
 
@@ -117,14 +100,9 @@ namespace DXMainClientViewModel.Generic
 
 #if WINFORMS
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
-                MaximizeWindowRequested?.Invoke();
+                ShouldMaximizeWindow = true;
 #endif
             UserINISettings.Instance.ReloadSettings();
-
-            if (UserINISettings.Instance.BorderlessWindowedClient)
-            {
-                SetGraphicsModeRequested?.Invoke();
-            }
 
             DateTime dtn = DateTime.Now;
 
@@ -170,19 +148,6 @@ namespace DXMainClientViewModel.Generic
             }
         }
 
-        /// <summary>
-        /// Returns the power-saving FPS value.
-        /// </summary>
-        public double GetPowerSavingFps() => POWER_SAVING_FPS;
-
-        /// <summary>
-        /// Returns the saved IsFixedTimeStep value from before the game started.
-        /// </summary>
-        public bool GetSavedIsFixedTimeStep() => savedIsFixedTimeStep;
-
-        /// <summary>
-        /// Attempts to copy a general error log from game directory to another directory.
-        /// </summary>
         private bool CopyErrorLog(string directory, string filename, DateTime? dateTime)
         {
             bool copied = false;
@@ -216,9 +181,6 @@ namespace DXMainClientViewModel.Generic
             return copied;
         }
 
-        /// <summary>
-        /// Attempts to copy sync error logs from game directory to another directory.
-        /// </summary>
         private bool CopySyncErrorLogs(string directory, DateTime? dateTime)
         {
             bool copied = false;
@@ -257,9 +219,6 @@ namespace DXMainClientViewModel.Generic
             return copied;
         }
 
-        /// <summary>
-        /// Returns the first debug snapshot directory found in Ares debug log directory that was created after last game launch and isn't empty.
-        /// </summary>
         private string GetNewestDebugSnapshotDirectory()
         {
             string snapshotDirectory = null;
@@ -286,9 +245,6 @@ namespace DXMainClientViewModel.Generic
             return snapshotDirectory;
         }
 
-        /// <summary>
-        /// Returns list of all debug snapshot directories in Ares debug logs directory.
-        /// </summary>
         private List<string> GetAllDebugSnapshotDirectories()
         {
             var directories = new List<string>();
@@ -302,9 +258,6 @@ namespace DXMainClientViewModel.Generic
             return directories;
         }
 
-        /// <summary>
-        /// Converts BMP screenshots to PNG and copies them from game directory to Screenshots sub-directory.
-        /// </summary>
         private void ProcessScreenshots()
         {
             IEnumerable<FileInfo> files = SafePath.GetDirectory(ProgramConstants.GamePath).EnumerateFiles("SCRN*.bmp");
