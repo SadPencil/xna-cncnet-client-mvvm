@@ -17,6 +17,22 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     bool IsMapEditorButtonVisible { get; }
     bool IsStatisticsButtonVisible { get; }
     bool ShowVersionInfo { get; }
+    bool IsMusicPlaying { get; }
+
+    // Dialog state
+    bool IsMessageBoxVisible { get; }
+    string MessageBoxTitle { get; }
+    string MessageBoxMessage { get; }
+    bool IsYesNoDialogVisible { get; }
+    string YesNoDialogTitle { get; }
+    string YesNoDialogMessage { get; }
+
+    // Navigation signals
+    bool ShouldOpenOptions { get; set; }
+    bool ShouldSwitchToCustomComponents { get; set; }
+    bool IsLanMode { get; set; }
+    bool ShouldSwitchToSecondary { get; set; }
+    bool ShouldSwitchToPrimary { get; set; }
 
     IRelayCommand StartCampaignCommand { get; }
     IRelayCommand ContinueCampaignCommand { get; }
@@ -36,7 +52,7 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     IRelayCommand DeclineUpdateCommand { get; }
     IRelayCommand AcceptUpdateCommand { get; }
     IRelayCommand ForceUpdateCommandCommand { get; }
-
-    void Initialize();
-    void Clean();
+    IRelayCommand DismissMessageBoxCommand { get; }
+    IRelayCommand YesNoDialogYesCommand { get; }
+    IRelayCommand YesNoDialogNoCommand { get; }
 }

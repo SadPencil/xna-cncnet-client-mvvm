@@ -1,4 +1,4 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -21,6 +21,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the main menu.
     /// Handles update lifecycle, music state, CnCNet player count, file checks,
     /// Discord integration, and navigation commands.
+    /// Self-sufficient: subscribes to service events in constructor.
     /// </summary>
     public partial class MainMenuViewModel : ObservableObject, IMainMenuViewModel
     {
@@ -36,7 +37,7 @@ namespace DXMainClientViewModel.Generic
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
         private bool customComponentDialogQueued;
-        private bool firstRunDialogVisible;
+        private Action<bool>? yesNoDialogCallback;
 
         [ObservableProperty]
         private string versionText = string.Empty;
@@ -74,19 +75,43 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isMusicPlaying;
 
+        [ObservableProperty]
+        private bool isMessageBoxVisible;
+
+        [ObservableProperty]
+        private string messageBoxTitle = string.Empty;
+
+        [ObservableProperty]
+        private string messageBoxMessage = string.Empty;
+
+        [ObservableProperty]
+        private bool isYesNoDialogVisible;
+
+        [ObservableProperty]
+        private string yesNoDialogTitle = string.Empty;
+
+        [ObservableProperty]
+        private string yesNoDialogMessage = string.Empty;
+
+        [ObservableProperty]
+        private bool shouldOpenOptions;
+
+        [ObservableProperty]
+        private bool shouldSwitchToCustomComponents;
+
+        [ObservableProperty]
+        private bool isLanMode;
+
+        [ObservableProperty]
+        private bool shouldSwitchToSecondary;
+
+        [ObservableProperty]
+        private bool shouldSwitchToPrimary;
+
+        /// <summary>
+        /// Domain event: fired when client should exit. App shell subscribes.
+        /// </summary>
         public event Action? ExitRequested;
-        public event Action? MusicStopRequested;
-        public event Action? MusicPlayRequested;
-        public event Action? MusicFadeOutRequested;
-        public event Action<string, string>? MessageBoxRequested;
-        public event Action<string, string, Action<bool>>? YesNoDialogRequested;
-        public event Action? OptionsWindowOpenRequested;
-        public event Action? OptionsWindowCustomComponentsRequested;
-        public event Action<bool>? LanModeChanged;
-        public event Action? CnCNetConnectRequested;
-        public event Action? CnCNetDisconnectRequested;
-        public event Action? SwitchToSecondaryRequested;
-        public event Action? SwitchToPrimaryRequested;
 
         public MainMenuViewModel(
             IUpdateService updateService,
@@ -102,10 +127,7 @@ namespace DXMainClientViewModel.Generic
             this.musicPlayer = musicPlayer;
             this.uiThreadMarshaller = uiThreadMarshaller;
             this.connectionManager = connectionManager;
-        }
 
-        public void Initialize()
-        {
             ShowVersionInfo = !ClientConfiguration.Instance.ModMode;
             IsMapEditorButtonVisible = !string.IsNullOrEmpty(ClientConfiguration.Instance.MapEditorExePath);
 
@@ -158,6 +180,31 @@ namespace DXMainClientViewModel.Generic
             Logger.Log("Main menu initialization complete.");
         }
 
+        partial void OnIsLanModeChanged(bool value)
+        {
+            if (value)
+                connectionManager.Disconnect();
+        }
+
+        partial void OnIsMessageBoxVisibleChanged(bool value)
+        {
+            if (!value)
+            {
+                MessageBoxTitle = string.Empty;
+                MessageBoxMessage = string.Empty;
+            }
+        }
+
+        partial void OnIsYesNoDialogVisibleChanged(bool value)
+        {
+            if (!value)
+            {
+                YesNoDialogTitle = string.Empty;
+                YesNoDialogMessage = string.Empty;
+                yesNoDialogCallback = null;
+            }
+        }
+
         #region Commands
 
         [RelayCommand]
@@ -182,31 +229,31 @@ namespace DXMainClientViewModel.Generic
         private void StartSkirmish()
         {
             if (UserINISettings.Instance.StopMusicOnMenu)
-                MusicStopRequested?.Invoke();
+                musicPlayer.Stop();
         }
 
         [RelayCommand]
         private void JoinCnCNet()
         {
-            SwitchToSecondaryRequested?.Invoke();
+            ShouldSwitchToSecondary = true;
         }
 
         [RelayCommand]
         private void HostLANGame()
         {
             if (UserINISettings.Instance.StopMusicOnMenu)
-                MusicStopRequested?.Invoke();
+                musicPlayer.Stop();
 
             if (connectionManager.IsConnected)
-                CnCNetDisconnectRequested?.Invoke();
+                connectionManager.Disconnect();
 
-            LanModeChanged?.Invoke(true);
+            IsLanMode = true;
         }
 
         [RelayCommand]
         private void OpenOptions()
         {
-            OptionsWindowOpenRequested?.Invoke();
+            ShouldOpenOptions = true;
         }
 
         [RelayCommand]
@@ -236,7 +283,10 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void Exit()
         {
-            MusicFadeOutRequested?.Invoke();
+            musicPlayer.StartExitFade(0.025f * (float)UserINISettings.Instance.ClientVolume, () =>
+            {
+                uiThreadMarshaller.AddCallback(new Action(ExitClient));
+            });
         }
 
         [RelayCommand]
@@ -295,6 +345,84 @@ namespace DXMainClientViewModel.Generic
             UpdateStatusText = "Force updating...".L10N("Client:Main:ForceUpdating");
         }
 
+        [RelayCommand]
+        private void DismissMessageBox()
+        {
+            IsMessageBoxVisible = false;
+        }
+
+        [RelayCommand]
+        private void YesNoDialogYes()
+        {
+            IsYesNoDialogVisible = false;
+            yesNoDialogCallback?.Invoke(true);
+        }
+
+        [RelayCommand]
+        private void YesNoDialogNo()
+        {
+            IsYesNoDialogVisible = false;
+            yesNoDialogCallback?.Invoke(false);
+        }
+
+        #endregion
+
+        #region Lifecycle (called by MainMenu on concrete class)
+
+        public void OnSkirmishLobbyExited()
+        {
+            if (UserINISettings.Instance.StopMusicOnMenu)
+                musicPlayer.PlayThemeSong();
+        }
+
+        public void OnLanLobbyExited()
+        {
+            IsLanMode = false;
+
+            if (UserINISettings.Instance.AutomaticCnCNetLogin)
+                connectionManager.Connect();
+
+            if (UserINISettings.Instance.StopMusicOnMenu)
+                musicPlayer.PlayThemeSong();
+        }
+
+        public void OnOptionsWindowClosed()
+        {
+            if (customComponentDialogQueued)
+                OnCustomComponentsOutdated();
+        }
+
+        public void SwitchOn()
+        {
+            if (UserINISettings.Instance.StopMusicOnMenu)
+                musicPlayer.PlayThemeSong();
+
+            if (!ClientConfiguration.Instance.ModMode && UserINISettings.Instance.CheckForUpdates)
+            {
+                if ((DateTime.Now - lastUpdateCheckTime) > TimeSpan.FromSeconds(UPDATE_RE_CHECK_THRESHOLD))
+                    CheckForUpdates();
+            }
+        }
+
+        public void SwitchOff()
+        {
+            if (UserINISettings.Instance.StopMusicOnMenu)
+                musicPlayer.StartFadeOut(1.0f, null);
+        }
+
+        public void Clean()
+        {
+            updateService.FileIdentifiersUpdated -= OnFileIdentifiersUpdated;
+
+            cncnetPlayerCountCancellationSource?.Cancel();
+
+            if (AreButtonsEnabled == false)
+                updateService.StopUpdate();
+
+            if (connectionManager.IsConnected)
+                connectionManager.Disconnect();
+        }
+
         #endregion
 
         #region Event Handlers
@@ -317,7 +445,7 @@ namespace DXMainClientViewModel.Generic
         private void HandleGameProcessExited()
         {
             if (!UserINISettings.Instance.StopMusicOnMenu)
-                MusicPlayRequested?.Invoke();
+                musicPlayer.PlayThemeSong();
         }
 
         private void OnUpdaterRestart(object? sender, EventArgs e)
@@ -354,7 +482,7 @@ namespace DXMainClientViewModel.Generic
             if (IsUpdateNotificationVisible)
                 return;
 
-            if (firstRunDialogVisible)
+            if (IsYesNoDialogVisible)
             {
                 customComponentDialogQueued = true;
                 return;
@@ -362,15 +490,15 @@ namespace DXMainClientViewModel.Generic
 
             customComponentDialogQueued = false;
 
-            YesNoDialogRequested?.Invoke(
+            ShowYesNoDialog(
                 "Custom Component Updates Available".L10N("Client:Main:CustomUpdateAvailableTitle"),
                 "Updates for custom components are available. Do you want to open\nthe Options menu where you can update the custom components?".L10N("Client:Main:CustomUpdateAvailableText"),
                 yes =>
                 {
                     if (yes)
                     {
-                        OptionsWindowOpenRequested?.Invoke();
-                        OptionsWindowCustomComponentsRequested?.Invoke();
+                        ShouldOpenOptions = true;
+                        ShouldSwitchToCustomComponents = true;
                     }
                 });
         }
@@ -402,68 +530,10 @@ namespace DXMainClientViewModel.Generic
             IsUpdateStatusUnderlined = true;
             IsUpdateStatusEnabled = true;
 
-            MessageBoxRequested?.Invoke(
+            ShowMessageBox(
                 "Update failed".L10N("Client:Main:UpdateFailedTitle"),
                 string.Format(("An error occured while updating. Returned error was: {0}\n\nIf you are connected to the Internet and your firewall isn't blocking\n{1}, and the issue is reproducible, contact us at\n{2} for support.").L10N("Client:Main:UpdateFailedText"),
                     e.Reason, Path.GetFileName(ProgramConstants.StartupExecutable), MainClientConstants.SUPPORT_URL_SHORT));
-        }
-
-        #endregion
-
-        #region Lifecycle Methods
-
-        public void OnSkirmishLobbyExited()
-        {
-            if (UserINISettings.Instance.StopMusicOnMenu)
-                MusicPlayRequested?.Invoke();
-        }
-
-        public void OnLanLobbyExited()
-        {
-            LanModeChanged?.Invoke(false);
-
-            if (UserINISettings.Instance.AutomaticCnCNetLogin)
-                CnCNetConnectRequested?.Invoke();
-
-            if (UserINISettings.Instance.StopMusicOnMenu)
-                MusicPlayRequested?.Invoke();
-        }
-
-        public void OnOptionsWindowClosed()
-        {
-            if (customComponentDialogQueued)
-                OnCustomComponentsOutdated();
-        }
-
-        public void SwitchOn()
-        {
-            if (UserINISettings.Instance.StopMusicOnMenu)
-                MusicPlayRequested?.Invoke();
-
-            if (!ClientConfiguration.Instance.ModMode && UserINISettings.Instance.CheckForUpdates)
-            {
-                if ((DateTime.Now - lastUpdateCheckTime) > TimeSpan.FromSeconds(UPDATE_RE_CHECK_THRESHOLD))
-                    CheckForUpdates();
-            }
-        }
-
-        public void SwitchOff()
-        {
-            if (UserINISettings.Instance.StopMusicOnMenu)
-                MusicStopRequested?.Invoke();
-        }
-
-        public void Clean()
-        {
-            updateService.FileIdentifiersUpdated -= OnFileIdentifiersUpdated;
-
-            cncnetPlayerCountCancellationSource?.Cancel();
-
-            if (AreButtonsEnabled == false)
-                updateService.StopUpdate();
-
-            if (connectionManager.IsConnected)
-                connectionManager.Disconnect();
         }
 
         #endregion
@@ -528,7 +598,7 @@ namespace DXMainClientViewModel.Generic
                     Environment.NewLine + Environment.NewLine +
                     "You won't be able to play without those files.".L10N("Client:Main:MissingFilesText2");
 
-                MessageBoxRequested?.Invoke("Missing Files".L10N("Client:Main:MissingFilesTitle"), description);
+                ShowMessageBox("Missing Files".L10N("Client:Main:MissingFilesTitle"), description);
             }
         }
 
@@ -557,7 +627,7 @@ namespace DXMainClientViewModel.Generic
                     "The mod won't work correctly without those files removed.".L10N("Client:Main:InterferingFilesDetectedTextNonTS2");
                 }
 
-                MessageBoxRequested?.Invoke("Interfering Files Detected".L10N("Client:Main:InterferingFilesDetectedTitle"), description);
+                ShowMessageBox("Interfering Files Detected".L10N("Client:Main:InterferingFilesDetectedTitle"), description);
             }
         }
 
@@ -568,8 +638,7 @@ namespace DXMainClientViewModel.Generic
                 UserINISettings.Instance.IsFirstRun.Value = false;
                 UserINISettings.Instance.SaveSettings();
 
-                firstRunDialogVisible = true;
-                YesNoDialogRequested?.Invoke(
+                ShowYesNoDialog(
                     "Initial Installation".L10N("Client:Main:InitialInstallationTitle"),
                     string.Format(("You have just installed {0}.\n" +
                         "It's highly recommended that you configure your settings before playing.\n" +
@@ -577,9 +646,8 @@ namespace DXMainClientViewModel.Generic
                         ClientConfiguration.Instance.LocalGame),
                     yes =>
                     {
-                        firstRunDialogVisible = false;
                         if (yes)
-                            OptionsWindowOpenRequested?.Invoke();
+                            ShouldOpenOptions = true;
                         else if (customComponentDialogQueued)
                             OnCustomComponentsOutdated();
                     });
@@ -601,10 +669,29 @@ namespace DXMainClientViewModel.Generic
             catch (Exception ex)
             {
                 Logger.Log("Failed to apply translation game files. " + ex.ToString());
-                MessageBoxRequested?.Invoke(
+                ShowMessageBox(
                     "Applying Translation Files Failed".L10N("Client:Main:ApplyTranslationFilesFailTitle"),
                     "Applying translation files failed! Error message:".L10N("Client:Main:ApplyTranslationFilesFailText") + " " + ex.Message);
             }
+        }
+
+        #endregion
+
+        #region Dialog Helpers
+
+        private void ShowMessageBox(string title, string message)
+        {
+            MessageBoxTitle = title;
+            MessageBoxMessage = message;
+            IsMessageBoxVisible = true;
+        }
+
+        private void ShowYesNoDialog(string title, string message, Action<bool> callback)
+        {
+            yesNoDialogCallback = callback;
+            YesNoDialogTitle = title;
+            YesNoDialogMessage = message;
+            IsYesNoDialogVisible = true;
         }
 
         #endregion
