@@ -109,6 +109,12 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     public event EventHandler GameLeft;
     public event EventHandler<string> TunnelSelectionRequested;
     public event EventHandler<string> GameLobbySettingsRequested;
+    public event EventHandler JoinSoundRequested;
+    public event EventHandler LeaveSoundRequested;
+    public event EventHandler ReturnSoundRequested;
+    public event EventHandler<string> MapDownloadPromptRequested;
+    public event EventHandler MapDownloadStarted;
+    public event EventHandler<string> MapDownloadFailed;
 
     // --- Constructor ---
 
@@ -674,6 +680,8 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             AddNotice("Player limit reached. The game room has been locked.".L10N("Client:Main:GameRoomNumberLimitReached"));
             PerformLockGame();
         }
+
+        JoinSoundRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void RemovePlayer(string playerName)
@@ -684,6 +692,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         {
             Players.Remove(pInfo);
             CopyPlayerDataToUI();
+            LeaveSoundRequested?.Invoke(this, EventArgs.Empty);
 
             if (IsHost)
                 BroadcastPlayerOptions();
@@ -873,6 +882,11 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         }
 
         channel.SendCTCPMessage(sb.ToString(), QueuedMessageType.GAME_PLAYERS_MESSAGE, 11);
+    }
+
+    protected override void OnPlayerExtraOptionsChanged()
+    {
+        BroadcastPlayerExtraOptions();
     }
 
     protected override void BroadcastPlayerExtraOptions()
@@ -1279,7 +1293,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         if (UserINISettings.Instance.EnableMapSharing)
         {
             AddNotice("The game host has selected a map that doesn't exist on your installation.".L10N("Client:Main:MapNotExist"));
-            // View will handle showing the download confirmation
+            MapDownloadPromptRequested?.Invoke(this, mapSHA1);
         }
         else
         {
@@ -1302,6 +1316,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     {
         Logger.Log("Map sharing confirmed.");
         AddNotice("Attempting to download map.".L10N("Client:Main:DownloadingMap"));
+        MapDownloadStarted?.Invoke(this, EventArgs.Empty);
         MapSharer.DownloadMap(lastMapSHA1, localGame, lastMapName);
     }
 
@@ -1573,6 +1588,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             pInfo.IsInGame = false;
 
         CopyPlayerDataToUI();
+        ReturnSoundRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private void HandleTunnelPing(string sender, int ping)
@@ -1659,7 +1675,11 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private void GameBroadcastTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
         if (IsHost && !closed)
+        {
             BroadcastGame();
+            // Reset to normal interval after initial delay or acceleration
+            gameBroadcastTimer.Interval = GAME_BROADCAST_INTERVAL * 1000;
+        }
     }
 
     private void AccelerateGameBroadcasting()
@@ -1754,6 +1774,27 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         return canLaunch;
     }
 
+    protected override void CopyPlayerDataToUI()
+    {
+        base.CopyPlayerDataToUI();
+
+        // Mark slots beyond player limit as unavailable
+        var statuses = PlayerStatuses.ToArray();
+        var tooltips = PlayerStatusTooltips.ToArray();
+
+        for (int i = PlayerLimit; i < MAX_PLAYER_COUNT; i++)
+        {
+            if (statuses[i] == PlayerSlotState.Empty)
+            {
+                statuses[i] = PlayerSlotState.Unavailable;
+                tooltips[i] = "This slot is unavailable due to the player limit.".L10N("Client:Main:SlotUnavailable");
+            }
+        }
+
+        PlayerStatuses = statuses;
+        PlayerStatusTooltips = tooltips;
+    }
+
     // --- Map sharing event handlers ---
 
     private void MapSharer_MapDownloadFailed(object sender, SHA1EventArgs e)
@@ -1763,6 +1804,8 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void MapSharer_HandleMapDownloadFailed(SHA1EventArgs e)
     {
+        MapDownloadFailed?.Invoke(this, e.SHA1);
+
         if (hostUploadedMaps.Contains(e.SHA1))
         {
             AddNotice("Download of the custom map failed. The host needs to change the map or you will be unable to participate in this match.".L10N("Client:Main:DownloadCustomMapFailed"));
@@ -2123,9 +2166,18 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     protected override void UpdateDiscordPresence(bool resetTimer = false)
     {
+        string side = "";
+        PlayerInfo localPlayer = Players.Find(p => p.Name == ProgramConstants.PLAYERNAME);
+        if (localPlayer != null && Map != null && GameMode != null)
+        {
+            string[] sides = ClientConfiguration.Instance.Sides.Split(',');
+            if (localPlayer.SideId > 0 && localPlayer.SideId <= sides.Length)
+                side = sides[localPlayer.SideId - 1];
+        }
+
         DiscordHandler?.UpdatePresence(
             Map?.UntranslatedName, GameMode?.UntranslatedUIName, "Multiplayer",
-            ProgramConstants.IsInGame ? "In Game" : "In Lobby", Players.Count, PlayerLimit, "",
+            ProgramConstants.IsInGame ? "In Game" : "In Lobby", Players.Count, PlayerLimit, side,
             channel?.UIName, IsHost, IsCustomPassword, Locked, resetTimer);
     }
 

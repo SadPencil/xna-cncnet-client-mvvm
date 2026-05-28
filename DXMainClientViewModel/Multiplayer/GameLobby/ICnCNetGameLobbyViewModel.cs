@@ -42,4 +42,10 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     event EventHandler GameLeft;
     event EventHandler<string> TunnelSelectionRequested;
     event EventHandler<string> GameLobbySettingsRequested;
+    event EventHandler JoinSoundRequested;
+    event EventHandler LeaveSoundRequested;
+    event EventHandler ReturnSoundRequested;
+    event EventHandler<string> MapDownloadPromptRequested;
+    event EventHandler MapDownloadStarted;
+    event EventHandler<string> MapDownloadFailed;
 }

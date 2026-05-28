@@ -138,8 +138,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         {
             playerExtraOptions = value;
             CopyPlayerDataToUI();
+            OnPlayerExtraOptionsChanged();
         }
     }
+
+    protected virtual void OnPlayerExtraOptionsChanged() { }
 
     // --- Currently selected GameModeMap (internal, not directly exposed) ---
     private GameModeMap _gameModeMap;
