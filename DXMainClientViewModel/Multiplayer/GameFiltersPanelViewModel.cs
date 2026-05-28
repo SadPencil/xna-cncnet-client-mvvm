@@ -41,7 +41,6 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     // --- Events ---
 
     public event EventHandler? FiltersApplied;
-    public event EventHandler? Closed;
 
     // --- Constructor ---
 
@@ -71,7 +70,6 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     private void Close()
     {
         IsPanelVisible = false;
-        Closed?.Invoke(this, EventArgs.Empty);
     }
 
     // --- Public methods ---
@@ -104,3 +102,5 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
         iniSettings.SaveSettings();
     }
 }
+
+// checked
