@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -14,9 +15,6 @@ namespace DXMainClientViewModel.Generic
     /// </summary>
     public partial class ExtrasWindowViewModel : ObservableObject, IExtrasWindowViewModel
     {
-        [ObservableProperty]
-        private bool isStatisticsAvailable;
-
         [ObservableProperty]
         private bool isMapEditorAvailable;
 
