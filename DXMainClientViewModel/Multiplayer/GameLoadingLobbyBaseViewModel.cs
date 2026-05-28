@@ -128,7 +128,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     }
 
     [RelayCommand]
-    private void LeaveGame()
+    protected virtual void LeaveGame()
     {
         GameLeft?.Invoke(this, EventArgs.Empty);
         ResetDiscordPresence();
@@ -304,6 +304,10 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     // --- Helpers ---
 
     protected void ResetDiscordPresence() => DiscordHandler.UpdatePresence();
+
+    protected void RaiseJoinSoundRequested() => JoinSoundRequested?.Invoke(this, EventArgs.Empty);
+    protected void RaiseLeaveSoundRequested() => LeaveSoundRequested?.Invoke(this, EventArgs.Empty);
+    protected void RaiseMessageSoundRequested() => MessageSoundRequested?.Invoke(this, EventArgs.Empty);
 
     protected void AddChatMessage(string message)
     {
