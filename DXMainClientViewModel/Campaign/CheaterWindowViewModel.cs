@@ -1,3 +1,4 @@
+// checked
 #nullable enable
 using System;
 
@@ -6,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel.Campaign;
 
-public partial class CheaterWindowViewModel : ObservableObject, ICheaterWindowViewModel // checked
+public partial class CheaterWindowViewModel : ObservableObject, ICheaterWindowViewModel
 {
     public CheaterWindowViewModel(Action onConfirm, Action onCancel)
     {
