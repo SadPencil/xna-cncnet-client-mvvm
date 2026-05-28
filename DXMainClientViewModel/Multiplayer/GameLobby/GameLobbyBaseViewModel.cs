@@ -15,6 +15,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
+// checked
 /// <summary>
 /// Abstract base ViewModel for all game lobbies (Skirmish, LAN, CnCNet).
 /// Contains the common business logic for parsing game options and handling player info.
@@ -495,6 +496,25 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         ListMaps();
     }
 
+    /// <summary>
+    /// Called by the View when the hovered index in the map list changes.
+    /// Updates the tooltip text for the map list.
+    /// </summary>
+    public void SetHoveredMapIndex(int hoveredIndex)
+    {
+        if (hoveredIndex < 0 || hoveredIndex >= MapListItems.Count)
+        {
+            MapListTooltipText = string.Empty;
+            return;
+        }
+
+        var gmm = MapListItems[hoveredIndex].Source;
+        if (gmm.Map.UntranslatedName != gmm.Map.Name)
+            MapListTooltipText = "Original name:".L10N("Client:Main:OriginalMapName") + " " + gmm.Map.UntranslatedName;
+        else
+            MapListTooltipText = string.Empty;
+    }
+
     partial void OnSelectedGameModeFilterIndexChanged(int value)
     {
         if (value < 0 || value >= GameModeFilterOptions.Count)
@@ -624,6 +644,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             cb.IsEnabled = true;
         foreach (var dd in DropDowns)
             dd.IsEnabled = true;
+
+        // Enable all sides and colors by default
+        foreach (var slot in PlayerSlots)
+        {
+            slot.SideSelectable = Enumerable.Repeat(true, slot.SideSelectable.Count()).ToArray();
+            slot.ColorSelectable = Enumerable.Repeat(true, slot.ColorSelectable.Count()).ToArray();
+        }
 
         // Clone lists to track which options were NOT forced
         var checkBoxListClone = new List<GameOptionCheckBox>(CheckBoxes);

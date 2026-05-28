@@ -43,6 +43,9 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     bool IsHost { get; }
     bool CanLaunchGame { get; }
 
+    // --- Map list hover ---
+    void SetHoveredMapIndex(int hoveredIndex);
+
     // --- Commands ---
     IRelayCommand LeaveGameCommand { get; }
     IRelayCommand LaunchGameCommand { get; }
