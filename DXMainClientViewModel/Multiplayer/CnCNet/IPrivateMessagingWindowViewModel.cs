@@ -18,4 +18,7 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     IRelayCommand RefreshConversationsCommand { get; }
 
     void Initialize();
+    void InitPM(string userName);
+    void SetInviteChannelInfo(string channelName, string gameRoomName, string password);
+    void ClearInviteChannelInfo();
 }
