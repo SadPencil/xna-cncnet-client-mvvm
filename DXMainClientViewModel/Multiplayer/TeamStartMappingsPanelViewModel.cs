@@ -14,7 +14,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for the team start mappings panel.
 /// Contains all business logic from TeamStartMappingsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamStartMappingsPanelViewModel
+public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamStartMappingsPanelViewModel // checked
 {
     private const int MaxStartCount = 8;
 
