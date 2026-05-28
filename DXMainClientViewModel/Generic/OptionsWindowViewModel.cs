@@ -1,4 +1,3 @@
-// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -82,10 +81,29 @@ namespace DXMainClientViewModel.Generic
             SelectedPanelIndex = 5;
         }
 
-        [RelayCommand]
-        private void ForceUpdate()
+        public void Open()
         {
-            ForceUpdateRequested?.Invoke();
+            // View handles panel loading
+        }
+
+        public void RefreshSettings()
+        {
+            // View handles panel refresh
+        }
+
+        public void SwitchToCustomComponentsPanel()
+        {
+            SelectedPanelIndex = 5;
+        }
+
+        public void ToggleMainMenuOnlyOptions(bool enable)
+        {
+            // View handles panel toggling
+        }
+
+        public void OnClosed()
+        {
+            // View handles post-close logic
         }
 
         private void SaveSettings()
@@ -103,6 +121,14 @@ namespace DXMainClientViewModel.Generic
             }
 
             CloseRequested?.Invoke();
+        }
+
+        /// <summary>
+        /// Called when the force update button is clicked.
+        /// </summary>
+        public void OnForceUpdate()
+        {
+            ForceUpdateRequested?.Invoke();
         }
     }
 }
