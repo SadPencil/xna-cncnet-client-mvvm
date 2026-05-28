@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -13,11 +14,18 @@ public interface IStatisticsWindowViewModel : INotifyPropertyChanged
     int SelectedGameClassIndex { get; set; }
     bool IncludeSpectatedGames { get; set; }
     List<string> StatisticEntrySummaries { get; }
-    string SummaryText { get; }
+    bool IsVisible { get; set; }
+    List<GamePlayerStatistics> SelectedGamePlayers { get; }
+    TotalStatistics TotalStatistics { get; }
 
     IRelayCommand RefreshCommand { get; }
     IRelayCommand ClearStatisticsCommand { get; }
     IRelayCommand ReturnCommand { get; }
+    IRelayCommand<int> SelectGameCommand { get; }
+    IRelayCommand ConfirmClearCommand { get; }
+
+    event Action CloseRequested;
+    event Action ClearConfirmationRequested;
 
     void Initialize();
 }

@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -44,9 +45,6 @@ namespace DXMainClientViewModel.Generic
 
         [ObservableProperty]
         private List<string> statisticEntrySummaries = new();
-
-        [ObservableProperty]
-        private string summaryText = string.Empty;
 
         [ObservableProperty]
         private bool isVisible;
@@ -96,6 +94,12 @@ namespace DXMainClientViewModel.Generic
                 ListGames();
         }
 
+        partial void OnIsVisibleChanged(bool value)
+        {
+            if (value && initialized)
+                ListGames();
+        }
+
         public void Initialize()
         {
             sm = StatisticsManager.Instance;
@@ -118,12 +122,6 @@ namespace DXMainClientViewModel.Generic
             ListGames();
         }
 
-        public void OnVisibleChanged()
-        {
-            if (IsVisible)
-                ListGames();
-        }
-
         [RelayCommand]
         private void Refresh()
         {
@@ -136,10 +134,8 @@ namespace DXMainClientViewModel.Generic
             ClearConfirmationRequested?.Invoke();
         }
 
-        /// <summary>
-        /// Called when the user confirms clearing statistics.
-        /// </summary>
-        public void ConfirmClearStatistics()
+        [RelayCommand]
+        private void ConfirmClear()
         {
             StatisticsManager.Instance.ClearDatabase();
             ReadStatistics();
@@ -157,7 +153,8 @@ namespace DXMainClientViewModel.Generic
         /// <summary>
         /// Selects a game from the list and loads its player statistics.
         /// </summary>
-        public void SelectGame(int listIndex)
+        [RelayCommand]
+        private void SelectGame(int listIndex)
         {
             SelectedGamePlayers.Clear();
 
@@ -208,8 +205,6 @@ namespace DXMainClientViewModel.Generic
 
             var gameModes = new List<string>();
 
-            GameModeNames = new List<string> { "All" };
-
             for (int i = 0; i < gameCount; i++)
             {
                 MatchStatistics ms = sm.GetMatchByIndex(i);
@@ -218,6 +213,8 @@ namespace DXMainClientViewModel.Generic
             }
 
             gameModes.Sort();
+
+            gameModeOriginalNames = gameModes;
 
             var names = new List<string> { "All" };
             foreach (string gm in gameModes)
@@ -420,10 +417,12 @@ namespace DXMainClientViewModel.Generic
 
             if (SelectedGameModeIndex != 0)
             {
-                // "All" doesn't have a tag but that doesn't matter since 0 is not checked
-                // We need to get the original game mode name from the list
-                // For now, we'll check if the game mode matches
-                // The GameModeNames list has localized names, so we need to match differently
+                // Get the original game mode name from the list
+                // GameModeNames[0] is "All", rest are localized names
+                // We need to match against the original game mode name
+                string selectedGameMode = GetOriginalGameModeName(SelectedGameModeIndex);
+                if (selectedGameMode != null && ms.GameMode != selectedGameMode)
+                    return;
             }
 
             PlayerStatistics ps = ms.Players.Find(p => p.IsLocalPlayer);
@@ -436,6 +435,16 @@ namespace DXMainClientViewModel.Generic
 
             listedGameIndexes.Add(gameIndex);
         }
+
+        private string GetOriginalGameModeName(int index)
+        {
+            if (index <= 0 || index > gameModeOriginalNames.Count)
+                return null;
+
+            return gameModeOriginalNames[index - 1];
+        }
+
+        private List<string> gameModeOriginalNames = new();
 
         private void SetTotalStatistics()
         {
