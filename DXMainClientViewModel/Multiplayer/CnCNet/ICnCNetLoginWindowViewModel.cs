@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
@@ -16,7 +15,4 @@ public interface ICnCNetLoginWindowViewModel : INotifyPropertyChanged
 
     IAsyncRelayCommand ConnectCommand { get; }
     IRelayCommand CancelCommand { get; }
-
-    event EventHandler? ConnectRequested;
-    event EventHandler<string>? ValidationError;
 }

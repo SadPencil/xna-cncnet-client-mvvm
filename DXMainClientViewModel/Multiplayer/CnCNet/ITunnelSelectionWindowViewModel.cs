@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
-
-using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
@@ -19,6 +16,4 @@ public interface ITunnelSelectionWindowViewModel : INotifyPropertyChanged
 
     IRelayCommand ConfirmSelectionCommand { get; }
     IRelayCommand CancelCommand { get; }
-
-    event EventHandler<TunnelEventArgs>? TunnelSelected;
 }

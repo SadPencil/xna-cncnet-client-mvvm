@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -18,7 +17,4 @@ public interface IGameLobbySettingsWindowViewModel : INotifyPropertyChanged
 
     IRelayCommand SaveSettingsCommand { get; }
     IRelayCommand CancelCommand { get; }
-
-    event EventHandler<GameLobbySettingsEventArgs>? SettingsChanged;
-    event EventHandler<string>? ValidationError;
 }
