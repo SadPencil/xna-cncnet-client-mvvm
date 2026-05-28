@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -13,8 +14,9 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     IReadOnlyList<string> ColorOptions { get; }
     int SelectedGameIndex { get; set; }
     int SelectedColorIndex { get; set; }
-    string PlayerName { get; set; }
+    string PlayerName { get; }
     string DraftMessage { get; set; }
+    bool IsEnabled { get; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }
@@ -22,5 +24,5 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     IRelayCommand SendChatMessageCommand { get; }
     IRelayCommand RefreshGamesCommand { get; }
 
-    void Initialize();
+    event EventHandler Exited;
 }
