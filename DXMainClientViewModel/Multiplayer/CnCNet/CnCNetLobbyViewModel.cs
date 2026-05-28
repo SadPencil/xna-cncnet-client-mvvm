@@ -109,17 +109,27 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     private bool isVisible;
 
-    // Events for View to handle UI-specific concerns
-    public event Action? MessageBoxRequested;
-    public event Action<string, string, Action<bool>>? YesNoDialogRequested;
-    public event Action? SwitchToPrimaryRequested;
-    public event Action? SwitchToSecondaryRequested;
-    public event Action? UpdateCheckRequested;
-    public event Action? LoginWindowRequested;
-    public event Action? GameCreationPanelShowRequested;
-    public event Action? GameCreationPanelHideRequested;
-    public event Action<string, string, string>? GameInviteReceived;
-    public event Action<string>? SoundPlayRequested;
+    // Observable state for View to react to
+    [ObservableProperty]
+    private string? pendingMessage;
+
+    [ObservableProperty]
+    private PendingYesNoDialogData? pendingYesNoDialog;
+
+    [ObservableProperty]
+    private bool isUpdateCheckNeeded;
+
+    [ObservableProperty]
+    private bool isLoginWindowVisible;
+
+    [ObservableProperty]
+    private bool isGameCreationPanelVisible;
+
+    [ObservableProperty]
+    private PendingGameInviteData? pendingGameInvite;
+
+    [ObservableProperty]
+    private string? soundToPlay;
 
     // The lists exposed to the View
     private List<string> gameNames = new();
@@ -211,7 +221,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     public void Initialize()
     {
-        playerName = ProgramConstants.PLAYERNAME;
+        PlayerName = ProgramConstants.PLAYERNAME;
 
         InitializeChannelList();
 
@@ -232,7 +242,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (!connectionManager.IsConnected && !connectionManager.IsAttemptingConnection)
         {
-            LoginWindowRequested?.Invoke();
+            IsLoginWindowVisible = true;
         }
 
         UpdateLogoutButtonText();
@@ -254,12 +264,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void CreateGame()
     {
         if (isInGameRoom)
-        {
-            SwitchToPrimaryRequested?.Invoke();
             return;
-        }
 
-        GameCreationPanelShowRequested?.Invoke();
+        IsGameCreationPanelVisible = true;
     }
 
     [RelayCommand]
@@ -289,17 +296,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void Logout()
     {
         if (isInGameRoom)
-        {
-            SwitchToPrimaryRequested?.Invoke();
             return;
-        }
 
         if (connectionManager.IsConnected && !UserINISettings.Instance.PersistentMode)
         {
             connectionManager.Disconnect();
         }
-
-        SwitchToPrimaryRequested?.Invoke();
     }
 
     [RelayCommand]
@@ -384,7 +386,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255,
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
-        GameCreationPanelHideRequested?.Invoke();
+        IsGameCreationPanelVisible = false;
 
         pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
@@ -409,7 +411,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255,
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
-        GameCreationPanelHideRequested?.Invoke();
+        IsGameCreationPanelVisible = false;
 
         pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
@@ -422,31 +424,49 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         JoinGame(game, password, connectionManager.MainChannel);
     }
 
-    /// <summary>
-    /// Called when the user accepts a game invite.
-    /// </summary>
-    public void OnGameInviteAccepted(string channelName, string password)
+    [RelayCommand]
+    private void AcceptGameInvite()
     {
+        if (PendingGameInvite == null)
+            return;
+
         if (isInGameRoom)
         {
             gameLobby?.LeaveGameLobby();
             gameLoadingLobby?.Clear();
         }
 
-        var gameIndex = hostedGames.FindIndex(g => g.ChannelName == channelName);
-        if (!JoinGameByIndex(gameIndex, password))
-        {
-            // Raise message box for failed join
-        }
+        var gameIndex = hostedGames.FindIndex(g => g.ChannelName == PendingGameInvite.ChannelName);
+        JoinGameByIndex(gameIndex, PendingGameInvite.Password);
+
+        var invitationIdentity = new Tuple<string, string>(PendingGameInvite.Sender, PendingGameInvite.ChannelName);
+        invitationIndex.Remove(invitationIdentity);
+        PendingGameInvite = null;
     }
 
-    /// <summary>
-    /// Called when the user dismisses a game invite.
-    /// </summary>
-    public void OnGameInviteDismissed(string sender, string channelName)
+    [RelayCommand]
+    private void DismissGameInvite()
     {
-        var invitationIdentity = new Tuple<string, string>(sender, channelName);
+        if (PendingGameInvite == null)
+            return;
+
+        var invitationIdentity = new Tuple<string, string>(PendingGameInvite.Sender, PendingGameInvite.ChannelName);
         invitationIndex.Remove(invitationIdentity);
+        PendingGameInvite = null;
+    }
+
+    [RelayCommand]
+    private void AcceptUpdate()
+    {
+        IsUpdateCheckNeeded = false;
+        // The orchestrator subscribes to this and triggers the update flow
+    }
+
+    [RelayCommand]
+    private void DenyUpdate()
+    {
+        IsUpdateCheckNeeded = false;
+        updateDenied = true;
     }
 
     /// <summary>
@@ -454,7 +474,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// </summary>
     public void OnGameLobbyLeft()
     {
-        SwitchToSecondaryRequested?.Invoke();
         isInGameRoom = false;
         UpdateLogoutButtonText();
         pmWindow?.ClearInviteChannelInfo();
@@ -465,7 +484,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// </summary>
     public void OnGameLoadingLobbyLeft()
     {
-        SwitchToSecondaryRequested?.Invoke();
         isInGameRoom = false;
         UpdateLogoutButtonText();
         pmWindow?.ClearInviteChannelInfo();
@@ -863,10 +881,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         }
 
         if (isInGameRoom)
-        {
-            SwitchToPrimaryRequested?.Invoke();
             return false;
-        }
 
         if (hg.GameVersion != ProgramConstants.GAME_VERSION)
             messageView?.AddMessage(new ChatMessage(255, 255, 0, "The game host is on a different game version than you. Version incompatibilities may cause issues.".L10N("Client:Main:JoinGameVersionMismatch")));
@@ -1097,7 +1112,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             hostedGames.Clear();
             followedGames.Clear();
 
-            GameCreationPanelHideRequested?.Invoke();
+            IsGameCreationPanelVisible = false;
 
             // Switch channel to default
             if (localGame != null)
@@ -1189,16 +1204,16 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (invitationIndex.ContainsKey(invitationIdentity))
             return;
 
-        // Raise event for View to show invitation UI
+        // Set observable property for View to show invitation UI
         uiThreadMarshaller.AddCallback(new Action(() =>
         {
-            GameInviteReceived?.Invoke(sender, gameName, channelName);
+            PendingGameInvite = new PendingGameInviteData(sender, gameName, channelName, password);
         }));
 
         invitationIndex[invitationIdentity] = new WeakReference(null);
 
         // Play sound
-        SoundPlayRequested?.Invoke("pm.wav");
+        SoundToPlay = "pm.wav";
     }
 
     private void HandleGameInvitationFailedNotification(string sender)
@@ -1298,10 +1313,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             string version = e.Message.Substring(7);
             if (version != ProgramConstants.GAME_VERSION)
             {
-                // Raise event for View to show update dialog
+                // Set observable property for View to show update dialog
                 uiThreadMarshaller.AddCallback(new Action(() =>
                 {
-                    UpdateCheckRequested?.Invoke();
+                    IsUpdateCheckNeeded = true;
                 }));
             }
         }
@@ -1472,7 +1487,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                         cncnetGame.InternalName == localGameID.ToLower() &&
                         !ProgramConstants.IsInGame && !game.Locked)
                     {
-                        SoundPlayRequested?.Invoke("gamecreated.wav");
+                        SoundToPlay = "gamecreated.wav";
                     }
                     hostedGames.Add(game);
                 }
@@ -1522,3 +1537,15 @@ public enum SortDirection
     Asc,
     Desc
 }
+
+/// <summary>
+/// Data for a pending game invite notification.
+/// </summary>
+public record PendingGameInviteData(string Sender, string GameName, string ChannelName, string Password);
+
+/// <summary>
+/// Data for a pending yes/no dialog.
+/// </summary>
+public record PendingYesNoDialogData(string Title, string Text, Action<bool> Callback);
+
+// checked

@@ -29,6 +29,15 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IReadOnlyList<string> ColorOptions { get; }
     IReadOnlyList<string> ChannelOptions { get; }
 
+    // View-reactive state
+    string? PendingMessage { get; set; }
+    PendingYesNoDialogData? PendingYesNoDialog { get; set; }
+    bool IsUpdateCheckNeeded { get; set; }
+    bool IsLoginWindowVisible { get; set; }
+    bool IsGameCreationPanelVisible { get; set; }
+    PendingGameInviteData? PendingGameInvite { get; set; }
+    string? SoundToPlay { get; set; }
+
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }
     IRelayCommand OpenPrivateMessagesCommand { get; }
@@ -37,4 +46,8 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand SendChatMessageCommand { get; }
     IRelayCommand CycleSortDirectionCommand { get; }
     IRelayCommand ToggleGameFiltersCommand { get; }
+    IRelayCommand AcceptGameInviteCommand { get; }
+    IRelayCommand DismissGameInviteCommand { get; }
+    IRelayCommand AcceptUpdateCommand { get; }
+    IRelayCommand DenyUpdateCommand { get; }
 }
