@@ -22,6 +22,7 @@ using Timer = System.Timers.Timer;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
+// checked
 /// <summary>
 /// ViewModel for LAN multiplayer game lobby.
 /// Contains all business logic from LANGameLobby.cs except XNA UI rendering.
@@ -57,7 +58,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     private volatile bool leaving;
     private int sessionId;
     private IPEndPoint hostEndPoint;
-    private int chatColorIndex;
+
     private string localFileHash;
     private string overMessage = string.Empty;
     private TimeSpan timeSinceLastReceivedCommand = TimeSpan.Zero;
@@ -70,15 +71,15 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     [ObservableProperty]
     private string _localAddressText = string.Empty;
 
+    [ObservableProperty]
+    private int _chatColorIndex;
+
     protected override bool IsMultiplayer => true;
 
     // --- Events ---
     public event EventHandler<LobbyNotificationEventArgs> LobbyNotification;
     public event EventHandler<GameLeftEventArgs> GameLeft;
     public event EventHandler<GameBroadcastEventArgs> GameBroadcast;
-    public event EventHandler JoinSoundRequested;
-    public event EventHandler LeaveSoundRequested;
-    public event EventHandler ReturnSoundRequested;
 
     // --- Timers ---
     private Timer gameBroadcastTimer;
@@ -318,7 +319,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         BroadcastPlayerOptions();
         BroadcastPlayerExtraOptions();
         UpdateDiscordPresence();
-        JoinSoundRequested?.Invoke(this, EventArgs.Empty);
+        RaiseSoundRequested("joingame.wav");
     }
 
     private void LpInfo_ConnectionLost(object sender, EventArgs e)
@@ -332,7 +333,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         Players.Remove(lpInfo);
 
         AddNotice(string.Format("{0} has left the game.".L10N("Client:Main:PlayerLeftGame"), lpInfo.Name));
-        LeaveSoundRequested?.Invoke(this, EventArgs.Empty);
+        RaiseSoundRequested("leavegame.wav");
 
         CopyPlayerDataToUI();
         BroadcastPlayerOptions();
@@ -530,13 +531,6 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         ResetDiscordPresence();
     }
 
-    // --- Chat color ---
-
-    public void SetChatColorIndex(int colorIndex)
-    {
-        chatColorIndex = colorIndex;
-    }
-
     // --- Discord ---
 
     protected override void UpdateDiscordPresence(bool resetTimer = false)
@@ -624,7 +618,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     {
         var sb = new ExtendedStringBuilder(CHAT_COMMAND + " ", true);
         sb.Separator = ProgramConstants.LAN_DATA_SEPARATOR;
-        sb.Append(chatColorIndex);
+        sb.Append(ChatColorIndex);
         sb.Append(message);
         SendMessageToHost(sb.ToString());
     }
@@ -1088,7 +1082,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         CopyPlayerDataToUI();
         BroadcastPlayerOptions();
         UpdateDiscordPresence();
-        LeaveSoundRequested?.Invoke(this, EventArgs.Empty);
+        RaiseSoundRequested("leavegame.wav");
     }
 
     private void HandleGameOptionsMessage(string data)
@@ -1215,7 +1209,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
             pInfo.IsInGame = false;
 
         CopyPlayerDataToUI();
-        ReturnSoundRequested?.Invoke(this, EventArgs.Empty);
+        RaiseSoundRequested("returngame.wav");
     }
 
     // --- Dice roll ---
