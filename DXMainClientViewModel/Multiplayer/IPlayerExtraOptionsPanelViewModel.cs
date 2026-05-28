@@ -11,13 +11,18 @@ public interface IPlayerExtraOptionsPanelViewModel : INotifyPropertyChanged
     bool ForceRandomColors { get; set; }
     bool ForceRandomStarts { get; set; }
     bool ForceNoTeams { get; set; }
+    bool ForceNoTeamsAllowChecking { get; set; }
     bool UseTeamStartMappings { get; set; }
+    bool UseTeamStartMappingsAllowChecking { get; set; }
     IReadOnlyList<string> TeamStartMappingPresetNames { get; }
     int SelectedTeamStartMappingPresetIndex { get; set; }
     IReadOnlyList<string> TeamStartMappingSummaries { get; }
+    bool IsPanelVisible { get; set; }
+    bool IsHostControlsEnabled { get; }
 
     IRelayCommand ShowHelpCommand { get; }
     IRelayCommand ResetMappingsCommand { get; }
     IRelayCommand LoadSettingsCommand { get; }
     IRelayCommand SaveSettingsCommand { get; }
+    IRelayCommand ClosePanelCommand { get; }
 }
