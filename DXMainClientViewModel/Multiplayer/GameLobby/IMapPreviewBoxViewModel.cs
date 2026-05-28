@@ -31,9 +31,4 @@ public interface IMapPreviewBoxViewModel : INotifyPropertyChanged
     IRelayCommand ToggleExtraTexturesCommand { get; }
     IRelayCommand ShowInFolderCommand { get; }
     IRelayCommand RefreshPreviewCommand { get; }
-
-    // Events
-    event EventHandler? FavoriteToggled;
-    event EventHandler? StartingLocationApplied;
-    event EventHandler<LocalStartingLocationEventArgs>? LocalStartingLocationSelected;
 }
