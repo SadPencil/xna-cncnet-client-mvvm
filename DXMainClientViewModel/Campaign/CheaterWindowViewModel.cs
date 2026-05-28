@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel.Campaign;
 
-public partial class CheaterWindowViewModel : ObservableObject, ICheaterWindowViewModel
+public partial class CheaterWindowViewModel : ObservableObject, ICheaterWindowViewModel // checked
 {
     public CheaterWindowViewModel(Action onConfirm, Action onCancel)
     {
