@@ -22,6 +22,9 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isComponentDownloadInProgress;
 
+        [ObservableProperty]
+        private bool isVisible;
+
         public event Action? ForceUpdateRequested;
         public event Action<string, string>? MessageBoxRequested;
         public event Action<string, string, Action<bool>>? YesNoDialogRequested;
