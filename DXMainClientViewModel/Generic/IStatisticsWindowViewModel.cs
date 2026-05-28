@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -23,9 +22,6 @@ public interface IStatisticsWindowViewModel : INotifyPropertyChanged
     IRelayCommand ReturnCommand { get; }
     IRelayCommand<int> SelectGameCommand { get; }
     IRelayCommand ConfirmClearCommand { get; }
-
-    event Action CloseRequested;
-    event Action ClearConfirmationRequested;
 
     void Initialize();
 }

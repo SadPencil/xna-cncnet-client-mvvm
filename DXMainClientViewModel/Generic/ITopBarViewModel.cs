@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
@@ -24,21 +23,7 @@ public interface ITopBarViewModel : INotifyPropertyChanged
     IRelayCommand OpenOptionsCommand { get; }
     IRelayCommand LogoutCommand { get; }
 
-    /// <summary>
-    /// Raised when the top bar should animate down.
-    /// </summary>
-    event Action? BringDownRequested;
-
-    /// <summary>
-    /// Raised when logout is performed. View should handle navigation.
-    /// </summary>
-    event Action? LogoutPerformed;
-
     void Initialize();
-
-    /// <summary>
-    /// Cleans up resources.
-    /// </summary>
     void Clean();
 }
 
