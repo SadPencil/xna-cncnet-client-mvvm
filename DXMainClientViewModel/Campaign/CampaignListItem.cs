@@ -1,8 +1,8 @@
 namespace DXMainClientViewModel.Campaign;
 
 /// <summary>
-/// Represents a single item in the campaign list.
-/// Provides all data the View needs to render the item.
+/// Data model for a single campaign list item.
+/// The View uses this to render the item with appropriate styling.
 /// </summary>
 public sealed class CampaignListItem
 {
@@ -11,4 +11,12 @@ public sealed class CampaignListItem
     public bool IsHeader { get; init; }
     public bool IsSelectable { get; init; } = true;
     public string? IconPath { get; init; }
+    public CampaignListItemColor TextColorKind { get; init; }
+}
+
+public enum CampaignListItemColor
+{
+    Default,
+    Disabled,
+    Header
 }

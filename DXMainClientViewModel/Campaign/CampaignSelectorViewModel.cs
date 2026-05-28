@@ -38,16 +38,17 @@ namespace DXMainClientViewModel.Campaign
 
         private List<Mission> selectedMissions = [];
 
-        // View-only: mission preview panel is handled by the View
-        // View-only: lbCampaignList, btnLaunch, btnCancel, btnReturn, tbMissionDescription, trbDifficultySelector are handled by the View
-        // View-only: userSettings (IUserSetting) are handled by the View
-        // View-only: cheaterWindow is handled by the View
+        // Mission preview paths (View uses these to render preview panel)
+        public string MissionPreviewFolder => SafePath.CombineDirectoryPath(ProgramConstants.GetBaseResourcePath(), "Mission Previews");
+        public string DefaultMissionPreviewPath => SafePath.CombineFilePath(MissionPreviewFolder, "Default.png");
+        public bool IsMissionPreviewEnabled => File.Exists(DefaultMissionPreviewPath);
 
-        // CheckBoxes and DropDowns are created by the View from INI, but their
-        // data (ApplySpawnIniCode, ApplyMapCode, settings save/load) is business logic.
-        // The View registers them here so the ViewModel can call their logic.
+        // CheckBoxes and DropDowns: created by View from INI, registered here for business logic
         public List<ICampaignCheckBoxOption> CheckBoxOptions { get; } = new();
         public List<ICampaignDropDownOption> DropDownOptions { get; } = new();
+
+        // User settings: created by View from INI, registered here for save/load/reset
+        public List<IUserSetting> UserSettings { get; } = new();
 
         private IniFile? gameOptionsIni;
 
@@ -85,6 +86,7 @@ namespace DXMainClientViewModel.Campaign
 
             gameProcessService.GameProcessExited += OnGameProcessExited;
 
+            // Initialize() equivalent - all non-UI initialization
             gameOptionsIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(),
                 ClientConfiguration.GAME_OPTIONS));
 
@@ -95,31 +97,19 @@ namespace DXMainClientViewModel.Campaign
             LoadSettings();
         }
 
-        #region Observable Properties (replacing direct UI control manipulation)
+        #region Observable Properties
 
         [ObservableProperty]
-        private IReadOnlyList<string> campaignNames = [];
+        private IReadOnlyList<CampaignListItem> campaignListItems = [];
 
         [ObservableProperty]
         private int selectedCampaignIndex = -1;
-
-        [ObservableProperty]
-        private string selectedCampaignName = string.Empty;
-
-        [ObservableProperty]
-        private string selectedCampaignDescription = string.Empty;
 
         [ObservableProperty]
         private string missionDescriptionText = string.Empty;
 
         [ObservableProperty]
         private string? missionPreviewImagePath;
-
-        [ObservableProperty]
-        private bool isMissionPreviewPanelVisible;
-
-        [ObservableProperty]
-        private bool isReturnButtonVisible;
 
         [ObservableProperty]
         private bool isControlsEnabled = true;
@@ -198,6 +188,7 @@ namespace DXMainClientViewModel.Campaign
 
             Mission mission = selectedMissions[value];
 
+            // UpdateMissionPreview equivalent
             MissionPreviewImagePath = string.IsNullOrEmpty(mission.PreviewImage) ? null : mission.PreviewImage;
 
             if (string.IsNullOrEmpty(mission.Scenario))
@@ -328,7 +319,6 @@ namespace DXMainClientViewModel.Campaign
         /// Load or re-load missons with selected tags.
         /// </summary>
         /// <param name="selectedTags">Missions with at lease one of which tags to be shown. As an exception, null means show all missions.</param>
-        /// <param name="disableCustomMissions">True means show official missions. False means show custom missions.</param>
         public void LoadMissionsWithFilter(ISet<string>? selectedTags, bool disableCustomMissions = true, bool disableOfficialMissions = false)
         {
             selectedMissions.Clear();
@@ -357,65 +347,51 @@ namespace DXMainClientViewModel.Campaign
                 missions = missions.Where(mission => mission.Tags.Intersect(selectedTags).Any()).ToList();
             selectedMissions = missions.ToList();
 
-            // Update CampaignNames observable for the View
-            CampaignNames = selectedMissions.Select(m => m.GUIName).ToList();
+            // Build CampaignListItem list (replaces XNAListBoxItem creation in original)
+            var items = new List<CampaignListItem>(selectedMissions.Count);
+            foreach (Mission mission in selectedMissions)
+            {
+                CampaignListItemColor textColorKind;
+                bool isHeader = false;
+                bool isSelectable = true;
+
+                if (!mission.Enabled)
+                {
+                    textColorKind = CampaignListItemColor.Disabled;
+                }
+                else if (string.IsNullOrEmpty(mission.Scenario))
+                {
+                    textColorKind = CampaignListItemColor.Header;
+                    isHeader = true;
+                    isSelectable = false;
+                }
+                else
+                {
+                    textColorKind = CampaignListItemColor.Default;
+                }
+
+                string? iconPath = null;
+                if (!string.IsNullOrEmpty(mission.IconPath))
+                    iconPath = mission.IconPath + "icon.png";
+
+                items.Add(new CampaignListItem
+                {
+                    Text = mission.GUIName,
+                    IsEnabled = mission.Enabled,
+                    IsHeader = isHeader,
+                    IsSelectable = isSelectable,
+                    IconPath = iconPath,
+                    TextColorKind = textColorKind
+                });
+            }
+
+            CampaignListItems = items;
         }
 
         #endregion
 
         #region Mission Launch
 
-        private void BtnLaunch_LeftClick()
-        {
-            SaveSettings();
-
-            if (SelectedCampaignIndex < 0 || SelectedCampaignIndex >= selectedMissions.Count)
-                return;
-
-            Mission mission = selectedMissions[SelectedCampaignIndex];
-
-            if (!ClientConfiguration.Instance.ModMode &&
-                (!fileIntegrityService.IsFileNonexistantOrOriginal(mission.Scenario) || AreFilesModified()))
-            {
-                // Confront the user by showing the cheater screen
-                missionToLaunch = mission;
-                IsCheaterWindowVisible = true;
-                return;
-            }
-
-            LaunchMission(mission);
-        }
-
-        private bool AreFilesModified()
-        {
-            foreach (string filePath in filesToCheck)
-            {
-                if (!fileIntegrityService.IsFileNonexistantOrOriginal(filePath))
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Called when the user wants to proceed to the mission despite having
-        /// being called a cheater.
-        /// </summary>
-        private void OnCheaterConfirmed()
-        {
-            IsCheaterWindowVisible = false;
-            LaunchMission(missionToLaunch!);
-        }
-
-        private void OnCheaterCancelled()
-        {
-            IsCheaterWindowVisible = false;
-            missionToLaunch = null;
-        }
-
-        /// <summary>
-        /// Starts a singleplayer mission.
-        /// </summary>
         private void LaunchMission(Mission mission)
         {
             CustomMissionHelper.CopySupplementalMissionFiles(mission);
@@ -599,8 +575,35 @@ namespace DXMainClientViewModel.Campaign
             }
         }
 
+        private bool AreFilesModified()
+        {
+            foreach (string filePath in filesToCheck)
+            {
+                if (!fileIntegrityService.IsFileNonexistantOrOriginal(filePath))
+                    return true;
+            }
+
+            return false;
+        }
+
         private int GetComputerDifficulty() =>
             Math.Abs(SelectedDifficultyIndex - 2);
+
+        #endregion
+
+        #region Cheater Window
+
+        private void OnCheaterConfirmed()
+        {
+            IsCheaterWindowVisible = false;
+            LaunchMission(missionToLaunch!);
+        }
+
+        private void OnCheaterCancelled()
+        {
+            IsCheaterWindowVisible = false;
+            missionToLaunch = null;
+        }
 
         #endregion
 
@@ -625,6 +628,15 @@ namespace DXMainClientViewModel.Campaign
                         cb.ResetToDefault();
                 }
 
+                // Reset user settings
+                foreach (IUserSetting setting in UserSettings)
+                {
+                    if (!setting.ResetToDefaultOnGameExit)
+                        continue;
+
+                    setting.ResetToDefault();
+                }
+
                 SaveSettings();
             }
         }
@@ -638,7 +650,13 @@ namespace DXMainClientViewModel.Campaign
         /// </summary>
         private void SaveSettings()
         {
+            SaveUserSettings();
             SaveCampaignSettings();
+        }
+
+        private void SaveUserSettings()
+        {
+            UserSettings.ForEach(c => c.Save());
             UserINISettings.Instance.SaveSettings();
         }
 
@@ -674,7 +692,13 @@ namespace DXMainClientViewModel.Campaign
         /// </summary>
         private void LoadSettings()
         {
+            LoadUserSettings();
             LoadCampaignSettings();
+        }
+
+        private void LoadUserSettings()
+        {
+            UserSettings.ForEach(c => c.Load());
         }
 
         private void LoadCampaignSettings()
