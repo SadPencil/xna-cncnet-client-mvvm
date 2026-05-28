@@ -24,7 +24,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// Contains all business logic from DisplayOptionsPanel.cs except XNA UI rendering.
 /// Resolution population is handled by the View via SetResolutionOptions.
 /// </summary>
-public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOptionsPanelViewModel // checked
+public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOptionsPanelViewModel
 {
     private const int DRAG_DISTANCE_DEFAULT = 4;
     private const int ORIGINAL_RESOLUTION_WIDTH = 640;

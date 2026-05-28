@@ -11,7 +11,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for the game filters panel.
 /// Contains all business logic from GameFiltersPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersPanelViewModel // checked
+public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersPanelViewModel
 {
     private const int MinPlayerCount = 2;
     private const int MaxPlayerCountLimit = 8;

@@ -17,7 +17,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// ViewModel for the updater options panel.
 /// Contains all business logic from UpdaterOptionsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOptionsPanelViewModel // checked
+public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOptionsPanelViewModel
 {
     private readonly UserINISettings iniSettings;
 

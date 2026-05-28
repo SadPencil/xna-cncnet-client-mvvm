@@ -17,7 +17,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for the player list box.
 /// Contains all business logic from PlayerListBox.cs except XNA UI rendering.
 /// </summary>
-public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxViewModel // checked
+public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxViewModel
 {
     private readonly GameCollection gameCollection;
 

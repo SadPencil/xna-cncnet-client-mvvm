@@ -21,7 +21,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// ViewModel for the components panel.
 /// Contains all business logic from ComponentsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPanelViewModel // checked
+public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPanelViewModel
 {
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private bool downloadCancelled;

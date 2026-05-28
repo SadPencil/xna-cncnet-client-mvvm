@@ -17,7 +17,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// Contains non-rendering business logic from MapPreviewBox.cs.
 /// Rendering, texture loading, and mouse interaction are View concerns.
 /// </summary>
-public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxViewModel // checked
+public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxViewModel
 {
     private GameModeMap? gameModeMap;
     private List<PlayerInfo>? players;

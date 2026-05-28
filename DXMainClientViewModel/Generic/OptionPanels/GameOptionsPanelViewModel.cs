@@ -15,7 +15,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// ViewModel for the game options panel.
 /// Contains all business logic from GameOptionsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsPanelViewModel // checked
+public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsPanelViewModel
 {
     private const int MAX_SCROLL_RATE = 6;
     private const string TEXT_BACKGROUND_COLOR_TRANSPARENT = "0";

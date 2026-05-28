@@ -16,7 +16,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for the player extra options panel.
 /// Contains all business logic from PlayerExtraOptionsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlayerExtraOptionsPanelViewModel // checked
+public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlayerExtraOptionsPanelViewModel
 {
     private const int MaxStartCount = 8;
 

@@ -6,7 +6,7 @@ using Rampastring.Tools;
 using System;
 
 namespace DXMainClientViewModel.Generic
-{ // checked
+{
     /// <summary>
     /// ViewModel for the options window.
     /// Handles settings save/load orchestration, tab selection, and download state.

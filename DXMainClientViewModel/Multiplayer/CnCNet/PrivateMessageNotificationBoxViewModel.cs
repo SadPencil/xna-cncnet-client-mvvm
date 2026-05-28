@@ -10,7 +10,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for the private message notification box.
 /// Contains all business logic from PrivateMessageNotificationBox.cs except XNA UI rendering.
 /// </summary>
-public partial class PrivateMessageNotificationBoxViewModel : ObservableObject, IPrivateMessageNotificationBoxViewModel // checked
+public partial class PrivateMessageNotificationBoxViewModel : ObservableObject, IPrivateMessageNotificationBoxViewModel
 {
     private const double AUTO_DISMISS_SECONDS = 4.0;
 

@@ -16,7 +16,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for the LAN game creation window.
 /// Contains all business logic from LANGameCreationWindow.cs except XNA UI rendering.
 /// </summary>
-public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGameCreationWindowViewModel // checked
+public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGameCreationWindowViewModel
 {
     // --- Observable state ---
 

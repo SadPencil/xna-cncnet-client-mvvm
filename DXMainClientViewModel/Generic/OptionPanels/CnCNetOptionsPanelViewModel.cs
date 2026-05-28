@@ -18,7 +18,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// ViewModel for the CnCNet options panel.
 /// Contains all business logic from CnCNetOptionsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOptionsPanelViewModel // checked
+public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOptionsPanelViewModel
 {
     private readonly UserINISettings iniSettings;
     private readonly GameCollection gameCollection;

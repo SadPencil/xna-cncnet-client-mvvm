@@ -10,7 +10,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for the choice notification box.
 /// Contains all business logic from ChoiceNotificationBox.cs except XNA UI rendering.
 /// </summary>
-public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceNotificationBoxViewModel // checked
+public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceNotificationBoxViewModel
 {
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private Timer? autoDismissTimer;

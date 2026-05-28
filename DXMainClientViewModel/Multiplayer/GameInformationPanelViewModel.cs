@@ -18,7 +18,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for the game information panel.
 /// Contains all business logic from GameInformationPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class GameInformationPanelViewModel : ObservableObject, IGameInformationPanelViewModel // checked
+public partial class GameInformationPanelViewModel : ObservableObject, IGameInformationPanelViewModel
 {
     private readonly MapLoader mapLoader;
     private GenericHostedGame? currentGame;
