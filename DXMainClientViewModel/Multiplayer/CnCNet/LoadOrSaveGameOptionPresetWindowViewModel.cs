@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+using ClientCore.Extensions;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -11,14 +13,15 @@ using DXMainClientViewModel.Online.EventArguments;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
+// checked
 /// <summary>
 /// ViewModel for the load or save game option preset window.
 /// Contains all business logic from LoadOrSaveGameOptionPresetWindow.cs except XNA UI rendering.
 /// </summary>
 public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObject, ILoadOrSaveGameOptionPresetWindowViewModel
 {
-    private const string CreateNewPlaceholder = "[Create New]";
-    private const string SelectPresetPlaceholder = "[Select Preset]";
+    private static readonly string CreateNewPlaceholder = "[Create New]".L10N("Client:Main:CreateNewPreset");
+    private static readonly string SelectPresetPlaceholder = "[Select Preset]".L10N("Client:Main:SelectPreset");
 
     // --- Observable state ---
 

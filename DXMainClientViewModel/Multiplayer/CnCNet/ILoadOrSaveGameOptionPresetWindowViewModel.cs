@@ -11,6 +11,10 @@ public interface ILoadOrSaveGameOptionPresetWindowViewModel : INotifyPropertyCha
     IReadOnlyList<string> PresetNames { get; }
     int SelectedPresetIndex { get; set; }
     string PresetName { get; set; }
+    bool IsWindowVisible { get; set; }
+    bool IsNewPresetNameEnabled { get; }
+    bool IsConfirmEnabled { get; }
+    bool IsDeleteEnabled { get; }
 
     IRelayCommand ConfirmCommand { get; }
     IRelayCommand DeleteSelectedPresetCommand { get; }
