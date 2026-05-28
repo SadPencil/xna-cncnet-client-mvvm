@@ -14,7 +14,7 @@ public interface ITopBarViewModel : INotifyPropertyChanged
     bool AreSwitchButtonsClickable { get; }
     bool IsOptionsButtonClickable { get; }
     bool IsLogoutButtonClickable { get; }
-    bool IsLanMode { get; }
+    bool IsLanMode { get; set; }
     SwitchType LastSwitchType { get; }
     string MainButtonText { get; }
 
@@ -35,31 +35,6 @@ public interface ITopBarViewModel : INotifyPropertyChanged
     event Action? LogoutPerformed;
 
     void Initialize();
-
-    /// <summary>
-    /// Sets LAN mode on or off.
-    /// </summary>
-    void SetLanMode(bool lanMode);
-
-    /// <summary>
-    /// Sets whether switch buttons are clickable.
-    /// </summary>
-    void SetSwitchButtonsClickable(bool clickable);
-
-    /// <summary>
-    /// Sets whether the options button is clickable.
-    /// </summary>
-    void SetOptionsButtonClickable(bool clickable);
-
-    /// <summary>
-    /// Sets the main button text.
-    /// </summary>
-    void SetMainButtonText(string text);
-
-    /// <summary>
-    /// Called when the options window enabled state changes.
-    /// </summary>
-    void OnOptionsWindowEnabledChanged(bool isEnabled);
 
     /// <summary>
     /// Cleans up resources.

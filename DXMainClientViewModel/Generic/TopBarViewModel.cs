@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -14,6 +15,7 @@ namespace DXMainClientViewModel.Generic
     /// <summary>
     /// ViewModel for the top bar.
     /// Handles connection status, player count, view switching, and button state.
+    /// Self-sufficient: subscribes to connection events directly.
     /// </summary>
     public partial class TopBarViewModel : ObservableObject, ITopBarViewModel
     {
@@ -89,6 +91,15 @@ namespace DXMainClientViewModel.Generic
             privateMessageHandler.UnreadMessageCountUpdated += OnUnreadMessageCountUpdated;
         }
 
+        partial void OnIsLanModeChanged(bool value)
+        {
+            AreSwitchButtonsClickable = !value;
+            if (value)
+                ConnectionStatusText = "LAN MODE".L10N("Client:Main:StatusLanMode");
+            else
+                ConnectionStatusText = "OFFLINE".L10N("Client:Main:StatusOffline");
+        }
+
         #region Commands
 
         [RelayCommand]
@@ -125,40 +136,7 @@ namespace DXMainClientViewModel.Generic
 
         #endregion
 
-        #region Public Methods
-
-        public void SetLanMode(bool lanMode)
-        {
-            IsLanMode = lanMode;
-            SetSwitchButtonsClickable(!lanMode);
-            if (lanMode)
-                ConnectionStatusText = "LAN MODE".L10N("Client:Main:StatusLanMode");
-            else
-                ConnectionStatusText = "OFFLINE".L10N("Client:Main:StatusOffline");
-        }
-
-        public void SetSwitchButtonsClickable(bool clickable)
-        {
-            AreSwitchButtonsClickable = clickable;
-        }
-
-        public void SetOptionsButtonClickable(bool clickable)
-        {
-            IsOptionsButtonClickable = clickable;
-        }
-
-        public void SetMainButtonText(string text)
-        {
-            MainButtonText = text;
-        }
-
-        public void OnOptionsWindowEnabledChanged(bool isEnabled)
-        {
-            if (!IsLanMode)
-                SetSwitchButtonsClickable(!isEnabled);
-
-            SetOptionsButtonClickable(!isEnabled);
-        }
+        #region Lifecycle Methods
 
         public void Clean()
         {
