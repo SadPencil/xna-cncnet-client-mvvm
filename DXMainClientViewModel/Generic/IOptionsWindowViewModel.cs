@@ -14,6 +14,7 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     IRelayCommand SaveCommand { get; }
     IRelayCommand CancelCommand { get; }
     IRelayCommand OpenComponentsPanelCommand { get; }
+    IRelayCommand ForceUpdateCommand { get; }
 
     /// <summary>
     /// Raised when a force update should be initiated.
@@ -41,29 +42,4 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     event Action? CloseRequested;
 
     void Initialize();
-
-    /// <summary>
-    /// Opens the options window. Loads settings.
-    /// </summary>
-    void Open();
-
-    /// <summary>
-    /// Refreshes settings from the configuration.
-    /// </summary>
-    void RefreshSettings();
-
-    /// <summary>
-    /// Switches to the custom components panel.
-    /// </summary>
-    void SwitchToCustomComponentsPanel();
-
-    /// <summary>
-    /// Toggles main-menu-only options.
-    /// </summary>
-    void ToggleMainMenuOnlyOptions(bool enable);
-
-    /// <summary>
-    /// Called when the window is closed (disabled).
-    /// </summary>
-    void OnClosed();
 }
