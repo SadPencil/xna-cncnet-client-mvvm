@@ -21,7 +21,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// ViewModel for the components panel.
 /// Contains all business logic from ComponentsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPanelViewModel
+public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPanelViewModel // checked
 {
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private bool downloadCancelled;
@@ -195,15 +195,19 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     private void StartDownload(CustomComponent cc)
     {
         IsBusy = true;
-        cc.DownloadFinished += (c, success) =>
-        {
-            uiThreadMarshaller.AddCallback(new Action<CustomComponent, bool>(HandleDownloadFinished), c, success);
-        };
-        cc.DownloadProgressChanged += (c, percentage) =>
-        {
-            uiThreadMarshaller.AddCallback(new Action<CustomComponent, int>(HandleDownloadProgressChanged), c, percentage);
-        };
+        cc.DownloadFinished += HandleDownloadFinishedCallback;
+        cc.DownloadProgressChanged += HandleDownloadProgressChangedCallback;
         cc.DownloadComponent();
+    }
+
+    private void HandleDownloadFinishedCallback(CustomComponent c, bool success)
+    {
+        uiThreadMarshaller.AddCallback(new Action<CustomComponent, bool>(HandleDownloadFinished), c, success);
+    }
+
+    private void HandleDownloadProgressChangedCallback(CustomComponent c, int percentage)
+    {
+        uiThreadMarshaller.AddCallback(new Action<CustomComponent, int>(HandleDownloadProgressChanged), c, percentage);
     }
 
     private void HandleDownloadProgressChanged(CustomComponent cc, int percentage)
@@ -225,6 +229,9 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
 
     private void HandleDownloadFinished(CustomComponent cc, bool success)
     {
+        cc.DownloadFinished -= HandleDownloadFinishedCallback;
+        cc.DownloadProgressChanged -= HandleDownloadProgressChangedCallback;
+
         IsBusy = false;
 
         if (Updater.CustomComponents == null)
