@@ -1,15 +1,32 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System;
+using System.Net;
 
 namespace DXMainClientViewModel.LAN;
 
-public interface ILANBroadcastManagerService
+/// <summary>
+/// Service interface for LAN lobby UDP broadcast management.
+/// Handles socket management, broadcast interface discovery, and message sending/listening.
+/// </summary>
+public interface ILANBroadcastManagerService : IDisposable
 {
-    bool IsRunning { get; }
-    IReadOnlyList<string> BroadcastAddresses { get; }
+    bool IsInitialized { get; }
+    int BroadcastInterfaceCount { get; }
 
-    void Start();
-    void Stop();
-    Task SendBroadcastAsync(string message);
-    Task<IReadOnlyList<string>> ReceivePendingMessagesAsync();
+    event EventHandler<LANBroadcastMessageReceivedEventArgs> MessageReceived;
+
+    void Initialize();
+    bool SendMessage(string message);
+    void Shutdown();
+}
+
+public class LANBroadcastMessageReceivedEventArgs : EventArgs
+{
+    public string Data { get; }
+    public IPEndPoint EndPoint { get; }
+
+    public LANBroadcastMessageReceivedEventArgs(string data, IPEndPoint endPoint)
+    {
+        Data = data;
+        EndPoint = endPoint;
+    }
 }
