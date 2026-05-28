@@ -1,3 +1,4 @@
+// checked
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -333,11 +334,11 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         bool isChangingRenderer = newSelectedRenderer != null && newSelectedRenderer != directDrawWrapperManager.SelectedRenderer;
 
         // Save windowed mode
-        if (newSelectedRenderer != null && newSelectedRenderer.UsesCustomWindowedOption())
-        {
-            iniSettings.WindowedMode.Value = false;
-            iniSettings.BorderlessWindowedMode.Value = false;
+        iniSettings.WindowedMode.Value = IsWindowedModeEnabled && !newSelectedRenderer.UsesCustomWindowedOption();
+        iniSettings.BorderlessWindowedMode.Value = IsBorderlessWindowedModeEnabled && string.IsNullOrEmpty(newSelectedRenderer.BorderlessWindowedModeKey);
 
+        if (newSelectedRenderer.UsesCustomWindowedOption())
+        {
             // Save to renderer INI
             IniFile rendererSettingsIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, newSelectedRenderer.ConfigFileName));
             rendererSettingsIni.SetBooleanValue(newSelectedRenderer.WindowedModeSection, newSelectedRenderer.WindowedModeKey, IsWindowedModeEnabled);
@@ -352,11 +353,6 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             }
 
             rendererSettingsIni.WriteIniFile();
-        }
-        else
-        {
-            iniSettings.WindowedMode.Value = IsWindowedModeEnabled;
-            iniSettings.BorderlessWindowedMode.Value = IsBorderlessWindowedModeEnabled;
         }
 
         if (iniSettings.BorderlessWindowedClient.Value != IsBorderlessClientEnabled)
