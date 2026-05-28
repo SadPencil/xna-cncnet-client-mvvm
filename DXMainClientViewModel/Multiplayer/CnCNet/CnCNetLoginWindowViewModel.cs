@@ -10,6 +10,7 @@ using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
+// checked
 /// <summary>
 /// ViewModel for the CnCNet login window.
 /// Contains all business logic from CnCNetLoginWindow.cs except XNA UI rendering.
