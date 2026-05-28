@@ -24,6 +24,11 @@ public class GameOptionDropDown : ObservableObject
         }
     }
 
+    /// <summary>
+    /// The host's selected index. Used for broadcasting and restoring after forced options.
+    /// </summary>
+    public int HostSelectedIndex { get; set; }
+
     private bool _isEnabled = true;
     public bool IsEnabled
     {

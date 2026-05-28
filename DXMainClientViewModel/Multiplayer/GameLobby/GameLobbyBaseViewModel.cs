@@ -125,6 +125,22 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     private int _selectedPlayerIndex;
 
+    // --- Player updating guard ---
+    protected bool PlayerUpdatingInProgress { get; set; }
+
+    // --- Player extra options (force random sides/colors/starts, force no teams) ---
+    private PlayerExtraOptions playerExtraOptions = new();
+
+    public PlayerExtraOptions PlayerExtraOptions
+    {
+        get => playerExtraOptions;
+        set
+        {
+            playerExtraOptions = value;
+            CopyPlayerDataToUI();
+        }
+    }
+
     // --- Currently selected GameModeMap (internal, not directly exposed) ---
     private GameModeMap _gameModeMap;
     protected GameModeMap GameModeMap
@@ -606,11 +622,21 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         foreach (var dd in DropDowns)
             dd.IsEnabled = true;
 
+        // Clone lists to track which options were NOT forced
+        var checkBoxListClone = new List<GameOptionCheckBox>(CheckBoxes);
+        var dropDownListClone = new List<GameOptionDropDown>(DropDowns);
+
         // Apply forced options from GameMode and Map
-        ApplyForcedCheckBoxOptions(GameMode.ForcedCheckBoxValues);
-        ApplyForcedCheckBoxOptions(Map.ForcedCheckBoxValues);
-        ApplyForcedDropDownOptions(GameMode.ForcedDropDownValues);
-        ApplyForcedDropDownOptions(Map.ForcedDropDownValues);
+        ApplyForcedCheckBoxOptions(checkBoxListClone, GameMode.ForcedCheckBoxValues);
+        ApplyForcedCheckBoxOptions(checkBoxListClone, Map.ForcedCheckBoxValues);
+        ApplyForcedDropDownOptions(dropDownListClone, GameMode.ForcedDropDownValues);
+        ApplyForcedDropDownOptions(dropDownListClone, Map.ForcedDropDownValues);
+
+        // Restore non-forced options to host's selections
+        foreach (var cb in checkBoxListClone)
+            cb.IsChecked = cb.HostChecked;
+        foreach (var dd in dropDownListClone)
+            dd.SelectedIndex = dd.HostSelectedIndex;
 
         // Reset player options based on map constraints
         var concatPlayerList = Players.Concat(AIPlayers).ToList();
@@ -625,6 +651,19 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         if (GameModeMap.CoopInfo != null)
         {
+            // Co-Op map disallowed color logic
+            foreach (int disallowedColorIndex in GameModeMap.CoopInfo.DisallowedPlayerColors)
+            {
+                if (disallowedColorIndex >= MPColors.Count)
+                    continue;
+
+                foreach (PlayerInfo pInfo in concatPlayerList)
+                {
+                    if (pInfo.ColorId == disallowedColorIndex + 1)
+                        pInfo.ColorId = 0;
+                }
+            }
+
             // Force teams for co-op
             foreach (PlayerInfo pInfo in concatPlayerList)
                 pInfo.TeamId = 1;
@@ -661,7 +700,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         LaunchButtonRank = GetRank();
     }
 
-    private void ApplyForcedCheckBoxOptions(List<KeyValuePair<string, bool>> forcedOptions)
+    private void ApplyForcedCheckBoxOptions(List<GameOptionCheckBox> optionList, List<KeyValuePair<string, bool>> forcedOptions)
     {
         foreach (var option in forcedOptions)
         {
@@ -670,11 +709,12 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 cb.IsChecked = option.Value;
                 cb.IsEnabled = false;
+                optionList.Remove(cb);
             }
         }
     }
 
-    private void ApplyForcedDropDownOptions(List<KeyValuePair<string, int>> forcedOptions)
+    private void ApplyForcedDropDownOptions(List<GameOptionDropDown> optionList, List<KeyValuePair<string, int>> forcedOptions)
     {
         foreach (var option in forcedOptions)
         {
@@ -683,6 +723,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 dd.SelectedIndex = option.Value;
                 dd.IsEnabled = false;
+                optionList.Remove(dd);
             }
         }
     }
@@ -711,8 +752,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     protected virtual void CopyPlayerDataToUI()
     {
+        PlayerUpdatingInProgress = true;
+
         var slots = (List<PlayerSlotObservable>)PlayerSlots;
         bool allowOptionsChange = AllowPlayerOptionsChange();
+        var extraOpts = playerExtraOptions;
 
         // Human players
         for (int pId = 0; pId < Players.Count; pId++)
@@ -727,19 +771,36 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             bool allowPlayerOptionsChange = allowOptionsChange || pInfo.Name == ProgramConstants.PLAYERNAME;
 
+            // Apply PlayerExtraOptions: force random sides
+            if (extraOpts.IsForceRandomSides && pInfo.SideId != 0)
+                pInfo.SideId = 0;
+
             slot.SelectedSideIndex = pInfo.SideId;
-            slot.IsSideDropdownEnabled = allowPlayerOptionsChange;
+            slot.IsSideDropdownEnabled = !extraOpts.IsForceRandomSides && allowPlayerOptionsChange;
+
+            // Apply PlayerExtraOptions: force random colors
+            if (extraOpts.IsForceRandomColors && pInfo.ColorId != 0)
+                pInfo.ColorId = 0;
 
             slot.SelectedColorIndex = pInfo.ColorId;
-            slot.IsColorDropdownEnabled = allowPlayerOptionsChange;
+            slot.IsColorDropdownEnabled = !extraOpts.IsForceRandomColors && allowPlayerOptionsChange;
+
+            // Apply PlayerExtraOptions: force random starts
+            if (extraOpts.IsForceRandomStarts && pInfo.StartingLocation != 0)
+                pInfo.StartingLocation = 0;
 
             slot.SelectedStartIndex = pInfo.StartingLocation;
+
+            // Apply PlayerExtraOptions: force no teams
+            if (extraOpts.IsForceNoTeams && pInfo.TeamId != 0)
+                pInfo.TeamId = 0;
+
             slot.SelectedTeamIndex = pInfo.TeamId;
 
             if (GameModeMap != null)
             {
-                slot.IsTeamDropdownEnabled = allowPlayerOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
-                slot.IsStartDropdownEnabled = allowPlayerOptionsChange && !GameModeMap.ForceRandomStartLocations;
+                slot.IsTeamDropdownEnabled = !extraOpts.IsForceNoTeams && allowPlayerOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
+                slot.IsStartDropdownEnabled = !extraOpts.IsForceRandomStarts && allowPlayerOptionsChange && !GameModeMap.ForceRandomStartLocations;
             }
         }
 
@@ -754,19 +815,36 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             slot.SelectedNameIndex = 1 + aiInfo.AILevel;
             slot.IsNameDropdownEnabled = allowOptionsChange;
 
+            // Apply PlayerExtraOptions: force random sides
+            if (extraOpts.IsForceRandomSides && aiInfo.SideId != 0)
+                aiInfo.SideId = 0;
+
             slot.SelectedSideIndex = aiInfo.SideId;
-            slot.IsSideDropdownEnabled = allowOptionsChange;
+            slot.IsSideDropdownEnabled = !extraOpts.IsForceRandomSides && allowOptionsChange;
+
+            // Apply PlayerExtraOptions: force random colors
+            if (extraOpts.IsForceRandomColors && aiInfo.ColorId != 0)
+                aiInfo.ColorId = 0;
 
             slot.SelectedColorIndex = aiInfo.ColorId;
-            slot.IsColorDropdownEnabled = allowOptionsChange;
+            slot.IsColorDropdownEnabled = !extraOpts.IsForceRandomColors && allowOptionsChange;
+
+            // Apply PlayerExtraOptions: force random starts
+            if (extraOpts.IsForceRandomStarts && aiInfo.StartingLocation != 0)
+                aiInfo.StartingLocation = 0;
 
             slot.SelectedStartIndex = aiInfo.StartingLocation;
+
+            // Apply PlayerExtraOptions: force no teams
+            if (extraOpts.IsForceNoTeams && aiInfo.TeamId != 0)
+                aiInfo.TeamId = 0;
+
             slot.SelectedTeamIndex = aiInfo.TeamId;
 
             if (GameModeMap != null)
             {
-                slot.IsTeamDropdownEnabled = allowOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
-                slot.IsStartDropdownEnabled = allowOptionsChange && !GameModeMap.ForceRandomStartLocations;
+                slot.IsTeamDropdownEnabled = !extraOpts.IsForceNoTeams && allowOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
+                slot.IsStartDropdownEnabled = !extraOpts.IsForceRandomStarts && allowOptionsChange && !GameModeMap.ForceRandomStartLocations;
             }
         }
 
@@ -794,10 +872,17 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         // Update PlayerNames for compatibility
         PlayerNames = Players.Select(p => p.Name).ToList();
+
+        PlayerUpdatingInProgress = false;
     }
 
     protected virtual void CopyPlayerDataFromUI()
     {
+        if (PlayerUpdatingInProgress)
+            return;
+
+        ClearReadyStatuses();
+
         var slots = PlayerSlots;
 
         var oldSideId = Players.Find(p => p.Name == ProgramConstants.PLAYERNAME)?.SideId;
@@ -1044,7 +1129,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [RelayCommand]
     private void PickRandomMap()
     {
-        int totalPlayerCount = Players.Count + AIPlayers.Count;
+        int totalPlayerCount = Players.Count(p => !IsPlayerSpectator(p)) + AIPlayers.Count;
         List<GameModeMap> gameModeMaps = GetRandomGameModeMaps(totalPlayerCount);
         if (gameModeMaps.Count < 1)
             return;
@@ -1208,6 +1293,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             if (cb != null && cb.IsEnabled)
             {
                 cb.IsChecked = kvp.Value;
+                cb.HostChecked = kvp.Value;
             }
         }
 
@@ -1217,6 +1303,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             if (dd != null && dd.IsEnabled)
             {
                 dd.SelectedIndex = kvp.Value;
+                dd.HostSelectedIndex = kvp.Value;
             }
         }
 

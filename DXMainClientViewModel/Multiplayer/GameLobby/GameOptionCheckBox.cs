@@ -23,6 +23,11 @@ public class GameOptionCheckBox : ObservableObject
         }
     }
 
+    /// <summary>
+    /// The host's checked state. Used for broadcasting and restoring after forced options.
+    /// </summary>
+    public bool HostChecked { get; set; }
+
     private bool _isEnabled = true;
     public bool IsEnabled
     {
@@ -34,5 +39,6 @@ public class GameOptionCheckBox : ObservableObject
     {
         Setting = setting;
         _isChecked = setting.Value != 0;
+        HostChecked = _isChecked;
     }
 }
