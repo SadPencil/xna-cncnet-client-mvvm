@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using ClientCore;
 using ClientCore.Extensions;
@@ -6,6 +7,7 @@ using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online;
 using Rampastring.Tools;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DXMainClientViewModel.Generic
@@ -13,6 +15,7 @@ namespace DXMainClientViewModel.Generic
     /// <summary>
     /// ViewModel for the loading screen.
     /// Handles updater initialization, map loading, and startup sequence.
+    /// Self-sufficient: polls for task completion internally via timer.
     /// </summary>
     public partial class LoadingScreenViewModel : ObservableObject, ILoadingScreenViewModel
     {
@@ -52,6 +55,8 @@ namespace DXMainClientViewModel.Generic
 
         private Task updaterInitTask;
         private Task mapLoadTask;
+        private Timer pollingTimer;
+        private DateTime lastLogTime = DateTime.MinValue;
 
         public LoadingScreenViewModel(CnCNetManager cncnetManager, MapLoader mapLoader, IUpdateService updateService)
         {
@@ -62,10 +67,7 @@ namespace DXMainClientViewModel.Generic
             Initialize();
         }
 
-        /// <summary>
-        /// Initializes the loading screen and starts background tasks.
-        /// </summary>
-        public void Initialize()
+        private void Initialize()
         {
             bool initUpdater = !ClientConfiguration.Instance.ModMode;
 
@@ -76,30 +78,43 @@ namespace DXMainClientViewModel.Generic
 
             mapLoader.Initialize();
             mapLoadTask = mapLoader.LoadMapsAsync();
+
+            pollingTimer = new Timer(OnPollTick, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
         }
 
-        /// <summary>
-        /// Checks if loading is complete and finishes the startup sequence.
-        /// Returns true if loading is complete.
-        /// </summary>
-        public bool CheckLoadingComplete()
+        private void OnPollTick(object state)
+        {
+            PollLoadingStatus();
+        }
+
+        private void PollLoadingStatus()
         {
             bool updaterDone = updaterInitTask == null || updaterInitTask.Status == TaskStatus.RanToCompletion;
             bool mapLoadDone = mapLoadTask.Status == TaskStatus.RanToCompletion;
 
             if (updaterDone && mapLoadDone)
             {
+                pollingTimer?.Dispose();
+                pollingTimer = null;
                 Finish();
-                return true;
+                return;
             }
 
             bool updaterFaulted = updaterInitTask != null && updaterInitTask.IsFaulted;
             if (updaterFaulted)
+            {
+                pollingTimer?.Dispose();
+                pollingTimer = null;
                 throw new Exception("Updater initialization task failed.", updaterInitTask.Exception);
+            }
 
             bool mapLoadFaulted = mapLoadTask.IsFaulted;
             if (mapLoadFaulted)
+            {
+                pollingTimer?.Dispose();
+                pollingTimer = null;
                 throw new Exception("Map loading task failed.", mapLoadTask.Exception);
+            }
 
             // Update status text
             if (!updaterDone && !mapLoadDone)
@@ -108,8 +123,6 @@ namespace DXMainClientViewModel.Generic
                 CurrentTaskText = "Waiting for updater initialization...";
             else if (!mapLoadDone)
                 CurrentTaskText = "Waiting for loading maps...";
-
-            return false;
         }
 
         private void InitUpdater()
