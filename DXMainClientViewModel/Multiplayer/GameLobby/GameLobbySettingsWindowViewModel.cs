@@ -17,7 +17,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// ViewModel for the game lobby settings window.
 /// Contains all business logic from GameLobbySettingsWindow.cs except XNA UI rendering.
 /// </summary>
-public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameLobbySettingsWindowViewModel
+public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameLobbySettingsWindowViewModel // checked
 {
     // --- Observable state ---
 
