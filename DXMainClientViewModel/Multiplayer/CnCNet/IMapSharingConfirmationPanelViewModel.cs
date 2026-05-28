@@ -10,6 +10,7 @@ public interface IMapSharingConfirmationPanelViewModel : INotifyPropertyChanged
     string HostName { get; }
     string StatusText { get; }
     bool IsDownloadAvailable { get; }
+    bool IsPanelVisible { get; set; }
 
     IAsyncRelayCommand DownloadMapCommand { get; }
     IRelayCommand CancelCommand { get; }

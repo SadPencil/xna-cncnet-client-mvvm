@@ -12,7 +12,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for the map sharing confirmation panel.
 /// Contains all business logic from MapSharingConfirmationPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IMapSharingConfirmationPanelViewModel
+public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IMapSharingConfirmationPanelViewModel // checked
 {
     private readonly string MapSharingRequestText = ("The game host has selected a map that\ndoesn't exist on your local installation.").L10N("Client:Main:MapSharingRequestText");
 
