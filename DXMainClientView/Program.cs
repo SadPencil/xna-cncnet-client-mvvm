@@ -61,6 +61,9 @@ public class Program
         services.AddSingleton<CnCNetManager>();
         services.AddSingleton<MapLoader>();
 
+        // Layout services
+        services.AddSingleton<IIniLayoutOverlayService, IniLayoutOverlayService>();
+
         // ViewModels
         services.AddTransient<ILoadingScreenViewModel, LoadingScreenViewModel>();
     }

@@ -9,8 +9,25 @@
         CanResize="False"
         Background="#000000">
   <Canvas>
-    <!-- Status text at bottom -->
-    <TextBlock x:Name="lblStatus"
+    <!-- ExtraControls from LoadingScreen.ini: logo, text, legal -->
+    <!-- These are XNAExtraPanel equivalents (Border with BackgroundTexture) -->
+    <Border x:Name="logo" Width="0" Height="0" />
+    <Border x:Name="text" Width="0" Height="0" />
+    <Border x:Name="legal" Width="0" Height="0" />
+
+    <!-- Border panels from GenericWindow.ini [$ExtraControls] -->
+    <!-- Normally created by INItializableWindow; pre-defined here so INI can set Visible=false -->
+    <Border x:Name="rabt" Width="0" Height="0" />
+    <Border x:Name="rabb" Width="0" Height="0" />
+    <Border x:Name="rabl" Width="0" Height="0" />
+    <Border x:Name="rabr" Width="0" Height="0" />
+    <Border x:Name="ractl" Width="0" Height="0" />
+    <Border x:Name="ractr" Width="0" Height="0" />
+    <Border x:Name="racbl" Width="0" Height="0" />
+    <Border x:Name="racbr" Width="0" Height="0" />
+
+    <!-- Status text - matches lblLoadingText INI section -->
+    <TextBlock x:Name="lblLoadingText"
                Canvas.Left="20" Canvas.Bottom="40"
                Text="{Binding StatusText}"
                Foreground="#AAAAAA"
