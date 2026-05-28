@@ -1,3 +1,4 @@
+// checked
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,12 +34,21 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
     [ObservableProperty]
     private bool _showPlayerNamesInGame;
 
-    // --- Events ---
+    [ObservableProperty]
+    private bool _isErrorVisible;
+
+    [ObservableProperty]
+    private string _errorMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool _isNoticeVisible;
+
+    [ObservableProperty]
+    private string _noticeMessage = string.Empty;
+
+    // --- Domain events (on concrete class only, not on interface) ---
 
     public event EventHandler? Exited;
-    public event EventHandler? GameValidationError;
-    public event EventHandler<string>? GameValidationErrorMessage;
-    public event EventHandler? SettingsLoaded;
 
     // --- Constructor ---
 
@@ -61,10 +71,9 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
     protected override void AddNotice(string message)
     {
-        NoticePosted?.Invoke(this, new NoticeEventArgs(message, NoticeSeverity.Info));
+        NoticeMessage = message;
+        IsNoticeVisible = true;
     }
-
-    public event EventHandler<NoticeEventArgs>? NoticePosted;
 
     // --- Lifecycle ---
 
@@ -107,6 +116,18 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
     }
 
     [RelayCommand]
+    private void DismissError()
+    {
+        IsErrorVisible = false;
+    }
+
+    [RelayCommand]
+    private void DismissNotice()
+    {
+        IsNoticeVisible = false;
+    }
+
+    [RelayCommand]
     private void RandomizeSides()
     {
         int sideCount = SideCount;
@@ -132,7 +153,8 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
             return;
         }
 
-        GameValidationErrorMessage?.Invoke(this, error);
+        ErrorMessage = error;
+        IsErrorVisible = true;
     }
 
     protected override void LeaveGame()
@@ -365,8 +387,6 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
                 cb.IsChecked = skirmishSettingsIni.GetBooleanValue("GameOptions", cb.Name, cb.IsChecked);
             }
         }
-
-        SettingsLoaded?.Invoke(this, EventArgs.Empty);
     }
 
     private void CheckLoadedPlayerVariableBounds(PlayerInfo pInfo, bool isAIPlayer = false)
