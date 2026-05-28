@@ -12,11 +12,12 @@ namespace DXMainClientViewModel.Domain.Multiplayer.CnCNet
     /// </summary>
     internal sealed class CustomCnCNetGame : CnCNetGame
     {
-        private static readonly Lazy<Image> lazyFallbackImage = new(() =>
-            Image.Load(
-                Assembly.GetAssembly(typeof(CustomCnCNetGame))!
-                .GetManifestResourceStream("DTAClient.Icons.unknownicon.png")));
-        private static Image FallbackImage => lazyFallbackImage.Value;
+        //private static readonly Lazy<Image> lazyFallbackImage = new(() =>
+        //    Image.Load(
+        //        Assembly.GetAssembly(typeof(CustomCnCNetGame))!
+        //        .GetManifestResourceStream("DTAClient.Icons.unknownicon.png")));
+        //private static Image FallbackImage => lazyFallbackImage.Value;
+        private static Image? FallbackImage => null;
 
         public CustomCnCNetGame(string iconFilename)
         {
