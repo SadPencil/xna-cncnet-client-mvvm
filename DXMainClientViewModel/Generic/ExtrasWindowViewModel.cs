@@ -16,17 +16,10 @@ namespace DXMainClientViewModel.Generic
     public partial class ExtrasWindowViewModel : ObservableObject, IExtrasWindowViewModel
     {
         [ObservableProperty]
+        private bool isVisible;
+
+        [ObservableProperty]
         private bool isMapEditorAvailable;
-
-        /// <summary>
-        /// Raised when the statistics window should be shown.
-        /// </summary>
-        public event Action StatisticsRequested;
-
-        /// <summary>
-        /// Raised when the window should be closed.
-        /// </summary>
-        public event Action CloseRequested;
 
         public ExtrasWindowViewModel()
         {
@@ -36,7 +29,8 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void OpenStatistics()
         {
-            StatisticsRequested?.Invoke();
+            // Parent ViewModel coordinates showing StatisticsWindow.
+            IsVisible = false;
         }
 
         [RelayCommand]
@@ -53,6 +47,8 @@ namespace DXMainClientViewModel.Generic
             mapEditorProcess.StartInfo.UseShellExecute = false;
 
             mapEditorProcess.Start();
+
+            IsVisible = false;
         }
 
         [RelayCommand]
@@ -64,7 +60,7 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void Close()
         {
-            CloseRequested?.Invoke();
+            IsVisible = false;
         }
     }
 }
