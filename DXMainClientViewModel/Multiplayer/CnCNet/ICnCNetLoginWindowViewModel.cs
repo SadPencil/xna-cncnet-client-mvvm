@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
@@ -7,11 +8,15 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 public interface ICnCNetLoginWindowViewModel : INotifyPropertyChanged
 {
     string UserName { get; set; }
-    string Password { get; set; }
     bool RememberPassword { get; set; }
     bool PersistentMode { get; set; }
     bool AutoConnect { get; set; }
+    bool IsAutoConnectAllowed { get; }
+    bool IsWindowVisible { get; set; }
 
     IAsyncRelayCommand ConnectCommand { get; }
     IRelayCommand CancelCommand { get; }
+
+    event EventHandler? ConnectRequested;
+    event EventHandler<string>? ValidationError;
 }

@@ -14,7 +14,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for the CnCNet login window.
 /// Contains all business logic from CnCNetLoginWindow.cs except XNA UI rendering.
 /// </summary>
-public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLoginWindowViewModel
+public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLoginWindowViewModel // checked
 {
     private readonly UserINISettings iniSettings;
 
