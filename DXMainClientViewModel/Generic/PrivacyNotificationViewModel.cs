@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
 using ClientCore.Extensions;
-using System;
 
 namespace DXMainClientViewModel.Generic
 {
@@ -10,7 +9,7 @@ namespace DXMainClientViewModel.Generic
     /// ViewModel for the privacy notification.
     /// Handles privacy policy acceptance.
     /// </summary>
-    public partial class PrivacyNotificationViewModel : ObservableObject, IPrivacyNotificationViewModel
+    public partial class PrivacyNotificationViewModel : ObservableObject, IPrivacyNotificationViewModel // checked
     {
         [ObservableProperty]
         private string titleText = "Privacy Policy";
@@ -27,11 +26,6 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isVisible;
 
-        /// <summary>
-        /// Raised when the notification should be closed.
-        /// </summary>
-        public event Action CloseRequested;
-
         public PrivacyNotificationViewModel()
         {
             DescriptionText = "This application makes use of CnCNet web & tunnel server services and is subject to collection of technical & other necessary information through them.".L10N("Client:Main:TOSText");
@@ -43,7 +37,6 @@ namespace DXMainClientViewModel.Generic
             UserINISettings.Instance.PrivacyPolicyAccepted.Value = true;
             UserINISettings.Instance.SaveSettings();
             IsVisible = false;
-            CloseRequested?.Invoke();
         }
 
         [RelayCommand]
