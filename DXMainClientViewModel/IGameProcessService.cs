@@ -32,5 +32,10 @@ namespace DXMainClientViewModel
         /// Whether to set single core affinity on the game process.
         /// </summary>
         bool SingleCoreAffinity { get; set; }
+
+        /// <summary>
+        /// Starts the main game process.
+        /// </summary>
+        void StartGameProcess();
     }
 }

@@ -14,8 +14,6 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
 
     IRelayCommand ChangeTunnelCommand { get; }
     IRelayCommand InvitePlayerCommand { get; }
-    IRelayCommand SaveGameOptionPresetCommand { get; }
-    IRelayCommand LoadGameOptionPresetCommand { get; }
 
     void SetUp(Channel channel, bool isHost, int maxPlayers, CnCNetTunnel tunnel, string hostName, bool isCustomPassword, int skillLevel);
     void OnJoined();
