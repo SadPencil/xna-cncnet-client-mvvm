@@ -11,7 +11,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for the password request window.
 /// Contains all business logic from PasswordRequestWindow.cs except XNA UI rendering.
 /// </summary>
-public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswordRequestWindowViewModel // checked
+public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswordRequestWindowViewModel
 {
     private HostedCnCNetGame? hostedGame;
 

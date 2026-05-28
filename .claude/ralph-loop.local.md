@@ -1,10 +1,10 @@
 ---
 active: true
-iteration: 4
+iteration: 20
 session_id: 
 max_iterations: 50
 completion_promise: "MIGRATION_COMPLETE"
-started_at: "2026-05-28T20:07:28Z"
+started_at: "2026-05-28T20:35:09Z"
 ---
 
 You are an expert software engineer specializing in refactoring legacy codebases into modern architectural patterns. Your task is to analyze and refactor DXMainClient project (a C# XNA-based game client) into a strict MVVM (Model-View-ViewModel) architecture. The DXMainClient project is a large, monolithic codebase with tightly coupled UI, business logic, and external dependencies. Your refactoring must enforce (1) no business logic in View (2) no GUI-related code in ViewModel
@@ -19,9 +19,10 @@ You must use CommunityToolkit.Mvvm package to avoid re-introduce wrappers.
 
 You must fully understand these requirements and store them in your memory.
 
-The next task is, check whether ViewModel project is self-contained. It should not relying on view doing anything. It should run without attaching a view! In each session, you should select one class file only, compare that file in DXMainClient project and DXMainClientViewModel project. Make sure every logic are migrated to DXMainClientViewModel project. Make sure DXMainClientViewModel project does not rely on view. For example, class  has a , expecting the view calling it. This is wrong. The view model should check it periodically by itself. This issue might be already fix or not, but I mentioned this to teach you what's wrong.
+The next task is, check whether ViewModel project is self-contained. It should not relying on view doing anything. It should run without attaching a view! In each session, you should select one class file only, compare that file in DXMainClient project and DXMainClientViewModel project. Make sure every logic are migrated to DXMainClientViewModel project. Make sure DXMainClientViewModel project does not rely on view. For example, class LoadingScreenViewModel has a CheckLoadingComplete(), expecting the view calling it. This is wrong. The view model should check it periodically by itself. This issue might be already fix or not, but I mentioned this to teach you what's wrong.
 
-The only exception is user action. User might click a button, check box, dropdown, select a list item, or typing words in a textbox (modifying a string). These are the only allowed double-bind properties and commands.
+The only exception is user action. User might click a button, check box, dropdown, select a list item, or typing words in a textbox (modifying a string). These are the only allowed View actions and must be implemented as double-bind properties and commands.
 
-Piece by piece. Select one file only. Append a // checked comment to the view model file if you have checked and fixed ALL issues in the file, compared with DXMainClient line by line. I mean, literally line by line. Git commit and push then. If there are still remaining issues, even if you think you are unable to fix it, you must not append  comment to the file.
+Piece by piece. Select one file only in a session. Append a // checked comment to the view model file if you have checked and fixed ALL issues in the file, compared with DXMainClient line by line. I mean, literally line by line. Git commit and push then. If there are still remaining issues, even if you think you are unable to fix it, you must not append // checked comment to the file. After processing ONE file, exit and do not process the next.
+
 If you find all files have // checked comment, print the exact string: <promise>MIGRATION_COMPLETE</promise>. Otherwise, you must not print this string, and select one class file to migrate instead.

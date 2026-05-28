@@ -30,7 +30,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for the LAN lobby.
 /// Contains all business logic from LANLobby.cs except XNA UI rendering.
 /// </summary>
-public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel // checked
+public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 {
     private const double ALIVE_MESSAGE_INTERVAL = 5.0;
     private const double INACTIVITY_REMOVE_TIME = 10.0;

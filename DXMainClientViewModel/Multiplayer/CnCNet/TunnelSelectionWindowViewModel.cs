@@ -18,7 +18,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for the tunnel selection window.
 /// Contains all business logic from TunnelSelectionWindow.cs except XNA UI rendering.
 /// </summary>
-public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelSelectionWindowViewModel // checked
+public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelSelectionWindowViewModel
 {
     private readonly TunnelHandler tunnelHandler;
 
