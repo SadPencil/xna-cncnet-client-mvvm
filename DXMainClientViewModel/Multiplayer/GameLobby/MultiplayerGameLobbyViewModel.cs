@@ -121,6 +121,8 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
     public event EventHandler MessageSoundRequested;
     public event EventHandler MessageSoundReenableRequested;
 
+    protected void RaiseMessageSoundRequested() => MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+
     // --- Constructor ---
 
     protected MultiplayerGameLobbyViewModel(
