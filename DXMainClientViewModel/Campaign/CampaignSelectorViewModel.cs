@@ -1,8 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -18,590 +17,685 @@ using DXMainClientViewModel.Domain;
 
 using Rampastring.Tools;
 
-namespace DXMainClientViewModel.Campaign;
-
-public partial class CampaignSelectorViewModel : ObservableObject, ICampaignSelectorViewModel
+namespace DXMainClientViewModel.Campaign
 {
-    private const string SETTINGS_PATH = "Client/CampaignSettings.ini";
-
-    private static readonly string[] DifficultyNamesArray = ["Easy", "Medium", "Hard"];
-
-    private static readonly string[] DifficultyIniPaths =
-    [
-        "INI/Map Code/Difficulty Easy.ini",
-        "INI/Map Code/Difficulty Medium.ini",
-        "INI/Map Code/Difficulty Hard.ini"
-    ];
-
-    private readonly string[] filesToCheck =
-    [
-        "INI/AI.ini",
-        "INI/AIE.ini",
-        "INI/Art.ini",
-        "INI/ArtE.ini",
-        "INI/Enhance.ini",
-        "INI/Rules.ini",
-        "INI/Map Code/Difficulty Hard.ini",
-        "INI/Map Code/Difficulty Medium.ini",
-        "INI/Map Code/Difficulty Easy.ini"
-    ];
-
-    private readonly IDiscordHandlerService discordHandler;
-    private readonly ICampaignGameProcessService gameProcessService;
-    private readonly IFileIntegrityService fileIntegrityService;
-
-    private List<Mission> allMissions = [];
-    private Dictionary<int, Mission> uniqueIDToMissions = new();
-    private List<Mission> selectedMissions = [];
-    private Mission? missionToLaunch;
-    private IniFile? gameOptionsIni;
-
-    public CampaignSelectorViewModel(
-        IDiscordHandlerService discordHandler,
-        ICampaignGameProcessService gameProcessService,
-        IFileIntegrityService fileIntegrityService)
+    public partial class CampaignSelectorViewModel : ObservableObject, ICampaignSelectorViewModel
     {
-        this.discordHandler = discordHandler;
-        this.gameProcessService = gameProcessService;
-        this.fileIntegrityService = fileIntegrityService;
+        private const string SETTINGS_PATH = "Client/CampaignSettings.ini";
 
-        CheaterWindow = new CheaterWindowViewModel(OnCheaterConfirmed, OnCheaterCancelled);
+        private static string[] DifficultyNamesArray = new string[] { "Easy", "Medium", "Hard" };
 
-        gameProcessService.GameProcessExited += OnGameProcessExited;
-    }
-
-    #region Observable Properties
-
-    [ObservableProperty]
-    private IReadOnlyList<CampaignListItem> campaignListItems = [];
-
-    [ObservableProperty]
-    private int selectedCampaignIndex = -1;
-
-    [ObservableProperty]
-    private string missionDescriptionText = string.Empty;
-
-    [ObservableProperty]
-    private string? missionPreviewImagePath;
-
-    [ObservableProperty]
-    private bool isMissionPreviewPanelVisible;
-
-    [ObservableProperty]
-    private bool isReturnButtonVisible;
-
-    [ObservableProperty]
-    private bool isControlsEnabled = true;
-
-    [ObservableProperty]
-    private IReadOnlyList<string> difficultyNames = DifficultyNamesArray;
-
-    [ObservableProperty]
-    private int selectedDifficultyIndex = 1;
-
-    [ObservableProperty]
-    private bool canLaunchCampaign;
-
-    [ObservableProperty]
-    private bool isCheaterWindowVisible;
-
-    public ICheaterWindowViewModel CheaterWindow { get; }
-
-    public IReadOnlyCollection<Mission> AllMissions => allMissions;
-    public IReadOnlyDictionary<int, Mission> UniqueIDToMissions => uniqueIDToMissions;
-
-    #endregion
-
-    #region Commands
-
-    [RelayCommand]
-    private void LaunchCampaign()
-    {
-        SaveSettings();
-
-        if (SelectedCampaignIndex < 0 || SelectedCampaignIndex >= selectedMissions.Count)
-            return;
-
-        Mission mission = selectedMissions[SelectedCampaignIndex];
-
-        if (!ClientConfiguration.Instance.ModMode &&
-            (!fileIntegrityService.IsFileNonexistantOrOriginal(mission.Scenario) || AreFilesModified()))
+        private static string[] DifficultyIniPaths = new string[]
         {
-            missionToLaunch = mission;
-            SetCheaterWindowText();
-            IsCheaterWindowVisible = true;
-            return;
-        }
-
-        LaunchMission(mission);
-    }
-
-    [RelayCommand]
-    private void Return()
-    {
-        // The View's parent (CampaignTagSelector) handles the actual navigation.
-        // This command signals the intent to return.
-    }
-
-    [RelayCommand]
-    private void Cancel()
-    {
-        SaveSettings();
-    }
-
-    [RelayCommand]
-    private void Refresh()
-    {
-        ReadMissionList();
-    }
-
-    #endregion
-
-    #region Initialization
-
-    public void Initialize()
-    {
-        gameOptionsIni = new IniFile(SafePath.CombineFilePath(
-            ProgramConstants.GetBaseResourcePath(),
-            ClientConfiguration.GAME_OPTIONS));
-
-        ReadMissionList();
-
-        LoadSettings();
-    }
-
-    #endregion
-
-    #region Selection Changed
-
-    partial void OnSelectedCampaignIndexChanged(int value)
-    {
-        if (value < 0 || value >= selectedMissions.Count)
-        {
-            MissionDescriptionText = string.Empty;
-            MissionPreviewImagePath = null;
-            CanLaunchCampaign = false;
-            return;
-        }
-
-        Mission mission = selectedMissions[value];
-        MissionPreviewImagePath = string.IsNullOrEmpty(mission.PreviewImage) ? null : mission.PreviewImage;
-
-        if (string.IsNullOrEmpty(mission.Scenario))
-        {
-            MissionDescriptionText = string.Empty;
-            CanLaunchCampaign = false;
-            return;
-        }
-
-        MissionDescriptionText = mission.GUIDescription;
-
-        if (!mission.Enabled)
-        {
-            CanLaunchCampaign = false;
-            return;
-        }
-
-        CanLaunchCampaign = true;
-    }
-
-    #endregion
-
-    #region Mission List Management
-
-    private void ReadMissionList()
-    {
-        ParseBattleIni("INI/Battle.ini");
-
-        if (allMissions.Count == 0)
-            ParseBattleIni("INI/" + ClientConfiguration.Instance.BattleFSFileName);
-
-        LoadCustomMissions();
-
-        LoadMissionsWithFilter(null, disableCustomMissions: true, disableOfficialMissions: false);
-    }
-
-    private bool ParseBattleIni(string path)
-    {
-        Logger.Log("Attempting to parse " + path + " to populate mission list.");
-
-        FileInfo battleIniFileInfo = SafePath.GetFile(ProgramConstants.GamePath, path);
-        if (!battleIniFileInfo.Exists)
-        {
-            Logger.Log("File " + path + " not found. Ignoring.");
-            return false;
-        }
-
-        if (selectedMissions.Count > 0)
-        {
-            throw new InvalidOperationException("Loading multiple Battle*.ini files is not supported anymore.");
-        }
-
-        var battleIni = new IniFile(battleIniFileInfo.FullName);
-
-        List<string>? battleKeys = battleIni.GetSectionKeys("Battles");
-
-        if (battleKeys == null)
-            return false;
-
-        for (int i = 0; i < battleKeys.Count; i++)
-        {
-            string battleEntry = battleKeys[i];
-            string battleSection = battleIni.GetStringValue("Battles", battleEntry, "NOT FOUND");
-
-            if (!battleIni.SectionExists(battleSection))
-                continue;
-
-            var mission = new Mission(battleIni.GetSection(battleSection), missionCodeName: battleEntry);
-            AddMission(mission);
-        }
-
-        Logger.Log("Finished parsing " + path + ".");
-        return true;
-    }
-
-    private void LoadCustomMissions()
-    {
-        string customMissionsDirectory = SafePath.CombineDirectoryPath(
-            ProgramConstants.GamePath, ClientConfiguration.Instance.CustomMissionPath);
-        if (!Directory.Exists(customMissionsDirectory))
-            return;
-
-        string[] mapFiles = Directory.GetFiles(customMissionsDirectory, "*.map");
-        if (mapFiles.Length == 0)
-            return;
-
-        foreach (string mapFilePath in mapFiles)
-        {
-            var mapFile = new IniFile(mapFilePath);
-
-            IniSection? clientMissionDataSection = mapFile.GetSection("ClientMissionConfig");
-
-            if (clientMissionDataSection is null)
-                continue;
-
-            IniSection? gameMissionDataSection = mapFile.GetSection("GameMissionConfig");
-
-            string filename = new FileInfo(mapFilePath).Name;
-            string scenario = SafePath.CombineFilePath(ClientConfiguration.Instance.CustomMissionPath, filename);
-            Mission mission = Mission.NewCustomMission(clientMissionDataSection, missionCodeName: filename, scenario, gameMissionDataSection);
-            AddMission(mission);
-        }
-    }
-
-    private void AddMission(Mission mission)
-    {
-        allMissions.Add(mission);
-
-        if (uniqueIDToMissions.ContainsKey(mission.CustomMissionID))
-        {
-            Logger.Log($"CampaignSelector: duplicated mission. CodeName: {mission.CodeName}. ID: {mission.CustomMissionID}. Description: {mission.UntranslatedGUIName}.");
-            if (!string.IsNullOrEmpty(mission.Scenario))
-                mission.Enabled = false;
-        }
-        else
-        {
-            uniqueIDToMissions.Add(mission.CustomMissionID, mission);
-        }
-    }
-
-    public void LoadMissionsWithFilter(ISet<string>? selectedTags, bool disableCustomMissions = true, bool disableOfficialMissions = false)
-    {
-        selectedMissions.Clear();
-        SelectedCampaignIndex = -1;
-
-        IEnumerable<Mission> missions = allMissions;
-        if (disableCustomMissions && disableOfficialMissions)
-        {
-            // do nothing
-        }
-        else if (disableCustomMissions)
-        {
-            missions = missions.Where(mission => !mission.IsCustomMission);
-        }
-        else if (disableOfficialMissions)
-        {
-            missions = missions.Where(mission => mission.IsCustomMission);
-        }
-
-        if (selectedTags != null)
-            missions = missions.Where(mission => mission.Tags.Intersect(selectedTags).Any()).ToList();
-        selectedMissions = missions.ToList();
-
-        var items = new List<CampaignListItem>(selectedMissions.Count);
-        foreach (Mission mission in selectedMissions)
-        {
-            items.Add(new CampaignListItem
-            {
-                Text = mission.GUIName,
-                IsEnabled = mission.Enabled,
-                IsHeader = !mission.Enabled || (string.IsNullOrEmpty(mission.Scenario) && mission.Enabled),
-                IsSelectable = mission.Enabled && !string.IsNullOrEmpty(mission.Scenario),
-                IconPath = string.IsNullOrEmpty(mission.IconPath) ? null : mission.IconPath + "icon.png"
-            });
-        }
-
-        CampaignListItems = items;
-    }
-
-    #endregion
-
-    #region Mission Launch
-
-    private void LaunchMission(Mission mission)
-    {
-        CustomMissionHelper.CopySupplementalMissionFiles(mission);
-
-        FileInfo spawnerSettingsFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.SPAWNER_SETTINGS);
-
-        spawnerSettingsFile.Delete();
-
-        bool copyMapsToSpawnmapINI = ClientConfiguration.Instance.CopyMissionsToSpawnmapINI;
-
-        string scenario = mission.Scenario;
-        bool scenarioPathFound = mission.TryGetScenarioFilePath(out string scenarioPath);
-
-        if (!scenarioPathFound)
-        {
-            Logger.Log($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without applying {nameof(ClientConfiguration.Instance.CopyMissionsToSpawnmapINI)}.");
-            copyMapsToSpawnmapINI = false;
-        }
-
-        Logger.Log("About to write spawn.ini.");
-        IniFile spawnIni = new(spawnerSettingsFile.FullName)
-        {
-            Comment = "Generated by CnCNet Client"
+            "INI/Map Code/Difficulty Easy.ini",
+            "INI/Map Code/Difficulty Medium.ini",
+            "INI/Map Code/Difficulty Hard.ini"
         };
-        IniSection spawnIniSettings = new("Settings");
 
-        if (copyMapsToSpawnmapINI)
-            spawnIniSettings.AddKey("Scenario", "spawnmap.ini");
-        else
-            spawnIniSettings.AddKey("Scenario", scenario);
+        private readonly IDiscordHandlerService discordHandler;
+        private readonly ICampaignGameProcessService gameProcessService;
+        private readonly IFileIntegrityService fileIntegrityService;
 
-        if (UserINISettings.Instance.GameSpeed == 0)
-            UserINISettings.Instance.GameSpeed.Value = 1;
+        private List<Mission> selectedMissions = [];
 
-        spawnIniSettings.AddKey("CampaignID", mission.CampaignID.ToString(CultureInfo.InvariantCulture));
-        spawnIniSettings.AddKey("GameSpeed", UserINISettings.Instance.GameSpeed.ToString());
+        // View-only: mission preview panel is handled by the View
+        // View-only: lbCampaignList, btnLaunch, btnCancel, btnReturn, tbMissionDescription, trbDifficultySelector are handled by the View
+        // View-only: userSettings (IUserSetting) are handled by the View
+        // View-only: cheaterWindow is handled by the View
 
-        switch (ClientConfiguration.Instance.ClientGameType)
+        // CheckBoxes and DropDowns are created by the View from INI, but their
+        // data (ApplySpawnIniCode, ApplyMapCode, settings save/load) is business logic.
+        // The View registers them here so the ViewModel can call their logic.
+        public List<ICampaignCheckBoxOption> CheckBoxOptions { get; } = new();
+        public List<ICampaignDropDownOption> DropDownOptions { get; } = new();
+
+        private IniFile? gameOptionsIni;
+
+        private string[] filesToCheck = new string[]
         {
-            case ClientType.YR or ClientType.Ares:
-                spawnIniSettings.AddKey("Ra2Mode", (!mission.RequiredAddon).ToString(CultureInfo.InvariantCulture));
-                break;
-            case ClientType.TS:
-                spawnIniSettings.AddKey("Firestorm", mission.RequiredAddon.ToString(CultureInfo.InvariantCulture));
-                break;
+            "INI/AI.ini",
+            "INI/AIE.ini",
+            "INI/Art.ini",
+            "INI/ArtE.ini",
+            "INI/Enhance.ini",
+            "INI/Rules.ini",
+            "INI/Map Code/Difficulty Hard.ini",
+            "INI/Map Code/Difficulty Medium.ini",
+            "INI/Map Code/Difficulty Easy.ini"
+        };
+
+        private Mission? missionToLaunch;
+
+        private List<Mission> _allMissions = [];
+        public IReadOnlyCollection<Mission> AllMissions { get => _allMissions; }
+
+        private Dictionary<int, Mission> _uniqueIDToMissions = new();
+        public IReadOnlyDictionary<int, Mission> UniqueIDToMissions => _uniqueIDToMissions;
+
+        public CampaignSelectorViewModel(
+            IDiscordHandlerService discordHandler,
+            ICampaignGameProcessService gameProcessService,
+            IFileIntegrityService fileIntegrityService)
+        {
+            this.discordHandler = discordHandler;
+            this.gameProcessService = gameProcessService;
+            this.fileIntegrityService = fileIntegrityService;
+
+            CheaterWindow = new CheaterWindowViewModel(OnCheaterConfirmed, OnCheaterCancelled);
+
+            gameProcessService.GameProcessExited += OnGameProcessExited;
+
+            gameOptionsIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(),
+                ClientConfiguration.GAME_OPTIONS));
+
+            SelectedDifficultyIndex = UserINISettings.Instance.Difficulty;
+
+            ReadMissionList();
+
+            LoadSettings();
         }
 
-        spawnIniSettings.AddKey("CustomLoadScreen", LoadingScreenController.GetLoadScreenName(mission.Side.ToString()));
+        #region Observable Properties (replacing direct UI control manipulation)
 
-        spawnIniSettings.AddKey("IsSinglePlayer", "Yes");
-        spawnIniSettings.AddKey("SidebarHack", ClientConfiguration.Instance.SidebarHack.ToString(CultureInfo.InvariantCulture));
-        spawnIniSettings.AddKey("Side", mission.Side.ToString(CultureInfo.InvariantCulture));
-        spawnIniSettings.AddKey("BuildOffAlly", mission.BuildOffAlly.ToString(CultureInfo.InvariantCulture));
+        [ObservableProperty]
+        private IReadOnlyList<string> campaignNames = [];
 
-        spawnIniSettings.AddKey("DifficultyModeHuman", mission.PlayerAlwaysOnNormalDifficulty ? "1" : SelectedDifficultyIndex.ToString(CultureInfo.InvariantCulture));
-        spawnIniSettings.AddKey("DifficultyModeComputer", GetComputerDifficulty().ToString(CultureInfo.InvariantCulture));
+        [ObservableProperty]
+        private int selectedCampaignIndex = -1;
 
-        if (mission.IsCustomMission)
+        [ObservableProperty]
+        private string selectedCampaignName = string.Empty;
+
+        [ObservableProperty]
+        private string selectedCampaignDescription = string.Empty;
+
+        [ObservableProperty]
+        private string missionDescriptionText = string.Empty;
+
+        [ObservableProperty]
+        private string? missionPreviewImagePath;
+
+        [ObservableProperty]
+        private bool isMissionPreviewPanelVisible;
+
+        [ObservableProperty]
+        private bool isReturnButtonVisible;
+
+        [ObservableProperty]
+        private bool isControlsEnabled = true;
+
+        [ObservableProperty]
+        private IReadOnlyList<string> difficultyNames = DifficultyNamesArray;
+
+        [ObservableProperty]
+        private int selectedDifficultyIndex = 1;
+
+        [ObservableProperty]
+        private bool canLaunchCampaign;
+
+        [ObservableProperty]
+        private bool isCheaterWindowVisible;
+
+        public ICheaterWindowViewModel CheaterWindow { get; }
+
+        #endregion
+
+        #region Commands
+
+        [RelayCommand]
+        private void LaunchCampaign()
         {
-            spawnIniSettings.AddKey("CustomMissionID", mission.CustomMissionID.ToString(CultureInfo.InvariantCulture));
-        }
+            SaveSettings();
 
-        spawnIni.AddSection(spawnIniSettings);
-        WriteMissionSectionToSpawnIni(spawnIni, mission);
+            if (SelectedCampaignIndex < 0 || SelectedCampaignIndex >= selectedMissions.Count)
+                return;
 
-        List<string>? forcedKeys = gameOptionsIni?.GetSectionKeys("CampaignForcedSpawnIniOptions");
+            Mission mission = selectedMissions[SelectedCampaignIndex];
 
-        if (forcedKeys != null)
-        {
-            foreach (string key in forcedKeys)
+            if (!ClientConfiguration.Instance.ModMode &&
+                (!fileIntegrityService.IsFileNonexistantOrOriginal(mission.Scenario) || AreFilesModified()))
             {
-                spawnIni.SetStringValue("Settings", key,
-                    gameOptionsIni!.GetStringValue("CampaignForcedSpawnIniOptions", key, String.Empty));
+                // Confront the user by showing the cheater screen
+                missionToLaunch = mission;
+                IsCheaterWindowVisible = true;
+                return;
+            }
+
+            LaunchMission(mission);
+        }
+
+        [RelayCommand]
+        private void Return()
+        {
+            // Signals the View (CampaignTagSelector) to switch back
+        }
+
+        [RelayCommand]
+        private void Cancel()
+        {
+            SaveSettings();
+        }
+
+        [RelayCommand]
+        private void Refresh()
+        {
+            ReadMissionList();
+        }
+
+        #endregion
+
+        #region Selection Changed (replaces LbCampaignList_SelectedIndexChanged)
+
+        partial void OnSelectedCampaignIndexChanged(int value)
+        {
+            if (value < 0 || value >= selectedMissions.Count)
+            {
+                MissionDescriptionText = string.Empty;
+                MissionPreviewImagePath = null;
+                CanLaunchCampaign = false;
+                return;
+            }
+
+            Mission mission = selectedMissions[value];
+
+            MissionPreviewImagePath = string.IsNullOrEmpty(mission.PreviewImage) ? null : mission.PreviewImage;
+
+            if (string.IsNullOrEmpty(mission.Scenario))
+            {
+                MissionDescriptionText = string.Empty;
+                CanLaunchCampaign = false;
+                return;
+            }
+
+            MissionDescriptionText = mission.GUIDescription;
+
+            if (!mission.Enabled)
+            {
+                CanLaunchCampaign = false;
+                return;
+            }
+
+            CanLaunchCampaign = true;
+        }
+
+        #endregion
+
+        #region Mission List Management
+
+        private void AddMission(Mission mission)
+        {
+            // no matter whether the key is duplicated, the mission is always added to AllMissions
+            _allMissions.Add(mission);
+
+            // but only the first mission is recorded in UniqueIDToMissions
+            if (_uniqueIDToMissions.ContainsKey(mission.CustomMissionID))
+            {
+                Logger.Log($"CampaignSelector: duplicated mission. CodeName: {mission.CodeName}. ID: {mission.CustomMissionID}. Description: {mission.UntranslatedGUIName}.");
+                if (!string.IsNullOrEmpty(mission.Scenario))
+                    mission.Enabled = false;
+            }
+            else
+            {
+                _uniqueIDToMissions.Add(mission.CustomMissionID, mission);
             }
         }
 
-        spawnIni.WriteIniFile();
-
-        var difficultyIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[SelectedDifficultyIndex]));
-        string difficultyName = DifficultyNamesArray[SelectedDifficultyIndex];
-
-        if (copyMapsToSpawnmapINI)
+        private void ReadMissionList()
         {
-            var mapIni = new IniFile(scenarioPath);
-            IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
-            mapIni.WriteIniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawnmap.ini"));
+            ParseBattleIni("INI/Battle.ini");
+
+            if (AllMissions.Count == 0)
+                ParseBattleIni("INI/" + ClientConfiguration.Instance.BattleFSFileName);
+
+            LoadCustomMissions();
+
+            LoadMissionsWithFilter(null, disableCustomMissions: true, disableOfficialMissions: false);
         }
 
-        UserINISettings.Instance.Difficulty.Value = SelectedDifficultyIndex;
-        UserINISettings.Instance.SaveSettings();
-
-        IsControlsEnabled = false;
-
-        discordHandler.SetCampaignPresence(mission.UntranslatedGUIName, difficultyName);
-        gameProcessService.StartGameProcess();
-    }
-
-    public static void WriteMissionSectionToSpawnIni(IniFile spawnIni, Mission mission)
-    {
-        bool hasGameMissionData = false;
-
-        bool scenarioPathFound = mission.TryGetScenarioFilePath(out string scenarioPath);
-        if (!scenarioPathFound)
+        private void LoadCustomMissions()
         {
-            Logger.Log($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
-            return;
-        }
+            string customMissionsDirectory = SafePath.CombineDirectoryPath(ProgramConstants.GamePath, ClientConfiguration.Instance.CustomMissionPath);
+            if (!Directory.Exists(customMissionsDirectory))
+                return;
 
-        if (!mission.IsCustomMission && File.Exists(scenarioPath))
-        {
-            var mapIni = new IniFile(scenarioPath);
-            mission.GameMissionConfigSection = mapIni.GetSection("GameMissionConfig");
+            string[] mapFiles = Directory.GetFiles(customMissionsDirectory, "*.map");
+            if (mapFiles.Length == 0)
+                return;
 
-            if (mission.GameMissionConfigSection is not null)
-                hasGameMissionData = true;
-        }
-
-        if (mission.IsCustomMission && mission.GameMissionConfigSection is not null || hasGameMissionData)
-        {
-            IniSection spawnIniMissionIniSection = new(mission.Scenario);
-            string loadingScreenName = string.Empty;
-            string loadingScreenPalName = string.Empty;
-            foreach (var kvp in mission.GameMissionConfigSection!.Keys)
+            foreach (string mapFilePath in mapFiles)
             {
-                if (string.IsNullOrEmpty(kvp.Value))
+                var mapFile = new IniFile(mapFilePath);
+
+                IniSection? clientMissionDataSection = mapFile.GetSection("ClientMissionConfig");
+
+                if (clientMissionDataSection is null)
+                    continue;
+
+                IniSection? gameMissionDataSection = mapFile.GetSection("GameMissionConfig");
+
+                string filename = new FileInfo(mapFilePath).Name;
+                string scenario = SafePath.CombineFilePath(ClientConfiguration.Instance.CustomMissionPath, filename);
+                Mission mission = Mission.NewCustomMission(clientMissionDataSection, missionCodeName: filename, scenario, gameMissionDataSection);
+                AddMission(mission);
+            }
+        }
+
+        /// <summary>
+        /// Parses a Battle(E).ini file. Returns true if succesful (file found), otherwise false.
+        /// </summary>
+        /// <param name="path">The path of the file, relative to the game directory.</param>
+        /// <returns>True if succesful, otherwise false.</returns>
+        private bool ParseBattleIni(string path)
+        {
+            Logger.Log("Attempting to parse " + path + " to populate mission list.");
+
+            FileInfo battleIniFileInfo = SafePath.GetFile(ProgramConstants.GamePath, path);
+            if (!battleIniFileInfo.Exists)
+            {
+                Logger.Log("File " + path + " not found. Ignoring.");
+                return false;
+            }
+
+            if (selectedMissions.Count > 0)
+            {
+                throw new InvalidOperationException("Loading multiple Battle*.ini files is not supported anymore.");
+            }
+
+            var battleIni = new IniFile(battleIniFileInfo.FullName);
+
+            List<string>? battleKeys = battleIni.GetSectionKeys("Battles");
+
+            if (battleKeys == null)
+                return false; // File exists but [Battles] doesn't
+
+            for (int i = 0; i < battleKeys.Count; i++)
+            {
+                string battleEntry = battleKeys[i];
+                string battleSection = battleIni.GetStringValue("Battles", battleEntry, "NOT FOUND");
+
+                if (!battleIni.SectionExists(battleSection))
+                    continue;
+
+                var mission = new Mission(battleIni.GetSection(battleSection), missionCodeName: battleEntry);
+                AddMission(mission);
+            }
+
+            Logger.Log("Finished parsing " + path + ".");
+            return true;
+        }
+
+        /// <summary>
+        /// Load or re-load missons with selected tags.
+        /// </summary>
+        /// <param name="selectedTags">Missions with at lease one of which tags to be shown. As an exception, null means show all missions.</param>
+        /// <param name="disableCustomMissions">True means show official missions. False means show custom missions.</param>
+        public void LoadMissionsWithFilter(ISet<string>? selectedTags, bool disableCustomMissions = true, bool disableOfficialMissions = false)
+        {
+            selectedMissions.Clear();
+            SelectedCampaignIndex = -1;
+
+            // Select missions with the filter
+            IEnumerable<Mission> missions = AllMissions;
+            if (disableCustomMissions && disableOfficialMissions)
+            {
+                // do nothing
+            }
+            else if (disableCustomMissions)
+            {
+                missions = missions.Where(mission => !mission.IsCustomMission);
+            }
+            else if (disableOfficialMissions)
+            {
+                missions = missions.Where(mission => mission.IsCustomMission);
+            }
+            else
+            {
+                // do nothing
+            }
+
+            if (selectedTags != null)
+                missions = missions.Where(mission => mission.Tags.Intersect(selectedTags).Any()).ToList();
+            selectedMissions = missions.ToList();
+
+            // Update CampaignNames observable for the View
+            CampaignNames = selectedMissions.Select(m => m.GUIName).ToList();
+        }
+
+        #endregion
+
+        #region Mission Launch
+
+        private void BtnLaunch_LeftClick()
+        {
+            SaveSettings();
+
+            if (SelectedCampaignIndex < 0 || SelectedCampaignIndex >= selectedMissions.Count)
+                return;
+
+            Mission mission = selectedMissions[SelectedCampaignIndex];
+
+            if (!ClientConfiguration.Instance.ModMode &&
+                (!fileIntegrityService.IsFileNonexistantOrOriginal(mission.Scenario) || AreFilesModified()))
+            {
+                // Confront the user by showing the cheater screen
+                missionToLaunch = mission;
+                IsCheaterWindowVisible = true;
+                return;
+            }
+
+            LaunchMission(mission);
+        }
+
+        private bool AreFilesModified()
+        {
+            foreach (string filePath in filesToCheck)
+            {
+                if (!fileIntegrityService.IsFileNonexistantOrOriginal(filePath))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Called when the user wants to proceed to the mission despite having
+        /// being called a cheater.
+        /// </summary>
+        private void OnCheaterConfirmed()
+        {
+            IsCheaterWindowVisible = false;
+            LaunchMission(missionToLaunch!);
+        }
+
+        private void OnCheaterCancelled()
+        {
+            IsCheaterWindowVisible = false;
+            missionToLaunch = null;
+        }
+
+        /// <summary>
+        /// Starts a singleplayer mission.
+        /// </summary>
+        private void LaunchMission(Mission mission)
+        {
+            CustomMissionHelper.CopySupplementalMissionFiles(mission);
+
+            FileInfo spawnerSettingsFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.SPAWNER_SETTINGS);
+
+            spawnerSettingsFile.Delete();
+
+            bool copyMapsToSpawnmapINI = ClientConfiguration.Instance.CopyMissionsToSpawnmapINI;
+
+            string scenario = mission.Scenario;
+            bool scenarioPathFound = mission.TryGetScenarioFilePath(out string scenarioPath);
+
+            if (!scenarioPathFound)
+            {
+                Logger.Log($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without applying {nameof(ClientConfiguration.Instance.CopyMissionsToSpawnmapINI)}.");
+                copyMapsToSpawnmapINI = false;
+            }
+
+            Logger.Log("About to write spawn.ini.");
+            IniFile spawnIni = new(spawnerSettingsFile.FullName)
+            {
+                Comment = "Generated by CnCNet Client"
+            };
+            IniSection spawnIniSettings = new("Settings");
+
+            if (copyMapsToSpawnmapINI)
+                spawnIniSettings.AddKey("Scenario", "spawnmap.ini");
+            else
+                spawnIniSettings.AddKey("Scenario", scenario);
+
+            // No one wants to play missions on Fastest, so we'll change it to Faster
+            if (UserINISettings.Instance.GameSpeed == 0)
+                UserINISettings.Instance.GameSpeed.Value = 1;
+
+            spawnIniSettings.AddKey("CampaignID", mission.CampaignID.ToString(CultureInfo.InvariantCulture));
+            spawnIniSettings.AddKey("GameSpeed", UserINISettings.Instance.GameSpeed.ToString());
+
+            switch (ClientConfiguration.Instance.ClientGameType)
+            {
+                case ClientType.YR or ClientType.Ares:
+                    spawnIniSettings.AddKey("Ra2Mode", (!mission.RequiredAddon).ToString(CultureInfo.InvariantCulture));
+                    break;
+                case ClientType.TS:
+                    spawnIniSettings.AddKey("Firestorm", mission.RequiredAddon.ToString(CultureInfo.InvariantCulture));
+                    break;
+                // TODO figure out the RA one
+            }
+
+            spawnIniSettings.AddKey("CustomLoadScreen", LoadingScreenController.GetLoadScreenName(mission.Side.ToString()));
+
+            spawnIniSettings.AddKey("IsSinglePlayer", "Yes");
+            spawnIniSettings.AddKey("SidebarHack", ClientConfiguration.Instance.SidebarHack.ToString(CultureInfo.InvariantCulture));
+            spawnIniSettings.AddKey("Side", mission.Side.ToString(CultureInfo.InvariantCulture));
+            spawnIniSettings.AddKey("BuildOffAlly", mission.BuildOffAlly.ToString(CultureInfo.InvariantCulture));
+
+            UserINISettings.Instance.Difficulty.Value = SelectedDifficultyIndex;
+
+            spawnIniSettings.AddKey("DifficultyModeHuman", mission.PlayerAlwaysOnNormalDifficulty ? "1" : SelectedDifficultyIndex.ToString(CultureInfo.InvariantCulture));
+            spawnIniSettings.AddKey("DifficultyModeComputer", GetComputerDifficulty().ToString(CultureInfo.InvariantCulture));
+
+            if (mission.IsCustomMission)
+            {
+                spawnIniSettings.AddKey("CustomMissionID", mission.CustomMissionID.ToString(CultureInfo.InvariantCulture));
+            }
+
+            spawnIni.AddSection(spawnIniSettings);
+            WriteMissionSectionToSpawnIni(spawnIni, mission);
+
+            foreach (ICampaignCheckBoxOption chkBox in CheckBoxOptions)
+                chkBox.ApplySpawnIniCode(spawnIni);
+
+            foreach (ICampaignDropDownOption dd in DropDownOptions)
+                dd.ApplySpawnIniCode(spawnIni);
+
+            // Apply forced options from GameOptions.ini
+
+            List<string>? forcedKeys = gameOptionsIni?.GetSectionKeys("CampaignForcedSpawnIniOptions");
+
+            if (forcedKeys != null)
+            {
+                foreach (string key in forcedKeys)
                 {
-                    if (kvp.Key.Equals("LS640BkgdName", StringComparison.InvariantCulture) || kvp.Key.Equals("LS800BkgdName", StringComparison.InvariantCulture))
-                        loadingScreenName = kvp.Value;
-                    else if (kvp.Key.Equals("LS800BkgdPal", StringComparison.InvariantCulture))
-                        loadingScreenPalName = kvp.Value;
+                    spawnIni.SetStringValue("Settings", key,
+                        gameOptionsIni!.GetStringValue("CampaignForcedSpawnIniOptions", key, String.Empty));
+                }
+            }
+
+            spawnIni.WriteIniFile();
+
+            var difficultyIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, DifficultyIniPaths[SelectedDifficultyIndex]));
+            string difficultyName = DifficultyNamesArray[SelectedDifficultyIndex];
+
+            if (copyMapsToSpawnmapINI)
+            {
+                var mapIni = new IniFile(scenarioPath);
+
+                IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
+
+                foreach (ICampaignCheckBoxOption chkBox in CheckBoxOptions)
+                    chkBox.ApplyMapCode(mapIni, gameMode: null);
+
+                foreach (ICampaignDropDownOption dd in DropDownOptions)
+                    dd.ApplyMapCode(mapIni, gameMode: null);
+
+                mapIni.WriteIniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawnmap.ini"));
+            }
+
+            UserINISettings.Instance.Difficulty.Value = SelectedDifficultyIndex;
+            UserINISettings.Instance.SaveSettings();
+
+            if (ClientConfiguration.Instance.ReturnToMainMenuOnMissionLaunch)
+                IsControlsEnabled = false;
+            else
+                IsControlsEnabled = false;
+
+            discordHandler.SetCampaignPresence(mission.UntranslatedGUIName, difficultyName);
+            gameProcessService.StartGameProcess();
+        }
+
+        public static void WriteMissionSectionToSpawnIni(IniFile spawnIni, Mission mission)
+        {
+            bool hasGameMissionData = false;
+
+            bool scenarioPathFound = mission.TryGetScenarioFilePath(out string scenarioPath);
+            if (!scenarioPathFound)
+            {
+                Logger.Log($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
+                return;
+            }
+
+            if (!mission.IsCustomMission && File.Exists(scenarioPath))
+            {
+                var mapIni = new IniFile(scenarioPath);
+                mission.GameMissionConfigSection = mapIni.GetSection("GameMissionConfig");
+
+                if (mission.GameMissionConfigSection is not null)
+                    hasGameMissionData = true;
+            }
+
+            if (mission.IsCustomMission && mission.GameMissionConfigSection is not null || hasGameMissionData)
+            {
+                // copy an IniSection
+                IniSection spawnIniMissionIniSection = new(mission.Scenario);
+                string loadingScreenName = string.Empty;
+                string loadingScreenPalName = string.Empty;
+                foreach (var kvp in mission.GameMissionConfigSection!.Keys)
+                {
+                    if (string.IsNullOrEmpty(kvp.Value))
+                    {
+                        if (kvp.Key.Equals("LS640BkgdName", StringComparison.InvariantCulture) || kvp.Key.Equals("LS800BkgdName", StringComparison.InvariantCulture))
+                            loadingScreenName = kvp.Value;
+                        else if (kvp.Key.Equals("LS800BkgdPal", StringComparison.InvariantCulture))
+                            loadingScreenPalName = kvp.Value;
+                    }
+
+                    spawnIniMissionIniSection.AddKey(kvp.Key, kvp.Value);
                 }
 
-                spawnIniMissionIniSection.AddKey(kvp.Key, kvp.Value);
-            }
-
-            if (string.IsNullOrEmpty(loadingScreenName))
-            {
-                string lsFilename = CustomMissionHelper.CustomMissionSupplementDefinition?.FirstOrDefault(x => x.extension.Equals("shp", StringComparison.InvariantCultureIgnoreCase)).filename ?? string.Empty;
-
-                if (!string.IsNullOrEmpty(lsFilename))
+                if (string.IsNullOrEmpty(loadingScreenName))
                 {
-                    spawnIniMissionIniSection.AddOrReplaceKey("LS640BkgdName", lsFilename);
-                    spawnIniMissionIniSection.AddOrReplaceKey("LS800BkgdName", lsFilename);
+                    string lsFilename = CustomMissionHelper.CustomMissionSupplementDefinition?.FirstOrDefault(x => x.extension.Equals("shp", StringComparison.InvariantCultureIgnoreCase)).filename ?? string.Empty;
+
+                    if (!string.IsNullOrEmpty(lsFilename))
+                    {
+                        spawnIniMissionIniSection.AddOrReplaceKey("LS640BkgdName", lsFilename);
+                        spawnIniMissionIniSection.AddOrReplaceKey("LS800BkgdName", lsFilename);
+                    }
                 }
+                if (string.IsNullOrEmpty(loadingScreenPalName))
+                {
+                    string palFilename = CustomMissionHelper.CustomMissionSupplementDefinition?.FirstOrDefault(x => x.extension.Equals("pal", StringComparison.InvariantCultureIgnoreCase)).filename ?? string.Empty;
+
+                    if (!string.IsNullOrEmpty(palFilename))
+                        spawnIniMissionIniSection.AddOrReplaceKey("LS800BkgdPal", palFilename);
+                }
+
+                // append the new IniSection
+                spawnIni.AddSection(spawnIniMissionIniSection);
+                spawnIni.SetStringValue("Settings", "ReadMissionSection", "Yes");
             }
-            if (string.IsNullOrEmpty(loadingScreenPalName))
+        }
+
+        private int GetComputerDifficulty() =>
+            Math.Abs(SelectedDifficultyIndex - 2);
+
+        #endregion
+
+        #region Game Process
+
+        private void OnGameProcessExited()
+        {
+            CustomMissionHelper.DeleteSupplementalMissionFiles();
+
+            // Logger.Log("GameProcessExited: Updating Discord Presence.");
+            discordHandler.SetMainMenuPresence();
+
+            if (!ClientConfiguration.Instance.ReturnToMainMenuOnMissionLaunch)
+                IsControlsEnabled = true;
+
+            // Handle ResetToDefaultOnGameExit
             {
-                string palFilename = CustomMissionHelper.CustomMissionSupplementDefinition?.FirstOrDefault(x => x.extension.Equals("pal", StringComparison.InvariantCultureIgnoreCase)).filename ?? string.Empty;
+                // Reset campaign checkboxes
+                foreach (ICampaignCheckBoxOption cb in CheckBoxOptions)
+                {
+                    if (cb.ResetToDefaultOnGameExit)
+                        cb.ResetToDefault();
+                }
 
-                if (!string.IsNullOrEmpty(palFilename))
-                    spawnIniMissionIniSection.AddOrReplaceKey("LS800BkgdPal", palFilename);
+                SaveSettings();
+            }
+        }
+
+        #endregion
+
+        #region Settings
+
+        /// <summary>
+        /// Saves settings to an INI file on the file system.
+        /// </summary>
+        private void SaveSettings()
+        {
+            SaveCampaignSettings();
+            UserINISettings.Instance.SaveSettings();
+        }
+
+        private void SaveCampaignSettings()
+        {
+            if (!ClientConfiguration.Instance.SaveCampaignGameOptions)
+                return;
+
+            try
+            {
+                FileInfo settingsFileInfo = SafePath.GetFile(ProgramConstants.GamePath, SETTINGS_PATH);
+
+                settingsFileInfo.Delete();
+
+                var settingsIni = new IniFile(settingsFileInfo.FullName);
+
+                foreach (ICampaignDropDownOption dd in DropDownOptions)
+                    settingsIni.SetStringValue("GameOptions", dd.Name, dd.SelectedIndex.ToString());
+
+                foreach (ICampaignCheckBoxOption cb in CheckBoxOptions)
+                    settingsIni.SetStringValue("GameOptions", cb.Name, cb.Checked.ToString());
+
+                settingsIni.WriteIniFile();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Saving campaign settings failed! Reason: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Loads settings from an INI file on the file system.
+        /// </summary>
+        private void LoadSettings()
+        {
+            LoadCampaignSettings();
+        }
+
+        private void LoadCampaignSettings()
+        {
+            if (!ClientConfiguration.Instance.SaveCampaignGameOptions)
+                return;
+
+            var settingsIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, SETTINGS_PATH));
+
+            foreach (ICampaignDropDownOption dd in DropDownOptions)
+            {
+                dd.SelectedIndex = settingsIni.GetIntValue("GameOptions", dd.Name, dd.SelectedIndex);
+
+                if (dd.SelectedIndex > -1 && dd.SelectedIndex < dd.ItemCount)
+                    dd.SelectedIndex = dd.SelectedIndex;
             }
 
-            spawnIni.AddSection(spawnIniMissionIniSection);
-            spawnIni.SetStringValue("Settings", "ReadMissionSection", "Yes");
-        }
-    }
-
-    private bool AreFilesModified()
-    {
-        foreach (string filePath in filesToCheck)
-        {
-            if (!fileIntegrityService.IsFileNonexistantOrOriginal(filePath))
-                return true;
+            foreach (ICampaignCheckBoxOption cb in CheckBoxOptions)
+                cb.Checked = settingsIni.GetBooleanValue("GameOptions", cb.Name, cb.Checked);
         }
 
-        return false;
+        #endregion
     }
-
-    private int GetComputerDifficulty() =>
-        Math.Abs(SelectedDifficultyIndex - 2);
-
-    #endregion
-
-    #region Game Process
-
-    private void OnGameProcessExited()
-    {
-        CustomMissionHelper.DeleteSupplementalMissionFiles();
-        discordHandler.SetMainMenuPresence();
-        IsControlsEnabled = true;
-        SaveSettings();
-    }
-
-    #endregion
-
-    #region Cheater Window
-
-    private void SetCheaterWindowText()
-    {
-        if (CheaterWindow is CheaterWindowViewModel vm)
-        {
-            vm.TitleText = "Modified files detected";
-            vm.MessageText = "Game files have been modified. Continue anyway?";
-        }
-    }
-
-    private void OnCheaterConfirmed()
-    {
-        IsCheaterWindowVisible = false;
-        if (missionToLaunch != null)
-            LaunchMission(missionToLaunch);
-    }
-
-    private void OnCheaterCancelled()
-    {
-        IsCheaterWindowVisible = false;
-        missionToLaunch = null;
-    }
-
-    #endregion
-
-    #region Settings
-
-    private void SaveSettings()
-    {
-        SaveCampaignSettings();
-        UserINISettings.Instance.SaveSettings();
-    }
-
-    private void LoadSettings()
-    {
-        LoadCampaignSettings();
-    }
-
-    private void SaveCampaignSettings()
-    {
-        if (!ClientConfiguration.Instance.SaveCampaignGameOptions)
-            return;
-
-        try
-        {
-            FileInfo settingsFileInfo = SafePath.GetFile(ProgramConstants.GamePath, SETTINGS_PATH);
-
-            settingsFileInfo.Delete();
-
-            var settingsIni = new IniFile(settingsFileInfo.FullName);
-            settingsIni.WriteIniFile();
-        }
-        catch (Exception ex)
-        {
-            Logger.Log($"Saving campaign settings failed! Reason: {ex}");
-        }
-    }
-
-    private void LoadCampaignSettings()
-    {
-        if (!ClientConfiguration.Instance.SaveCampaignGameOptions)
-            return;
-
-        var settingsIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, SETTINGS_PATH));
-        // Settings for checkboxes/dropdowns are handled by the View layer
-        // through ICampaignSettingsService if needed in the future.
-    }
-
-    #endregion
 }
