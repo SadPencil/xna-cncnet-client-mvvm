@@ -30,4 +30,7 @@ public interface IComponentsPanelViewModel : INotifyPropertyChanged
     IRelayCommand ConfirmYesCommand { get; }
     IRelayCommand ConfirmNoCommand { get; }
     IRelayCommand DismissMessageBoxCommand { get; }
+
+    // Lifecycle
+    void Open();
 }

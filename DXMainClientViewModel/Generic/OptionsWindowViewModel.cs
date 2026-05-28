@@ -1,3 +1,4 @@
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -110,7 +111,10 @@ namespace DXMainClientViewModel.Generic
                     yes =>
                     {
                         if (yes)
+                        {
+                            componentsPanel.CancelDownloadsCommand.Execute(null);
                             SaveSettings();
+                        }
                     });
                 return;
             }
@@ -129,7 +133,10 @@ namespace DXMainClientViewModel.Generic
                     yes =>
                     {
                         if (yes)
+                        {
+                            componentsPanel.CancelDownloadsCommand.Execute(null);
                             IsVisible = false;
+                        }
                     });
                 return;
             }
@@ -147,7 +154,6 @@ namespace DXMainClientViewModel.Generic
         private void ForceUpdate()
         {
             IsVisible = false;
-            // MainMenu subscribes to updateService.ForceUpdate via its own command
         }
 
         [RelayCommand]
@@ -182,7 +188,10 @@ namespace DXMainClientViewModel.Generic
             gameOptionsPanel.LoadSettingsCommand.Execute(null);
             cncnetOptionsPanel.LoadSettingsCommand.Execute(null);
             updaterOptionsPanel.LoadSettingsCommand.Execute(null);
-            componentsPanel.RefreshComponentsCommand.Execute(null);
+
+            RefreshOptionPanels();
+
+            componentsPanel.Open();
 
             IsVisible = true;
         }
@@ -195,6 +204,8 @@ namespace DXMainClientViewModel.Generic
             gameOptionsPanel.LoadSettingsCommand.Execute(null);
             cncnetOptionsPanel.LoadSettingsCommand.Execute(null);
             updaterOptionsPanel.LoadSettingsCommand.Execute(null);
+
+            RefreshOptionPanels();
 
             // Save all panels back
             displayOptionsPanel.SaveSettingsCommand.Execute(null);
@@ -213,9 +224,7 @@ namespace DXMainClientViewModel.Generic
 
         public void ToggleMainMenuOnlyOptions(bool enable)
         {
-            // Each panel handles this via its own logic
-            // The panels don't currently have ToggleMainMenuOnlyOptions
-            // This is a View-level concern (enabling/disabling controls)
+            updaterOptionsPanel.IsForceUpdateEnabled = enable;
         }
 
         public void InstallCustomComponent(int id)
@@ -238,8 +247,25 @@ namespace DXMainClientViewModel.Generic
 
         #region Private Methods
 
+        /// <summary>
+        /// Reloads all panels from INI to detect possible setting value changes.
+        /// Shows a message to the user if any settings were changed.
+        /// Corresponds to RefreshOptionPanels() in the original OptionsWindow.
+        /// </summary>
+        private void RefreshOptionPanels()
+        {
+            // Re-load all panels to pick up any INI changes
+            displayOptionsPanel.LoadSettingsCommand.Execute(null);
+            audioOptionsPanel.LoadSettingsCommand.Execute(null);
+            gameOptionsPanel.LoadSettingsCommand.Execute(null);
+            cncnetOptionsPanel.LoadSettingsCommand.Execute(null);
+            updaterOptionsPanel.LoadSettingsCommand.Execute(null);
+        }
+
         private void SaveSettings()
         {
+            RefreshOptionPanels();
+
             bool restartRequired = false;
 
             try
