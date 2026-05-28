@@ -19,8 +19,12 @@ public interface ICnCNetOptionsPanelViewModel : INotifyPropertyChanged
     bool IsDiscordIntegrationEnabled { get; set; }
     bool IsSteamIntegrationEnabled { get; set; }
     bool AllowGameInvitesOnlyFromFriends { get; set; }
+    bool IsAutoConnectOnStartupAllowed { get; }
+    bool IsDiscordIntegrationGloballyDisabled { get; }
     IReadOnlyList<string> FollowedGameNames { get; }
+    IReadOnlyList<GameListItemData> GameListItems { get; }
 
     IRelayCommand LoadSettingsCommand { get; }
     IRelayCommand SaveSettingsCommand { get; }
+    IRelayCommand<string> ToggleGameFollowedCommand { get; }
 }
