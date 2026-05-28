@@ -16,6 +16,7 @@ public interface IStatisticsWindowViewModel : INotifyPropertyChanged
     bool IsVisible { get; set; }
     List<GamePlayerStatistics> SelectedGamePlayers { get; }
     TotalStatistics TotalStatistics { get; }
+    bool ShowClearConfirmation { get; set; }
 
     IRelayCommand RefreshCommand { get; }
     IRelayCommand ClearStatisticsCommand { get; }

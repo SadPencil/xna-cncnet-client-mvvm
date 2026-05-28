@@ -1,4 +1,4 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -49,15 +49,8 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isVisible;
 
-        /// <summary>
-        /// Raised when the window should be closed.
-        /// </summary>
-        public event Action CloseRequested;
-
-        /// <summary>
-        /// Raised when a clear statistics confirmation is needed.
-        /// </summary>
-        public event Action ClearConfirmationRequested;
+        [ObservableProperty]
+        private bool showClearConfirmation;
 
         /// <summary>
         /// Detailed statistics for the selected game.
@@ -131,12 +124,13 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void ClearStatistics()
         {
-            ClearConfirmationRequested?.Invoke();
+            ShowClearConfirmation = true;
         }
 
         [RelayCommand]
         private void ConfirmClear()
         {
+            ShowClearConfirmation = false;
             StatisticsManager.Instance.ClearDatabase();
             ReadStatistics();
             ListGameModes();
@@ -147,7 +141,6 @@ namespace DXMainClientViewModel.Generic
         private void Return()
         {
             IsVisible = false;
-            CloseRequested?.Invoke();
         }
 
         /// <summary>
