@@ -18,7 +18,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// ViewModel for the CnCNet options panel.
 /// Contains all business logic from CnCNetOptionsPanel.cs except XNA UI rendering.
 /// </summary>
-public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOptionsPanelViewModel
+public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOptionsPanelViewModel // checked
 {
     private readonly UserINISettings iniSettings;
     private readonly GameCollection gameCollection;
@@ -61,10 +61,20 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
     [ObservableProperty]
     private bool _allowGameInvitesOnlyFromFriends;
 
+    [ObservableProperty]
+    private bool _isAutoConnectOnStartupAllowed;
+
+    [ObservableProperty]
+    private bool _isDiscordIntegrationGloballyDisabled;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _followedGameNames = new();
     public IReadOnlyList<string> FollowedGameNames => _followedGameNames;
+
+    // Store game data for View
+    private readonly List<GameListItemData> _gameListItems = new();
+    public IReadOnlyList<GameListItemData> GameListItems => _gameListItems;
 
     // --- Constructor ---
 
@@ -72,6 +82,7 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
     {
         this.iniSettings = iniSettings;
         this.gameCollection = gameCollection;
+        IsDiscordIntegrationGloballyDisabled = ClientConfiguration.Instance.DiscordIntegrationGloballyDisabled;
     }
 
     // --- Commands ---
@@ -93,15 +104,22 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
             && iniSettings.DiscordIntegration;
         AllowGameInvitesOnlyFromFriends = iniSettings.AllowGameInvitesFromFriendsOnly;
 
+        // Update auto-connect allowance
+        UpdateAutoConnectOnStartupAllowance();
+
         // Load followed games
         _followedGameNames.Clear();
+        _gameListItems.Clear();
         string localGame = ClientConfiguration.Instance.LocalGame.ToUpperInvariant();
         foreach (var game in gameCollection.GameList.Where(g => g.Supported && !string.IsNullOrEmpty(g.GameBroadcastChannel)))
         {
-            if (game.InternalName.ToUpperInvariant() == localGame)
-                _followedGameNames.Add(game.InternalName); // Always followed
-            else if (iniSettings.IsGameFollowed(game.InternalName))
+            bool isLocalGame = game.InternalName.ToUpperInvariant() == localGame;
+            bool isFollowed = isLocalGame || iniSettings.IsGameFollowed(game.InternalName);
+
+            if (isFollowed)
                 _followedGameNames.Add(game.InternalName);
+
+            _gameListItems.Add(new GameListItemData(game.InternalName, game.UIName, isLocalGame, isFollowed));
         }
     }
 
@@ -136,16 +154,35 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
         }
     }
 
+    [RelayCommand]
+    private void ToggleGameFollowed(string gameInternalName)
+    {
+        string localGame = ClientConfiguration.Instance.LocalGame.ToUpperInvariant();
+        if (gameInternalName.ToUpperInvariant() == localGame)
+            return; // Can't unfollow local game
+
+        if (_followedGameNames.Contains(gameInternalName))
+            _followedGameNames.Remove(gameInternalName);
+        else
+            _followedGameNames.Add(gameInternalName);
+    }
+
     // --- Property change handlers ---
 
-    partial void OnSkipLoginDialogChanged(bool value) => CheckConnectOnStartupAllowance();
-    partial void OnPersistentModeChanged(bool value) => CheckConnectOnStartupAllowance();
+    partial void OnSkipLoginDialogChanged(bool value) => UpdateAutoConnectOnStartupAllowance();
+    partial void OnPersistentModeChanged(bool value) => UpdateAutoConnectOnStartupAllowance();
 
     // --- Helpers ---
 
-    private void CheckConnectOnStartupAllowance()
+    private void UpdateAutoConnectOnStartupAllowance()
     {
-        if (!SkipLoginDialog || !PersistentMode)
+        IsAutoConnectOnStartupAllowed = SkipLoginDialog && PersistentMode;
+        if (!IsAutoConnectOnStartupAllowed)
             AutoConnectOnStartup = false;
     }
 }
+
+/// <summary>
+/// Data for a game list item.
+/// </summary>
+public record GameListItemData(string InternalName, string UIName, bool IsLocalGame, bool IsFollowed);
