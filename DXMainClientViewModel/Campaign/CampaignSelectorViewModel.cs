@@ -126,6 +126,8 @@ namespace DXMainClientViewModel.Campaign
         [ObservableProperty]
         private bool isCheaterWindowVisible;
 
+        public bool IsReturnButtonVisible => ClientConfiguration.Instance.CampaignTagSelectorEnabled;
+
         public ICheaterWindowViewModel CheaterWindow { get; }
 
         #endregion
