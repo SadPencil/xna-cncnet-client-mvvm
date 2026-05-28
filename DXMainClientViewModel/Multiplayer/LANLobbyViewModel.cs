@@ -1,3 +1,4 @@
+// checked
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -215,6 +216,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         SendMessage("QUIT");
         broadcastManager.Shutdown();
         StopUpdateTimer();
+        IsEnabled = false;
         Exited?.Invoke(this, EventArgs.Empty);
     }
 

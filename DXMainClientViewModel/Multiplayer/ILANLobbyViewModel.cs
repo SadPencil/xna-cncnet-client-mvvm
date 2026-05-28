@@ -23,6 +23,4 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     IRelayCommand ExitLobbyCommand { get; }
     IRelayCommand SendChatMessageCommand { get; }
     IRelayCommand RefreshGamesCommand { get; }
-
-    event EventHandler Exited;
 }
