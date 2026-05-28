@@ -1,4 +1,4 @@
-
+// checked
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ClientCore;
@@ -56,7 +56,15 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private string mainButtonText = "Main Menu (F2)".L10N("Client:Main:MainMenuF2");
 
-        public event Action? BringDownRequested;
+        [ObservableProperty]
+        private bool shouldBringDown;
+
+        [ObservableProperty]
+        private int unreadMessageCount;
+
+        /// <summary>
+        /// Domain event: fired when user logs out. MainMenu subscribes to handle navigation.
+        /// </summary>
         public event Action? LogoutPerformed;
 
         public TopBarViewModel(
@@ -67,10 +75,7 @@ namespace DXMainClientViewModel.Generic
             this.connectionManager = connectionManager;
             this.privateMessageHandler = privateMessageHandler;
             this.uiThreadMarshaller = uiThreadMarshaller;
-        }
 
-        public void Initialize()
-        {
             IsPlayerCountVisible = ClientConfiguration.Instance.DisplayPlayerCountInTopBar;
 
             if (IsPlayerCountVisible)
@@ -136,14 +141,10 @@ namespace DXMainClientViewModel.Generic
 
         #endregion
 
-        #region Lifecycle Methods
-
         public void Clean()
         {
             cncnetPlayerCountCancellationSource?.Cancel();
         }
-
-        #endregion
 
         #region Event Handlers
 
@@ -174,7 +175,7 @@ namespace DXMainClientViewModel.Generic
         private void OnAttemptedServerChanged(object? sender, AttemptedServerEventArgs e)
         {
             ConnectionStatusText = "CONNECTING...".L10N("Client:Main:StatusConnecting");
-            BringDownRequested?.Invoke();
+            ShouldBringDown = true;
         }
 
         private void OnWelcomeMessageReceived(object? sender, ServerMessageEventArgs e)
@@ -195,8 +196,7 @@ namespace DXMainClientViewModel.Generic
 
         private void OnUnreadMessageCountUpdated(object? sender, UnreadMessageCountEventArgs e)
         {
-            // The View handles button label update based on this
-            // For now, the count is available through the event
+            UnreadMessageCount = e.UnreadMessageCount;
         }
 
         #endregion

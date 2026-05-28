@@ -16,15 +16,14 @@ public interface ITopBarViewModel : INotifyPropertyChanged
     bool IsLanMode { get; set; }
     SwitchType LastSwitchType { get; }
     string MainButtonText { get; }
+    bool ShouldBringDown { get; set; }
+    int UnreadMessageCount { get; }
 
     IRelayCommand SwitchToPrimaryCommand { get; }
     IRelayCommand SwitchToSecondaryCommand { get; }
     IRelayCommand SwitchToTertiaryCommand { get; }
     IRelayCommand OpenOptionsCommand { get; }
     IRelayCommand LogoutCommand { get; }
-
-    void Initialize();
-    void Clean();
 }
 
 /// <summary>
