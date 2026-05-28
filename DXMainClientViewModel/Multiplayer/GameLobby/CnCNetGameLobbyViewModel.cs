@@ -20,6 +20,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
+// checked
 /// <summary>
 /// ViewModel for CnCNet multiplayer game lobby.
 /// Contains all business logic from CnCNetGameLobby.cs except XNA UI rendering.
@@ -59,7 +60,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private string lastMapSHA1;
     private string lastMapName;
     private string lastGameMode;
-    private IRCColor chatColor;
+
     private Timer gameBroadcastTimer;
 
     private readonly List<string> hostUploadedMaps = new();
@@ -93,6 +94,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     [ObservableProperty]
     private bool _tunnelErrorMode;
 
+    [ObservableProperty]
+    private IRCColor _chatColor;
+
     // --- IsHost ---
     private bool _isHost;
     public override bool IsHost
@@ -109,9 +113,6 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     public event EventHandler GameLeft;
     public event EventHandler<string> TunnelSelectionRequested;
     public event EventHandler<string> GameLobbySettingsRequested;
-    public event EventHandler JoinSoundRequested;
-    public event EventHandler LeaveSoundRequested;
-    public event EventHandler ReturnSoundRequested;
     public event EventHandler<string> MapDownloadPromptRequested;
     public event EventHandler MapDownloadStarted;
     public event EventHandler<string> MapDownloadFailed;
@@ -681,7 +682,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             PerformLockGame();
         }
 
-        JoinSoundRequested?.Invoke(this, EventArgs.Empty);
+        RaiseSoundRequested("joingame.wav");
     }
 
     private void RemovePlayer(string playerName)
@@ -692,7 +693,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         {
             Players.Remove(pInfo);
             CopyPlayerDataToUI();
-            LeaveSoundRequested?.Invoke(this, EventArgs.Empty);
+            RaiseSoundRequested("leavegame.wav");
 
             if (IsHost)
                 BroadcastPlayerOptions();
@@ -1474,9 +1475,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         iniFile.SetIntValue("Settings", "Port", localPlayer.Port);
     }
 
-    protected override void SendChatMessage(string message) => channel.SendChatMessage(message, chatColor);
-
-    public void ChangeChatColor(IRCColor newChatColor) => chatColor = newChatColor;
+    protected override void SendChatMessage(string message) => channel.SendChatMessage(message, ChatColor);
 
     // --- Notifications ---
 
@@ -1588,7 +1587,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             pInfo.IsInGame = false;
 
         CopyPlayerDataToUI();
-        ReturnSoundRequested?.Invoke(this, EventArgs.Empty);
+        RaiseSoundRequested("returngame.wav");
     }
 
     private void HandleTunnelPing(string sender, int ping)

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 using DXMainClientViewModel.Domain.Multiplayer;
@@ -18,6 +17,7 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     int SkillLevel { get; }
     bool IsCustomPassword { get; }
     bool TunnelErrorMode { get; }
+    IRCColor ChatColor { get; set; }
 
     // --- Commands ---
     IRelayCommand ChangeTunnelCommand { get; }
@@ -30,22 +30,8 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     void Clear();
     void LeaveGameLobby();
 
-    // --- Chat color ---
-    void ChangeChatColor(IRCColor chatColor);
-
     // --- Game option broadcasting ---
     List<IGameSessionSetting> GetBroadcastableSettings();
     int GetBroadcastableCheckboxCount();
     int GetBroadcastableDropdownCount();
-
-    // --- Events ---
-    event EventHandler GameLeft;
-    event EventHandler<string> TunnelSelectionRequested;
-    event EventHandler<string> GameLobbySettingsRequested;
-    event EventHandler JoinSoundRequested;
-    event EventHandler LeaveSoundRequested;
-    event EventHandler ReturnSoundRequested;
-    event EventHandler<string> MapDownloadPromptRequested;
-    event EventHandler MapDownloadStarted;
-    event EventHandler<string> MapDownloadFailed;
 }

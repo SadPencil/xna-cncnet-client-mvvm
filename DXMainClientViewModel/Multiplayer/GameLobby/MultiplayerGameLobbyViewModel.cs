@@ -129,6 +129,8 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
             SoundPlayRequested?.Invoke("message.wav");
     }
 
+    protected void RaiseSoundRequested(string soundName) => SoundPlayRequested?.Invoke(soundName);
+
     // --- Constructor ---
 
     protected MultiplayerGameLobbyViewModel(
