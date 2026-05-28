@@ -408,7 +408,7 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
 
         started = true;
 
-        LoadGameCommand.Execute(null);
+        PerformLoadGame();
     }
 
     protected override void WriteSpawnIniAdditions(IniFile spawnIni)
@@ -588,7 +588,7 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
             pInfo.Port = port;
         }
 
-        LoadGameCommand.Execute(null);
+        PerformLoadGame();
     }
 
     private void HandlePlayerReadyRequest(string sender, int readyStatus)

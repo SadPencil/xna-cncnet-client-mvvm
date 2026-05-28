@@ -17,6 +17,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer;
 
+// checked
 /// <summary>
 /// Abstract base ViewModel for multiplayer game loading lobbies.
 /// Contains all business logic from GameLoadingLobbyBase.cs except XNA UI rendering.
@@ -38,6 +39,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     private int uniqueGameId;
     private DateTime gameLoadTime;
     private bool isSettingUp;
+    private FileSystemWatcher? fsw;
 
     // --- Observable state ---
     [ObservableProperty]
@@ -64,6 +66,9 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     [ObservableProperty]
     private string _loadGameButtonText = "Load Game".L10N("Client:Main:ButtonLoadGame");
 
+    [ObservableProperty]
+    private string _draftMessage = string.Empty;
+
     // --- Observable collections ---
     private readonly System.Collections.ObjectModel.ObservableCollection<string> _playerNames = new();
     public IReadOnlyList<string> PlayerNames => _playerNames;
@@ -79,11 +84,8 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     // --- Events ---
     public event EventHandler? GameLeft;
-    public event EventHandler? GetReadySoundRequested;
-    public event EventHandler? JoinSoundRequested;
-    public event EventHandler? LeaveSoundRequested;
-    public event EventHandler? MessageSoundRequested;
     public event EventHandler? GameStarting;
+    public event Action<string>? SoundPlayRequested;
 
     // --- Constructor ---
 
@@ -135,19 +137,26 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     }
 
     [RelayCommand]
-    private void SendChatMessage(string message)
+    private void SendChatMessage()
     {
-        if (string.IsNullOrEmpty(message))
+        if (string.IsNullOrEmpty(DraftMessage))
             return;
 
-        SendChatMessageToNetwork(message);
+        SendChatMessageToNetwork(DraftMessage);
+        DraftMessage = string.Empty;
     }
 
     // --- Lifecycle ---
 
     public virtual void Initialize()
     {
-        // Subclasses should override to set up network subscriptions
+        if (SavedGameManager.AreSavedGamesAvailable())
+        {
+            fsw = new FileSystemWatcher(SafePath.CombineDirectoryPath(ProgramConstants.GamePath, "Saved Games"), "*.NET");
+            fsw.EnableRaisingEvents = false;
+            fsw.Created += OnSavedGameFileEvent;
+            fsw.Changed += OnSavedGameFileEvent;
+        }
     }
 
     public virtual void Refresh(bool isHost)
@@ -162,6 +171,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
         _chatMessages.Clear();
 
         LoadGameButtonText = isHost ? "Load Game".L10N("Client:Main:ButtonLoadGame") : "I'm Ready".L10N("Client:Main:ButtonGetReady");
+        CanLoadGame = isHost;
 
         IniFile spawnSGIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "Saved Games", "spawnSG.ini"));
 
@@ -229,13 +239,70 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     protected void CopyPlayerDataToUI() => UpdatePlayerDisplayInfo();
 
-    // --- Game process ---
+    // --- Game loading ---
 
-    protected void StartGameProcess()
+    protected void PerformLoadGame()
     {
+        FileInfo spawnFileInfo = SafePath.GetFile(ProgramConstants.GamePath, "spawn.ini");
+
+        spawnFileInfo.Delete();
+
+        File.Copy(SafePath.CombineFilePath(ProgramConstants.GamePath, "Saved Games", "spawnSG.ini"), spawnFileInfo.FullName);
+
+        IniFile spawnIni = new IniFile(spawnFileInfo.FullName);
+
+        int sgIndex = (_savedGameNames.Count - 1) - SelectedSavedGameIndex;
+
+        spawnIni.SetStringValue("Settings", "SaveGameName",
+            string.Format("SVGM_{0}.NET", sgIndex.ToString("D3")));
+        spawnIni.SetBooleanValue("Settings", "LoadSaveGame", true);
+
+        PlayerInfo? localPlayer = Players.Find(p => p.Name == ProgramConstants.PLAYERNAME);
+
+        if (localPlayer == null)
+            return;
+
+        spawnIni.SetIntValue("Settings", "Port", localPlayer.Port);
+
+        for (int i = 1; i < Players.Count; i++)
+        {
+            string otherName = spawnIni.GetStringValue("Other" + i, "Name", string.Empty);
+
+            if (string.IsNullOrEmpty(otherName))
+                continue;
+
+            PlayerInfo? otherPlayer = Players.Find(p => p.Name == otherName);
+
+            if (otherPlayer == null)
+                continue;
+
+            spawnIni.SetStringValue("Other" + i, "Ip", otherPlayer.IPAddress);
+            spawnIni.SetIntValue("Other" + i, "Port", otherPlayer.Port);
+        }
+
+        WriteSpawnIniAdditions(spawnIni);
+        spawnIni.WriteIniFile();
+
+        FileInfo spawnMapFileInfo = SafePath.GetFile(ProgramConstants.GamePath, "spawnmap.ini");
+        spawnMapFileInfo.Delete();
+        using (var spawnMapStreamWriter = new StreamWriter(spawnMapFileInfo.FullName))
+        {
+            spawnMapStreamWriter.WriteLine("[Map]");
+            spawnMapStreamWriter.WriteLine("Size=0,0,50,50");
+            spawnMapStreamWriter.WriteLine("LocalSize=0,0,50,50");
+            spawnMapStreamWriter.WriteLine();
+        }
+
         gameLoadTime = DateTime.Now;
+
+        if (fsw != null)
+            fsw.EnableRaisingEvents = true;
+
         GameStarting?.Invoke(this, EventArgs.Empty);
+        UpdateDiscordPresence(true);
     }
+
+    // --- Game process ---
 
     private void OnGameProcessExited()
     {
@@ -244,6 +311,9 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     protected virtual void HandleGameProcessExited()
     {
+        if (fsw != null)
+            fsw.EnableRaisingEvents = false;
+
         var matchStatistics = StatisticsManager.Instance.GetMatchWithGameID(uniqueGameId);
 
         if (matchStatistics != null)
@@ -259,6 +329,23 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
             StatisticsManager.Instance.SaveDatabase();
         }
         UpdateDiscordPresence(true);
+    }
+
+    // --- Saved game file system watcher ---
+
+    private void OnSavedGameFileEvent(object sender, FileSystemEventArgs e)
+    {
+        UIThreadMarshaller.AddCallback(new Action(() => HandleFSWEvent(e)));
+    }
+
+    private void HandleFSWEvent(FileSystemEventArgs e)
+    {
+        Logger.Log("FSW Event: " + e.FullPath);
+
+        if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")
+        {
+            SavedGameManager.RenameSavedGame();
+        }
     }
 
     // --- Saved game selection ---
@@ -285,7 +372,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
         AddNotice("The game host wants to load the game but cannot because not all players are ready!".L10N("Client:Main:GetReadyPlease"));
 
         if (!IsHostState && !Players.Find(p => p.Name == ProgramConstants.PLAYERNAME).Ready)
-            GetReadySoundRequested?.Invoke(this, EventArgs.Empty);
+            SoundPlayRequested?.Invoke("getready.wav");
     }
 
     protected virtual void NotAllPresentNotification() =>
@@ -299,23 +386,37 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     protected abstract void SendChatMessageToNetwork(string message);
     protected abstract void AddNotice(string message);
     protected abstract void UpdateDiscordPresence(bool resetTimer = false);
-    protected abstract void WriteSpawnIniAdditions(IniFile spawnIni);
+
+    // --- Virtual members ---
+
+    protected virtual void WriteSpawnIniAdditions(IniFile spawnIni)
+    {
+        // Do nothing by default
+    }
 
     // --- Helpers ---
 
     protected void ResetDiscordPresence() => DiscordHandler.UpdatePresence();
 
-    protected void RaiseJoinSoundRequested() => JoinSoundRequested?.Invoke(this, EventArgs.Empty);
-    protected void RaiseLeaveSoundRequested() => LeaveSoundRequested?.Invoke(this, EventArgs.Empty);
-    protected void RaiseMessageSoundRequested() => MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+    protected void RaiseJoinSoundRequested() => SoundPlayRequested?.Invoke("joingame.wav");
+    protected void RaiseLeaveSoundRequested() => SoundPlayRequested?.Invoke("leavegame.wav");
+    protected void RaiseMessageSoundRequested() => SoundPlayRequested?.Invoke("message.wav");
 
     protected void AddChatMessage(string message)
     {
         _chatMessages.Add(message);
-        MessageSoundRequested?.Invoke(this, EventArgs.Empty);
+        SoundPlayRequested?.Invoke("message.wav");
     }
 
     protected virtual string GetIPAddressForPlayer(PlayerInfo pInfo) => "0.0.0.0";
+
+    // --- Cleanup ---
+
+    public virtual void Clean()
+    {
+        fsw?.Dispose();
+        fsw = null;
+    }
 }
 
 /// <summary>

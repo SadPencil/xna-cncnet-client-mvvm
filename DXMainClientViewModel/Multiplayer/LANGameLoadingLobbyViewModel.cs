@@ -723,7 +723,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     private void Client_HandleStartCommand()
     {
         started = true;
-        LoadGameCommand.Execute(null);
+        PerformLoadGame();
     }
 
     // --- Helpers ---
