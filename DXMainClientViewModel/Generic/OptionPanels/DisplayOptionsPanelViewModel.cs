@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,6 +15,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DXMainClientViewModel.Domain;
+using DXMainClientViewModel.Services;
 
 using Rampastring.Tools;
 
@@ -22,7 +24,7 @@ namespace DXMainClientViewModel.Generic.OptionPanels;
 /// <summary>
 /// ViewModel for the display options panel.
 /// Contains all business logic from DisplayOptionsPanel.cs except XNA UI rendering.
-/// Resolution population is handled by the View via SetResolutionOptions.
+/// Self-sufficient: populates all data itself via services.
 /// </summary>
 public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOptionsPanelViewModel
 {
@@ -31,6 +33,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
 
     private readonly UserINISettings iniSettings;
     private readonly DirectDrawWrapperManager directDrawWrapperManager;
+    private readonly IResolutionProvider resolutionProvider;
 
     // --- State ---
 
@@ -78,6 +81,18 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     [ObservableProperty]
     private bool _isFinalSunCompatFixAvailable;
 
+    [ObservableProperty]
+    private bool _isRestartRequired;
+
+    [ObservableProperty]
+    private bool _isMessageBoxVisible;
+
+    [ObservableProperty]
+    private string _messageBoxTitle = string.Empty;
+
+    [ObservableProperty]
+    private string _messageBoxMessage = string.Empty;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _ingameResolutionOptions = new();
@@ -105,23 +120,18 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     // Store renderer objects for saving
     private readonly List<DirectDrawWrapper> _renderers = new();
 
-    // --- Events ---
-
-    public event EventHandler? GameCompatibilityFixRequested;
-    public event EventHandler? MapEditorCompatibilityFixRequested;
-    public event EventHandler? RestartRequired;
-
     // --- Constructor ---
 
-    public DisplayOptionsPanelViewModel(UserINISettings iniSettings, DirectDrawWrapperManager directDrawWrapperManager)
+    public DisplayOptionsPanelViewModel(
+        UserINISettings iniSettings,
+        DirectDrawWrapperManager directDrawWrapperManager,
+        IResolutionProvider resolutionProvider)
     {
         this.iniSettings = iniSettings;
         this.directDrawWrapperManager = directDrawWrapperManager;
+        this.resolutionProvider = resolutionProvider;
 
-        // Initialize detail level options
-        _detailLevelOptions.Add("Low".L10N("Client:DTAConfig:DetailLevelLow"));
-        _detailLevelOptions.Add("Medium".L10N("Client:DTAConfig:DetailLevelMedium"));
-        _detailLevelOptions.Add("High".L10N("Client:DTAConfig:DetailLevelHigh"));
+        PopulateOptions();
     }
 
     // --- Commands ---
@@ -129,13 +139,77 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     [RelayCommand]
     private void InstallGameCompatibilityFix()
     {
-        GameCompatibilityFixRequested?.Invoke(this, EventArgs.Empty);
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return;
+
+        if (!gameCompatFixInstalled)
+            return;
+
+        try
+        {
+            Process sdbinst = Process.Start("sdbinst.exe", "-q -n \"TS Compatibility Fix\"");
+            sdbinst.WaitForExit();
+
+            Logger.Log("DTA/TI/TS Compatibility Fix succesfully uninstalled.");
+            ShowMessageBox(
+                "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFixUninstallTitle"),
+                "The DTA/TI/TS Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFixUninstallText"));
+
+            using var regKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
+            using var subKey = regKey.CreateSubKey("Tiberian Sun Client");
+            subKey.SetValue("TSCompatFixInstalled", "No");
+
+            gameCompatFixInstalled = false;
+            IsGameCompatFixAvailable = false;
+
+            if (!finalSunCompatFixInstalled)
+                IsFinalSunCompatFixAvailable = false;
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("Uninstalling DTA/TI/TS Compatibility Fix failed. Error message: " + ex.ToString());
+            ShowMessageBox(
+                "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFixUninstallFailTitle"),
+                "Uninstalling DTA/TI/TS Compatibility Fix failed. Returned error:".L10N("Client:DTAConfig:TSFixUninstallFailText") + " " + ex.Message);
+        }
     }
 
     [RelayCommand]
     private void InstallMapEditorCompatibilityFix()
     {
-        MapEditorCompatibilityFixRequested?.Invoke(this, EventArgs.Empty);
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return;
+
+        if (!finalSunCompatFixInstalled)
+            return;
+
+        try
+        {
+            Process sdbinst = Process.Start("sdbinst.exe", "-q -n \"Final Sun Compatibility Fix\"");
+            sdbinst.WaitForExit();
+
+            using var regKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
+            using var subKey = regKey.CreateSubKey("Tiberian Sun Client");
+            subKey.SetValue("FSCompatFixInstalled", "No");
+
+            Logger.Log("FinalSun Compatibility Fix succesfully uninstalled.");
+            ShowMessageBox(
+                "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFinalSunFixUninstallTitle"),
+                "The FinalSun Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFinalSunFixUninstallText"));
+
+            finalSunCompatFixInstalled = false;
+            IsFinalSunCompatFixAvailable = false;
+
+            if (!gameCompatFixInstalled)
+                IsGameCompatFixAvailable = false;
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.ToString());
+            ShowMessageBox(
+                "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedTitle"),
+                "Uninstalling FinalSun Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedText") + " " + ex.Message);
+        }
     }
 
     [RelayCommand]
@@ -209,6 +283,9 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             IsBackBufferStoredInVideoMemory = !UserINISettings.Instance.BackBufferInVRAM;
         else
             IsBackBufferStoredInVideoMemory = UserINISettings.Instance.BackBufferInVRAM;
+
+        // TS compat mode
+        iniSettings.Win8CompatMode.Value = "No";
     }
 
     [RelayCommand]
@@ -346,7 +423,13 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         }
 
         if (restartRequired)
-            RestartRequired?.Invoke(this, EventArgs.Empty);
+            IsRestartRequired = true;
+    }
+
+    [RelayCommand]
+    private void DismissMessageBox()
+    {
+        IsMessageBoxVisible = false;
     }
 
     // --- Property change handlers ---
@@ -357,62 +440,57 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             IsBorderlessWindowedModeEnabled = false;
     }
 
-    partial void OnIsBorderlessClientEnabledChanged(bool value)
+    // --- Public methods (called on concrete class) ---
+
+    public void PostInit()
     {
-        // When borderless is enabled, the View should select the native resolution
-        // This is handled by the View observing this property change
+        LoadSettings();
+        CheckCompatibilityFixes();
     }
 
-    // --- Public methods for View to populate data ---
+    // --- Helpers ---
 
-    public void SetIngameResolutionOptions(IEnumerable<string> options)
+    private void PopulateOptions()
     {
-        _ingameResolutionOptions.Clear();
-        foreach (var option in options)
-            _ingameResolutionOptions.Add(option);
-    }
+        // Populate detail level options
+        _detailLevelOptions.Add("Low".L10N("Client:DTAConfig:DetailLevelLow"));
+        _detailLevelOptions.Add("Medium".L10N("Client:DTAConfig:DetailLevelMedium"));
+        _detailLevelOptions.Add("High".L10N("Client:DTAConfig:DetailLevelHigh"));
 
-    public void SetClientResolutionOptions(IEnumerable<string> options)
-    {
-        _clientResolutionOptions.Clear();
-        foreach (var option in options)
-            _clientResolutionOptions.Add(option);
-    }
+        // Populate ingame resolutions via service
+        foreach (string res in resolutionProvider.GetIngameResolutions())
+            _ingameResolutionOptions.Add(res);
 
-    public void SetRendererOptions(IEnumerable<(string uiName, DirectDrawWrapper renderer)> options)
-    {
-        _rendererOptions.Clear();
-        _renderers.Clear();
-        foreach (var (uiName, renderer) in options)
+        // Populate client resolutions via service
+        foreach (string res in resolutionProvider.GetClientResolutions())
+            _clientResolutionOptions.Add(res);
+
+        // Populate renderers
+        foreach (var renderer in directDrawWrapperManager.GetRenderers(ClientConfiguration.Instance.GetOperatingSystemVersion()))
         {
-            _rendererOptions.Add(uiName);
+            _rendererOptions.Add(renderer.UIName);
             _renderers.Add(renderer);
         }
-    }
 
-    public void SetThemeOptions(IEnumerable<(string displayName, string name)> options)
-    {
-        _themeOptions.Clear();
-        _themeNames.Clear();
-        foreach (var (displayName, name) in options)
+        // Populate themes
+        int themeCount = ClientConfiguration.Instance.ThemeCount;
+        for (int i = 0; i < themeCount; i++)
         {
+            string themeName = ClientConfiguration.Instance.GetThemeInfoFromIndex(i).Name;
+            string displayName = themeName.L10N($"INI:Themes:{themeName}");
             _themeOptions.Add(displayName);
-            _themeNames.Add(name);
+            _themeNames.Add(themeName);
         }
-    }
 
-    public void SetTranslationOptions(IEnumerable<(string localeCode, string name)> options)
-    {
-        _translationOptions.Clear();
-        _translationLocaleCodes.Clear();
-        foreach (var (localeCode, name) in options)
+        // Populate translations
+        foreach (var (localeCode, name) in Translation.GetTranslations())
         {
             _translationOptions.Add(name);
             _translationLocaleCodes.Add(localeCode);
         }
     }
 
-    public void CheckCompatibilityFixes()
+    private void CheckCompatibilityFixes()
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return;
@@ -439,5 +517,12 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         {
             Logger.Log("Error checking compatibility fixes: " + ex.Message);
         }
+    }
+
+    private void ShowMessageBox(string title, string message)
+    {
+        MessageBoxTitle = title;
+        MessageBoxMessage = message;
+        IsMessageBoxVisible = true;
     }
 }
