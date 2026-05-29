@@ -9,7 +9,7 @@ namespace DTAClient.DXGUI.Multiplayer
     ///<summary>
     /// A panel for showing a game information icon without text.
     ///</summary>
-    public class GameInformationIconOnlyPanel : XNAPanel
+    public class GameInformationIconOnlyPanel : XNAPanel // checked
     {
         private readonly Texture2D icon;
 
