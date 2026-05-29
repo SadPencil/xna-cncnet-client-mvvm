@@ -10,7 +10,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Multiplayer
 {
-    public class PlayerExtraOptionsPanel : XNAPanel
+    public class PlayerExtraOptionsPanel : XNAPanel // checked
     {
         private const int maxStartCount = 8;
         private const int defaultX = 24;
