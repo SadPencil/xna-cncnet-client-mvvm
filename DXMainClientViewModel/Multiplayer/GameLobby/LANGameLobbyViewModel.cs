@@ -23,10 +23,6 @@ using Timer = System.Timers.Timer;
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
 
-/// <summary>
-/// ViewModel for LAN multiplayer game lobby.
-/// Contains all business logic from LANGameLobby.cs except XNA UI rendering.
-/// </summary>
 public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILANGameLobbyViewModel
 {
     private const int GAME_OPTION_SPECIAL_FLAG_COUNT = 5;
@@ -589,6 +585,9 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
 
     protected override void BroadcastPlayerExtraOptions()
     {
+        if (!IsHost)
+            return;
+
         BroadcastMessage(PlayerExtraOptions.ToLanMessage(), true);
     }
 
@@ -1209,7 +1208,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
             pInfo.IsInGame = false;
 
         CopyPlayerDataToUI();
-        RaiseSoundRequested("returngame.wav");
+        RaiseSoundRequested("return.wav");
     }
 
     // --- Dice roll ---
@@ -1244,4 +1243,4 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         iniFile.SetIntValue("Settings", "GameID", UniqueGameID);
         iniFile.SetBooleanValue("Settings", "Host", IsHost);
     }
-}
+} // checked
