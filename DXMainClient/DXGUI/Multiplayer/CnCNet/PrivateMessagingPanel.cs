@@ -7,7 +7,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// A panel that hides itself if it's clicked while none of its children
     /// are the focus of input.
     /// </summary>
-    public class PrivateMessagingPanel : DarkeningPanel
+    public class PrivateMessagingPanel : DarkeningPanel // checked
     {
         public PrivateMessagingPanel(WindowManager windowManager) : base(windowManager)
         {
