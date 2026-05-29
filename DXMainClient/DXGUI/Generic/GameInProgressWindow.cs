@@ -21,7 +21,7 @@ namespace DTAClient.DXGUI
     /// Also enables power-saving (lowers FPS) while a game is in progress,
     /// and performs various operations on game start and exit.
     /// </summary>
-    public class GameInProgressWindow : XNAPanel
+    public class GameInProgressWindow : XNAPanel // checked
     {
         private const double POWER_SAVING_FPS = 5.0;
 
