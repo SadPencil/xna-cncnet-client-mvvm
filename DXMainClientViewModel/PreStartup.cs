@@ -6,6 +6,7 @@ using ClientCore.I18N;
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
+using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Generic;
 using DXMainClientViewModel.Generic.OptionPanels;
 using DXMainClientViewModel.Online;
@@ -174,5 +175,7 @@ public static class PreStartup
         services.AddTransient<IStatisticsWindowViewModel, StatisticsWindowViewModel>();
         services.AddTransient<IExtrasWindowViewModel, ExtrasWindowViewModel>();
         services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
+        services.AddTransient<ICampaignSelectorViewModel, CampaignSelectorViewModel>();
+        services.AddTransient<IGameLoadingWindowViewModel, GameLoadingWindowViewModel>();
     }
 }
