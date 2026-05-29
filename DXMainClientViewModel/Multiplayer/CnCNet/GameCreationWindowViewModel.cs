@@ -71,17 +71,20 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     private readonly ObservableCollection<string> _skillLevelOptions = new();
     public IReadOnlyList<string> SkillLevelOptions => _skillLevelOptions;
 
-    // --- Events ---
-
-    public event EventHandler<GameCreationEventArgs>? GameCreated;
-    public event EventHandler<GameCreationEventArgs>? LoadedGameCreated;
-    public event EventHandler? Cancelled;
+    private readonly Action<GameCreationEventArgs>? onGameCreated;
+    private readonly Action<GameCreationEventArgs>? onLoadedGameCreated;
+    private readonly Action? onCancelled;
 
     // --- Constructor ---
 
-    public GameCreationWindowViewModel(TunnelHandler tunnelHandler)
+    public GameCreationWindowViewModel(TunnelHandler tunnelHandler,
+        Action<GameCreationEventArgs>? onGameCreated = null, Action<GameCreationEventArgs>? onLoadedGameCreated = null,
+        Action? onCancelled = null)
     {
         this.tunnelHandler = tunnelHandler;
+        this.onGameCreated = onGameCreated;
+        this.onLoadedGameCreated = onLoadedGameCreated;
+        this.onCancelled = onCancelled;
 
         // Initialize max players options
         for (int i = 8; i > 1; i--)
@@ -130,7 +133,7 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
         if (!IsValidTunnelSelected())
             return;
 
-        GameCreated?.Invoke(this,
+        onGameCreated?.Invoke(
             new GameCreationEventArgs(sanitizedName, MaxPlayers, Password,
                 tunnelHandler.Tunnels[SelectedTunnelIndex], SelectedSkillLevel));
     }
@@ -160,7 +163,7 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
             spawnSGIni.GetIntValue("Settings", "PlayerCount", 2), password,
             tunnelHandler.Tunnels[SelectedTunnelIndex], SelectedSkillLevel);
 
-        LoadedGameCreated?.Invoke(this, ea);
+        onLoadedGameCreated?.Invoke(ea);
     }
 
     [RelayCommand]
@@ -173,7 +176,7 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     [RelayCommand]
     private void Cancel()
     {
-        Cancelled?.Invoke(this, EventArgs.Empty);
+        onCancelled?.Invoke();
     }
 
     // --- Helpers ---
@@ -216,4 +219,4 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
         RefreshTunnelList();
     }
 }
-
+// checked
