@@ -21,7 +21,7 @@ namespace DTAClient.DXGUI.Multiplayer
     /// <summary>
     /// A UI panel that displays information about a hosted CnCNet or LAN game.
     /// </summary>
-    public class GameInformationPanel : XNAPanel
+    public class GameInformationPanel : XNAPanel // checked
     {
         private const int MAX_PLAYERS = 8;
 
