@@ -15,7 +15,7 @@ namespace DTAClient.DXGUI.Generic
     /// <summary>
     /// The update window, displaying the update progress to the user.
     /// </summary>
-    public class UpdateWindow : XNAWindow
+    public class UpdateWindow : XNAWindow // checked
     {
         public delegate void UpdateCancelEventHandler(object sender, EventArgs e);
         public event UpdateCancelEventHandler UpdateCancelled;
