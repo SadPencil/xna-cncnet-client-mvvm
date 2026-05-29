@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
+using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
+using DXMainClientViewModel.Multiplayer.GameLobby;
+
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
 public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
@@ -50,4 +53,20 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand DismissGameInviteCommand { get; }
     IRelayCommand AcceptUpdateCommand { get; }
     IRelayCommand DenyUpdateCommand { get; }
+
+    // Lifecycle methods
+    void Initialize();
+    void SetGameLobbies(ICnCNetGameLobbyViewModel gameLobby, ICnCNetGameLoadingLobbyViewModel gameLoadingLobby);
+    void SetPrivateMessagingWindow(IPrivateMessagingWindowViewModel pmWindow);
+    void SwitchOn();
+    void SwitchOff();
+    void Clean();
+
+    // Coordination methods (called by parent MainMenu)
+    void OnGameCreated(string gameRoomName, string channelName, string password, int maxPlayers, CnCNetTunnel tunnel, int skillLevel);
+    void OnLoadedGameCreated(string gameRoomName, string channelName, string password, CnCNetTunnel tunnel);
+    void OnPasswordEntered(HostedCnCNetGame game, string password);
+    void OnGameLobbyLeft();
+    void OnGameLoadingLobbyLeft();
+    void OnGameFiltersPanelClosed();
 }

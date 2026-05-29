@@ -17,4 +17,5 @@ public interface ICnCNetGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
     void SetUp(bool isHost, CnCNetTunnel tunnel, Channel channel, string hostName);
     void OnJoined();
     void Clear();
+    void ChangeChatColor(IRCColor color);
 }

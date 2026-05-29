@@ -352,6 +352,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         UserINISettings.Instance.ChatColor.Value = value;
         UserINISettings.Instance.SaveSettings();
+
+        if (value >= 0 && value < chatColors.Length)
+        {
+            IRCColor selectedColor = chatColors[value];
+            if (gameLobby != null)
+                gameLobby.ChatColor = selectedColor;
+            gameLoadingLobby?.ChangeChatColor(selectedColor);
+        }
     }
 
     partial void OnSelectedChannelIndexChanged(int value)
@@ -459,7 +467,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void AcceptUpdate()
     {
         IsUpdateCheckNeeded = false;
-        // The orchestrator subscribes to this and triggers the update flow
+        // The parent (MainMenu) subscribes to IsUpdateCheckNeeded and triggers the update flow
     }
 
     [RelayCommand]
@@ -1093,6 +1101,17 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 #endif
             connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255,
                 string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion)));
+
+            {
+                string developBuildWarningMessage = "This is a development build of the client. Stability and reliability may not be fully guaranteed.".L10N("Client:Main:DevelopmentBuildWarning");
+
+#if DEVELOPMENT_BUILD
+                if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
+                {
+                    connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 0, 0, developBuildWarningMessage));
+                }
+#endif
+            }
         }));
     }
 
@@ -1527,6 +1546,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     #endregion
 }
+// checked
 
 /// <summary>
 /// Sort direction for game list.
