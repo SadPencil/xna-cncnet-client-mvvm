@@ -5,6 +5,4 @@ namespace DXMainClientView.Multiplayer.CnCNet;
 public interface ITunnelSelectionWindowView
 {
     ITunnelSelectionWindowViewModel? ViewModel { get; set; }
-    void Show();
-    void Hide();
 }
