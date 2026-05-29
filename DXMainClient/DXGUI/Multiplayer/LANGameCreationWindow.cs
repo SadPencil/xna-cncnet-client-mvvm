@@ -14,7 +14,7 @@ namespace DTAClient.DXGUI.Multiplayer
     /// A window that makes it possible for a LAN player who's hosting a game
     /// to pick between hosting a new game and hosting a loaded game.
     /// </summary>
-    class LANGameCreationWindow : XNAWindow
+    class LANGameCreationWindow : XNAWindow // checked
     {
         public LANGameCreationWindow(WindowManager windowManager) : base(windowManager)
         {
