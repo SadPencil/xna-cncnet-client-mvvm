@@ -18,7 +18,6 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
 /// <summary>
 /// Abstract base ViewModel for all game lobbies (Skirmish, LAN, CnCNet).
-/// Contains the common business logic for parsing game options and handling player info.
 /// </summary>
 public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLobbyViewModel
 {
@@ -1989,4 +1988,4 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     // --- Helper ---
     protected string AILevelToName(int aiLevel) => ProgramConstants.GetAILevelName(aiLevel);
-}
+} // checked
