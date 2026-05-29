@@ -1243,4 +1243,6 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         iniFile.SetIntValue("Settings", "GameID", UniqueGameID);
         iniFile.SetBooleanValue("Settings", "Host", IsHost);
     }
-} 
+}
+
+// checked
