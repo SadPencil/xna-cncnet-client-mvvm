@@ -7,7 +7,7 @@ using System;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
-    public class GameLaunchButton : XNAClientButton
+    public class GameLaunchButton : XNAClientButton // checked
     {
         public GameLaunchButton(WindowManager windowManager) : base(windowManager)
         {
