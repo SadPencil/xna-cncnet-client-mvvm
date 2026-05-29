@@ -18,7 +18,7 @@ namespace DTAClient.DXGUI.Generic
     /// <summary>
     /// A top bar that allows switching between various client windows.
     /// </summary>
-    public class TopBar : XNAPanel
+    public class TopBar : XNAPanel // checked
     {
         /// <summary>
         /// The number of seconds that the top bar will stay down after it has
