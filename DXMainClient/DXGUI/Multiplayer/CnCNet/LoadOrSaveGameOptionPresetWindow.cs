@@ -10,7 +10,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
-    public class LoadOrSaveGameOptionPresetWindow : XNAWindow
+    public class LoadOrSaveGameOptionPresetWindow : XNAWindow // checked
     {
         private bool _isLoad;
 
