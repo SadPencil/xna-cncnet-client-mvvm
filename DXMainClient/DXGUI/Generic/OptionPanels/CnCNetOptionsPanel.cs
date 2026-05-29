@@ -12,7 +12,7 @@ using ClientCore.Enums;
 
 namespace DTAClient.DXGUI.Generic.OptionPanels
 {
-    class CnCNetOptionsPanel : XNAOptionsPanel
+    class CnCNetOptionsPanel : XNAOptionsPanel // checked
     {
         public CnCNetOptionsPanel(WindowManager windowManager, UserINISettings iniSettings,
             GameCollection gameCollection)
