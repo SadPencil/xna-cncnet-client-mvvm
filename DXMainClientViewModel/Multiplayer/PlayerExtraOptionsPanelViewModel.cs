@@ -75,16 +75,16 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     // Preset data for applying mappings
     private readonly List<List<TeamStartMapping>> presetMappings = new();
 
-    // --- Events ---
+    // --- Callbacks ---
 
-    public event EventHandler? OptionsChanged;
-    public event EventHandler? HelpRequested;
-    public event EventHandler? Closed;
+    private readonly Action? onOptionsChanged;
 
     // --- Constructor ---
 
-    public PlayerExtraOptionsPanelViewModel()
+    public PlayerExtraOptionsPanelViewModel(Action? onOptionsChanged = null)
     {
+        this.onOptionsChanged = onOptionsChanged;
+
         IsPanelVisible = false;
         IsHostControlsEnabled = false;
         ForceNoTeamsAllowChecking = true;
@@ -92,12 +92,6 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     }
 
     // --- Commands ---
-
-    [RelayCommand]
-    private void ShowHelp()
-    {
-        HelpRequested?.Invoke(this, EventArgs.Empty);
-    }
 
     [RelayCommand]
     private void ResetMappings()
@@ -111,24 +105,9 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     }
 
     [RelayCommand]
-    private void LoadSettings()
-    {
-        // This is called by the View to load settings into the panel
-        // The actual PlayerExtraOptions data is provided via SetPlayerExtraOptions
-    }
-
-    [RelayCommand]
-    private void SaveSettings()
-    {
-        // This is called by the View to save settings from the panel
-        // The actual PlayerExtraOptions data is retrieved via GetPlayerExtraOptions
-    }
-
-    [RelayCommand]
     private void ClosePanel()
     {
         IsPanelVisible = false;
-        Closed?.Invoke(this, EventArgs.Empty);
     }
 
     // --- Property change handlers ---
@@ -247,7 +226,7 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
 
     private void RaiseOptionsChanged()
     {
-        OptionsChanged?.Invoke(this, EventArgs.Empty);
+        onOptionsChanged?.Invoke();
     }
 
     private void RefreshForceNoTeamsAllowChecking()
@@ -339,3 +318,4 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     }
 }
 
+// checked

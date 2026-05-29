@@ -20,9 +20,6 @@ public interface IPlayerExtraOptionsPanelViewModel : INotifyPropertyChanged
     bool IsPanelVisible { get; set; }
     bool IsHostControlsEnabled { get; }
 
-    IRelayCommand ShowHelpCommand { get; }
     IRelayCommand ResetMappingsCommand { get; }
-    IRelayCommand LoadSettingsCommand { get; }
-    IRelayCommand SaveSettingsCommand { get; }
     IRelayCommand ClosePanelCommand { get; }
 }
