@@ -62,6 +62,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private LANGameLoadingLobbyViewModel lanGameLoadingLobby;
     private LANGameCreationWindowViewModel gameCreationWindow;
 
+    // --- Domain events (for parent coordination) ---
+    public event EventHandler? Exited;
+
     // --- Observable state ---
 
     [ObservableProperty]
@@ -126,11 +129,11 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         chatColors = new LANColor[]
         {
             new LANColor("Gray".L10N("Client:Main:ColorGray"), 128, 128, 128),
-            new LANColor("Metallic".L10N("Client:Main:ColorLightGrayMetallic"), 192, 192, 192),
+            new LANColor("Metallic".L10N("Client:Main:ColorLightGrayMetallic"), 211, 211, 211),
             new LANColor("Green".L10N("Client:Main:ColorGreen"), 34, 139, 34),
             new LANColor("Lime Green".L10N("Client:Main:ColorLimeGreen"), 50, 205, 50),
             new LANColor("Green Yellow".L10N("Client:Main:ColorGreenYellow"), 173, 255, 47),
-            new LANColor("Goldenrod".L10N("Client:Main:ColorGoldenrod"), 218, 165, 32),
+            new LANColor("Goldenrod".L10N("Client:Main:ColorGoldenrod"), 255, 193, 37),
             new LANColor("Yellow".L10N("Client:Main:ColorYellow"), 255, 255, 0),
             new LANColor("Orange".L10N("Client:Main:ColorOrange"), 255, 165, 0),
             new LANColor("Red".L10N("Client:Main:ColorRed"), 255, 0, 0),
@@ -265,6 +268,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         broadcastManager.Shutdown();
         StopUpdateTimer();
         IsEnabled = false;
+        Exited?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -633,4 +637,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     public IReadOnlyList<LANColor> ChatColors => chatColors;
 }
+
+// checked
 
