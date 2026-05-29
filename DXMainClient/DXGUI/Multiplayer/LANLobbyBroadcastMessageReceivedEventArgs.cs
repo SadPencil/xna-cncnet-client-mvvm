@@ -7,7 +7,7 @@ namespace DTAClient.DXGUI.Multiplayer;
 /// <summary>
 /// Event arguments for network message received events.
 /// </summary>
-internal class LANLobbyBroadcastMessageReceivedEventArgs : EventArgs
+internal class LANLobbyBroadcastMessageReceivedEventArgs : EventArgs // checked
 {
     /// <summary>
     /// The received message data.
