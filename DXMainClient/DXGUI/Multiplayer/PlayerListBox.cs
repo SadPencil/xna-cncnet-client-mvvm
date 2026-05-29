@@ -17,7 +17,7 @@ namespace DTAClient.DXGUI.Multiplayer
     /// <summary>
     /// A list box for listing the players in the CnCNet lobby.
     /// </summary>
-    public class PlayerListBox : XNAListBox
+    public class PlayerListBox : XNAListBox // checked
     {
         private const int MARGIN = 2;
 
