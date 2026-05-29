@@ -18,7 +18,7 @@ using System.Diagnostics;
 
 namespace DTAClient.DXGUI.Generic
 {
-    public class LoadingScreen : XNAWindow
+    public class LoadingScreen : XNAWindow // checked
     {
         public LoadingScreen(
             CnCNetManager cncnetManager,
