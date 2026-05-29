@@ -14,7 +14,7 @@ using DTAClient.Domain;
 
 namespace DTAClient.DXGUI.Generic
 {
-    public class OptionsWindow : XNAWindow
+    public class OptionsWindow : XNAWindow // checked
     {
         public OptionsWindow(WindowManager windowManager, GameCollection gameCollection, DirectDrawWrapperManager directDrawWrapperManager) : base(windowManager)
         {
