@@ -12,7 +12,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby;
 /// <summary>
 /// A window that allows the host to modify game lobby settings.
 /// </summary>
-public class GameLobbySettingsWindow(WindowManager windowManager) : XNAWindow(windowManager)
+public class GameLobbySettingsWindow(WindowManager windowManager) : XNAWindow(windowManager) // checked
 {
     public event EventHandler<GameLobbySettingsEventArgs> SettingsChanged;
 
