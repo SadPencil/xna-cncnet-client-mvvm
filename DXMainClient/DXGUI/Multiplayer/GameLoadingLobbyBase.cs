@@ -17,7 +17,7 @@ namespace DTAClient.DXGUI.Multiplayer
     /// <summary>
     /// An abstract base class for a multiplayer game loading lobby.
     /// </summary>
-    public abstract class GameLoadingLobbyBase : XNAWindow, ISwitchable
+    public abstract class GameLoadingLobbyBase : XNAWindow, ISwitchable // checked
     {
         public GameLoadingLobbyBase(WindowManager windowManager, DiscordHandler discordHandler) : base(windowManager)
         {
