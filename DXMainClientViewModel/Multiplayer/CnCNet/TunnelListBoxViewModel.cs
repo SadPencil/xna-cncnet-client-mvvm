@@ -44,10 +44,6 @@ public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxVi
     private readonly ObservableCollection<string> _tunnelAddresses = new();
     public IReadOnlyList<string> TunnelAddresses => _tunnelAddresses;
 
-    // --- Events ---
-
-    public event EventHandler? ListRefreshed;
-
     // --- Constructor ---
 
     public TunnelListBoxViewModel(TunnelHandler tunnelHandler)
@@ -77,7 +73,7 @@ public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxVi
         }
     }
 
-    // --- Public methods ---
+    // --- Public methods (called by parent ViewModel) ---
 
     /// <summary>
     /// Selects a tunnel from the list with the given address.
@@ -166,8 +162,7 @@ public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxVi
                 }
             }
         }
-
-        ListRefreshed?.Invoke(this, EventArgs.Empty);
+        // Parent observes TunnelNames collection changes to know when list is refreshed
     }
 
     private void TunnelHandler_TunnelPinged(int tunnelIndex)
@@ -211,4 +206,4 @@ public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxVi
         return Convert.ToInt32(Math.Pow(tunnel.PingInMs, 2.0) * usageRatio);
     }
 }
-
+// checked
