@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace DTAClient.DXGUI.Generic
 {
-    public class StatisticsWindow : XNAWindow
+    public class StatisticsWindow : XNAWindow // checked
     {
         public StatisticsWindow(WindowManager windowManager, MapLoader mapLoader)
             : base(windowManager)
