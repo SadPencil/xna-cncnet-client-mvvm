@@ -9,7 +9,7 @@ using ClientUpdater;
 
 namespace DTAClient.DXGUI.Generic.OptionPanels
 {
-    class UpdaterOptionsPanel : XNAOptionsPanel
+    class UpdaterOptionsPanel : XNAOptionsPanel // checked
     {
         public UpdaterOptionsPanel(WindowManager windowManager, UserINISettings iniSettings)
             : base(windowManager, iniSettings)
