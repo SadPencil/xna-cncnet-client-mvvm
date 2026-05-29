@@ -21,6 +21,7 @@ namespace DXMainClientViewModel.Multiplayer;
 public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxViewModel
 {
     private readonly GameCollection gameCollection;
+    private readonly Action<ChannelUser>? onPlayerOpened;
 
     // --- State ---
 
@@ -39,16 +40,12 @@ public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxVi
     private readonly ObservableCollection<string> _playerNames = new();
     public IReadOnlyList<string> PlayerNames => _playerNames;
 
-    // --- Events ---
-
-    public event EventHandler<ChannelUser>? PlayerSelected;
-    public event EventHandler<ChannelUser>? OpenPlayerRequested;
-
     // --- Constructor ---
 
-    public PlayerListBoxViewModel(GameCollection gameCollection)
+    public PlayerListBoxViewModel(GameCollection gameCollection, Action<ChannelUser>? onPlayerOpened = null)
     {
         this.gameCollection = gameCollection;
+        this.onPlayerOpened = onPlayerOpened;
     }
 
     // --- Commands ---
@@ -59,7 +56,7 @@ public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxVi
         if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= users.Count)
             return;
 
-        OpenPlayerRequested?.Invoke(this, users[SelectedPlayerIndex]);
+        onPlayerOpened?.Invoke(users[SelectedPlayerIndex]);
     }
 
     [RelayCommand]
@@ -73,17 +70,12 @@ public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxVi
     partial void OnSelectedPlayerIndexChanged(int value)
     {
         if (value >= 0 && value < users.Count)
-        {
             SelectedPlayerName = users[value].IRCUser.Name;
-            PlayerSelected?.Invoke(this, users[value]);
-        }
         else
-        {
             SelectedPlayerName = null;
-        }
     }
 
-    // --- User management ---
+    // --- User management (called by parent ViewModel) ---
 
     public void AddUser(ChannelUser user)
     {
@@ -144,4 +136,4 @@ public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxVi
             _playerNames.Add(GetDisplayName(user));
     }
 }
-
+// checked
