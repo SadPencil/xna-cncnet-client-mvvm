@@ -8,7 +8,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     /// <summary>
     /// A box for drawing scenario briefings.
     /// </summary>
-    class CoopBriefingBox : XNAPanel
+    class CoopBriefingBox : XNAPanel // checked
     {
         private const int MARGIN = 12;
         private const float ALPHA_RATE = 0.4f;
