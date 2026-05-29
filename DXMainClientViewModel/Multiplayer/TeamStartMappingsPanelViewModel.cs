@@ -34,14 +34,15 @@ public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamSt
     private readonly ObservableCollection<string> _mappingSummaries = new();
     public IReadOnlyList<string> MappingSummaries => _mappingSummaries;
 
-    // --- Events ---
+    // --- Callbacks ---
 
-    public event EventHandler? MappingsChanged;
+    private readonly Action? onMappingsChanged;
 
     // --- Constructor ---
 
-    public TeamStartMappingsPanelViewModel()
+    public TeamStartMappingsPanelViewModel(Action? onMappingsChanged = null)
     {
+        this.onMappingsChanged = onMappingsChanged;
     }
 
     // --- Commands ---
@@ -49,7 +50,7 @@ public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamSt
     [RelayCommand]
     private void ApplyMappings()
     {
-        MappingsChanged?.Invoke(this, EventArgs.Empty);
+        onMappingsChanged?.Invoke();
     }
 
     [RelayCommand]
@@ -57,7 +58,7 @@ public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamSt
     {
         currentMappings.Clear();
         RefreshSummaries();
-        MappingsChanged?.Invoke(this, EventArgs.Empty);
+        onMappingsChanged?.Invoke();
     }
 
     // --- Public methods ---
@@ -87,7 +88,7 @@ public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamSt
 
         currentMappings[startLocation - 1] = mapping;
         RefreshSummaries();
-        MappingsChanged?.Invoke(this, EventArgs.Empty);
+        onMappingsChanged?.Invoke();
     }
 
     public void ClearMappings()
@@ -128,3 +129,4 @@ public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamSt
     }
 }
 
+// checked
