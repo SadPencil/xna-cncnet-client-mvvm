@@ -17,7 +17,7 @@ namespace DTAClient.DXGUI.Multiplayer;
 /// Encapsulates all player tracking operations to ensure atomicity between
 /// the player dictionary and UI updates.
 /// </summary>
-internal class LANPlayerManager
+internal class LANPlayerManager // checked
 {
     private readonly object lockObject = new();
     private readonly Dictionary<string, LANLobbyUser> players = [];
