@@ -18,7 +18,6 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
 /// <summary>
 /// ViewModel for multiplayer game lobbies (CnCNet and LAN).
-/// Contains all business logic from MultiplayerGameLobby.cs except XNA UI rendering.
 /// </summary>
 public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewModel, IMultiplayerGameLobbyViewModel
 {
@@ -1041,4 +1040,4 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
             IsStartLocationSelectionEnabled = true;
         }
     }
-}
+} // checked
