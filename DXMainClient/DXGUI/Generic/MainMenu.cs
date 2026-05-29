@@ -30,7 +30,7 @@ namespace DTAClient.DXGUI.Generic
     /// <summary>
     /// The main menu of the client.
     /// </summary>
-    class MainMenu : XNAWindow, ISwitchable
+    class MainMenu : XNAWindow, ISwitchable // checked
     {
         private const float MEDIA_PLAYER_VOLUME_FADE_STEP = 0.01f;
         private const float MEDIA_PLAYER_VOLUME_EXIT_FADE_STEP = 0.025f;
