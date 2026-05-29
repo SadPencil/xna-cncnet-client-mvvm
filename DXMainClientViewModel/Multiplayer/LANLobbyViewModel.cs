@@ -318,7 +318,20 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             applicationLifecycleService,
             chatColors);
 
-        gameCreationWindow = new LANGameCreationWindowViewModel();
+        gameCreationWindow = new LANGameCreationWindowViewModel(
+            onNewGameRequested: () =>
+            {
+                lanGameLobby.SetUp(true,
+                    new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
+                IsEnabled = false;
+            },
+            onLoadGameRequested: e =>
+            {
+                lanGameLoadingLobby.SetUp(true,
+                    new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT),
+                    null, e.LoadedGameID);
+                IsEnabled = false;
+            });
 
         // Subscribe to child ViewModel events
         lanGameLobby.GameLeft += LanGameLobby_GameLeft;
@@ -327,8 +340,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         lanGameLoadingLobby.GameLeft += LanGameLoadingLobby_GameLeft;
         lanGameLoadingLobby.GameBroadcast += LanGameLoadingLobby_GameBroadcast;
 
-        gameCreationWindow.NewGameRequested += GameCreationWindow_NewGame;
-        gameCreationWindow.LoadGameRequested += GameCreationWindow_LoadGame;
 
         // Set initial chat color
         lanGameLobby.ChatColorIndex = SelectedColorIndex;
@@ -394,20 +405,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         SendMessage(e.Message);
     }
 
-    private void GameCreationWindow_NewGame(object? sender, EventArgs e)
-    {
-        lanGameLobby.SetUp(true,
-            new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
-        IsEnabled = false;
-    }
 
-    private void GameCreationWindow_LoadGame(object? sender, GameLoadEventArgs e)
-    {
-        lanGameLoadingLobby.SetUp(true,
-            new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT),
-            null, e.LoadedGameID);
-        IsEnabled = false;
-    }
 
     // --- Color management ---
 

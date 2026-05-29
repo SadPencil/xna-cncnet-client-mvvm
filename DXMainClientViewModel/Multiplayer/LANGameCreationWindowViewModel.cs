@@ -30,16 +30,19 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     [ObservableProperty]
     private bool _isWindowVisible;
 
-    // --- Events ---
+    // --- Callbacks ---
 
-    public event EventHandler? NewGameRequested;
-    public event EventHandler<GameLoadEventArgs>? LoadGameRequested;
-    public event EventHandler? Cancelled;
+    private readonly Action? onNewGameRequested;
+    private readonly Action<GameLoadEventArgs>? onLoadGameRequested;
 
     // --- Constructor ---
 
-    public LANGameCreationWindowViewModel()
+    public LANGameCreationWindowViewModel(
+        Action? onNewGameRequested = null,
+        Action<GameLoadEventArgs>? onLoadGameRequested = null)
     {
+        this.onNewGameRequested = onNewGameRequested;
+        this.onLoadGameRequested = onLoadGameRequested;
     }
 
     // --- Commands ---
@@ -48,7 +51,7 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     private void CreateNewGame()
     {
         IsWindowVisible = false;
-        NewGameRequested?.Invoke(this, EventArgs.Empty);
+        onNewGameRequested?.Invoke();
     }
 
     [RelayCommand]
@@ -58,14 +61,13 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
 
         IniFile iniFile = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ProgramConstants.SAVED_GAME_SPAWN_INI));
 
-        LoadGameRequested?.Invoke(this, new GameLoadEventArgs(iniFile.GetIntValue("Settings", "GameID", -1)));
+        onLoadGameRequested?.Invoke(new GameLoadEventArgs(iniFile.GetIntValue("Settings", "GameID", -1)));
     }
 
     [RelayCommand]
     private void Cancel()
     {
         IsWindowVisible = false;
-        Cancelled?.Invoke(this, EventArgs.Empty);
     }
 
     // --- Public methods ---
@@ -99,4 +101,5 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
         return true;
     }
 }
+// checked
 
