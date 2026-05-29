@@ -21,7 +21,7 @@ namespace DTAClient.DXGUI.Multiplayer
     /// <summary>
     /// A list box for listing hosted games.
     /// </summary>
-    public class GameListBox : XNAListBox
+    public class GameListBox : XNAListBox // checked
     {
         private const int GAME_REFRESH_RATE = 1;
         private const int ICON_MARGIN = 2;
