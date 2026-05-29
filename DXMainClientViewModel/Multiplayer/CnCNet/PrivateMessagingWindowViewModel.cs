@@ -90,10 +90,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [ObservableProperty]
     private string _draftMessage = string.Empty;
 
-    // --- Events ---
+    // --- Callbacks ---
 
-    public event Action<string>? SoundPlayRequested;
-    public event EventHandler<string>? JoinUserRequested;
+    private readonly Action<string>? onSoundPlayRequested;
 
     // --- Constructor ---
 
@@ -102,13 +101,15 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         CnCNetUserData cncnetUserData,
         PrivateMessageHandler privateMessageHandler,
         IUIThreadMarshaller uiThreadMarshaller,
-        IGameProcessService gameProcessService)
+        IGameProcessService gameProcessService,
+        Action<string>? onSoundPlayRequested = null)
     {
         this.connectionManager = connectionManager;
         this.cncnetUserData = cncnetUserData;
         this.privateMessageHandler = privateMessageHandler;
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.gameProcessService = gameProcessService;
+        this.onSoundPlayRequested = onSoundPlayRequested;
     }
 
     // --- Commands ---
@@ -146,9 +147,15 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         pmUser.Messages.Add(new ChatMessage(sentMessage));
 
         _messageHistory.Add(sentMessage);
-        SoundPlayRequested?.Invoke("message.wav");
+        onSoundPlayRequested?.Invoke("message.wav");
 
         lastConversationPartner = userName;
+
+        if (SelectedTabIndex != MESSAGES_INDEX)
+        {
+            SelectedTabIndex = MESSAGES_INDEX;
+            SelectedUserIndex = FindUserIndexForName(userName);
+        }
 
         DraftMessage = string.Empty;
     }
@@ -447,7 +454,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         }
 
         _messageHistory.Add(messageText);
-        SoundPlayRequested?.Invoke("message.wav");
+        onSoundPlayRequested?.Invoke("message.wav");
     }
 
     private void ConnectionManager_UserAdded(object? sender, UserEventArgs e)
@@ -566,7 +573,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
             privateMessageHandler.IncrementUnreadMessageCount();
         }
 
-        SoundPlayRequested?.Invoke("pm.wav");
+        onSoundPlayRequested?.Invoke("pm.wav");
     }
 
     private void RefreshAllUsers()
@@ -609,4 +616,5 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         }
     }
 }
+// checked
 

@@ -57,7 +57,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     // Lifecycle methods
     void Initialize();
     void SetGameLobbies(ICnCNetGameLobbyViewModel gameLobby, ICnCNetGameLoadingLobbyViewModel gameLoadingLobby);
-    void SetPrivateMessagingWindow(IPrivateMessagingWindowViewModel pmWindow);
+    void SetPrivateMessagingWindow(PrivateMessagingWindowViewModel pmWindow);
     void SwitchOn();
     void SwitchOff();
     void Clean();
