@@ -60,6 +60,7 @@ namespace DXMainClientViewModel.Generic
 
         // Domain events (for MainMenu to subscribe, not on interface)
         public event EventHandler? RestartRequested;
+        public event EventHandler? ForceUpdateRequested;
 
         public OptionsWindowViewModel(
             IDisplayOptionsPanelViewModel displayOptionsPanel,
@@ -154,6 +155,7 @@ namespace DXMainClientViewModel.Generic
         private void ForceUpdate()
         {
             IsVisible = false;
+            ForceUpdateRequested?.Invoke(this, EventArgs.Empty);
         }
 
         [RelayCommand]
@@ -322,3 +324,4 @@ namespace DXMainClientViewModel.Generic
         #endregion
     }
 }
+// checked
