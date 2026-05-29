@@ -32,6 +32,7 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
     private readonly string localGameIdentifier;
     private readonly GameCollection gameCollection;
     private readonly Predicate<GenericHostedGame>? gameMatchesFilter;
+    private readonly Action<int>? onJoinGame;
     private Timer? refreshTimer;
 
     public double GameLifetimeSeconds { get; set; } = DEFAULT_GAME_LIFETIME_SECONDS;
@@ -59,19 +60,15 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
     private readonly ObservableCollection<string> _sortOptions = new();
     public IReadOnlyList<string> SortOptions => _sortOptions;
 
-    // --- Events ---
-
-    public event EventHandler<GenericHostedGame>? GameSelected;
-    public event EventHandler<int>? JoinGameRequested;
-
     // --- Constructor ---
 
-    public GameListBoxViewModel(MapLoader mapLoader, string localGameIdentifier, GameCollection gameCollection, Predicate<GenericHostedGame>? gameMatchesFilter = null)
+    public GameListBoxViewModel(MapLoader mapLoader, string localGameIdentifier, GameCollection gameCollection, Predicate<GenericHostedGame>? gameMatchesFilter = null, Action<int>? onJoinGame = null)
     {
         this.mapLoader = mapLoader;
         this.localGameIdentifier = localGameIdentifier;
         this.gameCollection = gameCollection;
         this.gameMatchesFilter = gameMatchesFilter;
+        this.onJoinGame = onJoinGame;
 
         // Initialize sort options
         _sortOptions.Add("A-Z".L10N("Client:Main:SortAZ"));
@@ -88,7 +85,7 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
         if (SelectedGameIndex < 0 || SelectedGameIndex >= hostedGames.Count)
             return;
 
-        JoinGameRequested?.Invoke(this, SelectedGameIndex);
+        onJoinGame?.Invoke(SelectedGameIndex);
     }
 
     [RelayCommand]
@@ -103,14 +100,9 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
     partial void OnSelectedGameIndexChanged(int value)
     {
         if (value >= 0 && value < hostedGames.Count)
-        {
             SelectedGameName = hostedGames[value].RoomName;
-            GameSelected?.Invoke(this, hostedGames[value]);
-        }
         else
-        {
             SelectedGameName = null;
-        }
     }
 
     partial void OnSelectedSortOptionIndexChanged(int value)
@@ -119,7 +111,7 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
         RefreshGameList();
     }
 
-    // --- Lifecycle ---
+    // --- Lifecycle (called by parent ViewModel, not View) ---
 
     public void Initialize()
     {
@@ -131,7 +123,7 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
         StopRefreshTimer();
     }
 
-    // --- Game management ---
+    // --- Game management (called by parent ViewModel) ---
 
     public void AddGame(GenericHostedGame game)
     {
@@ -249,4 +241,4 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
         RefreshGameList();
     }
 }
-
+// checked
