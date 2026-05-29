@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Generic"
+             x:Class="DXMainClientView.Generic.UpdateQueryWindow"
+             x:DataType="vm:IUpdateQueryWindowViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="251" Height="140">
+  <Canvas>
+    <!-- Description label -->
+    <TextBlock Name="lblDescription"
+               Text="{Binding DescriptionText}"
+               Canvas.Left="12" Canvas.Top="9"
+               Foreground="White"
+               FontSize="13" />
+
+    <!-- Changelog link -->
+    <Button Content="View Changelog"
+            Command="{Binding ViewChangelogCommand}"
+            Canvas.Left="12" Canvas.Top="50"
+            Background="Transparent"
+            Foreground="Goldenrod"
+            FontSize="12"
+            Padding="0"
+            BorderThickness="0"
+            Cursor="Hand" />
+
+    <!-- Update size label -->
+    <TextBlock Name="lblUpdateSize"
+               Text="{Binding UpdateSizeText}"
+               Canvas.Left="12" Canvas.Top="80"
+               Foreground="White"
+               FontSize="13" />
+
+    <!-- Yes button -->
+    <Button Content="Yes"
+            Command="{Binding AcceptCommand}"
+            Canvas.Left="12" Canvas.Top="110"
+            Width="75" Height="23"
+            FontSize="13" />
+
+    <!-- No button -->
+    <Button Content="No"
+            Command="{Binding DeclineCommand}"
+            Canvas.Left="164" Canvas.Top="110"
+            Width="75" Height="23"
+            FontSize="13" />
+  </Canvas>
+</UserControl>
