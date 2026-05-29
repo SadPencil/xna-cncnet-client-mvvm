@@ -34,7 +34,7 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace DTAClient.DXGUI.Multiplayer
 {
-    class LANLobby : XNAWindow
+    class LANLobby : XNAWindow // checked
     {
         private const double ALIVE_MESSAGE_INTERVAL = 5.0;
         private const double INACTIVITY_REMOVE_TIME = 10.0;
