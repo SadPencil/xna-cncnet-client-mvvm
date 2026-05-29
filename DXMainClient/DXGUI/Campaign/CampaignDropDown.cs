@@ -10,7 +10,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Campaign;
 
-public class CampaignDropDown : GameSessionDropDown
+public class CampaignDropDown : GameSessionDropDown // checked
 {
     public CampaignDropDown(WindowManager windowManager) : base (windowManager) { }
     
