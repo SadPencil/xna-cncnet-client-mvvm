@@ -13,7 +13,7 @@ using Rampastring.Tools;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
-    public static class MapCodeHelper
+    public static class MapCodeHelper // checked
     {
         public static Encoding GetMapEncoding(string filepath) => Translation.Instance.MapEncoding ?? FileExtensions.GetDetectedEncoding(filepath);
 
