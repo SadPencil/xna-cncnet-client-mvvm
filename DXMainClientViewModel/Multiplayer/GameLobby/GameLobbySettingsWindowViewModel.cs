@@ -45,16 +45,18 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
     private readonly ObservableCollection<string> _skillLevelNames = new();
     public IReadOnlyList<string> SkillLevelNames => _skillLevelNames;
 
-    // --- Events ---
-
-    public event EventHandler<GameLobbySettingsEventArgs>? SettingsChanged;
-    public event EventHandler? Cancelled;
-    public event EventHandler<string>? ValidationError;
+    private readonly Action<GameLobbySettingsEventArgs>? onSettingsChanged;
+    private readonly Action? onCancelled;
+    private readonly Action<string>? onValidationError;
 
     // --- Constructor ---
 
-    public GameLobbySettingsWindowViewModel()
+    public GameLobbySettingsWindowViewModel(Action<GameLobbySettingsEventArgs>? onSettingsChanged = null, Action? onCancelled = null, Action<string>? onValidationError = null)
     {
+        this.onSettingsChanged = onSettingsChanged;
+        this.onCancelled = onCancelled;
+        this.onValidationError = onValidationError;
+
         // Initialize max player options (8 down to 2)
         for (int i = 8; i > 1; i--)
             _maxPlayerOptions.Add(i.ToString());
@@ -80,13 +82,13 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
         NameValidationError validationError = NameValidator.IsGameNameValid(sanitizedName, out string errorMessage);
         if (validationError != NameValidationError.None)
         {
-            ValidationError?.Invoke(this, errorMessage);
+            onValidationError?.Invoke(errorMessage);
             return;
         }
 
         int maxPlayers = MaxPlayers;
 
-        SettingsChanged?.Invoke(this, new GameLobbySettingsEventArgs(
+        onSettingsChanged?.Invoke(new GameLobbySettingsEventArgs(
             sanitizedName, maxPlayers, SelectedSkillLevelIndex, Password));
 
         IsWindowVisible = false;
@@ -96,7 +98,7 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
     private void Cancel()
     {
         IsWindowVisible = false;
-        Cancelled?.Invoke(this, EventArgs.Empty);
+        onCancelled?.Invoke();
     }
 
     // --- Public methods ---
@@ -113,4 +115,4 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
         IsWindowVisible = true;
     }
 }
-
+// checked
