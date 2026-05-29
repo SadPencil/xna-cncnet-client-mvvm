@@ -72,6 +72,8 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     public ComponentsPanelViewModel(IUIThreadMarshaller uiThreadMarshaller)
     {
         this.uiThreadMarshaller = uiThreadMarshaller;
+
+        Updater.FileIdentifiersUpdated += () => UpdateInstallationButtons();
     }
 
     // --- Commands ---
@@ -166,6 +168,7 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     [RelayCommand]
     private void RefreshComponents()
     {
+        downloadCancelled = false;
         UpdateInstallationButtons();
     }
 
@@ -211,15 +214,8 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
             _componentActionTexts.Add(GetActionText(c));
             _componentStatusTexts.Add(string.Empty);
         }
-
-        Updater.FileIdentifiersUpdated += () => UpdateInstallationButtons();
     }
 
-    public void Open()
-    {
-        downloadCancelled = false;
-        UpdateInstallationButtons();
-    }
 
     // --- Helpers ---
 
@@ -343,4 +339,6 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         IsMessageBoxVisible = true;
     }
 }
+
+// checked
 

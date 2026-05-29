@@ -193,7 +193,7 @@ namespace DXMainClientViewModel.Generic
 
             RefreshOptionPanels();
 
-            componentsPanel.Open();
+            componentsPanel.RefreshComponentsCommand.Execute(null);
 
             IsVisible = true;
         }
