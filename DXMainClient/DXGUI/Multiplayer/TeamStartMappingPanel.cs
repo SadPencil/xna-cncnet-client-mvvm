@@ -7,7 +7,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Multiplayer
 {
-    public class TeamStartMappingPanel : XNAPanel
+    public class TeamStartMappingPanel : XNAPanel // checked
     {
         private readonly int _start;
         private readonly int _defaultTeamIndex = -1;
