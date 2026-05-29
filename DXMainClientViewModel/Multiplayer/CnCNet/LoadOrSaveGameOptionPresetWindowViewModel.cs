@@ -51,11 +51,18 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
     private readonly ObservableCollection<string> _presetNames = new();
     public IReadOnlyList<string> PresetNames => _presetNames;
 
-    // --- Events ---
+    private readonly Action<GameOptionPresetEventArgs>? onPresetLoaded;
+    private readonly Action<GameOptionPresetEventArgs>? onPresetSaved;
+    private readonly Action? onCancelled;
 
-    public event EventHandler<GameOptionPresetEventArgs>? PresetLoaded;
-    public event EventHandler<GameOptionPresetEventArgs>? PresetSaved;
-    public event EventHandler? Cancelled;
+    // --- Constructor ---
+
+    public LoadOrSaveGameOptionPresetWindowViewModel(Action<GameOptionPresetEventArgs>? onPresetLoaded = null, Action<GameOptionPresetEventArgs>? onPresetSaved = null, Action? onCancelled = null)
+    {
+        this.onPresetLoaded = onPresetLoaded;
+        this.onPresetSaved = onPresetSaved;
+        this.onCancelled = onCancelled;
+    }
 
     // --- Commands ---
 
@@ -69,12 +76,12 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
 
         if (IsLoadMode)
         {
-            PresetLoaded?.Invoke(this, new GameOptionPresetEventArgs(selectedItem));
+            onPresetLoaded?.Invoke(new GameOptionPresetEventArgs(selectedItem));
         }
         else
         {
             string name = IsCreateNewSelected ? PresetName : selectedItem;
-            PresetSaved?.Invoke(this, new GameOptionPresetEventArgs(name));
+            onPresetSaved?.Invoke(new GameOptionPresetEventArgs(name));
         }
 
         IsWindowVisible = false;
@@ -100,7 +107,7 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
     private void Cancel()
     {
         IsWindowVisible = false;
-        Cancelled?.Invoke(this, EventArgs.Empty);
+        onCancelled?.Invoke();
     }
 
     // --- Public methods ---
@@ -185,4 +192,4 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
         IsDeleteEnabled = !IsCreateNewSelected && !IsSelectPresetSelected;
     }
 }
-
+// checked
