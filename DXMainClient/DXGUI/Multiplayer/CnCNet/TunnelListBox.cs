@@ -15,7 +15,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// <summary>
     /// A list box for listing CnCNet tunnel servers.
     /// </summary>
-    class TunnelListBox : XNAMultiColumnListBox
+    class TunnelListBox : XNAMultiColumnListBox // checked
     {
         private static readonly Dictionary<string, int> CountryCodeFlagOffsets = ParseCountryCodeFlagOffsets();
         private const int FLAG_WIDTH = 16;
