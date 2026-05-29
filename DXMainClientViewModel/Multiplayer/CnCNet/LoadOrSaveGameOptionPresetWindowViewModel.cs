@@ -13,7 +13,7 @@ using DXMainClientViewModel.Online.EventArguments;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the load or save game option preset window.
 /// Contains all business logic from LoadOrSaveGameOptionPresetWindow.cs except XNA UI rendering.

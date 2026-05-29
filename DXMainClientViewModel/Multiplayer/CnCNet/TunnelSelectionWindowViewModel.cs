@@ -14,7 +14,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the tunnel selection window.
 /// Contains all business logic from TunnelSelectionWindow.cs except XNA UI rendering.

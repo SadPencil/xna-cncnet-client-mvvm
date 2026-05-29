@@ -14,7 +14,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the tunnel list box.
 /// Contains all business logic from TunnelListBox.cs except XNA UI rendering.

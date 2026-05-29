@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the choice notification box.
 /// Contains all business logic from ChoiceNotificationBox.cs except XNA UI rendering.

@@ -14,7 +14,7 @@ using DXMainClientViewModel.Online.EventArguments;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the global context menu.
 /// Contains all business logic from GlobalContextMenu.cs except XNA UI rendering.

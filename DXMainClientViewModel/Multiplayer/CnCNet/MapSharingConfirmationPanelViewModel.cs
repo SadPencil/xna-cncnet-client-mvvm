@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the map sharing confirmation panel.
 /// Contains all business logic from MapSharingConfirmationPanel.cs except XNA UI rendering.

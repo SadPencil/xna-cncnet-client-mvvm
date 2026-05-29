@@ -12,7 +12,7 @@ using DXMainClientViewModel.Domain.Multiplayer;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
-// checked
+
 /// <summary>
 /// ViewModel for the map preview box.
 /// Contains non-rendering business logic from MapPreviewBox.cs.

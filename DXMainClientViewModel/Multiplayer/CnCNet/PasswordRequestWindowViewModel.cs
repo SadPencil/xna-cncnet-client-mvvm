@@ -7,7 +7,7 @@ using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the password request window.
 /// Contains all business logic from PasswordRequestWindow.cs except XNA UI rendering.

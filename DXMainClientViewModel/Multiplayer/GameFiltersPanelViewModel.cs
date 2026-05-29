@@ -103,4 +103,4 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     }
 }
 
-// checked
+

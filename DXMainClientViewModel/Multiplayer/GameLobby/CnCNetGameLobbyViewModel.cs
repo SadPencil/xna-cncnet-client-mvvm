@@ -20,7 +20,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
-// checked
+
 /// <summary>
 /// ViewModel for CnCNet multiplayer game lobby.
 /// Contains all business logic from CnCNetGameLobby.cs except XNA UI rendering.

@@ -15,7 +15,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
-// checked
+
 /// <summary>
 /// Abstract base ViewModel for all game lobbies (Skirmish, LAN, CnCNet).
 /// Contains the common business logic for parsing game options and handling player info.

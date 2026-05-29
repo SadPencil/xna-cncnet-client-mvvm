@@ -22,7 +22,7 @@ using Timer = System.Timers.Timer;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
-// checked
+
 /// <summary>
 /// ViewModel for LAN multiplayer game lobby.
 /// Contains all business logic from LANGameLobby.cs except XNA UI rendering.

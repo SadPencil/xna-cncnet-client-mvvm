@@ -24,7 +24,7 @@ namespace DXMainClientViewModel.Multiplayer.CnCNet;
 /// ViewModel for loading saved CnCNet multiplayer games.
 /// Contains all business logic from CnCNetGameLoadingLobby.cs except XNA UI rendering.
 /// </summary>
-// checked
+
 public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewModel, ICnCNetGameLoadingLobbyViewModel
 {
     private const double GAME_BROADCAST_INTERVAL = 20.0;

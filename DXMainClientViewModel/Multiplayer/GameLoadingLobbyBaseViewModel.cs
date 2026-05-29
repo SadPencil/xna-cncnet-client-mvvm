@@ -17,7 +17,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer;
 
-// checked
+
 /// <summary>
 /// Abstract base ViewModel for multiplayer game loading lobbies.
 /// Contains all business logic from GameLoadingLobbyBase.cs except XNA UI rendering.

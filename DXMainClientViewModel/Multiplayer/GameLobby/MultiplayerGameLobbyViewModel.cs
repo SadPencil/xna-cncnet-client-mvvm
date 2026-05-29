@@ -15,7 +15,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
-// checked
+
 /// <summary>
 /// ViewModel for multiplayer game lobbies (CnCNet and LAN).
 /// Contains all business logic from MultiplayerGameLobby.cs except XNA UI rendering.

@@ -17,7 +17,7 @@ using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the private messaging window.
 /// Contains all business logic from PrivateMessagingWindow.cs except XNA UI rendering.

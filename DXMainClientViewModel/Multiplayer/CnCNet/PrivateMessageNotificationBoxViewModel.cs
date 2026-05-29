@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 
-// checked
+
 /// <summary>
 /// ViewModel for the private message notification box.
 /// Contains all business logic from PrivateMessageNotificationBox.cs except XNA UI rendering.

@@ -31,7 +31,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// ViewModel for LAN game loading lobby.
 /// Contains all business logic from LANGameLoadingLobby.cs except XNA UI rendering.
 /// </summary>
-// checked
+
 public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewModel, ILANGameLoadingLobbyViewModel
 {
     private const double DROPOUT_TIMEOUT = 20.0;
