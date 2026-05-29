@@ -14,7 +14,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// <summary>
     /// A window that allows the user to host a new game on CnCNet.
     /// </summary>
-    class GameCreationWindow : XNAWindow
+    class GameCreationWindow : XNAWindow // checked
     {
         public GameCreationWindow(WindowManager windowManager, TunnelHandler tunnelHandler)
             : base(windowManager)
