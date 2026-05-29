@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace DTAClient.DXGUI.Generic
 {
-    public class ExtrasWindow : XNAWindow
+    public class ExtrasWindow : XNAWindow // checked
     {
         private StatisticsWindow statisticsWindow;
 
