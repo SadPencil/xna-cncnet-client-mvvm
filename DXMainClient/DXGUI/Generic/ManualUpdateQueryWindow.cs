@@ -11,7 +11,7 @@ namespace DTAClient.DXGUI.Generic
     /// <summary>
     /// A window that redirects users to manually download an update.
     /// </summary>
-    public class ManualUpdateQueryWindow : XNAWindow
+    public class ManualUpdateQueryWindow : XNAWindow // checked
     {
         public delegate void ClosedEventHandler(object sender, EventArgs e);
         public event ClosedEventHandler Closed;
