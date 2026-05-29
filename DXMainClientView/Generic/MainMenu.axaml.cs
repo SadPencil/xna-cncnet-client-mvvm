@@ -13,25 +13,22 @@ public partial class MainMenu : Window, IMainMenuView
     public MainMenu()
     {
         InitializeComponent();
-
-        // Resolve ViewModels from DI - ViewModel project handles initialization
-        var mainMenuVM = App.ServiceProvider!.GetRequiredService<IMainMenuViewModel>();
-        var topBarVM = App.ServiceProvider!.GetRequiredService<ITopBarViewModel>();
-
-        ViewModel = mainMenuVM;
-        DataContext = mainMenuVM;
-
-        topBar.ViewModel = topBarVM;
-
-        // Observe TopBar for player count visibility (cross-ViewModel observation)
-        topBarVM.PropertyChanged += OnTopBarPropertyChanged;
-        UpdatePlayerCountVisibility(topBarVM.IsPlayerCountVisible);
     }
 
     public IMainMenuViewModel? ViewModel
     {
         get => DataContext as IMainMenuViewModel;
         set => DataContext = value;
+    }
+
+    /// <summary>
+    /// Sets the TopBar's ViewModel. Must be called before the window is shown.
+    /// </summary>
+    public void SetTopBarViewModel(ITopBarViewModel topBarViewModel)
+    {
+        topBar.ViewModel = topBarViewModel;
+        topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
+        UpdatePlayerCountVisibility(topBarViewModel.IsPlayerCountVisible);
     }
 
     protected override void OnOpened(EventArgs e)
