@@ -4,7 +4,7 @@
     /// An enum for controlling how the game lobbies'
     /// drop-down controls' data should be written into the spawn INI.
     /// </summary>
-    public enum DropDownDataWriteMode
+    public enum DropDownDataWriteMode // checked
     {
         /// <summary>
         /// The 0-based selected index of the drop-down control will
