@@ -2174,4 +2174,4 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     }
 
     public override string GetSwitchName() => "Game Lobby".L10N("Client:Main:GameLobby");
-} // checked
+} 

@@ -343,4 +343,4 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         IsMessageBoxVisible = true;
     }
 }
-// checked
+

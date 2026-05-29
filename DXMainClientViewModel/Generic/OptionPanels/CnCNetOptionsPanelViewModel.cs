@@ -187,4 +187,4 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
 /// Data for a game list item.
 /// </summary>
 public record GameListItemData(string InternalName, string UIName, bool IsLocalGame, bool IsFollowed);
-// checked
+

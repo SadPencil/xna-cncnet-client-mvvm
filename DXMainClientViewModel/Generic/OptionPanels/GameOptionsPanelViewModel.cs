@@ -138,4 +138,4 @@ public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsP
         }
     }
 }
-// checked
+

@@ -533,4 +533,4 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         IsMessageBoxVisible = true;
     }
 }
-// checked
+

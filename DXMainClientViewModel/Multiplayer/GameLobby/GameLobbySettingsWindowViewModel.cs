@@ -113,4 +113,4 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
         IsWindowVisible = true;
     }
 }
-// checked
+

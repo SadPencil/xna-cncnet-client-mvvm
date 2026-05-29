@@ -167,4 +167,4 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
         }
     }
 }
-// checked
+

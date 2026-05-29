@@ -1546,7 +1546,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     #endregion
 }
-// checked
+
 
 /// <summary>
 /// Sort direction for game list.

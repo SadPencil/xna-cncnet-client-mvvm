@@ -487,4 +487,4 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         return StatisticsManager.Instance.GetSkirmishRankForDefaultMap(gameModeMap.Map.UntranslatedName, gameModeMap.MaxPlayers);
     }
 }
-// checked
+

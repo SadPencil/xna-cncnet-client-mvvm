@@ -144,4 +144,4 @@ public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxVi
             _playerNames.Add(GetDisplayName(user));
     }
 }
-// checked
+

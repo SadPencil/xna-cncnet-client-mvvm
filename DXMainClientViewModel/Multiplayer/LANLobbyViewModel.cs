@@ -635,4 +635,4 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     public IReadOnlyList<LANColor> ChatColors => chatColors;
 }
-// checked
+

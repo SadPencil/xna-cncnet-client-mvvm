@@ -779,4 +779,4 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
 
         GameBroadcast?.Invoke(this, new GameBroadcastEventArgs(sb.ToString()));
     }
-} // checked
+} 

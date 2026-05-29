@@ -441,4 +441,4 @@ public class PlayerDisplayInfo
     public string DisplayName => IsPresent
         ? (IsReady ? Name : Name + " " + "(Not Ready)".L10N("Client:Main:NotReadySuffix"))
         : Name + " " + "(Not present)".L10N("Client:Main:NotPresentSuffix");
-} // checked
+} 

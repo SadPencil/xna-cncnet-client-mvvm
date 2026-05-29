@@ -127,4 +127,4 @@ public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamSt
         }
     }
 }
-// checked
+

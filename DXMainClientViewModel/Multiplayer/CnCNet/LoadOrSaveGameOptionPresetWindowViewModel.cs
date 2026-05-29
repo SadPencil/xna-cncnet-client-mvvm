@@ -185,4 +185,4 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
         IsDeleteEnabled = !IsCreateNewSelected && !IsSelectPresetSelected;
     }
 }
-// checked
+
