@@ -40,17 +40,17 @@ namespace DXMainClientViewModel.Generic
         private bool isVisible;
 
         /// <summary>
-        /// Domain event: raised when update completes. Orchestrator subscribes directly.
+        /// Domain event: raised when update completes. MainMenu subscribes directly.
         /// </summary>
         public event Action? UpdateCompleted;
 
         /// <summary>
-        /// Domain event: raised when update is cancelled. Orchestrator subscribes directly.
+        /// Domain event: raised when update is cancelled. MainMenu subscribes directly.
         /// </summary>
         public event Action? UpdateCancelled;
 
         /// <summary>
-        /// Domain event: raised when update fails. Orchestrator subscribes directly.
+        /// Domain event: raised when update fails. MainMenu subscribes directly.
         /// </summary>
         public event Action<string>? UpdateFailed;
 
@@ -217,3 +217,4 @@ namespace DXMainClientViewModel.Generic
         }
     }
 }
+// checked
