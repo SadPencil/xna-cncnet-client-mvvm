@@ -685,7 +685,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             {
                 button.Background = brush;
                 // Auto-size from texture if no explicit size set
-                if (button.Width == 0 && button.Height == 0)
+                // Avalonia uses NaN for unset dimensions, not 0
+                if (double.IsNaN(button.Width) && double.IsNaN(button.Height))
                 {
                     button.Width = bitmap.PixelSize.Width;
                     button.Height = bitmap.PixelSize.Height;

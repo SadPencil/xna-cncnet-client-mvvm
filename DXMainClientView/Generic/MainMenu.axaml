@@ -4,7 +4,7 @@
              xmlns:local="using:DXMainClientView.Generic"
              x:Class="DXMainClientView.Generic.MainMenu"
              x:DataType="vm:IMainMenuViewModel"
-             Background="#000000">
+             Background="Transparent">
   <Canvas x:Name="MainCanvas">
 
     <!-- TopBar (animated sliding bar) -->

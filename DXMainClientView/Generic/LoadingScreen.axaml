@@ -3,7 +3,7 @@
              xmlns:vm="using:DXMainClientViewModel.Generic"
              x:Class="DXMainClientView.Generic.LoadingScreen"
              x:DataType="vm:ILoadingScreenViewModel"
-             Background="#000000">
+             Background="Transparent">
   <Canvas>
     <!-- ExtraControls from LoadingScreen.ini: logo, text, legal -->
     <Border x:Name="logo" Width="0" Height="0" />

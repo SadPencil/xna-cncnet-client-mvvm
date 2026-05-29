@@ -21,9 +21,9 @@ public partial class MainWindow : Window
     {
         base.OnOpened(e);
 
-        // Apply window-level INI properties (Size, BackgroundTexture from GenericWindow)
+        // Apply LoadingScreen INI layout (background, window chrome)
         var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
-        iniOverlay?.ApplyLayout(this, nameof(MainMenu));
+        iniOverlay?.ApplyLayout(this, "LoadingScreen");
     }
 
     public void ShowLoadingScreen(ILoadingScreenViewModel loadingScreenVM)
