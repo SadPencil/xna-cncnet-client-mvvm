@@ -121,3 +121,4 @@ public partial class RecentPlayerTableViewModel : ObservableObject, IRecentPlaye
         public bool IsOnline { get; set; }
     }
 }
+// checked
