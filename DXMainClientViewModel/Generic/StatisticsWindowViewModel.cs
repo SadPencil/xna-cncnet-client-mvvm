@@ -620,3 +620,4 @@ namespace DXMainClientViewModel.Generic
         public string AverageAILevel { get; set; }
     }
 }
+// checked
