@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Generic"
+             x:Class="DXMainClientView.Generic.UpdateWindow"
+             x:DataType="vm:IUpdateWindowViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="446" Height="270">
+  <Canvas>
+    <!-- Description label -->
+    <TextBlock Name="lblDescription"
+               Text="{Binding DescriptionText}"
+               Canvas.Left="12" Canvas.Top="9"
+               Foreground="White"
+               FontSize="13"
+               TextWrapping="Wrap" />
+
+    <!-- Current file progress percentage label -->
+    <TextBlock Text="Progress percentage of current file:"
+               Canvas.Left="12" Canvas.Top="90"
+               Foreground="White"
+               FontSize="13" />
+    <TextBlock Text="{Binding CurrentFilePercentage, StringFormat={}{0}%}"
+               Canvas.Left="409" Canvas.Top="90"
+               Foreground="White"
+               FontSize="13" />
+
+    <!-- Current file progress bar -->
+    <ProgressBar Name="prgCurrentFile"
+                 Value="{Binding CurrentFilePercentage}"
+                 Maximum="100"
+                 Canvas.Left="12" Canvas.Top="110"
+                 Width="422" Height="30" />
+
+    <!-- Current file name -->
+    <TextBlock Name="lblCurrentFile"
+               Text="{Binding CurrentFileName}"
+               Canvas.Left="12" Canvas.Top="142"
+               Foreground="White"
+               FontSize="13" />
+
+    <!-- Total progress percentage label -->
+    <TextBlock Text="Total progress percentage:"
+               Canvas.Left="12" Canvas.Top="170"
+               Foreground="White"
+               FontSize="13" />
+    <TextBlock Text="{Binding TotalPercentage, StringFormat={}{0}%}"
+               Canvas.Left="409" Canvas.Top="170"
+               Foreground="White"
+               FontSize="13" />
+
+    <!-- Total progress bar -->
+    <ProgressBar Name="prgTotal"
+                 Value="{Binding TotalPercentage}"
+                 Maximum="100"
+                 Canvas.Left="12" Canvas.Top="190"
+                 Width="422" Height="30" />
+
+    <!-- Updater status -->
+    <TextBlock Name="lblUpdaterStatus"
+               Text="{Binding UpdaterStatusText}"
+               Canvas.Left="12" Canvas.Top="240"
+               Foreground="White"
+               FontSize="13" />
+
+    <!-- Cancel button -->
+    <Button Content="Cancel"
+            Command="{Binding CancelCommand}"
+            Canvas.Left="301" Canvas.Top="240"
+            Width="133" Height="23"
+            FontSize="13" />
+  </Canvas>
+</UserControl>

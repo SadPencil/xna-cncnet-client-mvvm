@@ -170,5 +170,6 @@ public static class PreStartup
         services.AddTransient<IPrivacyNotificationViewModel, PrivacyNotificationViewModel>();
         services.AddTransient<IUpdateQueryWindowViewModel, UpdateQueryWindowViewModel>();
         services.AddTransient<IManualUpdateQueryWindowViewModel, ManualUpdateQueryWindowViewModel>();
+        services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
     }
 }
