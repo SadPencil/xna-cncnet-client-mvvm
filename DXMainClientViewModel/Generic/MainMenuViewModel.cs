@@ -106,6 +106,21 @@ namespace DXMainClientViewModel.Generic
         /// </summary>
         public event Action? ExitRequested;
 
+        /// <summary>
+        /// Domain event: fired when skirmish lobby is exited. Parent subscribes.
+        /// </summary>
+        public event Action? SkirmishLobbyExited;
+
+        /// <summary>
+        /// Domain event: fired when LAN lobby is exited. Parent subscribes.
+        /// </summary>
+        public event Action? LanLobbyExited;
+
+        /// <summary>
+        /// Domain event: fired when options window is closed. Parent subscribes.
+        /// </summary>
+        public event Action? OptionsWindowClosed;
+
         public MainMenuViewModel(
             IUpdateService updateService,
             IGameProcessService gameProcessService,
@@ -374,6 +389,8 @@ namespace DXMainClientViewModel.Generic
         {
             if (UserINISettings.Instance.StopMusicOnMenu)
                 musicPlayer.PlayThemeSong();
+
+            SkirmishLobbyExited?.Invoke();
         }
 
         public void OnLanLobbyExited()
@@ -385,12 +402,16 @@ namespace DXMainClientViewModel.Generic
 
             if (UserINISettings.Instance.StopMusicOnMenu)
                 musicPlayer.PlayThemeSong();
+
+            LanLobbyExited?.Invoke();
         }
 
         public void OnOptionsWindowClosed()
         {
             if (customComponentDialogQueued)
                 OnCustomComponentsOutdated();
+
+            OptionsWindowClosed?.Invoke();
         }
 
         public void SwitchOn()
@@ -748,4 +769,6 @@ namespace DXMainClientViewModel.Generic
         #endregion
     }
 }
+
+// checked
 
