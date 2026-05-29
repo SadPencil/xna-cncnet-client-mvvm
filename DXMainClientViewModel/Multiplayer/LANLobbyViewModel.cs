@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -19,6 +20,7 @@ using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Domain.Multiplayer.LAN;
 using DXMainClientViewModel.LAN;
+using DXMainClientViewModel.Multiplayer.GameLobby;
 using DXMainClientViewModel.Services;
 
 using Rampastring.Tools;
@@ -35,6 +37,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 {
     private const double ALIVE_MESSAGE_INTERVAL = 5.0;
     private const double INACTIVITY_REMOVE_TIME = 10.0;
+    private const double GAME_INACTIVITY_REMOVE_TIME = 20.0;
     private const double UPDATE_INTERVAL_MS = 1000.0;
 
     private readonly ILANBroadcastManagerService broadcastManager;
@@ -43,6 +46,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private readonly IApplicationLifecycleService applicationLifecycleService;
     private readonly GameCollection gameCollection;
+    private readonly MapLoader mapLoader;
     private readonly DiscordHandler discordHandler;
     private readonly Random random;
     private readonly Encoding encoding = Encoding.UTF8;
@@ -52,6 +56,11 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private LANColor[] chatColors;
     private TimeSpan timeSinceAliveMessage = TimeSpan.Zero;
     private Timer? updateTimer;
+
+    // Child ViewModels (concrete types for event subscription)
+    private LANGameLobbyViewModel lanGameLobby;
+    private LANGameLoadingLobbyViewModel lanGameLoadingLobby;
+    private LANGameCreationWindowViewModel gameCreationWindow;
 
     // --- Observable state ---
 
@@ -87,12 +96,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     // Internal game list for tracking
     private readonly List<HostedLANGame> hostedGames = new();
 
-    // --- Events ---
-
-    public event EventHandler? Exited;
-    public event EventHandler<HostedLANGame>? JoinGameRequested;
-    public event EventHandler? CreateGameRequested;
-
     // --- Constructor ---
 
     public LANLobbyViewModel(
@@ -102,6 +105,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         IUIThreadMarshaller uiThreadMarshaller,
         IApplicationLifecycleService applicationLifecycleService,
         GameCollection gameCollection,
+        MapLoader mapLoader,
         DiscordHandler discordHandler,
         Random random)
     {
@@ -111,6 +115,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.applicationLifecycleService = applicationLifecycleService;
         this.gameCollection = gameCollection;
+        this.mapLoader = mapLoader;
         this.discordHandler = discordHandler;
         this.random = random;
 
@@ -153,12 +158,14 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     {
         if (!ClientConfiguration.Instance.DisableMultiplayerGameLoading)
         {
-            CreateGameRequested?.Invoke(this, EventArgs.Empty);
+            gameCreationWindow.Open();
         }
         else
         {
             // Directly create a new game without the creation window
-            CreateGameRequested?.Invoke(this, EventArgs.Empty);
+            lanGameLobby.SetUp(true,
+                new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
+            IsEnabled = false;
         }
     }
 
@@ -207,7 +214,48 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
         AddChatMessage(string.Format("Attempting to join game {0} ...".L10N("Client:Main:AttemptJoin"), hg.RoomName));
 
-        JoinGameRequested?.Invoke(this, hg);
+        try
+        {
+            var client = new TcpClient(hg.EndPoint.Address.ToString(), ProgramConstants.LAN_GAME_LOBBY_PORT);
+
+            byte[] buffer;
+
+            if (hg.IsLoadedGame)
+            {
+                var spawnSGIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ProgramConstants.SAVED_GAME_SPAWN_INI));
+
+                int loadedGameId = spawnSGIni.GetIntValue("Settings", "GameID", -1);
+
+                lanGameLoadingLobby.SetUp(false, hg.EndPoint, client, loadedGameId);
+
+                buffer = encoding.GetBytes("JOIN" + ProgramConstants.LAN_DATA_SEPARATOR +
+                    ProgramConstants.PLAYERNAME + ProgramConstants.LAN_DATA_SEPARATOR +
+                    loadedGameId + ProgramConstants.LAN_MESSAGE_SEPARATOR);
+
+                client.GetStream().Write(buffer, 0, buffer.Length);
+                client.GetStream().Flush();
+
+                lanGameLoadingLobby.PostJoin();
+            }
+            else
+            {
+                lanGameLobby.SetUp(false, hg.EndPoint, client);
+
+                buffer = encoding.GetBytes("JOIN" + ProgramConstants.LAN_DATA_SEPARATOR +
+                    ProgramConstants.PLAYERNAME + ProgramConstants.LAN_MESSAGE_SEPARATOR);
+
+                client.GetStream().Write(buffer, 0, buffer.Length);
+                client.GetStream().Flush();
+
+                lanGameLobby.PostJoin();
+            }
+
+            IsEnabled = false;
+        }
+        catch (Exception ex)
+        {
+            AddChatMessage("Connecting to the game failed! Message:".L10N("Client:Main:ConnectGameFailed") + " " + ex.Message);
+        }
     }
 
     [RelayCommand]
@@ -217,7 +265,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         broadcastManager.Shutdown();
         StopUpdateTimer();
         IsEnabled = false;
-        Exited?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -254,6 +301,39 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         int savedColor = UserINISettings.Instance.LANChatColor;
         SelectedColorIndex = savedColor >= 0 && savedColor < chatColors.Length ? savedColor : 0;
 
+        // Create child ViewModels
+        lanGameLobby = new LANGameLobbyViewModel(
+            mapLoader,
+            discordHandler,
+            null, // IGameProcessService - not available in ViewModel context
+            uiThreadMarshaller,
+            applicationLifecycleService,
+            random,
+            chatColors);
+
+        lanGameLoadingLobby = new LANGameLoadingLobbyViewModel(
+            discordHandler,
+            null, // IGameProcessService - not available in ViewModel context
+            uiThreadMarshaller,
+            applicationLifecycleService,
+            chatColors);
+
+        gameCreationWindow = new LANGameCreationWindowViewModel();
+
+        // Subscribe to child ViewModel events
+        lanGameLobby.GameLeft += LanGameLobby_GameLeft;
+        lanGameLobby.GameBroadcast += LanGameLobby_GameBroadcast;
+
+        lanGameLoadingLobby.GameLeft += LanGameLoadingLobby_GameLeft;
+        lanGameLoadingLobby.GameBroadcast += LanGameLoadingLobby_GameBroadcast;
+
+        gameCreationWindow.NewGameRequested += GameCreationWindow_NewGame;
+        gameCreationWindow.LoadGameRequested += GameCreationWindow_LoadGame;
+
+        // Set initial chat color
+        lanGameLobby.ChatColorIndex = SelectedColorIndex;
+        lanGameLoadingLobby.SetChatColorIndex(SelectedColorIndex);
+
         StartUpdateTimer();
     }
 
@@ -289,6 +369,46 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         IsEnabled = false;
     }
 
+    // --- Child ViewModel event handlers ---
+
+    private void LanGameLobby_GameLeft(object? sender, GameLeftEventArgs e)
+    {
+        if (!string.IsNullOrWhiteSpace(e.Message))
+            AddChatMessage(e.Message);
+
+        IsEnabled = true;
+    }
+
+    private void LanGameLobby_GameBroadcast(object? sender, GameBroadcastEventArgs e)
+    {
+        SendMessage(e.Message);
+    }
+
+    private void LanGameLoadingLobby_GameLeft(object? sender, EventArgs e)
+    {
+        IsEnabled = true;
+    }
+
+    private void LanGameLoadingLobby_GameBroadcast(object? sender, GameBroadcastEventArgs e)
+    {
+        SendMessage(e.Message);
+    }
+
+    private void GameCreationWindow_NewGame(object? sender, EventArgs e)
+    {
+        lanGameLobby.SetUp(true,
+            new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
+        IsEnabled = false;
+    }
+
+    private void GameCreationWindow_LoadGame(object? sender, GameLoadEventArgs e)
+    {
+        lanGameLoadingLobby.SetUp(true,
+            new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT),
+            null, e.LoadedGameID);
+        IsEnabled = false;
+    }
+
     // --- Color management ---
 
     partial void OnSelectedColorIndexChanged(int value)
@@ -297,6 +417,10 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         {
             UserINISettings.Instance.LANChatColor.Value = value;
             UserINISettings.Instance.SaveSettings();
+
+            // Propagate color to child lobbies
+            lanGameLobby.ChatColorIndex = value;
+            lanGameLoadingLobby.SetChatColorIndex(value);
         }
     }
 
@@ -336,6 +460,17 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
             if (player.TimeWithoutRefresh > TimeSpan.FromSeconds(INACTIVITY_REMOVE_TIME))
                 playerManager.RemovePlayer(player.EndPoint);
+        }
+
+        // Remove inactive games
+        for (int i = hostedGames.Count - 1; i >= 0; i--)
+        {
+            hostedGames[i].TimeWithoutRefresh += TimeSpan.FromMilliseconds(UPDATE_INTERVAL_MS);
+            if (hostedGames[i].TimeWithoutRefresh > TimeSpan.FromSeconds(GAME_INACTIVITY_REMOVE_TIME))
+            {
+                hostedGames.RemoveAt(i);
+                RefreshGameNames();
+            }
         }
 
         // Send ALIVE message periodically
@@ -498,26 +633,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         StopUpdateTimer();
     }
 
-    // --- Public methods for game lobby integration ---
-
-    public void OnGameCreated(bool isLoadedGame, int loadedGameId = -1)
-    {
-        // Called by MainMenu when a game is created
-        // The actual game lobby setup is handled by MainMenu
-    }
-
-    public void OnGameLeft(string? message)
-    {
-        if (!string.IsNullOrWhiteSpace(message))
-            AddChatMessage(message);
-
-        IsEnabled = true;
-    }
-
-    public void OnGameBroadcast(string message)
-    {
-        SendMessage(message);
-    }
-
     public IReadOnlyList<LANColor> ChatColors => chatColors;
 }
+// checked
