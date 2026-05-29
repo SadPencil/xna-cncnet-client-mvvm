@@ -61,16 +61,18 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     private readonly ObservableCollection<string> _startingLocationSummaries = new();
     public IReadOnlyList<string> StartingLocationSummaries => _startingLocationSummaries;
 
-    // --- Events ---
-
-    public event EventHandler? FavoriteToggled;
-    public event EventHandler? StartingLocationApplied;
-    public event EventHandler<LocalStartingLocationEventArgs>? LocalStartingLocationSelected;
+    private readonly Action? onFavoriteToggled;
+    private readonly Action? onStartingLocationApplied;
+    private readonly Action<int>? onLocalStartingLocationSelected;
 
     // --- Constructor ---
 
-    public MapPreviewBoxViewModel()
+    public MapPreviewBoxViewModel(Action? onFavoriteToggled = null, Action? onStartingLocationApplied = null, Action<int>? onLocalStartingLocationSelected = null)
     {
+        this.onFavoriteToggled = onFavoriteToggled;
+        this.onStartingLocationApplied = onStartingLocationApplied;
+        this.onLocalStartingLocationSelected = onLocalStartingLocationSelected;
+
         ShowExtraTextures = UserINISettings.Instance.DisplayToggleableExtraTextures;
     }
 
@@ -94,7 +96,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
                 }
             }
 
-            LocalStartingLocationSelected?.Invoke(this, new LocalStartingLocationEventArgs(SelectedStartingLocationIndex));
+            onLocalStartingLocationSelected?.Invoke(SelectedStartingLocationIndex);
             return;
         }
 
@@ -134,7 +136,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
         }
 
         player.StartingLocation = locationIndex;
-        StartingLocationApplied?.Invoke(this, EventArgs.Empty);
+        onStartingLocationApplied?.Invoke();
     }
 
     [RelayCommand]
@@ -151,7 +153,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             PlayerInfo? pInfo = players.Find(p => p.Name == ProgramConstants.PLAYERNAME);
             if (pInfo != null && pInfo.StartingLocation == locationIndex)
             {
-                LocalStartingLocationSelected?.Invoke(this, new LocalStartingLocationEventArgs(0));
+                onLocalStartingLocationSelected?.Invoke(0);
             }
             return;
         }
@@ -163,14 +165,14 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
                 pInfo.StartingLocation = 0;
         }
 
-        StartingLocationApplied?.Invoke(this, EventArgs.Empty);
+        onStartingLocationApplied?.Invoke();
     }
 
     [RelayCommand]
     private void ToggleFavorite()
     {
         IsFavorite = !IsFavorite;
-        FavoriteToggled?.Invoke(this, EventArgs.Empty);
+        onFavoriteToggled?.Invoke();
     }
 
     [RelayCommand]
@@ -255,17 +257,4 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             gameModeMap.GameMode.Name);
     }
 }
-
-/// <summary>
-/// Event arguments for local starting location selection.
-/// </summary>
-public class LocalStartingLocationEventArgs : EventArgs
-{
-    public LocalStartingLocationEventArgs(int startingLocationIndex)
-    {
-        StartingLocationIndex = startingLocationIndex;
-    }
-
-    public int StartingLocationIndex { get; set; }
-}
-
+// checked
