@@ -38,10 +38,6 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     [ObservableProperty]
     private bool _isPanelVisible;
 
-    // --- Events ---
-
-    public event EventHandler? FiltersApplied;
-
     // --- Constructor ---
 
     public GameFiltersPanelViewModel(UserINISettings iniSettings)
@@ -56,7 +52,6 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     {
         Save();
         IsPanelVisible = false;
-        FiltersApplied?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -72,7 +67,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
         IsPanelVisible = false;
     }
 
-    // --- Public methods ---
+    // --- Public methods (called by parent ViewModel) ---
 
     public void Show()
     {
@@ -102,6 +97,4 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
         iniSettings.SaveSettings();
     }
 }
-
-
-
+// checked
