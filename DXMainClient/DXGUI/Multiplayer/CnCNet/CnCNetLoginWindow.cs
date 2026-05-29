@@ -9,7 +9,7 @@ using System;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
-    class CnCNetLoginWindow : XNAWindow
+    class CnCNetLoginWindow : XNAWindow // checked
     {
         public CnCNetLoginWindow(WindowManager windowManager) : base(windowManager)
         {
