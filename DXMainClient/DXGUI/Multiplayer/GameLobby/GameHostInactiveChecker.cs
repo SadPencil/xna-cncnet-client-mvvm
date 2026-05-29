@@ -7,7 +7,7 @@ using Rampastring.XNAUI;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
-    public class GameHostInactiveChecker
+    public class GameHostInactiveChecker // checked
     {
         private readonly WindowManager windowManager;
         private readonly Timer timer;
