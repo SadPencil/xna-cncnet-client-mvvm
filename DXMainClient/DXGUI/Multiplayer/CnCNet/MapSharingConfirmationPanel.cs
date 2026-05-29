@@ -9,7 +9,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// <summary>
     /// A panel that is used to verify and display map sharing status.
     /// </summary>
-    class MapSharingConfirmationPanel : XNAPanel
+    class MapSharingConfirmationPanel : XNAPanel // checked
     {
         public MapSharingConfirmationPanel(WindowManager windowManager) : base(windowManager)
         {
