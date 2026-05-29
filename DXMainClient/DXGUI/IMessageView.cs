@@ -2,7 +2,7 @@
 
 namespace DTAClient.DXGUI
 {
-    public interface IMessageView
+    public interface IMessageView // checked
     {
         void AddMessage(ChatMessage message);
     }
