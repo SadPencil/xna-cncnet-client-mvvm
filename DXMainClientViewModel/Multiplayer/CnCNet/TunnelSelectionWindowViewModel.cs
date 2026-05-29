@@ -47,16 +47,16 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
     private readonly ObservableCollection<string> _tunnelNames = new();
     public IReadOnlyList<string> TunnelNames => _tunnelNames;
 
-    // --- Events ---
-
-    public event EventHandler<TunnelEventArgs>? TunnelSelected;
-    public event EventHandler? Cancelled;
+    private readonly Action<CnCNetTunnel>? onTunnelSelected;
+    private readonly Action? onCancelled;
 
     // --- Constructor ---
 
-    public TunnelSelectionWindowViewModel(TunnelHandler tunnelHandler)
+    public TunnelSelectionWindowViewModel(TunnelHandler tunnelHandler, Action<CnCNetTunnel>? onTunnelSelected = null, Action? onCancelled = null)
     {
         this.tunnelHandler = tunnelHandler;
+        this.onTunnelSelected = onTunnelSelected;
+        this.onCancelled = onCancelled;
 
         tunnelHandler.TunnelsRefreshed += TunnelHandler_TunnelsRefreshed;
     }
@@ -71,14 +71,14 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
 
         CnCNetTunnel tunnel = tunnelHandler.Tunnels[SelectedTunnelIndex];
         IsWindowVisible = false;
-        TunnelSelected?.Invoke(this, new TunnelEventArgs(tunnel));
+        onTunnelSelected?.Invoke(tunnel);
     }
 
     [RelayCommand]
     private void Cancel()
     {
         IsWindowVisible = false;
-        Cancelled?.Invoke(this, EventArgs.Empty);
+        onCancelled?.Invoke();
     }
 
     [RelayCommand]
@@ -151,4 +151,5 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
         }
     }
 }
+// checked
 
