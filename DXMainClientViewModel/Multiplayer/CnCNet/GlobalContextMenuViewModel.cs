@@ -268,3 +268,4 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
         return null;
     }
 }
+// checked
