@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Generic"
+             x:Class="DXMainClientView.Generic.OptionsWindow"
+             x:DataType="vm:IOptionsWindowViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="576" Height="475">
+  <Panel>
+    <DockPanel>
+      <!-- Bottom buttons -->
+      <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="12,0,12,12"
+                  HorizontalAlignment="Right" Spacing="8">
+        <Button Content="Save" Width="92" Height="23" FontSize="13"
+                Command="{Binding SaveCommand}" />
+        <Button Content="Cancel" Width="92" Height="23" FontSize="13"
+                Command="{Binding CancelCommand}" />
+      </StackPanel>
+
+      <!-- Tab and panel area -->
+      <DockPanel Margin="12">
+        <!-- Tab buttons -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="4" Margin="0,0,0,8">
+          <Button Content="Display" Width="92" Height="23" FontSize="13" />
+          <Button Content="Audio" Width="92" Height="23" FontSize="13" />
+          <Button Content="Game" Width="92" Height="23" FontSize="13" />
+          <Button Content="CnCNet" Width="92" Height="23" FontSize="13" />
+          <Button Content="Updater" Width="92" Height="23" FontSize="13" />
+          <Button Content="Components" Width="92" Height="23" FontSize="13"
+                  IsVisible="{Binding IsComponentsPanelVisible}" />
+        </StackPanel>
+
+        <!-- Panel content placeholder -->
+        <Border Background="#1A1A2E" CornerRadius="4">
+          <TextBlock Text="Options panel content area"
+                     Foreground="#999999"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center" />
+        </Border>
+      </DockPanel>
+    </DockPanel>
+
+    <!-- Message box overlay -->
+    <Border IsVisible="{Binding IsMessageBoxVisible}"
+            Background="#00000080"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+      <Border Background="#1A1A2E"
+              BorderBrush="#555555"
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Width="400"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="12">
+          <TextBlock Text="{Binding MessageBoxTitle}"
+                     FontSize="14"
+                     Foreground="White"
+                     FontWeight="Bold" />
+          <TextBlock Text="{Binding MessageBoxMessage}"
+                     TextWrapping="Wrap"
+                     FontSize="13"
+                     Foreground="#CCCCCC" />
+          <Button Content="OK"
+                  Command="{Binding DismissMessageBoxCommand}"
+                  HorizontalAlignment="Right"
+                  Width="75" Height="23"
+                  FontSize="13" />
+        </StackPanel>
+      </Border>
+    </Border>
+
+    <!-- Yes/No dialog overlay -->
+    <Border IsVisible="{Binding IsYesNoDialogVisible}"
+            Background="#00000080"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+      <Border Background="#1A1A2E"
+              BorderBrush="#555555"
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Width="400"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="12">
+          <TextBlock Text="{Binding YesNoDialogTitle}"
+                     FontSize="14"
+                     Foreground="White"
+                     FontWeight="Bold" />
+          <TextBlock Text="{Binding YesNoDialogMessage}"
+                     TextWrapping="Wrap"
+                     FontSize="13"
+                     Foreground="#CCCCCC" />
+          <StackPanel Orientation="Horizontal" Spacing="8"
+                      HorizontalAlignment="Right">
+            <Button Content="Yes"
+                    Command="{Binding YesNoDialogYesCommand}"
+                    Width="75" Height="23"
+                    FontSize="13" />
+            <Button Content="No"
+                    Command="{Binding YesNoDialogNoCommand}"
+                    Width="75" Height="23"
+                    FontSize="13" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+  </Panel>
+</UserControl>
