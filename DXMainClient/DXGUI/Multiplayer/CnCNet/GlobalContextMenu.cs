@@ -21,7 +21,7 @@ using TextCopy;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
-    public class GlobalContextMenu : XNAContextMenu
+    public class GlobalContextMenu : XNAContextMenu // checked
     {
         private readonly string PRIVATE_MESSAGE = "Private Message".L10N("Client:Main:PrivateMessage");
         private readonly string ADD_FRIEND = "Add Friend".L10N("Client:Main:AddFriend");
