@@ -171,5 +171,7 @@ public static class PreStartup
         services.AddTransient<IUpdateQueryWindowViewModel, UpdateQueryWindowViewModel>();
         services.AddTransient<IManualUpdateQueryWindowViewModel, ManualUpdateQueryWindowViewModel>();
         services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
+        services.AddTransient<IStatisticsWindowViewModel, StatisticsWindowViewModel>();
+        services.AddTransient<IExtrasWindowViewModel, ExtrasWindowViewModel>();
     }
 }
