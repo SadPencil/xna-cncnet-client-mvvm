@@ -21,7 +21,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// <summary>
     /// A game lobby for loading saved CnCNet games.
     /// </summary>
-    public class CnCNetGameLoadingLobby : GameLoadingLobbyBase
+    public class CnCNetGameLoadingLobby : GameLoadingLobbyBase // checked
     {
         private const double GAME_BROADCAST_INTERVAL = 20.0;
         private const double INITIAL_GAME_BROADCAST_DELAY = 10.0;
