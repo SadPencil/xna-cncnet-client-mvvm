@@ -6,7 +6,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby;
 
-public class GameLobbyDropDown : GameSessionDropDown
+public class GameLobbyDropDown : GameSessionDropDown // checked
 {
     public GameLobbyDropDown(WindowManager windowManager) : base(windowManager) { }
 
