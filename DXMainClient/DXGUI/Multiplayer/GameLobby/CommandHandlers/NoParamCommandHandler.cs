@@ -5,7 +5,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby.CommandHandlers
     /// <summary>
     /// A command handler that handles a command that has no parameter aside from the sender.
     /// </summary>
-    public class NoParamCommandHandler : CommandHandlerBase
+    public class NoParamCommandHandler : CommandHandlerBase // checked
     {
         public NoParamCommandHandler(string commandName, Action<string> commandHandler) : base(commandName)
         {
