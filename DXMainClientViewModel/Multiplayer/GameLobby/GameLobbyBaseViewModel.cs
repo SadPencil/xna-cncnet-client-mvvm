@@ -252,6 +252,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         for (int i = 1; i <= MAX_PLAYER_COUNT; i++)
             startOptions.Add(i.ToString());
         slot.StartOptions = startOptions;
+        slot.StartSelectable = Enumerable.Repeat(true, startOptions.Count).ToArray();
 
         // Team options
         var teamOptions = new List<string> { "-" };
@@ -650,6 +651,28 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             slot.SideSelectable = Enumerable.Repeat(true, slot.SideSelectable.Count()).ToArray();
             slot.ColorSelectable = Enumerable.Repeat(true, slot.ColorSelectable.Count()).ToArray();
         }
+
+        // Update start location options per map
+        int maxLocation = GameModeMap.MaxPlayers == 0 ? 0
+            : (GameModeMap.AllowedStartingLocations.Max() == GameModeMap.MaxPlayers
+                ? GameModeMap.MaxPlayers : MAX_PLAYER_COUNT);
+        var startOptions = new List<string> { "???" };
+        var startSelectable = new List<bool> { true };
+        for (int i = 1; i <= maxLocation; i++)
+        {
+            startOptions.Add(i.ToString());
+            startSelectable.Add(GameModeMap.AllowedStartingLocations.Contains(i));
+        }
+        foreach (var slot in PlayerSlots)
+        {
+            slot.StartOptions = startOptions;
+            slot.StartSelectable = startSelectable;
+        }
+
+        // Check if AI players allowed
+        bool aiAllowed = !GameModeMap.HumanPlayersOnly;
+        if (!aiAllowed)
+            AIPlayers.Clear();
 
         // Clone lists to track which options were NOT forced
         var checkBoxListClone = new List<GameOptionCheckBox>(CheckBoxes);
@@ -1350,12 +1373,12 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         foreach (var cb in CheckBoxes)
         {
-            if (!cb.Setting.AllowScoring)
+            if (cb.Setting.AllowScoring)
                 return Rank.None;
         }
         foreach (var dd in DropDowns)
         {
-            if (!dd.Setting.AllowScoring)
+            if (dd.Setting.AllowScoring)
                 return Rank.None;
         }
 
@@ -1989,3 +2012,5 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     // --- Helper ---
     protected string AILevelToName(int aiLevel) => ProgramConstants.GetAILevelName(aiLevel);
 } 
+
+// checked

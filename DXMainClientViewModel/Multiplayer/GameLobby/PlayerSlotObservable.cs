@@ -119,6 +119,16 @@ public class PlayerSlotObservable : ObservableObject
         set => SetProperty(ref _isStartDropdownEnabled, value);
     }
 
+    private IReadOnlyList<bool> _startSelectable = System.Array.Empty<bool>();
+    /// <summary>
+    /// Per-item selectability for start location options.
+    /// </summary>
+    public IReadOnlyList<bool> StartSelectable
+    {
+        get => _startSelectable;
+        set => SetProperty(ref _startSelectable, value);
+    }
+
     private IReadOnlyList<string> _teamOptions = System.Array.Empty<string>();
     public IReadOnlyList<string> TeamOptions
     {
