@@ -1,6 +1,6 @@
 ﻿namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
-    public enum GameType
+    public enum GameType // checked
     {
         Undefined,
         FFA,
