@@ -3,10 +3,13 @@ using System.Globalization;
 using System.IO;
 using ClientCore;
 using ClientCore.I18N;
+using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Generic;
+using DXMainClientViewModel.Generic.OptionPanels;
 using DXMainClientViewModel.Online;
+using DXMainClientViewModel.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Rampastring.Tools;
 
@@ -104,8 +107,65 @@ public static class PreStartup
         services.AddSingleton<CnCNetUserData>(_ => new CnCNetUserData(() => { }));
         services.AddSingleton<CnCNetManager>();
         services.AddSingleton<MapLoader>();
+        services.AddSingleton<PrivateMessageHandler>();
 
-        // ViewModels
+        // Service adapters
+        services.AddSingleton<IUpdateService, ClientUpdateService>();
+        services.AddSingleton<IGameProcessService, GameProcessService>();
+        services.AddSingleton<IGameProcessSettingsService, GameProcessSettingsService>();
+        services.AddSingleton<IDiscordHandlerService, DiscordHandlerService>();
+        services.AddSingleton<IMusicPlayerService, MusicPlayerService>();
+        services.AddSingleton<IResolutionProvider, ResolutionProvider>();
+        services.AddSingleton<DirectDrawWrapperManager>();
+
+        // Option panel ViewModels
+        services.AddSingleton<IDisplayOptionsPanelViewModel>(sp =>
+            new DisplayOptionsPanelViewModel(
+                UserINISettings.Instance,
+                sp.GetRequiredService<DirectDrawWrapperManager>(),
+                sp.GetRequiredService<IResolutionProvider>()));
+        services.AddSingleton<IAudioOptionsPanelViewModel>(_ =>
+            new AudioOptionsPanelViewModel(UserINISettings.Instance));
+        services.AddSingleton<IGameOptionsPanelViewModel>(_ =>
+            new GameOptionsPanelViewModel(UserINISettings.Instance));
+        services.AddSingleton<ICnCNetOptionsPanelViewModel>(sp =>
+            new CnCNetOptionsPanelViewModel(UserINISettings.Instance, sp.GetRequiredService<GameCollection>()));
+        services.AddSingleton<IUpdaterOptionsPanelViewModel>(_ =>
+            new UpdaterOptionsPanelViewModel(UserINISettings.Instance));
+        services.AddSingleton<IComponentsPanelViewModel>(sp =>
+            new ComponentsPanelViewModel(sp.GetRequiredService<IUIThreadMarshaller>()));
+
+        // OptionsWindowViewModel - resolves all option panels from DI
+        services.AddSingleton<OptionsWindowViewModel>(sp => new OptionsWindowViewModel(
+            sp.GetRequiredService<IDisplayOptionsPanelViewModel>(),
+            sp.GetRequiredService<IAudioOptionsPanelViewModel>(),
+            sp.GetRequiredService<IGameOptionsPanelViewModel>(),
+            sp.GetRequiredService<ICnCNetOptionsPanelViewModel>(),
+            sp.GetRequiredService<IUpdaterOptionsPanelViewModel>(),
+            sp.GetRequiredService<IComponentsPanelViewModel>()));
+        services.AddSingleton<IOptionsWindowViewModel>(sp =>
+            sp.GetRequiredService<OptionsWindowViewModel>());
+
+        // TopBarViewModel
+        services.AddSingleton<TopBarViewModel>(sp => new TopBarViewModel(
+            sp.GetRequiredService<CnCNetManager>(),
+            sp.GetRequiredService<PrivateMessageHandler>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<OptionsWindowViewModel>()));
+        services.AddSingleton<ITopBarViewModel>(sp =>
+            sp.GetRequiredService<TopBarViewModel>());
+
+        // MainMenuViewModel
+        services.AddSingleton<IMainMenuViewModel>(sp => new MainMenuViewModel(
+            sp.GetRequiredService<IUpdateService>(),
+            sp.GetRequiredService<IGameProcessService>(),
+            sp.GetRequiredService<IDiscordHandlerService>(),
+            sp.GetRequiredService<IMusicPlayerService>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<CnCNetManager>(),
+            sp.GetRequiredService<IOptionsWindowViewModel>(),
+            sp.GetRequiredService<ITopBarViewModel>()));
+
         services.AddTransient<ILoadingScreenViewModel, LoadingScreenViewModel>();
     }
 }
