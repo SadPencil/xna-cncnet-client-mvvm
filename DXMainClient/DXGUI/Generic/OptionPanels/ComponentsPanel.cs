@@ -12,7 +12,7 @@ using ClientUpdater;
 
 namespace DTAClient.DXGUI.Generic.OptionPanels
 {
-    class ComponentsPanel : XNAOptionsPanel
+    class ComponentsPanel : XNAOptionsPanel // checked
     {
         public ComponentsPanel(WindowManager windowManager, UserINISettings iniSettings)
             : base(windowManager, iniSettings)
