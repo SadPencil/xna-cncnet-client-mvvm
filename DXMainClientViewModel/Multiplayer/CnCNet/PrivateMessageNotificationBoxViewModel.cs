@@ -29,18 +29,14 @@ public partial class PrivateMessageNotificationBoxViewModel : ObservableObject, 
     [ObservableProperty]
     private bool _isVisible;
 
-    // --- Events ---
-
-    /// <summary>
-    /// Raised when the user wants to open the conversation with the sender.
-    /// </summary>
-    public event EventHandler<string>? OpenConversationRequested;
+    private readonly Action<string>? onOpenConversationRequested;
 
     // --- Constructor ---
 
-    public PrivateMessageNotificationBoxViewModel(IUIThreadMarshaller uiThreadMarshaller)
+    public PrivateMessageNotificationBoxViewModel(IUIThreadMarshaller uiThreadMarshaller, Action<string>? onOpenConversationRequested = null)
     {
         this.uiThreadMarshaller = uiThreadMarshaller;
+        this.onOpenConversationRequested = onOpenConversationRequested;
     }
 
     // --- Commands ---
@@ -49,7 +45,7 @@ public partial class PrivateMessageNotificationBoxViewModel : ObservableObject, 
     private void OpenConversation()
     {
         Hide();
-        OpenConversationRequested?.Invoke(this, SenderName);
+        onOpenConversationRequested?.Invoke(SenderName);
     }
 
     [RelayCommand]
@@ -102,4 +98,4 @@ public partial class PrivateMessageNotificationBoxViewModel : ObservableObject, 
         }
     }
 }
-
+// checked
