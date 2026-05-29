@@ -241,4 +241,4 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
         RefreshGameList();
     }
 }
-// checked
+

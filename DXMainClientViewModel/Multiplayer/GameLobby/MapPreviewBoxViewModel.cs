@@ -257,4 +257,4 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             gameModeMap.GameMode.Name);
     }
 }
-// checked
+

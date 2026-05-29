@@ -100,4 +100,4 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
         IsDownloadAvailable = false;
     }
 }
-// checked
+

@@ -340,5 +340,5 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     }
 }
 
-// checked
+
 

@@ -25,4 +25,4 @@ public partial class CheaterWindowViewModel : ObservableObject, ICheaterWindowVi
     public IRelayCommand CancelCommand { get; }
 }
 
-// checked
+

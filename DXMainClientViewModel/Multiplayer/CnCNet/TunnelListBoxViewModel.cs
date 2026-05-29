@@ -206,4 +206,4 @@ public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxVi
         return Convert.ToInt32(Math.Pow(tunnel.PingInMs, 2.0) * usageRatio);
     }
 }
-// checked
+

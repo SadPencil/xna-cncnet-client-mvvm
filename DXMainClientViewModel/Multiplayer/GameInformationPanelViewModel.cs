@@ -195,4 +195,4 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
 
     public GenericHostedGame? GetCurrentGame() => currentGame;
 }
-// checked
+

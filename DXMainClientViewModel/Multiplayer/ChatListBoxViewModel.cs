@@ -99,4 +99,4 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
         // View observes Messages collection changes + IsAutoScrollEnabled to auto-scroll
     }
 }
-// checked
+
