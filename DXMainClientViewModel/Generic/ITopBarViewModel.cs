@@ -32,5 +32,6 @@ public interface ITopBarViewModel : INotifyPropertyChanged
 public enum SwitchType
 {
     PRIMARY,
-    SECONDARY
+    SECONDARY,
+    PRIVATE_MESSAGES
 }

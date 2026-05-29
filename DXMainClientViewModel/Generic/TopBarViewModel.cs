@@ -22,6 +22,7 @@ namespace DXMainClientViewModel.Generic
         private readonly CnCNetManager connectionManager;
         private readonly PrivateMessageHandler privateMessageHandler;
         private readonly IUIThreadMarshaller uiThreadMarshaller;
+        private readonly OptionsWindowViewModel optionsWindowViewModel;
 
         private CancellationTokenSource? cncnetPlayerCountCancellationSource;
         private static readonly object locker = new object();
@@ -70,11 +71,13 @@ namespace DXMainClientViewModel.Generic
         public TopBarViewModel(
             CnCNetManager connectionManager,
             PrivateMessageHandler privateMessageHandler,
-            IUIThreadMarshaller uiThreadMarshaller)
+            IUIThreadMarshaller uiThreadMarshaller,
+            OptionsWindowViewModel optionsWindowViewModel)
         {
             this.connectionManager = connectionManager;
             this.privateMessageHandler = privateMessageHandler;
             this.uiThreadMarshaller = uiThreadMarshaller;
+            this.optionsWindowViewModel = optionsWindowViewModel;
 
             IsPlayerCountVisible = ClientConfiguration.Instance.DisplayPlayerCountInTopBar;
 
@@ -94,6 +97,8 @@ namespace DXMainClientViewModel.Generic
             connectionManager.ConnectAttemptFailed += OnConnectAttemptFailed;
 
             privateMessageHandler.UnreadMessageCountUpdated += OnUnreadMessageCountUpdated;
+
+            optionsWindowViewModel.PropertyChanged += OnOptionsWindowPropertyChanged;
         }
 
         partial void OnIsLanModeChanged(bool value)
@@ -122,13 +127,13 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void SwitchToTertiary()
         {
-            // Tertiary is private messages - no switch type change needed
+            LastSwitchType = SwitchType.PRIVATE_MESSAGES;
         }
 
         [RelayCommand]
         private void OpenOptions()
         {
-            // Navigation handled by View observing this command
+            optionsWindowViewModel.Open();
         }
 
         [RelayCommand]
@@ -147,6 +152,19 @@ namespace DXMainClientViewModel.Generic
         }
 
         #region Event Handlers
+
+        private void OnOptionsWindowPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(OptionsWindowViewModel.IsVisible))
+            {
+                bool optionsVisible = optionsWindowViewModel.IsVisible;
+
+                if (!IsLanMode)
+                    AreSwitchButtonsClickable = !optionsVisible;
+
+                IsOptionsButtonClickable = !optionsVisible;
+            }
+        }
 
         private void OnConnected(object? sender, EventArgs e)
         {
@@ -202,3 +220,4 @@ namespace DXMainClientViewModel.Generic
         #endregion
     }
 }
+// checked
