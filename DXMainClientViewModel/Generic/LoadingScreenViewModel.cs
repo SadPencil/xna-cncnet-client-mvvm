@@ -80,6 +80,7 @@ namespace DXMainClientViewModel.Generic
             {
                 pollingTimer?.Dispose();
                 pollingTimer = null;
+                CurrentTaskText = "Loading complete.";
                 Finish();
                 return;
             }
