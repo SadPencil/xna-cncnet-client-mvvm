@@ -5,7 +5,7 @@ using Rampastring.Tools;
 namespace DTAClient.DXGUI;
 
 // TODO split the logic between campaign/mp and clean up
-public interface IGameSessionSetting
+public interface IGameSessionSetting // checked
 {
     /// <summary>Gets the name of this setting.</summary>
     string Name { get; }
