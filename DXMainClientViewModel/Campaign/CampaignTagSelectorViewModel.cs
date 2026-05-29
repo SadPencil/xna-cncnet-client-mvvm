@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+using ClientCore;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
+using DXMainClientViewModel.Domain;
 
 namespace DXMainClientViewModel.Campaign;
 
@@ -15,6 +19,13 @@ namespace DXMainClientViewModel.Campaign;
 /// </summary>
 public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignTagSelectorViewModel
 {
+    private readonly IDiscordHandlerService discordHandler;
+    private readonly ICampaignGameProcessService gameProcessService;
+    private readonly IFileIntegrityService fileIntegrityService;
+
+    // Child ViewModel
+    private CampaignSelectorViewModel campaignSelector;
+
     // --- Observable state ---
 
     [ObservableProperty]
@@ -31,22 +42,22 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     private readonly ObservableCollection<string> _campaignTags = new();
     public IReadOnlyList<string> CampaignTags => _campaignTags;
 
-    // --- Events ---
+    // --- Properties delegated to child ---
 
-    /// <summary>
-    /// Raised when the user selects a specific tag. The string is the tag name.
-    /// </summary>
-    public event EventHandler<string?>? TagSelected;
+    public IReadOnlyDictionary<int, Mission> UniqueIDToMissions => campaignSelector.UniqueIDToMissions;
+    public IReadOnlyCollection<Mission> AllMissions => campaignSelector.AllMissions;
 
-    /// <summary>
-    /// Raised when the user requests to show all campaigns (no tag filter).
-    /// </summary>
-    public event EventHandler? ShowAllCampaignsRequested;
+    // --- Constructor ---
 
-    /// <summary>
-    /// Raised when the user cancels the tag selection.
-    /// </summary>
-    public event EventHandler? Cancelled;
+    public CampaignTagSelectorViewModel(
+        IDiscordHandlerService discordHandler,
+        ICampaignGameProcessService gameProcessService,
+        IFileIntegrityService fileIntegrityService)
+    {
+        this.discordHandler = discordHandler;
+        this.gameProcessService = gameProcessService;
+        this.fileIntegrityService = fileIntegrityService;
+    }
 
     // --- Commands ---
 
@@ -57,8 +68,8 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
             return;
 
         SelectedTagName = _campaignTags[SelectedTagIndex];
+        campaignSelector.LoadMissionsWithFilter(new HashSet<string>() { SelectedTagName }, disableCustomMissions: false, disableOfficialMissions: false);
         IsVisible = false;
-        TagSelected?.Invoke(this, SelectedTagName);
     }
 
     [RelayCommand]
@@ -66,22 +77,21 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     {
         SelectedTagName = null;
         SelectedTagIndex = -1;
+        campaignSelector.LoadMissionsWithFilter(null, disableCustomMissions: false, disableOfficialMissions: false);
         IsVisible = false;
-        ShowAllCampaignsRequested?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
     private void Cancel()
     {
         IsVisible = false;
-        Cancelled?.Invoke(this, EventArgs.Empty);
     }
 
-    // --- Public methods ---
+    // --- Lifecycle ---
 
     public void Initialize()
     {
-        // Tags are populated by the View from INI configuration via SetTags
+        campaignSelector = new CampaignSelectorViewModel(discordHandler, gameProcessService, fileIntegrityService);
     }
 
     /// <summary>
@@ -100,6 +110,10 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     /// </summary>
     public void Open()
     {
-        IsVisible = true;
+        if (ClientConfiguration.Instance.CampaignTagSelectorEnabled)
+            IsVisible = true;
+        else
+            campaignSelector.LoadMissionsWithFilter(null, disableCustomMissions: false, disableOfficialMissions: false);
     }
 }
+// checked
