@@ -173,6 +173,17 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
     {
         base.Initialize();
 
+        // Add Spectator side to all player slots (matches original MultiplayerGameLobby.Initialize)
+        const string spectatorName = "Spectator";
+        string spectatorL10N = spectatorName.L10N("Client:Sides:SpectatorSide");
+        foreach (var slot in PlayerSlots)
+        {
+            var sideOptions = new List<string>(slot.SideOptions) { spectatorL10N };
+            slot.SideOptions = sideOptions;
+            var sideSelectable = new List<bool>(slot.SideSelectable) { true };
+            slot.SideSelectable = sideSelectable;
+        }
+
         FrameSendRate = ClientConfiguration.Instance.DefaultFrameSendRate;
         ProtocolVersion = ClientConfiguration.Instance.DefaultProtocolVersion;
         MaxAhead = ClientConfiguration.Instance.DefaultMaxAhead;
@@ -1041,3 +1052,5 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         }
     }
 } 
+
+// checked
