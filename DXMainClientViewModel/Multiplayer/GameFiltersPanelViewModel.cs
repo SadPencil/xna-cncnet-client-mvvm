@@ -102,5 +102,6 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
         iniSettings.SaveSettings();
     }
 }
+// checked
 
 
