@@ -17,7 +17,7 @@ namespace DTAClient.DXGUI.Multiplayer
     /// A list box for CnCNet chat. Supports opening links with a double-click,
     /// and easy adding of IRC messages to the list box.
     /// </summary>
-    public class ChatListBox : XNAListBox, IMessageView
+    public class ChatListBox : XNAListBox, IMessageView // checked
     {
         public ChatListBox(WindowManager windowManager) : base(windowManager)
         {
