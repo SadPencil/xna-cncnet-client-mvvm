@@ -58,21 +58,28 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     private readonly ObservableCollection<string> _menuLinks = new();
     public IReadOnlyList<string> MenuLinks => _menuLinks;
 
-    // --- Events ---
-
-    public event EventHandler<string>? PrivateMessageRequested;
-    public event EventHandler<JoinUserEventArgs>? JoinUserRequested;
-    public event EventHandler<string>? InviteRequested;
-    public event EventHandler<string>? CopyLinkRequested;
-    public event EventHandler<string>? OpenLinkRequested;
-    public event EventHandler<string>? CopyNameRequested;
+    private readonly Action<string>? onPrivateMessageRequested;
+    private readonly Action<JoinUserEventArgs>? onJoinUserRequested;
+    private readonly Action<string>? onInviteRequested;
+    private readonly Action<string>? onCopyLinkRequested;
+    private readonly Action<string>? onOpenLinkRequested;
+    private readonly Action<string>? onCopyNameRequested;
 
     // --- Constructor ---
 
-    public GlobalContextMenuViewModel(CnCNetManager connectionManager, CnCNetUserData cncNetUserData)
+    public GlobalContextMenuViewModel(CnCNetManager connectionManager, CnCNetUserData cncNetUserData,
+        Action<string>? onPrivateMessageRequested = null, Action<JoinUserEventArgs>? onJoinUserRequested = null,
+        Action<string>? onInviteRequested = null, Action<string>? onCopyLinkRequested = null,
+        Action<string>? onOpenLinkRequested = null, Action<string>? onCopyNameRequested = null)
     {
         this.connectionManager = connectionManager;
         this.cncNetUserData = cncNetUserData;
+        this.onPrivateMessageRequested = onPrivateMessageRequested;
+        this.onJoinUserRequested = onJoinUserRequested;
+        this.onInviteRequested = onInviteRequested;
+        this.onCopyLinkRequested = onCopyLinkRequested;
+        this.onOpenLinkRequested = onOpenLinkRequested;
+        this.onCopyNameRequested = onCopyNameRequested;
     }
 
     // --- Commands ---
@@ -82,7 +89,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         if (resolvedUser == null) return;
         IsContextMenuVisible = false;
-        PrivateMessageRequested?.Invoke(this, resolvedUser.Name);
+        onPrivateMessageRequested?.Invoke(resolvedUser.Name);
     }
 
     [RelayCommand]
@@ -102,7 +109,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
             "PRIVMSG " + resolvedUser.Name + " :\u0001" + messageBody + "\u0001", QueuedMessageType.CHAT_MESSAGE, 0));
 
         IsContextMenuVisible = false;
-        InviteRequested?.Invoke(this, resolvedUser.Name);
+        onInviteRequested?.Invoke(resolvedUser.Name);
     }
 
     [RelayCommand]
@@ -110,7 +117,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         if (resolvedUser == null) return;
         IsContextMenuVisible = false;
-        JoinUserRequested?.Invoke(this, new JoinUserEventArgs(resolvedUser));
+        onJoinUserRequested?.Invoke(new JoinUserEventArgs(resolvedUser));
     }
 
     [RelayCommand]
@@ -150,7 +157,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         if (resolvedUser == null) return;
         IsContextMenuVisible = false;
-        CopyNameRequested?.Invoke(this, resolvedUser.Name);
+        onCopyNameRequested?.Invoke(resolvedUser.Name);
     }
 
     // --- Public methods ---
@@ -202,9 +209,9 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         IsContextMenuVisible = false;
         if (open)
-            OpenLinkRequested?.Invoke(this, link);
+            onOpenLinkRequested?.Invoke(link);
         else
-            CopyLinkRequested?.Invoke(this, link);
+            onCopyLinkRequested?.Invoke(link);
     }
 
     // --- Helpers ---
@@ -268,4 +275,4 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
         return null;
     }
 }
-
+// checked
