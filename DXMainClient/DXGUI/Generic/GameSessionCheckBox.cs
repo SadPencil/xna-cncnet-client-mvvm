@@ -32,7 +32,7 @@ public enum CheckBoxMapScoringMode
 /// A game option check box for the game lobby or campaign.
 /// </summary>
 // TODO split the logic between descendants better and clean up
-public class GameSessionCheckBox : XNAClientCheckBox, IGameSessionSetting
+public class GameSessionCheckBox : XNAClientCheckBox, IGameSessionSetting // checked
 {
     private const int DEFAULT_SORT_ORDER = 0;
 
