@@ -13,5 +13,5 @@ public interface IChatListBoxViewModel : INotifyPropertyChanged
 
     IRelayCommand SendMessageCommand { get; }
     IRelayCommand ClearMessagesCommand { get; }
-    IRelayCommand ScrollToLatestCommand { get; }
+    IRelayCommand<string> OpenLinkCommand { get; }
 }

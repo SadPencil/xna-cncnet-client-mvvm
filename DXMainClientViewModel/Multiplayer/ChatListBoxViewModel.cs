@@ -16,6 +16,9 @@ namespace DXMainClientViewModel.Multiplayer;
 /// </summary>
 public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewModel
 {
+    private readonly Action<string>? onMessageSend;
+    private readonly Action<string>? onLinkOpen;
+
     // --- Observable state ---
 
     [ObservableProperty]
@@ -29,16 +32,12 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
     private readonly ObservableCollection<string> _messages = new();
     public IReadOnlyList<string> Messages => _messages;
 
-    // --- Events ---
-
-    public event EventHandler<string>? MessageSendRequested;
-    public event EventHandler<string>? LinkOpenRequested;
-    public event EventHandler? ScrollToBottomRequested;
-
     // --- Constructor ---
 
-    public ChatListBoxViewModel()
+    public ChatListBoxViewModel(Action<string>? onMessageSend = null, Action<string>? onLinkOpen = null)
     {
+        this.onMessageSend = onMessageSend;
+        this.onLinkOpen = onLinkOpen;
     }
 
     // --- Commands ---
@@ -49,7 +48,7 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
         if (string.IsNullOrEmpty(DraftMessage))
             return;
 
-        MessageSendRequested?.Invoke(this, DraftMessage);
+        onMessageSend?.Invoke(DraftMessage);
         DraftMessage = string.Empty;
     }
 
@@ -60,12 +59,13 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
     }
 
     [RelayCommand]
-    private void ScrollToLatest()
+    private void OpenLink(string? link)
     {
-        ScrollToBottomRequested?.Invoke(this, EventArgs.Empty);
+        if (!string.IsNullOrEmpty(link))
+            onLinkOpen?.Invoke(link);
     }
 
-    // --- Message management ---
+    // --- Message management (called by parent ViewModel) ---
 
     public void AddMessage(string message)
     {
@@ -96,15 +96,7 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
         }
 
         _messages.Add(formattedMessage);
-
-        if (IsAutoScrollEnabled)
-            ScrollToBottomRequested?.Invoke(this, EventArgs.Empty);
-    }
-
-    public void HandleLinkDoubleClick(string link)
-    {
-        if (!string.IsNullOrEmpty(link))
-            LinkOpenRequested?.Invoke(this, link);
+        // View observes Messages collection changes + IsAutoScrollEnabled to auto-scroll
     }
 }
-
+// checked
