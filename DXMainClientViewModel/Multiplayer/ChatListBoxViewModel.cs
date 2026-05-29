@@ -107,3 +107,4 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
             LinkOpenRequested?.Invoke(this, link);
     }
 }
+// checked
