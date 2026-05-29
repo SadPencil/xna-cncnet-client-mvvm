@@ -730,3 +730,4 @@ namespace DXMainClientViewModel.Campaign
         #endregion
     }
 }
+// checked
