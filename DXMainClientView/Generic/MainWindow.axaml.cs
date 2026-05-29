@@ -1,7 +1,6 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using DXMainClientView.Services;
 using DXMainClientViewModel.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,15 +14,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-    }
-
-    protected override void OnOpened(EventArgs e)
-    {
-        base.OnOpened(e);
-
-        // Apply LoadingScreen INI layout (background, window chrome)
-        var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
-        iniOverlay?.ApplyLayout(this, "LoadingScreen");
     }
 
     public void ShowLoadingScreen(ILoadingScreenViewModel loadingScreenVM)
@@ -58,9 +48,6 @@ public partial class MainWindow : Window
         mainMenu.ViewModel = mainMenuVM;
         mainMenu.SetTopBarViewModel(topBarVM);
         MainContent.Content = mainMenu;
-
-        // Apply INI overlay now that MainMenu controls exist
-        var iniOverlay = provider.GetService<IIniLayoutOverlayService>();
-        iniOverlay?.ApplyLayout(this, nameof(MainMenu));
+        // MainMenu applies its own INI layout in its Loaded handler
     }
 }

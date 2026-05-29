@@ -1,7 +1,11 @@
 using System.ComponentModel;
 using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using DXMainClientView.Services;
 using DXMainClientViewModel.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView.Generic;
 
@@ -10,6 +14,33 @@ public partial class MainMenu : UserControl
     public MainMenu()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        // Set default background (matching original: AssetLoader.LoadTexture("MainMenu/mainmenubg.png"))
+        ApplyDefaultBackground("MainMenu/mainmenubg.png");
+
+        // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini)
+        var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+        iniOverlay?.ApplyLayout(this, "MainMenu");
+    }
+
+    private void ApplyDefaultBackground(string texturePath)
+    {
+        try
+        {
+            var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+            if (iniOverlay == null) return;
+            var fullPath = iniOverlay.FindTextureFile(texturePath);
+            if (fullPath != null)
+            {
+                var bitmap = new Bitmap(fullPath);
+                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
+            }
+        }
+        catch { }
     }
 
     public IMainMenuViewModel? ViewModel

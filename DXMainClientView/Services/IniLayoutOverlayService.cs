@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using ClientCore;
@@ -18,26 +19,24 @@ namespace DXMainClientView.Services;
 /// </summary>
 public class IniLayoutOverlayService : IIniLayoutOverlayService
 {
-    public void ApplyLayout(Window window, string windowName)
+    public void ApplyLayout(Control control, string sectionName)
     {
-        string iniPath = FindIniFile(windowName);
+        string iniPath = FindIniFile(sectionName);
         if (iniPath == null)
         {
-            Logger.Log($"INI Layout: No INI file found for '{windowName}'");
+            Logger.Log($"INI Layout: No INI file found for '{sectionName}'");
             return;
         }
 
         Logger.Log($"INI Layout: Loading {iniPath}");
-        // CCIniFile processes BasedOn= during construction, so theme MainMenu.ini
-        // already includes base MainMenu.ini properties.
         var iniFile = new CCIniFile(iniPath);
 
-        // Merge base MainMenu.ini at key level (fills in missing keys like
+        // Merge base INI at key level (fills in missing keys like
         // IdleTexture, HoverTexture, Location that theme files don't define).
-        string basePath = FindBaseIniFile(windowName);
+        string basePath = FindBaseIniFile(sectionName);
         if (basePath != null && !string.Equals(basePath, iniPath, StringComparison.OrdinalIgnoreCase))
         {
-            Logger.Log($"INI Layout: Merging base {windowName}.ini from {basePath}");
+            Logger.Log($"INI Layout: Merging base {sectionName}.ini from {basePath}");
             var baseIni = new CCIniFile(basePath);
             MergeMissingKeys(baseIni, iniFile);
         }
@@ -65,26 +64,26 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             }
         }
 
-        // Apply window-level properties from [GenericWindow] first (defaults),
-        // then from the window-specific section (overrides).
+        // Apply root-level properties from [GenericWindow] first (defaults),
+        // then from the section-specific section (overrides).
         var genericSection = iniFile.GetSection("GenericWindow");
         if (genericSection != null)
-            ApplyProperties(window, genericSection, iniFile, "GenericWindow");
+            ApplyProperties(control, genericSection, iniFile, "GenericWindow");
 
-        var windowSection = iniFile.GetSection(windowName);
-        if (windowSection != null)
-            ApplyProperties(window, windowSection, iniFile, windowName);
+        var mainSection = iniFile.GetSection(sectionName);
+        if (mainSection != null)
+            ApplyProperties(control, mainSection, iniFile, sectionName);
 
         // Apply properties to all named child controls
-        ApplyToDescendants(window, iniFile);
+        ApplyToDescendants(control, iniFile);
 
         // Create ExtraControls
-        CreateExtraControls(window, iniFile);
+        CreateExtraControls(control, iniFile);
 
         // Apply deferred properties (FillWidth, FillHeight, DistanceFrom*)
-        ApplyDeferredProperties(window, iniFile);
+        ApplyDeferredProperties(control, iniFile);
 
-        Logger.Log($"INI Layout: Applied layout for '{windowName}'");
+        Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
     }
 
     private static string FindIniFile(string windowName)
@@ -160,10 +159,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void ApplyToDescendants(Window window, CCIniFile iniFile)
+    private static void ApplyToDescendants(Control root, CCIniFile iniFile)
     {
         // Walk all named descendants and apply their INI sections
-        ApplyToDescendantsRecursive(window, iniFile);
+        ApplyToDescendantsRecursive(root, iniFile);
     }
 
     private static void ApplyToDescendantsRecursive(Control parent, CCIniFile iniFile)
@@ -358,9 +357,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void ApplyDeferredProperties(Window window, CCIniFile iniFile)
+    private static void ApplyDeferredProperties(Control root, CCIniFile iniFile)
     {
-        ApplyDeferredRecursive(window, iniFile);
+        ApplyDeferredRecursive(root, iniFile);
     }
 
     private static void ApplyDeferredRecursive(Control parent, CCIniFile iniFile)
@@ -462,8 +461,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void CreateExtraControls(Window window, CCIniFile iniFile)
+    private static void CreateExtraControls(Control root, CCIniFile iniFile)
     {
+        var hostPanel = FindFirstPanel(root);
+        if (hostPanel == null)
+            return;
+
         // Handle [ExtraControls] section (legacy format: 0=controlName:ControlType)
         var extraSection = iniFile.GetSection("ExtraControls");
         if (extraSection != null)
@@ -478,7 +481,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 string controlType = parts[1];
 
                 // Skip if control already exists (from AXAML)
-                if (FindControlByName(window, controlName) != null)
+                if (FindControlByName(root, controlName) != null)
                     continue;
 
                 var control = CreateControl(controlType, controlName);
@@ -489,9 +492,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     if (section != null)
                         ApplyProperties(control, section, iniFile, controlName);
 
-                    // Add to window's content
-                    if (window.Content is Panel panel)
-                        panel.Children.Add(control);
+                    hostPanel.Children.Add(control);
                 }
             }
         }
@@ -512,7 +513,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 string controlName = parts[0];
                 string controlType = parts[1];
 
-                if (FindControlByName(window, controlName) != null)
+                if (FindControlByName(root, controlName) != null)
                     continue;
 
                 var control = CreateControl(controlType, controlName);
@@ -522,11 +523,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     if (section != null)
                         ApplyProperties(control, section, iniFile, controlName);
 
-                    if (window.Content is Panel panel)
-                        panel.Children.Add(control);
+                    hostPanel.Children.Add(control);
                 }
             }
         }
+    }
+
+    private static Panel FindFirstPanel(Control control)
+    {
+        if (control is Panel panel)
+            return panel;
+
+        foreach (var child in GetChildren(control))
+        {
+            var found = FindFirstPanel(child);
+            if (found != null)
+                return found;
+        }
+
+        return null;
     }
 
     private static Control CreateControl(string controlType, string name)
@@ -592,7 +607,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         try
         {
             // Search for the texture in resource paths
-            string fullPath = FindTextureFile(texturePath);
+            string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
             {
                 Logger.Log($"INI Layout: Texture not found: '{texturePath}'");
@@ -617,6 +632,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 panel.Background = brush;
             else if (control is Button button)
                 button.Background = brush;
+            else if (control is TemplatedControl templated)
+                templated.Background = brush;
             else if (control is Image image)
                 image.Source = bitmap;
         }
@@ -626,7 +643,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static string FindTextureFile(string texturePath)
+    public string FindTextureFile(string texturePath) => FindTextureFileStatic(texturePath);
+
+    private static string FindTextureFileStatic(string texturePath)
     {
         // Search in resource paths (theme first, then base)
         string resourcePath = ProgramConstants.GetResourcePath();
@@ -659,7 +678,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         try
         {
-            string fullPath = FindTextureFile(texturePath);
+            string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
             {
                 Logger.Log($"INI Layout: Button texture not found: '{texturePath}'");
@@ -709,6 +728,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             brush = borderBrush;
         else if (control is Panel panel && panel.Background is ImageBrush panelBrush)
             brush = panelBrush;
+        else if (control is TemplatedControl templated && templated.Background is ImageBrush templatedBrush)
+            brush = templatedBrush;
 
         if (brush != null)
         {

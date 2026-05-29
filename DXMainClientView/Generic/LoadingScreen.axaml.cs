@@ -1,8 +1,12 @@
 using System;
 using System.ComponentModel;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Media;
 using Avalonia.Threading;
+using DXMainClientView.Services;
 using DXMainClientViewModel.Generic;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView.Generic;
 
@@ -16,6 +20,33 @@ public partial class LoadingScreen : UserControl
     public LoadingScreen()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        // Set default background (matching original: AssetLoader.LoadTexture("loadingscreen.png"))
+        ApplyDefaultBackground("loadingscreen.png");
+
+        // Apply INI layout overrides (LoadingScreen.ini + GenericWindow.ini)
+        var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+        iniOverlay?.ApplyLayout(this, "LoadingScreen");
+    }
+
+    private void ApplyDefaultBackground(string texturePath)
+    {
+        try
+        {
+            var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+            if (iniOverlay == null) return;
+            var fullPath = iniOverlay.FindTextureFile(texturePath);
+            if (fullPath != null)
+            {
+                var bitmap = new Bitmap(fullPath);
+                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
+            }
+        }
+        catch { }
     }
 
     public ILoadingScreenViewModel? ViewModel
