@@ -18,7 +18,7 @@ namespace DTAClient.DXGUI.Generic
     /// <summary>
     /// A window for loading saved singleplayer games.
     /// </summary>
-    public class GameLoadingWindow : XNAWindow
+    public class GameLoadingWindow : XNAWindow // checked
     {
         private const string SAVED_GAMES_DIRECTORY = "Saved Games";
 
