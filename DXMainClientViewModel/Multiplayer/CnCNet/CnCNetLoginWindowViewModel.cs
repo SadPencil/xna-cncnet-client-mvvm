@@ -42,17 +42,18 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
     [ObservableProperty]
     private bool _isWindowVisible;
 
-    // --- Events ---
-
-    public event EventHandler? ConnectRequested;
-    public event EventHandler? Cancelled;
-    public event EventHandler<string>? ValidationError;
+    private readonly Action? onConnectRequested;
+    private readonly Action? onCancelled;
+    private readonly Action<string>? onValidationError;
 
     // --- Constructor ---
 
-    public CnCNetLoginWindowViewModel(UserINISettings iniSettings)
+    public CnCNetLoginWindowViewModel(UserINISettings iniSettings, Action? onConnectRequested = null, Action? onCancelled = null, Action<string>? onValidationError = null)
     {
         this.iniSettings = iniSettings;
+        this.onConnectRequested = onConnectRequested;
+        this.onCancelled = onCancelled;
+        this.onValidationError = onValidationError;
     }
 
     // --- Commands ---
@@ -64,7 +65,7 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
 
         if (validationError != NameValidationError.None)
         {
-            ValidationError?.Invoke(this, errorMessage);
+            onValidationError?.Invoke(errorMessage);
             return;
         }
 
@@ -78,7 +79,7 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
         iniSettings.SaveSettings();
 
         IsWindowVisible = false;
-        ConnectRequested?.Invoke(this, EventArgs.Empty);
+        onConnectRequested?.Invoke();
 
         await Task.CompletedTask;
     }
@@ -87,7 +88,7 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
     private void Cancel()
     {
         IsWindowVisible = false;
-        Cancelled?.Invoke(this, EventArgs.Empty);
+        onCancelled?.Invoke();
     }
 
     // --- Public methods ---
@@ -122,4 +123,4 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
             AutoConnect = false;
     }
 }
-
+// checked
