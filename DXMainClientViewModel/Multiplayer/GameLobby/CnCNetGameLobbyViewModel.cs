@@ -23,7 +23,6 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
 /// <summary>
 /// ViewModel for CnCNet multiplayer game lobby.
-/// Contains all business logic from CnCNetGameLobby.cs except XNA UI rendering.
 /// </summary>
 public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, ICnCNetGameLobbyViewModel
 {
@@ -415,12 +414,6 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private void ChangeTunnel()
     {
         TunnelSelectionRequested?.Invoke(this, "Select tunnel server:".L10N("Client:Main:SelectTunnelServer"));
-    }
-
-    [RelayCommand]
-    private void InvitePlayer()
-    {
-        // View handles the invite UI via InvitePlayerCommand binding
     }
 
     public void OnTunnelSelected(CnCNetTunnel tunnel)
@@ -1587,7 +1580,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             pInfo.IsInGame = false;
 
         CopyPlayerDataToUI();
-        RaiseSoundRequested("returngame.wav");
+        RaiseSoundRequested("return.wav");
     }
 
     private void HandleTunnelPing(string sender, int ping)
@@ -2181,4 +2174,4 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     }
 
     public override string GetSwitchName() => "Game Lobby".L10N("Client:Main:GameLobby");
-}
+} // checked

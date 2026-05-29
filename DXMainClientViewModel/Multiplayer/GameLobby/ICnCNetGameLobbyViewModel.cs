@@ -21,7 +21,6 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
 
     // --- Commands ---
     IRelayCommand ChangeTunnelCommand { get; }
-    IRelayCommand InvitePlayerCommand { get; }
     IRelayCommand LeaveGameLobbyCommand { get; }
 
     // --- Lifecycle (called by main lobby when creating/joining game) ---
