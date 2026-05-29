@@ -20,7 +20,6 @@ namespace DXMainClientViewModel.Multiplayer;
 
 /// <summary>
 /// Abstract base ViewModel for multiplayer game loading lobbies.
-/// Contains all business logic from GameLoadingLobbyBase.cs except XNA UI rendering.
 /// </summary>
 public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, IGameLoadingLobbyViewModel
 {
@@ -171,7 +170,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
         _chatMessages.Clear();
 
         LoadGameButtonText = isHost ? "Load Game".L10N("Client:Main:ButtonLoadGame") : "I'm Ready".L10N("Client:Main:ButtonGetReady");
-        CanLoadGame = isHost;
+        CanLoadGame = true;
 
         IniFile spawnSGIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "Saved Games", "spawnSG.ini"));
 
@@ -442,4 +441,4 @@ public class PlayerDisplayInfo
     public string DisplayName => IsPresent
         ? (IsReady ? Name : Name + " " + "(Not Ready)".L10N("Client:Main:NotReadySuffix"))
         : Name + " " + "(Not present)".L10N("Client:Main:NotPresentSuffix");
-}
+} // checked
