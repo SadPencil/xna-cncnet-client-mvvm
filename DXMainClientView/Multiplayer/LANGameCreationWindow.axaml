@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Multiplayer"
+             x:Class="DXMainClientView.Multiplayer.LANGameCreationWindow"
+             x:DataType="vm:ILANGameCreationWindowViewModel"
+             IsVisible="{Binding IsWindowVisible}"
+             Width="447" Height="77">
+  <Canvas>
+    <!-- Description label -->
+    <TextBlock Text="SELECT SESSION TYPE"
+               FontSize="14" FontWeight="Bold"
+               Foreground="White"
+               Canvas.Left="160" Canvas.Top="12" />
+
+    <!-- New Game button -->
+    <Button Content="New Game"
+            Command="{Binding CreateNewGameCommand}"
+            Canvas.Left="12" Canvas.Top="42"
+            Width="133" Height="23"
+            FontSize="13" />
+
+    <!-- Load Game button -->
+    <Button Content="Load Game"
+            Command="{Binding LoadGameCommand}"
+            Canvas.Left="157" Canvas.Top="42"
+            Width="133" Height="23"
+            FontSize="13"
+            IsEnabled="{Binding IsLoadGameAvailable}" />
+
+    <!-- Cancel button -->
+    <Button Content="Cancel"
+            Command="{Binding CancelCommand}"
+            Canvas.Left="302" Canvas.Top="42"
+            Width="133" Height="23"
+            FontSize="13" />
+  </Canvas>
+</UserControl>
