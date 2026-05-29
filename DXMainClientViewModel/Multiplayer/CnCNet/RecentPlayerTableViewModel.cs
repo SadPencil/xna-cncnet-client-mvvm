@@ -34,18 +34,14 @@ public partial class RecentPlayerTableViewModel : ObservableObject, IRecentPlaye
     private readonly ObservableCollection<string> _recentPlayerNames = new();
     public IReadOnlyList<string> RecentPlayerNames => _recentPlayerNames;
 
-    // --- Events ---
-
-    /// <summary>
-    /// Raised when a player is right-clicked (open action). The IRCUser is the target.
-    /// </summary>
-    public event EventHandler<RecentPlayerTableRightClickEventArgs>? PlayerRightClick;
+    private readonly Action<RecentPlayerTableRightClickEventArgs>? onPlayerRightClick;
 
     // --- Constructor ---
 
-    public RecentPlayerTableViewModel(CnCNetManager connectionManager)
+    public RecentPlayerTableViewModel(CnCNetManager connectionManager, Action<RecentPlayerTableRightClickEventArgs>? onPlayerRightClick = null)
     {
         this.connectionManager = connectionManager;
+        this.onPlayerRightClick = onPlayerRightClick;
     }
 
     // --- Commands ---
@@ -60,7 +56,7 @@ public partial class RecentPlayerTableViewModel : ObservableObject, IRecentPlaye
         IRCUser ircUser = connectionManager.UserList.Find(u => u.Name == entry.PlayerName)
             ?? new IRCUser(entry.PlayerName);
 
-        PlayerRightClick?.Invoke(this, new RecentPlayerTableRightClickEventArgs(ircUser));
+        onPlayerRightClick?.Invoke(new RecentPlayerTableRightClickEventArgs(ircUser));
     }
 
     [RelayCommand]
@@ -121,4 +117,4 @@ public partial class RecentPlayerTableViewModel : ObservableObject, IRecentPlaye
         public bool IsOnline { get; set; }
     }
 }
-
+// checked
