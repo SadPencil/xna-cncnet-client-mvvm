@@ -1,6 +1,6 @@
 ﻿namespace DTAClient.DXGUI.Multiplayer.GameLobby.CommandHandlers
 {
-    public abstract class CommandHandlerBase
+    public abstract class CommandHandlerBase // checked
     {
         public CommandHandlerBase(string commandName)
         {
