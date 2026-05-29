@@ -173,5 +173,6 @@ public static class PreStartup
         services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
         services.AddTransient<IStatisticsWindowViewModel, StatisticsWindowViewModel>();
         services.AddTransient<IExtrasWindowViewModel, ExtrasWindowViewModel>();
+        services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
     }
 }
