@@ -167,5 +167,6 @@ public static class PreStartup
             sp.GetRequiredService<ITopBarViewModel>()));
 
         services.AddTransient<ILoadingScreenViewModel, LoadingScreenViewModel>();
+        services.AddTransient<IPrivacyNotificationViewModel, PrivacyNotificationViewModel>();
     }
 }

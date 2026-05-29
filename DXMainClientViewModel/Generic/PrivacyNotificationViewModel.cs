@@ -19,6 +19,12 @@ namespace DXMainClientViewModel.Generic
         private string descriptionText = "This application makes use of CnCNet web & tunnel server services and is subject to collection of technical & other necessary information through them.";
 
         [ObservableProperty]
+        private string explanationText = "By using this application you agree to the CnCNet Terms & Conditions as well as the CnCNet Privacy Policy. Privacy-related options can be configured in the client settings.";
+
+        [ObservableProperty]
+        private string acceptButtonText = "Got it";
+
+        [ObservableProperty]
         private string termsAndConditionsUrl = "https://cncnet.org/terms-and-conditions";
 
         [ObservableProperty]
@@ -30,6 +36,8 @@ namespace DXMainClientViewModel.Generic
         public PrivacyNotificationViewModel()
         {
             DescriptionText = "This application makes use of CnCNet web & tunnel server services and is subject to collection of technical & other necessary information through them.".L10N("Client:Main:TOSText");
+            ExplanationText = "By using this application you agree to the CnCNet Terms & Conditions as well as the CnCNet Privacy Policy. Privacy-related options can be configured in the client settings.".L10N("Client:Main:TOSExplanation");
+            AcceptButtonText = "Got it".L10N("Client:Main:TOSButtonOK");
         }
 
         [RelayCommand]
