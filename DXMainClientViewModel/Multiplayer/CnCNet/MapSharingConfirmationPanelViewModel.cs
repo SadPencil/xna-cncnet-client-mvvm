@@ -38,10 +38,16 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     [ObservableProperty]
     private bool _isPanelVisible;
 
-    // --- Events ---
+    private readonly Action? onMapDownloadConfirmed;
+    private readonly Action? onCancelled;
 
-    public event EventHandler? MapDownloadConfirmed;
-    public event EventHandler? Cancelled;
+    // --- Constructor ---
+
+    public MapSharingConfirmationPanelViewModel(Action? onMapDownloadConfirmed = null, Action? onCancelled = null)
+    {
+        this.onMapDownloadConfirmed = onMapDownloadConfirmed;
+        this.onCancelled = onCancelled;
+    }
 
     // --- Commands ---
 
@@ -50,7 +56,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     {
         IsDownloadAvailable = false;
         StatusText = MapSharingDownloadText;
-        MapDownloadConfirmed?.Invoke(this, EventArgs.Empty);
+        onMapDownloadConfirmed?.Invoke();
 
         await Task.CompletedTask;
     }
@@ -59,7 +65,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     private void Cancel()
     {
         IsPanelVisible = false;
-        Cancelled?.Invoke(this, EventArgs.Empty);
+        onCancelled?.Invoke();
     }
 
     // --- Public methods ---
@@ -94,4 +100,4 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
         IsDownloadAvailable = false;
     }
 }
-
+// checked
