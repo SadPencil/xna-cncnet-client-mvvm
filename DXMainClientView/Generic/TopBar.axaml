@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Generic"
+             x:Class="DXMainClientView.Generic.TopBar"
+             x:DataType="vm:ITopBarViewModel"
+             Height="39"
+             ClipToBounds="False">
+  <UserControl.RenderTransform>
+    <TranslateTransform Y="-39">
+      <TranslateTransform.Transitions>
+        <DoubleTransition Property="Y" Duration="0:0:0.2" Easing="CubicEaseOut" />
+      </TranslateTransform.Transitions>
+    </TranslateTransform>
+  </UserControl.RenderTransform>
+
+  <Panel Background="#1A1A2E">
+    <!-- Left: Main button -->
+    <Button x:Name="btnMainButton"
+            Content="{Binding MainButtonText}"
+            Command="{Binding SwitchToPrimaryCommand}"
+            IsEnabled="{Binding AreSwitchButtonsClickable}"
+            HorizontalAlignment="Left"
+            Margin="4,4,0,4"
+            Width="100"
+            FontSize="12" />
+
+    <!-- Center: CnCNet Lobby and Private Messages buttons -->
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+      <Button x:Name="btnCnCNetLobby"
+              Content="CnCNet (F3)"
+              Command="{Binding SwitchToSecondaryCommand}"
+              IsEnabled="{Binding AreSwitchButtonsClickable}"
+              Width="110"
+              FontSize="12" />
+      <Button x:Name="btnPrivateMessages"
+              Content="Messages (F4)"
+              Command="{Binding SwitchToTertiaryCommand}"
+              IsEnabled="{Binding AreSwitchButtonsClickable}"
+              Width="110"
+              FontSize="12" />
+    </StackPanel>
+
+    <!-- Right: Options, Logout, Connection status, Player count -->
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="8" Margin="0,0,8,0">
+      <TextBlock x:Name="lblConnectionStatus"
+                 Text="{Binding ConnectionStatusText}"
+                 VerticalAlignment="Center"
+                 Foreground="#AAAAAA"
+                 FontSize="11" />
+      <TextBlock x:Name="lblPlayerCount"
+                 Text="{Binding PlayerCountText}"
+                 IsVisible="{Binding IsPlayerCountVisible}"
+                 VerticalAlignment="Center"
+                 Foreground="#AAAAAA"
+                 FontSize="11" />
+      <Button x:Name="btnOptions"
+              Content="Options (F12)"
+              Command="{Binding OpenOptionsCommand}"
+              IsEnabled="{Binding IsOptionsButtonClickable}"
+              Width="80"
+              FontSize="11" />
+      <Button x:Name="btnLogout"
+              Content="Logout"
+              Command="{Binding LogoutCommand}"
+              IsEnabled="{Binding IsLogoutButtonClickable}"
+              Width="60"
+              FontSize="11" />
+    </StackPanel>
+  </Panel>
+</UserControl>

@@ -1,0 +1,189 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DXMainClientViewModel.Generic"
+        xmlns:local="using:DXMainClientView.Generic"
+        x:Class="DXMainClientView.Generic.MainMenu"
+        x:DataType="vm:IMainMenuViewModel"
+        Title="Main Menu"
+        Width="800" Height="600"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Background="#000000">
+  <Canvas x:Name="MainCanvas">
+
+    <!-- TopBar (animated sliding bar) -->
+    <local:TopBar x:Name="topBar"
+                  Width="800"
+                  Canvas.Left="0" Canvas.Top="0" />
+
+    <!-- ========== Decorative images from [ExtraPictureBoxes] ========== -->
+    <Border x:Name="mmtdcl" Width="0" Height="0" />
+    <Border x:Name="mmtdcr" Width="0" Height="0" />
+    <Border x:Name="mmbox1" Width="0" Height="0" />
+    <Border x:Name="mmbox2" Width="0" Height="0" />
+
+    <!-- ========== Menu Buttons (positioned by INI overlay) ========== -->
+    <!-- Hidden buttons (Visible=0 in INI) -->
+    <Button x:Name="btnMapEditor"
+            Command="{Binding OpenMapEditorCommand}"
+            IsVisible="{Binding IsMapEditorButtonVisible}" />
+    <Button x:Name="btnCredits"
+            Command="{Binding OpenCreditsCommand}" />
+    <Button x:Name="btnStatistics"
+            Command="{Binding OpenStatisticsCommand}"
+            IsVisible="{Binding IsStatisticsButtonVisible}" />
+
+    <!-- Visible menu buttons -->
+    <Button x:Name="btnCnCNet"
+            Command="{Binding JoinCnCNetCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnNewCampaign"
+            Command="{Binding StartCampaignCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnSkirmish"
+            Command="{Binding StartSkirmishCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnLoadGame"
+            Command="{Binding LoadGameCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnLan"
+            Command="{Binding HostLANGameCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnExtras"
+            Command="{Binding OpenExtrasCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnOptions"
+            Command="{Binding OpenOptionsCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnExit"
+            Command="{Binding ExitCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+
+    <!-- ========== ExtraControls from INI [ExtraControls] section ========== -->
+    <Button x:Name="btnQuickmatch" />
+    <TextBlock x:Name="lblVersionLabel" />
+    <TextBlock x:Name="lblPoweredBy" />
+    <Button x:Name="btnCnCNetLogo" />
+    <Button x:Name="btnPhobos" />
+    <Button x:Name="btnAres" />
+
+    <!-- ========== Version Info ========== -->
+    <TextBlock x:Name="lblVersion"
+               Text="{Binding VersionText}"
+               IsVisible="{Binding ShowVersionInfo}"
+               FontSize="12" />
+
+    <!-- ========== Update Status ========== -->
+    <TextBlock x:Name="lblUpdateStatus"
+               Text="{Binding UpdateStatusText}"
+               IsEnabled="{Binding IsUpdateStatusEnabled}"
+               FontSize="13" />
+
+    <!-- ========== Update Notification Banner ========== -->
+    <Border x:Name="updateNotification"
+            IsVisible="{Binding IsUpdateNotificationVisible}"
+            Background="#333333"
+            BorderBrush="#666666"
+            BorderThickness="1"
+            CornerRadius="3"
+            Padding="8,6"
+            Cursor="Hand">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <TextBlock Text="{Binding UpdateNotificationText}"
+                   VerticalAlignment="Center"
+                   Foreground="#FFA500"
+                   FontSize="12" />
+        <Button Content="Accept"
+                Command="{Binding AcceptUpdateCommand}"
+                Padding="6,2"
+                FontSize="11" />
+        <Button Content="Decline"
+                Command="{Binding DeclineUpdateCommand}"
+                Padding="6,2"
+                FontSize="11" />
+      </StackPanel>
+    </Border>
+
+    <!-- ========== Online Player Count ========== -->
+    <!-- Visibility controlled by code-behind observing ITopBarViewModel.IsPlayerCountVisible -->
+    <TextBlock x:Name="lblCnCNetStatus"
+               FontSize="12" />
+    <TextBlock x:Name="lblCnCNetPlayerCount"
+               Text="{Binding CnCNetPlayerCountText}"
+               FontSize="12" />
+
+    <!-- ========== Message Box (modal overlay) ========== -->
+    <Border x:Name="messageBoxOverlay"
+            IsVisible="{Binding IsMessageBoxVisible}"
+            Background="#80000000"
+            Width="800" Height="600"
+            Canvas.Left="0" Canvas.Top="0">
+      <Panel>
+        <Border Background="#2A2A3E"
+                BorderBrush="#555555"
+                BorderThickness="2"
+                CornerRadius="6"
+                Padding="20"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Text="{Binding MessageBoxTitle}"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Foreground="#FFFFFF" />
+            <TextBlock Text="{Binding MessageBoxMessage}"
+                       TextWrapping="Wrap"
+                       FontSize="13"
+                       Foreground="#CCCCCC" />
+            <Button Content="OK"
+                    Command="{Binding DismissMessageBoxCommand}"
+                    HorizontalAlignment="Center"
+                    Width="80"
+                    Padding="8,4" />
+          </StackPanel>
+        </Border>
+      </Panel>
+    </Border>
+
+    <!-- ========== Yes/No Dialog (modal overlay) ========== -->
+    <Border x:Name="yesNoDialogOverlay"
+            IsVisible="{Binding IsYesNoDialogVisible}"
+            Background="#80000000"
+            Width="800" Height="600"
+            Canvas.Left="0" Canvas.Top="0">
+      <Panel>
+        <Border Background="#2A2A3E"
+                BorderBrush="#555555"
+                BorderThickness="2"
+                CornerRadius="6"
+                Padding="20"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Text="{Binding YesNoDialogTitle}"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Foreground="#FFFFFF" />
+            <TextBlock Text="{Binding YesNoDialogMessage}"
+                       TextWrapping="Wrap"
+                       FontSize="13"
+                       Foreground="#CCCCCC" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+              <Button Content="Yes"
+                      Command="{Binding YesNoDialogYesCommand}"
+                      Width="80"
+                      Padding="8,4" />
+              <Button Content="No"
+                      Command="{Binding YesNoDialogNoCommand}"
+                      Width="80"
+                      Padding="8,4" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </Panel>
+    </Border>
+
+  </Canvas>
+</Window>
