@@ -7,7 +7,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Multiplayer
 {
-    public class TeamStartMappingsPanel : XNAPanel
+    public class TeamStartMappingsPanel : XNAPanel // checked
     {
         public event EventHandler MappingChanged;
 
