@@ -6,7 +6,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     /// A command that can be executed by typing a message starting with / on
     /// a multiplayer game lobby's chat box.
     /// </summary>
-    public class ChatBoxCommand
+    public class ChatBoxCommand // checked
     {
         public ChatBoxCommand(string command, string description, bool hostOnly, Action<string> action)
         {
