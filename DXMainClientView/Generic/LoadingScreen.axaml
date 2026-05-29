@@ -1,22 +1,16 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:DXMainClientViewModel.Generic"
-        x:Class="DXMainClientView.Generic.LoadingScreen"
-        x:DataType="vm:ILoadingScreenViewModel"
-        Title="Loading"
-        Width="1280" Height="720"
-        WindowStartupLocation="CenterScreen"
-        CanResize="False"
-        Background="#000000">
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Generic"
+             x:Class="DXMainClientView.Generic.LoadingScreen"
+             x:DataType="vm:ILoadingScreenViewModel"
+             Background="#000000">
   <Canvas>
     <!-- ExtraControls from LoadingScreen.ini: logo, text, legal -->
-    <!-- These are XNAExtraPanel equivalents (Border with BackgroundTexture) -->
     <Border x:Name="logo" Width="0" Height="0" />
     <Border x:Name="text" Width="0" Height="0" />
     <Border x:Name="legal" Width="0" Height="0" />
 
     <!-- Border panels from GenericWindow.ini [$ExtraControls] -->
-    <!-- Normally created by INItializableWindow; pre-defined here so INI can set Visible=false -->
     <Border x:Name="rabt" Width="0" Height="0" />
     <Border x:Name="rabb" Width="0" Height="0" />
     <Border x:Name="rabl" Width="0" Height="0" />
@@ -26,7 +20,7 @@
     <Border x:Name="racbl" Width="0" Height="0" />
     <Border x:Name="racbr" Width="0" Height="0" />
 
-    <!-- Status text - matches lblLoadingText INI section -->
+    <!-- Status text -->
     <TextBlock x:Name="lblLoadingText"
                Canvas.Left="20" Canvas.Bottom="40"
                Text="{Binding StatusText}"
@@ -40,4 +34,4 @@
                Foreground="#888888"
                FontSize="12" />
   </Canvas>
-</Window>
+</UserControl>

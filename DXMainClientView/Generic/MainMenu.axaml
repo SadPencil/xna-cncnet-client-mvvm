@@ -1,14 +1,10 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:DXMainClientViewModel.Generic"
-        xmlns:local="using:DXMainClientView.Generic"
-        x:Class="DXMainClientView.Generic.MainMenu"
-        x:DataType="vm:IMainMenuViewModel"
-        Title="Main Menu"
-        Width="800" Height="600"
-        WindowStartupLocation="CenterScreen"
-        CanResize="False"
-        Background="#000000">
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Generic"
+             xmlns:local="using:DXMainClientView.Generic"
+             x:Class="DXMainClientView.Generic.MainMenu"
+             x:DataType="vm:IMainMenuViewModel"
+             Background="#000000">
   <Canvas x:Name="MainCanvas">
 
     <!-- TopBar (animated sliding bar) -->
@@ -105,7 +101,6 @@
     </Border>
 
     <!-- ========== Online Player Count ========== -->
-    <!-- Visibility controlled by code-behind observing ITopBarViewModel.IsPlayerCountVisible -->
     <TextBlock x:Name="lblCnCNetStatus"
                FontSize="12" />
     <TextBlock x:Name="lblCnCNetPlayerCount"
@@ -186,4 +181,4 @@
     </Border>
 
   </Canvas>
-</Window>
+</UserControl>

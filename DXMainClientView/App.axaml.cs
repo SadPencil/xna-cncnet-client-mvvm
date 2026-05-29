@@ -21,9 +21,10 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var loadingScreenVM = ServiceProvider!.GetRequiredService<ILoadingScreenViewModel>();
-            var loadingScreen = new LoadingScreen();
-            loadingScreen.ViewModel = loadingScreenVM;
-            desktop.MainWindow = loadingScreen;
+
+            var mainWindow = new MainWindow();
+            mainWindow.ShowLoadingScreen(loadingScreenVM);
+            desktop.MainWindow = mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();

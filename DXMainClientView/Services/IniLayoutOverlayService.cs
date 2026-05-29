@@ -28,11 +28,50 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
 
         Logger.Log($"INI Layout: Loading {iniPath}");
+        // CCIniFile processes BasedOn= during construction, so theme MainMenu.ini
+        // already includes base MainMenu.ini properties.
         var iniFile = new CCIniFile(iniPath);
 
-        // Apply window-level properties
-        var windowSection = iniFile.GetSection(windowName)
-                         ?? iniFile.GetSection("GenericWindow");
+        // Merge base MainMenu.ini at key level (fills in missing keys like
+        // IdleTexture, HoverTexture, Location that theme files don't define).
+        string basePath = FindBaseIniFile(windowName);
+        if (basePath != null && !string.Equals(basePath, iniPath, StringComparison.OrdinalIgnoreCase))
+        {
+            Logger.Log($"INI Layout: Merging base {windowName}.ini from {basePath}");
+            var baseIni = new CCIniFile(basePath);
+            MergeMissingKeys(baseIni, iniFile);
+        }
+
+        // Merge GenericWindow.ini (theme overrides base for window chrome).
+        string baseGwPath = FindBaseIniFile("GenericWindow");
+        string themeGwPath = FindThemeIniFile("GenericWindow");
+        if (themeGwPath != null && baseGwPath != null &&
+            !string.Equals(themeGwPath, baseGwPath, StringComparison.OrdinalIgnoreCase))
+        {
+            Logger.Log($"INI Layout: Merging GenericWindow.ini (base={baseGwPath}, theme={themeGwPath})");
+            var baseGwIni = new CCIniFile(baseGwPath);
+            var themeGwIni = new CCIniFile(themeGwPath);
+            IniFile.ConsolidateIniFiles(baseGwIni, themeGwIni); // theme overrides base
+            MergeMissingKeys(baseGwIni, iniFile);
+        }
+        else
+        {
+            string gwPath = baseGwPath ?? themeGwPath;
+            if (gwPath != null)
+            {
+                Logger.Log($"INI Layout: Merging GenericWindow.ini from {gwPath}");
+                var gwIni = new CCIniFile(gwPath);
+                MergeMissingKeys(gwIni, iniFile);
+            }
+        }
+
+        // Apply window-level properties from [GenericWindow] first (defaults),
+        // then from the window-specific section (overrides).
+        var genericSection = iniFile.GetSection("GenericWindow");
+        if (genericSection != null)
+            ApplyProperties(window, genericSection, iniFile, "GenericWindow");
+
+        var windowSection = iniFile.GetSection(windowName);
         if (windowSection != null)
             ApplyProperties(window, windowSection, iniFile, windowName);
 
@@ -76,6 +115,49 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             return baseGeneric;
 
         return null;
+    }
+
+    private static string FindBaseIniFile(string windowName)
+    {
+        string basePath = ProgramConstants.GetBaseResourcePath();
+        string path = Path.Combine(basePath, $"{windowName}.ini");
+        return File.Exists(path) ? path : null;
+    }
+
+    private static string FindThemeIniFile(string windowName)
+    {
+        string resourcePath = ProgramConstants.GetResourcePath();
+        string path = Path.Combine(resourcePath, $"{windowName}.ini");
+        return File.Exists(path) ? path : null;
+    }
+
+    /// <summary>
+    /// Merges all keys from source into target, but only for keys that
+    /// don't already exist in the target section. This preserves
+    /// theme-specific overrides while filling in base defaults.
+    /// </summary>
+    private static void MergeMissingKeys(IniFile source, IniFile target)
+    {
+        foreach (string sectionName in source.GetSections())
+        {
+            var srcSection = source.GetSection(sectionName);
+            var tgtSection = target.GetSection(sectionName);
+
+            if (tgtSection == null)
+            {
+                // Section doesn't exist in target - use SetStringValue to create it
+                foreach (var kvp in srcSection.Keys)
+                    target.SetStringValue(sectionName, kvp.Key, kvp.Value);
+                continue;
+            }
+
+            foreach (var kvp in srcSection.Keys)
+            {
+                if (tgtSection.KeyExists(kvp.Key))
+                    continue;
+                tgtSection.SetStringValue(kvp.Key, kvp.Value);
+            }
+        }
     }
 
     private static void ApplyToDescendants(Window window, CCIniFile iniFile)
@@ -231,6 +313,29 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             case "TextColor":
                 if (control is TextBlock tb && ParseColor(value) is Color tc)
                     tb.Foreground = new SolidColorBrush(tc);
+                break;
+
+            case "IdleTexture":
+                ApplyButtonTexture(control, value, isHover: false);
+                break;
+
+            case "HoverTexture":
+                ApplyButtonTexture(control, value, isHover: true);
+                break;
+
+            case "ForeColor":
+            case "TextColorIdle":
+                if (control is Button btn && ParseColor(value) is Color fc)
+                    btn.Foreground = new SolidColorBrush(fc);
+                else if (control is TextBlock tbf && ParseColor(value) is Color tfc)
+                    tbf.Foreground = new SolidColorBrush(tfc);
+                break;
+
+            case "FontIndex":
+                if (control is TextBlock tbFont && int.TryParse(value, out int fontIdx) && fontIdx == 1)
+                    tbFont.FontWeight = FontWeight.Bold;
+                else if (control is Button btnFont && int.TryParse(value, out int bFontIdx) && bFontIdx == 1)
+                    btnFont.FontWeight = FontWeight.Bold;
                 break;
 
             case "ToolTip":
@@ -510,6 +615,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 border.Background = brush;
             else if (control is Panel panel)
                 panel.Background = brush;
+            else if (control is Button button)
+                button.Background = brush;
             else if (control is Image image)
                 image.Source = bitmap;
         }
@@ -543,6 +650,52 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             return basePathDirect;
 
         return null;
+    }
+
+    private static void ApplyButtonTexture(Control control, string texturePath, bool isHover)
+    {
+        if (control is not Button button)
+            return;
+
+        try
+        {
+            string fullPath = FindTextureFile(texturePath);
+            if (fullPath == null)
+            {
+                Logger.Log($"INI Layout: Button texture not found: '{texturePath}'");
+                return;
+            }
+
+            var bitmap = new Bitmap(fullPath);
+            var brush = new ImageBrush
+            {
+                Source = bitmap,
+                Stretch = Stretch.Fill,
+                TileMode = TileMode.None
+            };
+
+            if (isHover)
+            {
+                // Store hover brush and set up pointer handlers
+                var idleBrush = button.Background as ImageBrush;
+                button.PointerEntered += (_, _) => button.Background = brush;
+                button.PointerExited += (_, _) => button.Background = idleBrush;
+            }
+            else
+            {
+                button.Background = brush;
+                // Auto-size from texture if no explicit size set
+                if (button.Width == 0 && button.Height == 0)
+                {
+                    button.Width = bitmap.PixelSize.Width;
+                    button.Height = bitmap.PixelSize.Height;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Log($"INI Layout: Failed to load button texture '{texturePath}': {ex.Message}");
+        }
     }
 
     private static void ApplyDrawMode(Control control, string drawMode)
