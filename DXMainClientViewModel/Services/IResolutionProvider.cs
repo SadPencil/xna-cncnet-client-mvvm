@@ -16,4 +16,14 @@ public interface IResolutionProvider
     /// Gets available client resolutions as strings (e.g., "1920x1080").
     /// </summary>
     IReadOnlyList<string> GetClientResolutions();
+
+    /// <summary>
+    /// Gets the safe full-screen resolution string (e.g., "1920x1080").
+    /// </summary>
+    string GetSafeFullScreenResolution();
+
+    /// <summary>
+    /// Gets the best recommended resolution string for windowed mode.
+    /// </summary>
+    string GetBestRecommendedResolution();
 }

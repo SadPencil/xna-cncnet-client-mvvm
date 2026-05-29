@@ -437,6 +437,24 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             IsBorderlessWindowedModeEnabled = false;
     }
 
+    partial void OnIsBorderlessClientEnabledChanged(bool value)
+    {
+        if (value)
+        {
+            string nativeRes = resolutionProvider.GetSafeFullScreenResolution();
+            int nativeResIndex = _clientResolutionOptions.ToList().FindIndex(r => r == nativeRes);
+            if (nativeResIndex > -1)
+                SelectedClientResolutionIndex = nativeResIndex;
+        }
+        else
+        {
+            string bestRes = resolutionProvider.GetBestRecommendedResolution();
+            int bestResIndex = _clientResolutionOptions.ToList().FindIndex(r => r == bestRes);
+            if (bestResIndex > -1)
+                SelectedClientResolutionIndex = bestResIndex;
+        }
+    }
+
     // --- Helpers ---
 
     private void PopulateOptions()
@@ -515,3 +533,4 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         IsMessageBoxVisible = true;
     }
 }
+// checked
