@@ -534,3 +534,5 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     }
 }
 
+// checked
+
