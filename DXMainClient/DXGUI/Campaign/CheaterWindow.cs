@@ -11,7 +11,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Campaign
 {
-    public class CheaterWindow : XNAWindow
+    public class CheaterWindow : XNAWindow // checked
     {
         public CheaterWindow(WindowManager windowManager) : base(windowManager)
         {
