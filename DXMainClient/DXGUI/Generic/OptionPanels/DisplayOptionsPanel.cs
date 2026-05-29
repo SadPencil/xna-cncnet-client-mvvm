@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace DTAClient.DXGUI.Generic.OptionPanels
 {
-    class DisplayOptionsPanel : XNAOptionsPanel
+    class DisplayOptionsPanel : XNAOptionsPanel // checked
     {
         // Mouse must move at least this many pixels from click point before drag selection activates.
         private const int DRAG_DISTANCE_DEFAULT = 4;
