@@ -18,7 +18,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// A box that allows users to make a choice,
     /// top-left of the game window.
     /// </summary>
-    public class ChoiceNotificationBox : XNAPanel
+    public class ChoiceNotificationBox : XNAPanel // checked
     {
         private const double DOWN_TIME_WAIT_SECONDS = 4.0;
         private const double DOWN_MOVEMENT_RATE = 2.0;
