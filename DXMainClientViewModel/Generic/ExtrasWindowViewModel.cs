@@ -15,22 +15,25 @@ namespace DXMainClientViewModel.Generic
     /// </summary>
     public partial class ExtrasWindowViewModel : ObservableObject, IExtrasWindowViewModel
     {
+        private readonly IStatisticsWindowViewModel statisticsWindowViewModel;
+
         [ObservableProperty]
         private bool isVisible;
 
         [ObservableProperty]
         private bool isMapEditorAvailable;
 
-        public ExtrasWindowViewModel()
+        public ExtrasWindowViewModel(IStatisticsWindowViewModel statisticsWindowViewModel)
         {
+            this.statisticsWindowViewModel = statisticsWindowViewModel;
             IsMapEditorAvailable = !string.IsNullOrEmpty(ClientConfiguration.Instance.MapEditorExePath);
         }
 
         [RelayCommand]
         private void OpenStatistics()
         {
-            // Parent ViewModel coordinates showing StatisticsWindow.
             IsVisible = false;
+            statisticsWindowViewModel.IsVisible = true;
         }
 
         [RelayCommand]
@@ -64,3 +67,4 @@ namespace DXMainClientViewModel.Generic
         }
     }
 }
+// checked
