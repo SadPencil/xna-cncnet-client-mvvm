@@ -2,6 +2,8 @@ using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using DXMainClientViewModel.Generic;
 
 namespace DXMainClientView.Generic;
@@ -9,12 +11,14 @@ namespace DXMainClientView.Generic;
 public partial class TopBar : UserControl, ITopBarView
 {
     private ITopBarViewModel? _viewModel;
-    private TranslateTransform? _slideTransform;
+    private readonly TranslateTransform _slideTransform;
 
     public TopBar()
     {
         InitializeComponent();
-        _slideTransform = RenderTransform as TranslateTransform;
+
+        _slideTransform = new TranslateTransform(0, -39);
+        RenderTransform = _slideTransform;
     }
 
     public ITopBarViewModel? ViewModel
@@ -46,7 +50,6 @@ public partial class TopBar : UserControl, ITopBarView
 
     private void UpdateExpandedState(bool isExpanded)
     {
-        if (_slideTransform != null)
-            _slideTransform.Y = isExpanded ? 0 : -39;
+        _slideTransform.Y = isExpanded ? 0 : -39;
     }
 }

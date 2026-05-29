@@ -14,7 +14,6 @@ public class App : Application
     internal static ServiceProvider? ServiceProvider { get; set; }
 
     private LoadingScreen? _loadingScreen;
-    private MainMenu? _mainMenu;
 
     public override void Initialize()
     {
@@ -46,7 +45,6 @@ public class App : Application
             var loadingVM = (ILoadingScreenViewModel)sender!;
             if (!loadingVM.IsLoading)
             {
-                // Loading complete - transition to MainMenu
                 Dispatcher.UIThread.Post(ShowMainMenu);
             }
         }
@@ -61,18 +59,12 @@ public class App : Application
         if (_loadingScreen?.ViewModel != null)
             _loadingScreen.ViewModel.PropertyChanged -= OnLoadingScreenPropertyChanged;
 
-        // Resolve MainMenu ViewModels from DI
-        var mainMenuVM = ServiceProvider!.GetRequiredService<IMainMenuViewModel>();
-        var topBarVM = ServiceProvider!.GetRequiredService<ITopBarViewModel>();
-
-        // Create MainMenu view and wire up ViewModels
-        _mainMenu = new MainMenu();
-        _mainMenu.ViewModel = mainMenuVM;
-        _mainMenu.SetTopBarViewModel(topBarVM);
+        // Create MainMenu - it resolves its own ViewModels from DI
+        var mainMenu = new MainMenu();
 
         // Transition windows
-        desktop.MainWindow = _mainMenu;
-        _mainMenu.Show();
+        desktop.MainWindow = mainMenu;
+        mainMenu.Show();
         _loadingScreen?.Close();
         _loadingScreen = null;
     }
