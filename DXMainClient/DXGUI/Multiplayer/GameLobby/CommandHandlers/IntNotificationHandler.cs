@@ -2,7 +2,7 @@
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby.CommandHandlers
 {
-    public class IntNotificationHandler : CommandHandlerBase
+    public class IntNotificationHandler : CommandHandlerBase // checked
     {
         public IntNotificationHandler(string commandName, Action<string, int, Action<int>> action,
             Action<int> innerAction) : base(commandName)
