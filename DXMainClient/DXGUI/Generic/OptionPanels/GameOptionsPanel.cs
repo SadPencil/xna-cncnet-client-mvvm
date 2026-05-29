@@ -11,7 +11,7 @@ using System;
 
 namespace DTAClient.DXGUI.Generic.OptionPanels
 {
-    class GameOptionsPanel : XNAOptionsPanel
+    class GameOptionsPanel : XNAOptionsPanel // checked
     {
 
         private const string TEXT_BACKGROUND_COLOR_TRANSPARENT = "0";
