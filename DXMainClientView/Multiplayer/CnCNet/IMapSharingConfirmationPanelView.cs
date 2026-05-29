@@ -5,6 +5,4 @@ namespace DXMainClientView.Multiplayer.CnCNet;
 public interface IMapSharingConfirmationPanelView
 {
     IMapSharingConfirmationPanelViewModel? ViewModel { get; set; }
-    void Show();
-    void Hide();
 }
