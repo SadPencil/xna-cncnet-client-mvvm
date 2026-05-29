@@ -14,7 +14,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby;
 
-public class GameLobbyCheckBox : GameSessionCheckBox
+public class GameLobbyCheckBox : GameSessionCheckBox // checked
 {
     public GameLobbyCheckBox(WindowManager windowManager) : base(windowManager) { }
 
