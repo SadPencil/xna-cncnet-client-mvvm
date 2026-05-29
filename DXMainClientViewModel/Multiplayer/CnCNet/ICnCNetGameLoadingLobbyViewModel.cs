@@ -18,4 +18,5 @@ public interface ICnCNetGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
     void OnJoined();
     void Clear();
     void ChangeChatColor(IRCColor color);
+    void OnTunnelSelected(CnCNetTunnel tunnel);
 }
