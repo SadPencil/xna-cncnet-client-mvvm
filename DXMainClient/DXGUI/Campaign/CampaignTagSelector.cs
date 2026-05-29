@@ -13,7 +13,7 @@ using Rampastring.XNAUI;
 
 namespace DTAClient.DXGUI.Campaign
 {
-    public class CampaignTagSelector : INItializableWindow
+    public class CampaignTagSelector : INItializableWindow // checked
     {
         private const int DEFAULT_WIDTH = 576;
         private const int DEFAULT_HEIGHT = 475;
