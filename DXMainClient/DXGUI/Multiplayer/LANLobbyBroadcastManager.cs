@@ -24,7 +24,7 @@ namespace DTAClient.DXGUI.Multiplayer;
 /// By broadcasting to all interfaces, it ensures that messages reach all clients.
 /// Otherwise, Sending UDP to 255.255.255.255 typically uses the network card with the lowest metric -- this does not fit the use case of players using a dedicated interface for gaming, such as VPNs or a secondary router without Internet access.
 /// </summary>
-internal class LANLobbyBroadcastManager : IDisposable
+internal class LANLobbyBroadcastManager : IDisposable // checked
 {
     private readonly object socketLock = new();
     private readonly ConcurrentDictionary<string, PlayerNetworkInterface> broadcastInterfaces = new();
