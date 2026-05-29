@@ -3,7 +3,7 @@ using DTAClient.Online;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
-    public class RecentPlayerTableRightClickEventArgs : EventArgs
+    public class RecentPlayerTableRightClickEventArgs : EventArgs // checked
     {
         public IRCUser IrcUser { get; set; }
 
