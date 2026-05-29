@@ -36,23 +36,16 @@ public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceN
     [ObservableProperty]
     private bool _isVisible;
 
-    // --- Events ---
-
-    /// <summary>
-    /// Raised when the user clicks accept. The string is the sender name.
-    /// </summary>
-    public event EventHandler<string>? AffirmativeClicked;
-
-    /// <summary>
-    /// Raised when the user clicks decline. The string is the sender name.
-    /// </summary>
-    public event EventHandler<string>? NegativeClicked;
+    private readonly Action<string>? onAffirmativeClicked;
+    private readonly Action<string>? onNegativeClicked;
 
     // --- Constructor ---
 
-    public ChoiceNotificationBoxViewModel(IUIThreadMarshaller uiThreadMarshaller)
+    public ChoiceNotificationBoxViewModel(IUIThreadMarshaller uiThreadMarshaller, Action<string>? onAffirmativeClicked = null, Action<string>? onNegativeClicked = null)
     {
         this.uiThreadMarshaller = uiThreadMarshaller;
+        this.onAffirmativeClicked = onAffirmativeClicked;
+        this.onNegativeClicked = onNegativeClicked;
     }
 
     // --- Commands ---
@@ -61,14 +54,14 @@ public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceN
     private void Accept()
     {
         Hide();
-        AffirmativeClicked?.Invoke(this, SenderName);
+        onAffirmativeClicked?.Invoke(SenderName);
     }
 
     [RelayCommand]
     private void Decline()
     {
         Hide();
-        NegativeClicked?.Invoke(this, SenderName);
+        onNegativeClicked?.Invoke(SenderName);
     }
 
     // --- Public methods ---
@@ -127,4 +120,4 @@ public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceN
         }
     }
 }
-
+// checked
