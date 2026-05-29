@@ -10,7 +10,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// <summary>
     /// A window for selecting a CnCNet tunnel server.
     /// </summary>
-    class TunnelSelectionWindow : XNAWindow
+    class TunnelSelectionWindow : XNAWindow // checked
     {
         public TunnelSelectionWindow(WindowManager windowManager, TunnelHandler tunnelHandler) : base(windowManager)
         {
