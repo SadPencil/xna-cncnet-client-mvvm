@@ -21,7 +21,7 @@ using Rampastring.XNAUI;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
-    public class SkirmishLobby : GameLobbyBase, ISwitchable
+    public class SkirmishLobby : GameLobbyBase, ISwitchable // checked
     {
         private const string SETTINGS_PATH = "Client/SkirmishSettings.ini";
 
