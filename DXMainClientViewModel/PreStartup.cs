@@ -169,5 +169,6 @@ public static class PreStartup
         services.AddTransient<ILoadingScreenViewModel, LoadingScreenViewModel>();
         services.AddTransient<IPrivacyNotificationViewModel, PrivacyNotificationViewModel>();
         services.AddTransient<IUpdateQueryWindowViewModel, UpdateQueryWindowViewModel>();
+        services.AddTransient<IManualUpdateQueryWindowViewModel, ManualUpdateQueryWindowViewModel>();
     }
 }
