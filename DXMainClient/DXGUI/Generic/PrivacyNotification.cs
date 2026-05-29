@@ -10,7 +10,7 @@ namespace DTAClient.DXGUI.Generic
     /// <summary>
     /// A notification that asks the user to accept the CnCNet privacy policy.
     /// </summary>
-    class PrivacyNotification : XNAWindow
+    class PrivacyNotification : XNAWindow // checked
     {
         public PrivacyNotification(WindowManager windowManager) : base(windowManager)
         {
