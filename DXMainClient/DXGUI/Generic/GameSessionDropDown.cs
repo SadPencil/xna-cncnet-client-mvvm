@@ -18,7 +18,7 @@ namespace DTAClient.DXGUI.Generic;
 /// A game option drop-down for the game lobby or campaign.
 /// </summary>
 // TODO split the logic between descendants better and clean up
-public class GameSessionDropDown : XNAClientDropDown, IGameSessionSetting
+public class GameSessionDropDown : XNAClientDropDown, IGameSessionSetting // checked
 {
 
     private const int DEFAULT_SORT_ORDER = 0;
