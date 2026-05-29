@@ -11,7 +11,7 @@ namespace DTAClient.DXGUI.Generic
     /// <summary>
     /// A window that asks the user whether they want to update their game.
     /// </summary>
-    public class UpdateQueryWindow : XNAWindow
+    public class UpdateQueryWindow : XNAWindow // checked
     {
         public delegate void UpdateAcceptedEventHandler(object sender, EventArgs e);
         public event UpdateAcceptedEventHandler UpdateAccepted;
