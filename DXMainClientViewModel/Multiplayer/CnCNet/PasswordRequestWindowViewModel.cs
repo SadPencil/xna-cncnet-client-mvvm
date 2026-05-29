@@ -30,9 +30,14 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
     [ObservableProperty]
     private bool _isWindowVisible;
 
-    // --- Events ---
+    private readonly Action<PasswordEventArgs>? onPasswordEntered;
 
-    public event EventHandler<PasswordEventArgs>? PasswordEntered;
+    // --- Constructor ---
+
+    public PasswordRequestWindowViewModel(Action<PasswordEventArgs>? onPasswordEntered = null)
+    {
+        this.onPasswordEntered = onPasswordEntered;
+    }
 
     // --- Commands ---
 
@@ -43,7 +48,7 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
             return;
 
         IsWindowVisible = false;
-        PasswordEntered?.Invoke(this, new PasswordEventArgs(Password, hostedGame!));
+        onPasswordEntered?.Invoke(new PasswordEventArgs(Password, hostedGame!));
         Password = string.Empty;
     }
 
@@ -65,4 +70,4 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
         IsWindowVisible = true;
     }
 }
-
+// checked
