@@ -42,10 +42,15 @@ public partial class LoadingScreen : Window, ILoadingScreenView
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ILoadingScreenViewModel.IsLoading)
-            && ViewModel is { IsLoading: false })
+        if (e.PropertyName == nameof(ILoadingScreenViewModel.IsLoading))
         {
-            Dispatcher.UIThread.Post(TransitionToMainMenu);
+            // PollLoadingStatus runs on a Timer thread, so dispatch to UI thread
+            // before accessing ViewModel/DataContext.
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (ViewModel is { IsLoading: false })
+                    TransitionToMainMenu();
+            });
         }
     }
 
