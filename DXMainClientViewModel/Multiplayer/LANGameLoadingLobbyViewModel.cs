@@ -29,7 +29,6 @@ namespace DXMainClientViewModel.Multiplayer;
 
 /// <summary>
 /// ViewModel for LAN game loading lobby.
-/// Contains all business logic from LANGameLoadingLobby.cs except XNA UI rendering.
 /// </summary>
 
 public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewModel, ILANGameLoadingLobbyViewModel
@@ -780,4 +779,4 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
 
         GameBroadcast?.Invoke(this, new GameBroadcastEventArgs(sb.ToString()));
     }
-}
+} // checked
