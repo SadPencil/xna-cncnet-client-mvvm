@@ -18,7 +18,7 @@ using System.Threading;
 
 namespace DTAClient.DXGUI.Multiplayer
 {
-    class LANGameLoadingLobby : GameLoadingLobbyBase
+    class LANGameLoadingLobby : GameLoadingLobbyBase // checked
     {
         private const double DROPOUT_TIMEOUT = 20.0;
         private const double GAME_BROADCAST_INTERVAL = 2.0;
