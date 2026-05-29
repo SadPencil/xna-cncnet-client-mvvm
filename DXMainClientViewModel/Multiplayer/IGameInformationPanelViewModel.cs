@@ -11,10 +11,12 @@ public interface IGameInformationPanelViewModel : INotifyPropertyChanged
     string HostName { get; }
     string MapName { get; }
     string GameModeName { get; }
-    string PlayerCountText { get; }
-    string PingText { get; }
+    int PlayerCount { get; }
+    int MaxPlayers { get; }
+    int Ping { get; }
     string GameVersion { get; }
-    string SkillLevelText { get; }
+    int SkillLevelIndex { get; }
+    string SkillLevelName { get; }
     bool IsLocked { get; }
     bool IsPasswordProtected { get; }
     bool IsCompatible { get; }

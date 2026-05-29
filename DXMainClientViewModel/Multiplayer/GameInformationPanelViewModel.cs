@@ -23,7 +23,7 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
 {
     private readonly MapLoader mapLoader;
     private GenericHostedGame? currentGame;
-    private string[] skillLevelOptions;
+    private readonly string[] skillLevelOptions;
 
     // --- Observable state ---
 
@@ -40,16 +40,22 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
     private string _gameModeName = string.Empty;
 
     [ObservableProperty]
-    private string _playerCountText = string.Empty;
+    private int _playerCount;
 
     [ObservableProperty]
-    private string _pingText = string.Empty;
+    private int _maxPlayers;
+
+    [ObservableProperty]
+    private int _ping;
 
     [ObservableProperty]
     private string _gameVersion = string.Empty;
 
     [ObservableProperty]
-    private string _skillLevelText = string.Empty;
+    private int _skillLevelIndex = -1;
+
+    [ObservableProperty]
+    private string _skillLevelName = string.Empty;
 
     [ObservableProperty]
     private bool _isLocked;
@@ -70,10 +76,6 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
 
     private readonly ObservableCollection<string> _playerNames = new();
     public IReadOnlyList<string> PlayerNames => _playerNames;
-
-    // --- Events ---
-
-    public event EventHandler? MapPreviewRequested;
 
     // --- Constructor ---
 
@@ -98,7 +100,7 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
         ClearInfo();
     }
 
-    // --- Public methods ---
+    // --- Public methods (called by parent ViewModel, not View) ---
 
     public void SetInfo(GenericHostedGame game)
     {
@@ -111,23 +113,23 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
         HostName = game.HostName ?? string.Empty;
 
         // Map name resolution
-        string translatedMapName = "Unknown".L10N("Client:Main:Unknown");
+        string resolvedMapName = "Unknown".L10N("Client:Main:Unknown");
 
         if (!string.IsNullOrEmpty(game.MapHash) && mapLoader != null)
         {
             Map map = mapLoader.FindMapByHash(game.MapHash);
 
             if (map != null)
-                translatedMapName = map.Name ?? map.UntranslatedName;
+                resolvedMapName = map.Name ?? map.UntranslatedName;
             else if (!string.IsNullOrEmpty(game.Map))
-                translatedMapName = game.Map; // fallback to broadcasted name
+                resolvedMapName = game.Map; // fallback to broadcasted name
         }
         else if (!string.IsNullOrEmpty(game.Map))
         {
-            translatedMapName = game.Map;
+            resolvedMapName = game.Map;
         }
 
-        MapName = translatedMapName;
+        MapName = resolvedMapName;
 
         // Game mode name
         GameModeName = string.IsNullOrEmpty(game.GameMode)
@@ -135,12 +137,11 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
             : game.GameMode.L10N($"INI:GameModes:{game.GameMode}:UIName", notify: false);
 
         // Ping
-        PingText = game.Ping > 0
-            ? "Ping:".L10N("Client:Main:GameInfoPing") + " " + game.Ping.ToString() + " ms"
-            : "Ping: Unknown".L10N("Client:Main:GameInfoPingUnknown");
+        Ping = game.Ping;
 
         // Player count
-        PlayerCountText = "Players".L10N("Client:Main:GameInfoPlayers") + " (" + game.Players.Length + " / " + game.MaxPlayers + "):";
+        PlayerCount = game.Players.Length;
+        MaxPlayers = game.MaxPlayers;
 
         // Player names
         _playerNames.Clear();
@@ -148,16 +149,15 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
             _playerNames.Add(game.Players[i]);
 
         // Skill level
-        int skillLevelIndex = game.SkillLevel;
-        if (skillLevelIndex >= 0 && skillLevelIndex < skillLevelOptions.Length)
+        SkillLevelIndex = game.SkillLevel;
+        if (game.SkillLevel >= 0 && game.SkillLevel < skillLevelOptions.Length)
         {
-            string skillLevel = skillLevelOptions[skillLevelIndex];
-            string localizedSkillLevel = skillLevel.L10N($"INI:ClientDefinitions:SkillLevel:{skillLevelIndex}");
-            SkillLevelText = "Preferred Skill Level:".L10N("Client:Main:GameInfoSkillLevel") + " " + localizedSkillLevel;
+            string skillLevel = skillLevelOptions[game.SkillLevel];
+            SkillLevelName = skillLevel.L10N($"INI:ClientDefinitions:SkillLevel:{game.SkillLevel}");
         }
         else
         {
-            SkillLevelText = string.Empty;
+            SkillLevelName = string.Empty;
         }
 
         // Game version
@@ -168,11 +168,8 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
         IsPasswordProtected = game.Passworded;
         IsCompatible = !game.Incompatible;
 
-        // Map hash for preview
+        // Map hash for preview - View observes this property to load texture
         MapHash = game.MapHash;
-
-        // Notify that map preview should be updated
-        MapPreviewRequested?.Invoke(this, EventArgs.Empty);
     }
 
     public void ClearInfo()
@@ -183,10 +180,12 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
         HostName = string.Empty;
         MapName = string.Empty;
         GameModeName = string.Empty;
-        PlayerCountText = string.Empty;
-        PingText = string.Empty;
+        PlayerCount = 0;
+        MaxPlayers = 0;
+        Ping = 0;
         GameVersion = string.Empty;
-        SkillLevelText = string.Empty;
+        SkillLevelIndex = -1;
+        SkillLevelName = string.Empty;
         IsLocked = false;
         IsPasswordProtected = false;
         IsCompatible = true;
@@ -196,4 +195,4 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
 
     public GenericHostedGame? GetCurrentGame() => currentGame;
 }
-
+// checked
