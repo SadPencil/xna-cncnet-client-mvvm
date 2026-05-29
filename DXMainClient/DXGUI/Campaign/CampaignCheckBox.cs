@@ -10,7 +10,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Campaign;
 
-public class CampaignCheckBox : GameSessionCheckBox
+public class CampaignCheckBox : GameSessionCheckBox // checked
 {
     public CampaignCheckBox(WindowManager windowManager) : base (windowManager) { }
     
