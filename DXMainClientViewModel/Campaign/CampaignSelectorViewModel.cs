@@ -74,14 +74,18 @@ namespace DXMainClientViewModel.Campaign
         private Dictionary<int, Mission> _uniqueIDToMissions = new();
         public IReadOnlyDictionary<int, Mission> UniqueIDToMissions => _uniqueIDToMissions;
 
+        private readonly Action? onReturnRequested;
+
         public CampaignSelectorViewModel(
             IDiscordHandlerService discordHandler,
             ICampaignGameProcessService gameProcessService,
-            IFileIntegrityService fileIntegrityService)
+            IFileIntegrityService fileIntegrityService,
+            Action? onReturnRequested = null)
         {
             this.discordHandler = discordHandler;
             this.gameProcessService = gameProcessService;
             this.fileIntegrityService = fileIntegrityService;
+            this.onReturnRequested = onReturnRequested;
 
             CheaterWindow = new CheaterWindowViewModel(OnCheaterConfirmed, OnCheaterCancelled);
 
@@ -163,7 +167,7 @@ namespace DXMainClientViewModel.Campaign
         [RelayCommand]
         private void Return()
         {
-            // Signals the View (CampaignTagSelector) to switch back
+            onReturnRequested?.Invoke();
         }
 
         [RelayCommand]

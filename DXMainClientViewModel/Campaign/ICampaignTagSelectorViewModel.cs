@@ -19,8 +19,4 @@ public interface ICampaignTagSelectorViewModel : INotifyPropertyChanged
     IRelayCommand SelectTagCommand { get; }
     IRelayCommand ShowAllCampaignsCommand { get; }
     IRelayCommand CancelCommand { get; }
-
-    void Initialize();
-    void SetTags(IEnumerable<string> tagNames);
-    void Open();
 }

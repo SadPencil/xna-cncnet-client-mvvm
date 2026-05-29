@@ -24,7 +24,7 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     private readonly IFileIntegrityService fileIntegrityService;
 
     // Child ViewModel
-    private CampaignSelectorViewModel campaignSelector;
+    private CampaignSelectorViewModel? campaignSelector;
 
     // --- Observable state ---
 
@@ -42,10 +42,14 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     private readonly ObservableCollection<string> _campaignTags = new();
     public IReadOnlyList<string> CampaignTags => _campaignTags;
 
+    private readonly List<bool> _campaignTagEnabled = new();
+
     // --- Properties delegated to child ---
 
-    public IReadOnlyDictionary<int, Mission> UniqueIDToMissions => campaignSelector.UniqueIDToMissions;
-    public IReadOnlyCollection<Mission> AllMissions => campaignSelector.AllMissions;
+    public IReadOnlyDictionary<int, Mission> UniqueIDToMissions =>
+        campaignSelector?.UniqueIDToMissions ?? new Dictionary<int, Mission>();
+    public IReadOnlyCollection<Mission> AllMissions =>
+        campaignSelector?.AllMissions ?? Array.Empty<Mission>();
 
     // --- Constructor ---
 
@@ -67,8 +71,11 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
         if (SelectedTagIndex < 0 || SelectedTagIndex >= _campaignTags.Count)
             return;
 
+        if (!_campaignTagEnabled[SelectedTagIndex])
+            return;
+
         SelectedTagName = _campaignTags[SelectedTagIndex];
-        campaignSelector.LoadMissionsWithFilter(new HashSet<string>() { SelectedTagName }, disableCustomMissions: false, disableOfficialMissions: false);
+        campaignSelector?.LoadMissionsWithFilter(new HashSet<string>() { SelectedTagName }, disableCustomMissions: false, disableOfficialMissions: false);
         IsVisible = false;
     }
 
@@ -77,7 +84,7 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     {
         SelectedTagName = null;
         SelectedTagIndex = -1;
-        campaignSelector.LoadMissionsWithFilter(null, disableCustomMissions: false, disableOfficialMissions: false);
+        campaignSelector?.LoadMissionsWithFilter(null, disableCustomMissions: false, disableOfficialMissions: false);
         IsVisible = false;
     }
 
@@ -87,33 +94,47 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
         IsVisible = false;
     }
 
-    // --- Lifecycle ---
+    // --- Lifecycle (called by parent ViewModel, not View) ---
 
     public void Initialize()
     {
-        campaignSelector = new CampaignSelectorViewModel(discordHandler, gameProcessService, fileIntegrityService);
+        if (!ClientConfiguration.Instance.CampaignTagSelectorEnabled)
+            return;
+
+        campaignSelector = new CampaignSelectorViewModel(discordHandler, gameProcessService, fileIntegrityService, OnReturnRequested);
     }
 
     /// <summary>
     /// Sets the available campaign tags. Called by the parent ViewModel
     /// after discovering tag names from INI configuration.
     /// </summary>
-    public void SetTags(IEnumerable<string> tagNames)
+    public void SetTags(IEnumerable<(string Name, bool IsEnabled)> tags)
     {
         _campaignTags.Clear();
-        foreach (string tag in tagNames)
-            _campaignTags.Add(tag);
+        _campaignTagEnabled.Clear();
+        foreach (var (name, isEnabled) in tags)
+        {
+            _campaignTags.Add(name);
+            _campaignTagEnabled.Add(isEnabled);
+        }
     }
 
     /// <summary>
-    /// Opens the tag selector panel.
+    /// Opens the tag selector panel. If tag selector is disabled,
+    /// loads all missions directly into the CampaignSelector.
     /// </summary>
     public void Open()
     {
         if (ClientConfiguration.Instance.CampaignTagSelectorEnabled)
             IsVisible = true;
         else
-            campaignSelector.LoadMissionsWithFilter(null, disableCustomMissions: false, disableOfficialMissions: false);
+            campaignSelector?.LoadMissionsWithFilter(null, disableCustomMissions: false, disableOfficialMissions: false);
+    }
+
+    private void OnReturnRequested()
+    {
+        // Equivalent of NoFadeSwitch: hide tag selector, show campaign selector
+        IsVisible = false;
     }
 }
-
+// checked
