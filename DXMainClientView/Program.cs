@@ -14,10 +14,10 @@ public class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        // Non-UI initialization (ViewModel project)
+        // ViewModel project initializes domain services
         var services = PreStartup.Initialize();
 
-        // GUI-related services only (View project)
+        // View project adds GUI-related services only
         services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
         services.AddSingleton<IIniLayoutOverlayService, IniLayoutOverlayService>();
 
