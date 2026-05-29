@@ -35,7 +35,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     /// <summary>
     /// The picture box for displaying the map preview.
     /// </summary>
-    public class MapPreviewBox : XNAPanel, ICompositeControl
+    public class MapPreviewBox : XNAPanel, ICompositeControl // checked
     {
         public IReadOnlyList<XNAControl> SubControls => [CoopBriefingBox];
 
