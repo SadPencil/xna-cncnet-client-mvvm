@@ -18,7 +18,7 @@ namespace DTAClient.DXGUI.Multiplayer.CnCNet
     /// A box that notifies users of new private messages,
     /// top-right of the game window.
     /// </summary>
-    public class PrivateMessageNotificationBox : XNAPanel
+    public class PrivateMessageNotificationBox : XNAPanel // checked
     {
         const double DOWN_TIME_WAIT_SECONDS = 4.0;
         const double DOWN_MOVEMENT_RATE = 2.0;
