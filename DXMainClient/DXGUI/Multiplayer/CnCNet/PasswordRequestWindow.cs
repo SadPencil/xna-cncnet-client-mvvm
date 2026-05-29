@@ -8,7 +8,7 @@ using System;
 
 namespace DTAClient.DXGUI.Multiplayer.CnCNet
 {
-    internal class PasswordRequestWindow : XNAWindow
+    internal class PasswordRequestWindow : XNAWindow // checked
     {
         public PasswordRequestWindow(WindowManager windowManager, PrivateMessagingWindow privateMessagingWindow) : base(windowManager)
         {
