@@ -2,7 +2,7 @@
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby.CommandHandlers
 {
-    public class IntCommandHandler : CommandHandlerBase
+    public class IntCommandHandler : CommandHandlerBase // checked
     {
         public IntCommandHandler(string commandName, Action<string, int> handler) : base(commandName)
         {
