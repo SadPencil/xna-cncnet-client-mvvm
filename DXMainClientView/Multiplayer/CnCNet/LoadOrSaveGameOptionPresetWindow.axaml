@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Multiplayer.CnCNet"
+             x:Class="DXMainClientView.Multiplayer.CnCNet.LoadOrSaveGameOptionPresetWindow"
+             x:DataType="vm:ILoadOrSaveGameOptionPresetWindowViewModel"
+             IsVisible="{Binding IsWindowVisible}">
+  <Border Background="#1A1A2E"
+          BorderBrush="#555555"
+          BorderThickness="1"
+          CornerRadius="4"
+          Padding="16"
+          Width="350"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center">
+    <StackPanel Spacing="10">
+      <!-- Preset list -->
+      <ListBox ItemsSource="{Binding PresetNames}"
+               SelectedIndex="{Binding SelectedPresetIndex}"
+               Height="200"
+               Background="#00000080" />
+
+      <!-- New preset name (for save mode) -->
+      <StackPanel Spacing="4" IsVisible="{Binding IsNewPresetNameEnabled}">
+        <TextBlock Text="Preset Name:" Foreground="#AAAAAA" FontSize="13" />
+        <TextBox Text="{Binding PresetName}" FontSize="13" />
+      </StackPanel>
+
+      <!-- Buttons -->
+      <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+        <Button Content="Confirm"
+                Command="{Binding ConfirmCommand}"
+                Width="92" Height="23"
+                FontSize="13"
+                IsEnabled="{Binding IsConfirmEnabled}" />
+        <Button Content="Delete"
+                Command="{Binding DeleteSelectedPresetCommand}"
+                Width="92" Height="23"
+                FontSize="13"
+                IsEnabled="{Binding IsDeleteEnabled}" />
+        <Button Content="Cancel"
+                Command="{Binding CancelCommand}"
+                Width="92" Height="23"
+                FontSize="13" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>
