@@ -2,7 +2,7 @@ using System;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby;
 
-public class GameLobbySettingsEventArgs(string gameRoomName, int maxPlayers, int skillLevel, string password) : EventArgs
+public class GameLobbySettingsEventArgs(string gameRoomName, int maxPlayers, int skillLevel, string password) : EventArgs // checked
 {
     public string GameRoomName { get; } = gameRoomName;
     public int MaxPlayers { get; } = maxPlayers;
