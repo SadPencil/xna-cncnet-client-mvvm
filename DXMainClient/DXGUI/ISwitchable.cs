@@ -3,7 +3,7 @@
     /// <summary>
     /// An interface for all switchable windows.
     /// </summary>
-    public interface ISwitchable
+    public interface ISwitchable // checked
     {
         void SwitchOn();
 
