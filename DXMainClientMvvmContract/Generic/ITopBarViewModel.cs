@@ -24,6 +24,7 @@ public interface ITopBarViewModel : INotifyPropertyChanged
     IRelayCommand SwitchToTertiaryCommand { get; }
     IRelayCommand OpenOptionsCommand { get; }
     IRelayCommand LogoutCommand { get; }
+    IRelayCommand ExpandCommand { get; }
 }
 
 /// <summary>

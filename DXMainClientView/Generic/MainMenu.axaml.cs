@@ -4,7 +4,9 @@ using DXMainClientMvvmContract.Campaign;
 
 using System.ComponentModel;
 
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -17,10 +19,14 @@ namespace DXMainClientView.Generic;
 
 public partial class MainMenu : UserControl
 {
+    private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
+    private ITopBarViewModel? _topBarViewModel;
+
     public MainMenu()
     {
         InitializeComponent();
         Loaded += OnLoaded;
+        PointerMoved += OnPointerMoved;
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -60,9 +66,20 @@ public partial class MainMenu : UserControl
     /// </summary>
     public void SetTopBarViewModel(ITopBarViewModel topBarViewModel)
     {
+        _topBarViewModel = topBarViewModel;
         topBar.ViewModel = topBarViewModel;
         topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
         UpdatePlayerCountVisibility(topBarViewModel.IsPlayerCountVisible);
+    }
+
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (_topBarViewModel == null)
+            return;
+
+        var pos = e.GetPosition(this);
+        if (pos.Y < APPEAR_CURSOR_THRESHOLD_Y)
+            _topBarViewModel.ExpandCommand.Execute(null);
     }
 
     private void OnTopBarPropertyChanged(object? sender, PropertyChangedEventArgs e)
