@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class WhoEventArgs : EventArgs
+    public class WhoEventArgs : EventArgs // checked
     {
         public WhoEventArgs(string ident, string userName, string extraInfo)
         {
