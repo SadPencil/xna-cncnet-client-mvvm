@@ -13,7 +13,7 @@ using Rampastring.XNAUI;
 
 namespace DTAClient.Online
 {
-    public sealed class CnCNetUserData
+    public sealed class CnCNetUserData // checked
     {
         private const string FRIEND_LIST_PATH = "Client/friend_list";
         private const string IGNORE_LIST_PATH = "Client/ignore_list";
