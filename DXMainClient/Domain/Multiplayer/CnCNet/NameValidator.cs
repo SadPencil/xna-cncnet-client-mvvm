@@ -17,7 +17,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
         TooLong
     }
 
-    public static class NameValidator
+    public static class NameValidator // checked
     {
         /// <summary>
         /// Gets the localized error message for a player name validation error.
