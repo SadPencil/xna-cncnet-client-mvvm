@@ -11,7 +11,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// the entire operation, including both connection establishment and
     /// response body read.
     /// </summary>
-    internal sealed class TimedHttpClient
+    internal sealed class TimedHttpClient // checked
     {
         private static readonly HttpClient sharedHttpClient = new HttpClient()
         {
