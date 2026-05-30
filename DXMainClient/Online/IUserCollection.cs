@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DTAClient.Online
 {
-    public interface IUserCollection<T>
+    public interface IUserCollection<T> // checked
     {
         int Count { get; }
 
