@@ -5,7 +5,7 @@ using ClientCore;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public class TeamStartMapping
+    public class TeamStartMapping // checked
     {
         private const char LIST_SEPARATOR = ',';
 
