@@ -3,6 +3,9 @@
              xmlns:vmc="using:DXMainClientMvvmContract.Generic"
              xmlns:local="using:DXMainClientView.Generic"
              xmlns:campaign="using:DXMainClientView.Campaign"
+             xmlns:mp="using:DXMainClientView.Multiplayer"
+             xmlns:cncnet="using:DXMainClientView.Multiplayer.CnCNet"
+             xmlns:gamelobby="using:DXMainClientView.Multiplayer.GameLobby"
              x:Class="DXMainClientView.Generic.MainMenu"
              x:DataType="vmc:IMainMenuViewModel"
              Width="1280" Height="720"
@@ -213,6 +216,12 @@
     <local:OptionsWindow x:Name="optionsWindow" />
     <local:ExtrasWindow x:Name="extrasWindow" />
     <local:GameLoadingWindow x:Name="gameLoadingWindow" />
+
+    <!-- ========== Lobby Views ========== -->
+    <gamelobby:SkirmishLobby x:Name="skirmishLobby" />
+    <cncnet:CnCNetLobby x:Name="cncNetLobby" />
+    <mp:LANLobby x:Name="lanLobby" />
+    <cncnet:PrivateMessagingWindow x:Name="privateMessagingWindow" />
 
   </Canvas>
 </UserControl>

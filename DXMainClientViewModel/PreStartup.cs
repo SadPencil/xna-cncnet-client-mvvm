@@ -1,6 +1,10 @@
 using DXMainClientMvvmContract.Generic;
 using DXMainClientMvvmContract.Generic.OptionPanels;
 using DXMainClientMvvmContract.Campaign;
+using DXMainClientMvvmContract.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer.CnCNet;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
+using DXMainClientMvvmContract.ViewServices;
 using System;
 using System.Globalization;
 using System.IO;
@@ -19,11 +23,14 @@ using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Generic;
 using DXMainClientViewModel.Generic.OptionPanels;
+using DXMainClientViewModel.LAN;
+using DXMainClientViewModel.Multiplayer;
+using DXMainClientViewModel.Multiplayer.CnCNet;
+using DXMainClientViewModel.Multiplayer.GameLobby;
 using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Rampastring.Tools;
-using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel;
 
@@ -264,6 +271,15 @@ public static class PreStartup
         services.AddSingleton<IFileIntegrityService, FileIntegrityService>();
         services.AddSingleton<ICampaignGameProcessService, CampaignGameProcessService>();
 
+        // CnCNet / Multiplayer domain services
+        services.AddSingleton<TunnelHandler>();
+        services.AddSingleton<DiscordHandler>();
+
+        // LAN services
+        services.AddSingleton<ILANBroadcastManagerService, LANBroadcastManagerService>();
+        services.AddSingleton<ILANPlayerManagerService, LANPlayerManagerService>();
+        services.AddSingleton<ILANMessageDeduplicatorService, LANMessageDeduplicatorService>();
+
         // Option panel ViewModels
         services.AddSingleton<DisplayOptionsPanelViewModel>(sp =>
             new DisplayOptionsPanelViewModel(
@@ -340,6 +356,52 @@ public static class PreStartup
 
         // UpdateWindowViewModel
         services.AddSingleton<UpdateWindowViewModel>();
+
+        // SkirmishLobbyViewModel
+        services.AddSingleton<SkirmishLobbyViewModel>(sp => new SkirmishLobbyViewModel(
+            sp.GetRequiredService<MapLoader>(),
+            sp.GetRequiredService<DiscordHandler>(),
+            sp.GetRequiredService<IGameProcessService>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<Random>()));
+        services.AddSingleton<ISkirmishLobbyViewModel>(sp =>
+            sp.GetRequiredService<SkirmishLobbyViewModel>());
+
+        // CnCNetLobbyViewModel
+        services.AddSingleton<CnCNetLobbyViewModel>(sp => new CnCNetLobbyViewModel(
+            sp.GetRequiredService<CnCNetManager>(),
+            sp.GetRequiredService<CnCNetUserData>(),
+            sp.GetRequiredService<GameCollection>(),
+            sp.GetRequiredService<TunnelHandler>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<IGameProcessService>(),
+            sp.GetRequiredService<Random>()));
+        services.AddSingleton<ICnCNetLobbyViewModel>(sp =>
+            sp.GetRequiredService<CnCNetLobbyViewModel>());
+
+        // LANLobbyViewModel
+        services.AddSingleton<LANLobbyViewModel>(sp => new LANLobbyViewModel(
+            sp.GetRequiredService<ILANBroadcastManagerService>(),
+            sp.GetRequiredService<ILANPlayerManagerService>(),
+            sp.GetRequiredService<ILANMessageDeduplicatorService>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<IApplicationLifecycleService>(),
+            sp.GetRequiredService<GameCollection>(),
+            sp.GetRequiredService<MapLoader>(),
+            sp.GetRequiredService<DiscordHandler>(),
+            sp.GetRequiredService<Random>()));
+        services.AddSingleton<ILANLobbyViewModel>(sp =>
+            sp.GetRequiredService<LANLobbyViewModel>());
+
+        // PrivateMessagingWindowViewModel
+        services.AddSingleton<PrivateMessagingWindowViewModel>(sp => new PrivateMessagingWindowViewModel(
+            sp.GetRequiredService<CnCNetManager>(),
+            sp.GetRequiredService<CnCNetUserData>(),
+            sp.GetRequiredService<PrivateMessageHandler>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<IGameProcessService>()));
+        services.AddSingleton<IPrivateMessagingWindowViewModel>(sp =>
+            sp.GetRequiredService<PrivateMessagingWindowViewModel>());
 
         // MainMenuViewModel
         services.AddSingleton<MainMenuViewModel>(sp => new MainMenuViewModel(
