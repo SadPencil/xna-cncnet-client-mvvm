@@ -8,7 +8,6 @@ using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online;
 using Rampastring.Tools;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,6 +25,8 @@ namespace DXMainClientViewModel.Generic
         private readonly IUpdateService updateService;
         private readonly CnCNetManager connectionManager;
 
+        public event EventHandler? Completed;
+
         [ObservableProperty]
         private string statusText = "Loading...";
 
@@ -40,9 +41,6 @@ namespace DXMainClientViewModel.Generic
 
         [ObservableProperty]
         private bool isLoading = true;
-
-        [ObservableProperty]
-        private bool shouldShowPrivacyNotification;
 
         private Task? updaterInitTask;
         private Task? mapLoadTask;
@@ -147,9 +145,8 @@ namespace DXMainClientViewModel.Generic
                 connectionManager.Connect();
             }
 
-            ShouldShowPrivacyNotification = !UserINISettings.Instance.PrivacyPolicyAccepted;
-
             IsLoading = false;
+            Completed?.Invoke(this, EventArgs.Empty);
 
             Logger.Log("Startup complete. Client is ready.");
         }

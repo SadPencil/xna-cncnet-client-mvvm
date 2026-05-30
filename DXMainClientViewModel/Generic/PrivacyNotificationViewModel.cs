@@ -38,6 +38,7 @@ namespace DXMainClientViewModel.Generic
             DescriptionText = "This application makes use of CnCNet web & tunnel server services and is subject to collection of technical & other necessary information through them.".L10N("Client:Main:TOSText");
             ExplanationText = "By using this application you agree to the CnCNet Terms & Conditions as well as the CnCNet Privacy Policy. Privacy-related options can be configured in the client settings.".L10N("Client:Main:TOSExplanation");
             AcceptButtonText = "Got it".L10N("Client:Main:TOSButtonOK");
+            IsVisible = !UserINISettings.Instance.PrivacyPolicyAccepted;
         }
 
         [RelayCommand]

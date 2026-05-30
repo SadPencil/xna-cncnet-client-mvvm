@@ -9,5 +9,4 @@ public interface ILoadingScreenViewModel : INotifyPropertyChanged
     int ProgressPercentage { get; }
     bool IsIndeterminate { get; }
     bool IsLoading { get; }
-    bool ShouldShowPrivacyNotification { get; }
 }
