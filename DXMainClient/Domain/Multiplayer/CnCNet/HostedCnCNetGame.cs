@@ -2,7 +2,7 @@
 
 namespace DTAClient.Domain.Multiplayer.CnCNet
 {
-    public class HostedCnCNetGame : GenericHostedGame
+    public class HostedCnCNetGame : GenericHostedGame // checked
     {
         public HostedCnCNetGame() { }
 
