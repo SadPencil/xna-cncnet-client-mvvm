@@ -3,7 +3,7 @@
     /// <summary>
     /// The type of a CnCNet IRC network message.
     /// </summary>
-    public enum QueuedMessageType
+    public enum QueuedMessageType // checked
     {
         UNDEFINED,
         CHAT_MESSAGE,
