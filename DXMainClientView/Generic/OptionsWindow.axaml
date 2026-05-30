@@ -6,102 +6,228 @@
              IsVisible="{Binding IsVisible}"
              Width="576" Height="475">
   <Panel>
-    <DockPanel>
-      <!-- Bottom buttons -->
-      <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="12,0,12,12"
-                  HorizontalAlignment="Right" Spacing="8">
-        <Button Content="Save" Width="92" Height="23" FontSize="13"
-                Command="{Binding SaveCommand}" />
-        <Button Content="Cancel" Width="92" Height="23" FontSize="13"
-                Command="{Binding CancelCommand}" />
+    <Canvas>
+      <!-- Tab buttons (at top, matching original XNAClientTabControl at y=12) -->
+      <StackPanel x:Name="tabControl"
+                  Orientation="Horizontal" Spacing="2"
+                  Canvas.Left="12" Canvas.Top="12">
+        <Button x:Name="tabDisplay" Content="Display" Width="92" Height="23" FontWeight="Bold"
+                Tag="0" />
+        <Button x:Name="tabAudio" Content="Audio" Width="92" Height="23" FontWeight="Bold"
+                Tag="1" />
+        <Button x:Name="tabGame" Content="Game" Width="92" Height="23" FontWeight="Bold"
+                Tag="2" />
+        <Button x:Name="tabCnCNet" Content="CnCNet" Width="92" Height="23" FontWeight="Bold"
+                Tag="3" />
+        <Button x:Name="tabUpdater" Content="Updater" Width="92" Height="23" FontWeight="Bold"
+                Tag="4" />
+        <Button x:Name="tabComponents" Content="Components" Width="92" Height="23" FontWeight="Bold"
+                Tag="5"
+                IsVisible="{Binding IsComponentsPanelVisible}" />
       </StackPanel>
 
-      <!-- Tab and panel area -->
-      <DockPanel Margin="12">
-        <!-- Tab buttons -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="4" Margin="0,0,0,8">
-          <Button Content="Display" Width="92" Height="23" FontSize="13" />
-          <Button Content="Audio" Width="92" Height="23" FontSize="13" />
-          <Button Content="Game" Width="92" Height="23" FontSize="13" />
-          <Button Content="CnCNet" Width="92" Height="23" FontSize="13" />
-          <Button Content="Updater" Width="92" Height="23" FontSize="13" />
-          <Button Content="Components" Width="92" Height="23" FontSize="13"
-                  IsVisible="{Binding IsComponentsPanelVisible}" />
-        </StackPanel>
+      <!-- Option panels area (below tabs, above buttons) -->
+      <!-- Each panel is 576x(475-35-12-23-12) = 576x393 -->
+      <!-- Panel area starts at y=35 (12+23), height=393 -->
 
-        <!-- Panel content placeholder -->
-        <Border Background="#1A1A2E" CornerRadius="4">
-          <TextBlock Text="Options panel content area"
-                     Foreground="#999999"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center" />
-        </Border>
-      </DockPanel>
-    </DockPanel>
+      <!-- Display Options Panel -->
+      <Border x:Name="panelDisplay"
+              Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Canvas.Left="12" Canvas.Top="37"
+              Width="552" Height="389">
+        <ScrollViewer>
+          <StackPanel Margin="12" Spacing="8">
+            <TextBlock Text="In-game Resolution:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <ComboBox x:Name="ddIngameResolution" Width="200" />
+
+            <TextBlock Text="Detail Level:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <ComboBox x:Name="ddDetailLevel" Width="200" />
+
+            <TextBlock Text="Renderer:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <ComboBox x:Name="ddRenderer" Width="200" />
+
+            <CheckBox x:Name="chkWindowedMode" Content="Windowed Mode"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkBorderlessWindowedMode" Content="Borderless Windowed Mode"
+                      Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,0" />
+
+            <TextBlock Text="Client Resolution:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <ComboBox x:Name="ddClientResolution" Width="200" />
+
+            <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkIntegerScaledClient" Content="Integer Scaled Client"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+
+            <TextBlock Text="Client Theme:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <ComboBox x:Name="ddClientTheme" Width="200" />
+
+            <TextBlock Text="Language:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <ComboBox x:Name="ddTranslation" Width="200" />
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <!-- Audio Options Panel -->
+      <Border x:Name="panelAudio"
+              Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Canvas.Left="12" Canvas.Top="37"
+              Width="552" Height="389"
+              IsVisible="False">
+        <ScrollViewer>
+          <StackPanel Margin="12" Spacing="8">
+            <TextBlock Text="Music Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <Slider x:Name="trbMusicVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Text="Sound Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <Slider x:Name="trbSoundVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Text="Voice Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <Slider x:Name="trbVoiceVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Text="Client Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+            <Slider x:Name="trbClientVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+            <CheckBox x:Name="chkShuffleMusic" Content="Shuffle Music" Foreground="{DynamicResource XnaTextBrush}" />
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <!-- Game Options Panel -->
+      <Border x:Name="panelGame"
+              Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Canvas.Left="12" Canvas.Top="37"
+              Width="552" Height="389"
+              IsVisible="False">
+        <ScrollViewer>
+          <StackPanel Margin="12" Spacing="8">
+            <TextBlock Text="Game Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
+            <TextBlock Text="(Game option controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <!-- CnCNet Options Panel -->
+      <Border x:Name="panelCnCNet"
+              Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Canvas.Left="12" Canvas.Top="37"
+              Width="552" Height="389"
+              IsVisible="False">
+        <ScrollViewer>
+          <StackPanel Margin="12" Spacing="8">
+            <TextBlock Text="CnCNet Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
+            <TextBlock Text="(CnCNet option controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <!-- Updater Options Panel -->
+      <Border x:Name="panelUpdater"
+              Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Canvas.Left="12" Canvas.Top="37"
+              Width="552" Height="389"
+              IsVisible="False">
+        <ScrollViewer>
+          <StackPanel Margin="12" Spacing="8">
+            <TextBlock Text="Updater Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
+            <TextBlock Text="(Updater option controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <!-- Components Panel -->
+      <Border x:Name="panelComponents"
+              Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Canvas.Left="12" Canvas.Top="37"
+              Width="552" Height="389"
+              IsVisible="False">
+        <ScrollViewer>
+          <StackPanel Margin="12" Spacing="8">
+            <TextBlock Text="Components" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
+            <TextBlock Text="(Component install/update controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <!-- Save button (bottom-left) -->
+      <Button x:Name="btnSave"
+              Content="Save"
+              Command="{Binding SaveCommand}"
+              Width="92" Height="23"
+              FontWeight="Bold"
+              Canvas.Left="12" Canvas.Top="440" />
+
+      <!-- Cancel button (bottom-right) -->
+      <Button x:Name="btnCancel"
+              Content="Cancel"
+              Command="{Binding CancelCommand}"
+              Width="92" Height="23"
+              FontWeight="Bold"
+              Canvas.Left="472" Canvas.Top="440" />
+    </Canvas>
 
     <!-- Message box overlay -->
     <Border IsVisible="{Binding IsMessageBoxVisible}"
-            Background="#00000080"
+            Background="#80000000"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
-      <Border Background="#1A1A2E"
-              BorderBrush="#555555"
+      <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
-              CornerRadius="4"
               Padding="16"
               Width="400"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
         <StackPanel Spacing="12">
           <TextBlock Text="{Binding MessageBoxTitle}"
-                     FontSize="14"
-                     Foreground="White"
-                     FontWeight="Bold" />
+                     FontWeight="Bold"
+                     Foreground="{DynamicResource XnaTextBrush}" />
           <TextBlock Text="{Binding MessageBoxMessage}"
                      TextWrapping="Wrap"
-                     FontSize="13"
-                     Foreground="#CCCCCC" />
+                     Foreground="{DynamicResource XnaAltBrush}" />
           <Button Content="OK"
                   Command="{Binding DismissMessageBoxCommand}"
                   HorizontalAlignment="Right"
-                  Width="75" Height="23"
-                  FontSize="13" />
+                  Width="75" Height="23" />
         </StackPanel>
       </Border>
     </Border>
 
     <!-- Yes/No dialog overlay -->
     <Border IsVisible="{Binding IsYesNoDialogVisible}"
-            Background="#00000080"
+            Background="#80000000"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
-      <Border Background="#1A1A2E"
-              BorderBrush="#555555"
+      <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
-              CornerRadius="4"
               Padding="16"
               Width="400"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
         <StackPanel Spacing="12">
           <TextBlock Text="{Binding YesNoDialogTitle}"
-                     FontSize="14"
-                     Foreground="White"
-                     FontWeight="Bold" />
+                     FontWeight="Bold"
+                     Foreground="{DynamicResource XnaTextBrush}" />
           <TextBlock Text="{Binding YesNoDialogMessage}"
                      TextWrapping="Wrap"
-                     FontSize="13"
-                     Foreground="#CCCCCC" />
+                     Foreground="{DynamicResource XnaAltBrush}" />
           <StackPanel Orientation="Horizontal" Spacing="8"
                       HorizontalAlignment="Right">
             <Button Content="Yes"
                     Command="{Binding YesNoDialogYesCommand}"
-                    Width="75" Height="23"
-                    FontSize="13" />
+                    Width="75" Height="23" />
             <Button Content="No"
                     Command="{Binding YesNoDialogNoCommand}"
-                    Width="75" Height="23"
-                    FontSize="13" />
+                    Width="75" Height="23" />
           </StackPanel>
         </StackPanel>
       </Border>

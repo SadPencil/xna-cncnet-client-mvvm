@@ -4,5 +4,6 @@
              RequestedThemeVariant="Dark">
   <Application.Styles>
     <FluentTheme />
+    <StyleInclude Source="Styles/XnaUiStyles.axaml" />
   </Application.Styles>
 </Application>

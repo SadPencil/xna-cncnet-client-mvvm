@@ -1,0 +1,189 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- DTA Theme Colors (from DTACnCNetClient.ini GlobalThemeSettings) -->
+  <Styles.Resources>
+    <Color x:Key="XnaBackgroundColor">#000000</Color>
+    <Color x:Key="XnaPanelBackgroundColor">#000F08</Color>       <!-- AltUIBackgroundColor (0,15,8) -->
+    <Color x:Key="XnaPanelBorderColor">#4AB6DE</Color>           <!-- PanelBorderColor (74,182,222) -->
+    <Color x:Key="XnaTextColor">#B5FB00</Color>                   <!-- UILabelColor (181,251,0) -->
+    <Color x:Key="XnaSubtleTextColor">#808080</Color>
+    <Color x:Key="XnaAltColor">#FFFFFF</Color>
+    <Color x:Key="XnaButtonTextColor">#B5FB00</Color>             <!-- UILabelColor for button text -->
+    <Color x:Key="XnaButtonHoverColor">#FCFCFC</Color>            <!-- ButtonHoverColor (252,252,252) -->
+    <Color x:Key="XnaDisabledItemColor">#808080</Color>
+    <Color x:Key="XnaSelectionColor">#284400</Color>              <!-- ListBoxFocusColor (40,68,0) -->
+    <Color x:Key="XnaFocusColor">#142212</Color>                   <!-- HoverOnGameColor (20,34,18) -->
+    <Color x:Key="XnaAccentColor">#6FFB00</Color>                  <!-- AltUIColor (111,251,0) -->
+
+    <SolidColorBrush x:Key="XnaBackgroundBrush" Color="{StaticResource XnaBackgroundColor}" />
+    <SolidColorBrush x:Key="XnaPanelBackgroundBrush" Color="{StaticResource XnaPanelBackgroundColor}" />
+    <SolidColorBrush x:Key="XnaPanelBorderBrush" Color="{StaticResource XnaPanelBorderColor}" />
+    <SolidColorBrush x:Key="XnaTextBrush" Color="{StaticResource XnaTextColor}" />
+    <SolidColorBrush x:Key="XnaSubtleTextBrush" Color="{StaticResource XnaSubtleTextColor}" />
+    <SolidColorBrush x:Key="XnaAltBrush" Color="{StaticResource XnaAltColor}" />
+    <SolidColorBrush x:Key="XnaButtonTextBrush" Color="{StaticResource XnaButtonTextColor}" />
+    <SolidColorBrush x:Key="XnaButtonHoverBrush" Color="{StaticResource XnaButtonHoverColor}" />
+    <SolidColorBrush x:Key="XnaDisabledBrush" Color="{StaticResource XnaDisabledItemColor}" />
+    <SolidColorBrush x:Key="XnaSelectionBrush" Color="{StaticResource XnaSelectionColor}" />
+    <SolidColorBrush x:Key="XnaFocusBrush" Color="{StaticResource XnaFocusColor}" />
+    <SolidColorBrush x:Key="XnaAccentBrush" Color="{StaticResource XnaAccentColor}" />
+  </Styles.Resources>
+
+  <!-- Global defaults -->
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource XnaTextBrush}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource XnaTextBrush}" />
+  </Style>
+
+  <Style Selector="UserControl">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <!-- Button: matches XNAClientButton style (dark bg, gray text, white hover) -->
+  <Style Selector="Button">
+    <Setter Property="Background" Value="{StaticResource XnaPanelBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource XnaButtonTextBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource XnaPanelBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Padding="{TemplateBinding Padding}">
+          <ContentPresenter HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding Content}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="Button:pointerover">
+    <Setter Property="Foreground" Value="{StaticResource XnaButtonHoverBrush}" />
+    <Setter Property="Background" Value="{StaticResource XnaFocusBrush}" />
+  </Style>
+
+  <Style Selector="Button:pressed">
+    <Setter Property="Foreground" Value="{StaticResource XnaButtonHoverBrush}" />
+    <Setter Property="Background" Value="{StaticResource XnaSelectionBrush}" />
+  </Style>
+
+  <Style Selector="Button:disabled">
+    <Setter Property="Foreground" Value="{StaticResource XnaDisabledBrush}" />
+    <Setter Property="Opacity" Value="0.5" />
+  </Style>
+
+  <!-- ComboBox (DropDown): matches XNADropDown style -->
+  <Style Selector="ComboBox">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundColor}" />
+    <Setter Property="Foreground" Value="{StaticResource XnaAltBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource XnaPanelBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="4,2" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <Style Selector="ComboBox /template/ Border#Background">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundColor}" />
+    <Setter Property="BorderBrush" Value="{StaticResource XnaPanelBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="ComboBoxItem">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundColor}" />
+    <Setter Property="Foreground" Value="{StaticResource XnaAltBrush}" />
+    <Setter Property="Padding" Value="4,2" />
+  </Style>
+
+  <Style Selector="ComboBoxItem:pointerover">
+    <Setter Property="Background" Value="{StaticResource XnaFocusBrush}" />
+  </Style>
+
+  <Style Selector="ComboBoxItem:selected">
+    <Setter Property="Background" Value="{StaticResource XnaSelectionBrush}" />
+  </Style>
+
+  <!-- ListBox: matches XNAListBox style -->
+  <Style Selector="ListBox">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundColor}" />
+    <Setter Property="BorderBrush" Value="{StaticResource XnaPanelBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Foreground" Value="{StaticResource XnaAltBrush}" />
+    <Setter Property="Padding" Value="2" />
+  </Style>
+
+  <Style Selector="ListBoxItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{StaticResource XnaAltBrush}" />
+    <Setter Property="Padding" Value="4,2" />
+  </Style>
+
+  <Style Selector="ListBoxItem:pointerover">
+    <Setter Property="Background" Value="{StaticResource XnaFocusBrush}" />
+  </Style>
+
+  <Style Selector="ListBoxItem:selected">
+    <Setter Property="Background" Value="{StaticResource XnaSelectionBrush}" />
+  </Style>
+
+  <!-- TextBox: matches XNATextBox style -->
+  <Style Selector="TextBox">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundColor}" />
+    <Setter Property="Foreground" Value="{StaticResource XnaAltBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource XnaPanelBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="4,2" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="CaretBrush" Value="{StaticResource XnaAltBrush}" />
+    <Setter Property="SelectionBrush" Value="{StaticResource XnaSelectionBrush}" />
+  </Style>
+
+  <!-- Panel/Border defaults -->
+  <Style Selector="Border">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <!-- ScrollBar: dark theme -->
+  <Style Selector="ScrollBar">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundColor}" />
+  </Style>
+
+  <Style Selector="Thumb">
+    <Setter Property="Background" Value="{StaticResource XnaSelectionBrush}" />
+  </Style>
+
+  <!-- CheckBox: dark theme -->
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{StaticResource XnaTextBrush}" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <!-- ToolTip -->
+  <Style Selector="ToolTip">
+    <Setter Property="Background" Value="{StaticResource XnaPanelBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource XnaTextBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource XnaPanelBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="6,4" />
+    <Setter Property="FontSize" Value="12" />
+  </Style>
+
+  <!-- ProgressBar -->
+  <Style Selector="ProgressBar">
+    <Setter Property="Background" Value="{StaticResource XnaBackgroundColor}" />
+    <Setter Property="Foreground" Value="{StaticResource XnaSelectionBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource XnaPanelBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+</Styles>

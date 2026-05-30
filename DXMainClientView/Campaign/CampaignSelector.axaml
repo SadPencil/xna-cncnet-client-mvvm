@@ -4,42 +4,103 @@
              x:Class="DXMainClientView.Campaign.CampaignSelector"
              x:DataType="vm:ICampaignSelectorViewModel"
              IsVisible="{Binding IsVisible}"
-             Width="800" Height="600">
-  <DockPanel>
-    <!-- Bottom buttons -->
-    <StackPanel DockPanel.Dock="Bottom" Margin="12" Orientation="Horizontal"
-                HorizontalAlignment="Center" Spacing="8">
-      <Button Content="Launch"
-              Command="{Binding LaunchCampaignCommand}"
-              IsEnabled="{Binding CanLaunchCampaign}" />
-      <Button Content="Return"
-              Command="{Binding ReturnCommand}"
-              IsVisible="{Binding IsReturnButtonVisible}" />
-      <Button Content="Cancel"
-              Command="{Binding CancelCommand}" />
-    </StackPanel>
+             Width="672" Height="600">
+  <Canvas>
+    <!-- MISSIONS: label -->
+    <TextBlock x:Name="lblSelectCampaign"
+               Text="MISSIONS:"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="12" Canvas.Top="12" />
 
-    <!-- Difficulty selection -->
-    <StackPanel DockPanel.Dock="Bottom" Margin="12" Orientation="Horizontal" Spacing="8">
-      <TextBlock Text="Difficulty:" VerticalAlignment="Center" />
-      <ComboBox ItemsSource="{Binding DifficultyNames}"
-                SelectedIndex="{Binding SelectedDifficultyIndex}"
-                Width="150" />
-    </StackPanel>
+    <!-- Campaign list (left side) -->
+    <ListBox x:Name="lbCampaignList"
+             ItemsSource="{Binding CampaignListItems}"
+             SelectedIndex="{Binding SelectedCampaignIndex}"
+             Background="#80000000"
+             Canvas.Left="12" Canvas.Top="30"
+             Width="322" Height="554">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="vm:CampaignListItem">
+          <TextBlock Text="{Binding Text}" />
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
 
-    <!-- Main content -->
-    <Grid ColumnDefinitions="250,*">
-      <!-- Campaign list -->
-      <ListBox Grid.Column="0"
-               ItemsSource="{Binding CampaignListItems}"
-               SelectedIndex="{Binding SelectedCampaignIndex}"
-               Margin="12" />
+    <!-- MISSION DESCRIPTION: label -->
+    <TextBlock x:Name="lblMissionDescriptionHeader"
+               Text="MISSION DESCRIPTION:"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="346" Canvas.Top="12" />
 
-      <!-- Mission details -->
-      <StackPanel Grid.Column="1" Margin="12" Spacing="8">
-        <TextBlock Text="{Binding MissionDescriptionText}"
-                   TextWrapping="Wrap" />
-      </StackPanel>
-    </Grid>
-  </DockPanel>
+    <!-- Mission description text (right side, fills available space) -->
+    <Border x:Name="tbMissionDescription"
+            Background="{DynamicResource XnaPanelBackgroundBrush}"
+            Canvas.Left="346" Canvas.Top="34"
+            Width="314" Height="430">
+      <TextBlock Text="{Binding MissionDescriptionText}"
+                 TextWrapping="Wrap"
+                 Foreground="{DynamicResource XnaAltBrush}"
+                 Margin="4" />
+    </Border>
+
+    <!-- DIFFICULTY LEVEL label (centered above trackbar) -->
+    <TextBlock x:Name="lblDifficultyLevel"
+               Text="DIFFICULTY LEVEL"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="440" Canvas.Top="476" />
+
+    <!-- Difficulty trackbar -->
+    <Slider x:Name="trbDifficultySelector"
+            Minimum="0" Maximum="2" TickFrequency="1"
+            IsSnapToTickEnabled="True"
+            Value="{Binding SelectedDifficultyIndex}"
+            Canvas.Left="346" Canvas.Top="498"
+            Width="314" />
+
+    <!-- Difficulty labels -->
+    <TextBlock x:Name="lblEasy"
+               Text="EASY"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="346" Canvas.Top="534" />
+    <TextBlock x:Name="lblNormal"
+               Text="NORMAL"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="470" Canvas.Top="534" />
+    <TextBlock x:Name="lblHard"
+               Text="HARD"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="630" Canvas.Top="534" />
+
+    <!-- Launch button (bottom-left) -->
+    <Button x:Name="btnLaunch"
+            Content="Launch"
+            Command="{Binding LaunchCampaignCommand}"
+            IsEnabled="{Binding CanLaunchCampaign}"
+            Width="147" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="346" Canvas.Top="565" />
+
+    <!-- Cancel button (bottom-right) -->
+    <Button x:Name="btnCancel"
+            Content="Cancel"
+            Command="{Binding CancelCommand}"
+            Width="147" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="513" Canvas.Top="565" />
+
+    <!-- Return button (optional, for CampaignTagSelector) -->
+    <Button x:Name="btnReturn"
+            Content="Campaigns"
+            Command="{Binding ReturnCommand}"
+            IsVisible="{Binding IsReturnButtonVisible}"
+            Width="147" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="346" Canvas.Top="565" />
+  </Canvas>
 </UserControl>
