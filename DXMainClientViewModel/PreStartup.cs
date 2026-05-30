@@ -276,9 +276,11 @@ public static class PreStartup
         services.AddSingleton<DiscordHandler>();
 
         // LAN services
-        services.AddSingleton<ILANBroadcastManagerService, LANBroadcastManagerService>();
+        services.AddSingleton<ILANBroadcastManagerService>(sp =>
+            new LANBroadcastManagerService(ProgramConstants.LAN_LOBBY_PORT, System.Text.Encoding.UTF8));
         services.AddSingleton<ILANPlayerManagerService, LANPlayerManagerService>();
-        services.AddSingleton<ILANMessageDeduplicatorService, LANMessageDeduplicatorService>();
+        services.AddSingleton<ILANMessageDeduplicatorService>(sp =>
+            new LANMessageDeduplicatorService(sp.GetRequiredService<Random>().Next()));
 
         // Option panel ViewModels
         services.AddSingleton<DisplayOptionsPanelViewModel>(sp =>
