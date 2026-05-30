@@ -8,7 +8,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// <summary>
     /// A <see cref="CnCNetGame"/> that loads its icon from an embedded assembly resource.
     /// </summary>
-    internal sealed class DefaultCnCNetGame : CnCNetGame
+    internal sealed class DefaultCnCNetGame : CnCNetGame // checked
     {
         private static readonly Assembly assembly = Assembly.GetAssembly(typeof(DefaultCnCNetGame))!;
 
