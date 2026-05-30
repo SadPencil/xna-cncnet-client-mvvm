@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class CnCNetPrivateMessageEventArgs : EventArgs
+    public class CnCNetPrivateMessageEventArgs : EventArgs // checked
     {
         public CnCNetPrivateMessageEventArgs(string sender, string message)
         {
