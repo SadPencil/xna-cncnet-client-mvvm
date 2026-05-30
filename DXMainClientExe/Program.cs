@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientExe;
 
-class Program
+internal class Program
 {
     [STAThread]
     public static void Main(string[] args) => DXMainClientView.Startup.Run(BuildServiceProvider(), args);
