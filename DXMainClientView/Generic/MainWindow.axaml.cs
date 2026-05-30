@@ -57,6 +57,8 @@ public partial class MainWindow : Window
         var extrasWindowVM = App.ServiceProvider!.GetRequiredService<IExtrasWindowViewModel>();
         var gameLoadingWindowVM = App.ServiceProvider!.GetRequiredService<IGameLoadingWindowViewModel>();
 
+        ((MainMenuViewModel)mainMenuVM).ExitRequested += OnExitRequested;
+
         var mainMenu = new MainMenu();
         mainMenu.ViewModel = mainMenuVM;
         mainMenu.SetTopBarViewModel(topBarVM);
@@ -66,6 +68,11 @@ public partial class MainWindow : Window
         mainMenu.SetGameLoadingWindowViewModel(gameLoadingWindowVM);
 
         return mainMenu;
+    }
+
+    private void OnExitRequested()
+    {
+        Close();
     }
 
     private void TransitionToMainMenu()
