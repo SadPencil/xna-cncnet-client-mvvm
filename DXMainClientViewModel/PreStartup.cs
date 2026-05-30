@@ -7,6 +7,7 @@ using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using ClientCore;
+using ClientCore.Enums;
 using ClientCore.I18N;
 using ClientCore.INIProcessing;
 using ClientCore.Settings;
