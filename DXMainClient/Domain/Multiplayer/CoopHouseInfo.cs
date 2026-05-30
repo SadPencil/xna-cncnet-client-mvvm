@@ -7,7 +7,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// Holds information about enemy houses in a co-op map.
     /// </summary>
-    public struct CoopHouseInfo
+    public struct CoopHouseInfo // checked
     {
         public CoopHouseInfo(int side, int color, int startingLocation)
         {
