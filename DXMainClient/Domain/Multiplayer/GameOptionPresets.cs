@@ -9,7 +9,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// A single game option preset.
     /// </summary>
-    public class GameOptionPreset
+    public class GameOptionPreset // checked
     {
         public GameOptionPreset(string profileName)
         {
