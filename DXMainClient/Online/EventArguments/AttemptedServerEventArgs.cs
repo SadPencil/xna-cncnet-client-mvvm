@@ -5,7 +5,7 @@ namespace DTAClient.Online.EventArguments
     /// <summary>
     /// Event arguments for a server connection attempt.
     /// </summary>
-    public class AttemptedServerEventArgs : EventArgs
+    public class AttemptedServerEventArgs : EventArgs // checked
     {
         public AttemptedServerEventArgs(string serverName)
         {
