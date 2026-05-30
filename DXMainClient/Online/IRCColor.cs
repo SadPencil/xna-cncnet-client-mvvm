@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online
 {
-    public class IRCColor
+    public class IRCColor // checked
     {
         public IRCColor(string name, bool selectable, Color xnaColor, int ircColorId)
         {
