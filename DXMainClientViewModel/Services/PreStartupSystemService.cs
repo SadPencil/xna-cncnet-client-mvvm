@@ -6,6 +6,7 @@ using System.Runtime.Versioning;
 using System.Threading;
 using ClientCore;
 using ClientCore.Settings;
+using DXMainClientViewModel.Online;
 using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Services;
