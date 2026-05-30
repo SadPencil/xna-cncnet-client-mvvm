@@ -267,8 +267,46 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     private void RefreshGameOptionWrappers()
     {
+        // Unsubscribe from old items
+        foreach (var cb in CheckBoxes.Cast<GameOptionCheckBox>())
+            cb.PropertyChanged -= GameOptionCheckBox_PropertyChanged;
+        foreach (var dd in DropDowns.Cast<GameOptionDropDown>())
+            dd.PropertyChanged -= GameOptionDropDown_PropertyChanged;
+
         CheckBoxes = CheckBoxSettings.Select(s => new GameOptionCheckBox(s)).ToList();
         DropDowns = DropDownSettings.Select(s => new GameOptionDropDown(s)).ToList();
+
+        // Subscribe to new items
+        foreach (var cb in CheckBoxes.Cast<GameOptionCheckBox>())
+            cb.PropertyChanged += GameOptionCheckBox_PropertyChanged;
+        foreach (var dd in DropDowns.Cast<GameOptionDropDown>())
+            dd.PropertyChanged += GameOptionDropDown_PropertyChanged;
+    }
+
+    private void GameOptionCheckBox_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(GameOptionCheckBox.IsChecked))
+            return;
+        if (disableGameOptionUpdateBroadcast)
+            return;
+
+        var cb = (GameOptionCheckBox)sender!;
+        cb.HostChecked = cb.IsChecked;
+        cb.UserChecked = cb.IsChecked;
+        OnGameOptionChanged();
+    }
+
+    private void GameOptionDropDown_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(GameOptionDropDown.SelectedIndex))
+            return;
+        if (disableGameOptionUpdateBroadcast)
+            return;
+
+        var dd = (GameOptionDropDown)sender!;
+        dd.HostSelectedIndex = dd.SelectedIndex;
+        dd.UserSelectedIndex = dd.SelectedIndex;
+        OnGameOptionChanged();
     }
 
     // --- Map management ---

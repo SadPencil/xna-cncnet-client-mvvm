@@ -34,6 +34,12 @@ public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
     /// </summary>
     public int HostSelectedIndex { get; set; }
 
+    /// <summary>
+    /// The user's selected index. Persists across forced value changes.
+    /// Used for saving/loading skirmish settings.
+    /// </summary>
+    public int UserSelectedIndex { get; set; }
+
     private bool _isEnabled = true;
     public bool IsEnabled
     {
@@ -52,5 +58,6 @@ public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
     {
         Setting = setting;
         _selectedIndex = setting.Value;
+        UserSelectedIndex = setting.Value;
     }
 }

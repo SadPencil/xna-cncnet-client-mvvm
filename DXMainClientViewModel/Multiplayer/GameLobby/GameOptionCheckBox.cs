@@ -32,6 +32,12 @@ public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
     /// </summary>
     public bool HostChecked { get; set; }
 
+    /// <summary>
+    /// The user's checked state. Persists across forced value changes.
+    /// Used for saving/loading skirmish settings.
+    /// </summary>
+    public bool UserChecked { get; set; }
+
     private bool _isEnabled = true;
     public bool IsEnabled
     {
@@ -44,5 +50,6 @@ public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
         Setting = setting;
         _isChecked = setting.Value != 0;
         HostChecked = _isChecked;
+        UserChecked = _isChecked;
     }
 }
