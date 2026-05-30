@@ -2,7 +2,7 @@
 using System.IO;
 
 namespace DTAClient.Domain.Multiplayer;
-public class MapFileEventArgs : EventArgs
+public class MapFileEventArgs : EventArgs // checked
 {
     public string FilePath { get; set; }
     public string FileName { get; set; }
