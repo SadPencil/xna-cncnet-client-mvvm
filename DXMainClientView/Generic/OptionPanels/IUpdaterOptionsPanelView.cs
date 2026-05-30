@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Generic.OptionPanels;
+using DXMainClientMvvmContract.Generic.OptionPanels;
 
 namespace DXMainClientView.Generic.OptionPanels;
 

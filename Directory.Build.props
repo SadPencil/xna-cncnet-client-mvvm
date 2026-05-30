@@ -53,7 +53,7 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'ClientCore' Or '$(MSBuildProjectName)' == 'SecondStageUpdater' Or '$(MSBuildProjectName)' == 'ClientUpdater' Or '$(MSBuildProjectName)' == 'DXMainClientViewModel' Or '$(MSBuildProjectName)' == 'DXMainClientMVVMContract'">
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'ClientCore' Or '$(MSBuildProjectName)' == 'SecondStageUpdater' Or '$(MSBuildProjectName)' == 'ClientUpdater' Or '$(MSBuildProjectName)' == 'DXMainClientViewModel' Or '$(MSBuildProjectName)' == 'DXMainClientMvvmContract'">
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>

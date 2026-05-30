@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Domain.Multiplayer;
+using DXMainClientMvvmContract.Domain.Multiplayer;
 
 using ClientCore;
 using ClientCore.Extensions;

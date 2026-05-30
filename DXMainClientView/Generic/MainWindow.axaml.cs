@@ -1,5 +1,5 @@
-using DXMainClientMVVMContract.Generic;
-using DXMainClientMVVMContract.Campaign;
+using DXMainClientMvvmContract.Generic;
+using DXMainClientMvvmContract.Campaign;
 
 using System;
 

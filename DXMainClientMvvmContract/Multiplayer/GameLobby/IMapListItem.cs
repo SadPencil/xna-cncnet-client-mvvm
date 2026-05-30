@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
+namespace DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 /// <summary>
 /// Read-only view of a map list item for display.

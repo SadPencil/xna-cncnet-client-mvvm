@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientMVVMContract.Generic.OptionPanels;
+namespace DXMainClientMvvmContract.Generic.OptionPanels;
 
 public interface IGameOptionsPanelViewModel : INotifyPropertyChanged
 {

@@ -1,6 +1,6 @@
-using DXMainClientMVVMContract.Multiplayer.GameLobby;
-using DXMainClientMVVMContract.Domain.Multiplayer;
-using DXMainClientMVVMContract.Multiplayer.CnCNet;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
+using DXMainClientMvvmContract.Domain.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer.CnCNet;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -21,7 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using SixLabors.ImageSharp;
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 

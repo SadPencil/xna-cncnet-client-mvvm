@@ -1,6 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vmc="using:DXMainClientMVVMContract.Campaign"
+        xmlns:vmc="using:DXMainClientMvvmContract.Campaign"
         x:Class="DXMainClientView.Campaign.CheaterWindow"
         x:DataType="vmc:ICheaterWindowViewModel"
         Title="{Binding TitleText}"

@@ -1,6 +1,6 @@
-using DXMainClientMVVMContract.Online;
-using DXMainClientMVVMContract.Domain.Multiplayer;
-using DXMainClientMVVMContract.Multiplayer.GameLobby;
+using DXMainClientMvvmContract.Online;
+using DXMainClientMvvmContract.Domain.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ using DXMainClientViewModel.Multiplayer.GameLobby.CommandHandlers;
 using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Online.EventArguments;
 using Rampastring.Tools;
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 

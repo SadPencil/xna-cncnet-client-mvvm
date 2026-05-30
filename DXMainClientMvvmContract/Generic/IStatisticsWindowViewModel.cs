@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientMVVMContract.Generic;
+namespace DXMainClientMvvmContract.Generic;
 
 public interface IStatisticsWindowViewModel : INotifyPropertyChanged
 {

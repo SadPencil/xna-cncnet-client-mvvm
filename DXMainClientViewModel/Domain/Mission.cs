@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Domain;
+using DXMainClientMvvmContract.Domain;
 
 using System;
 using System.Buffers.Binary;

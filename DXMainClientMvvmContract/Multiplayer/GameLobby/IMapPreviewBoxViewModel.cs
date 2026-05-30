@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
+namespace DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 public interface IMapPreviewBoxViewModel : INotifyPropertyChanged
 {

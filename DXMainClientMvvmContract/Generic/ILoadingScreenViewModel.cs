@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 
-namespace DXMainClientMVVMContract.Generic;
+namespace DXMainClientMvvmContract.Generic;
 
 public interface ILoadingScreenViewModel : INotifyPropertyChanged
 {

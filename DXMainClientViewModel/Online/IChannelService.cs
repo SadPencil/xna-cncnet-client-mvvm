@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Online;
+using DXMainClientMvvmContract.Online;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;

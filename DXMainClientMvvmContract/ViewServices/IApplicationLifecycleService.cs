@@ -1,6 +1,6 @@
 using System;
 
-namespace DXMainClientMVVMContract.ViewServices;
+namespace DXMainClientMvvmContract.ViewServices;
 
 /// <summary>
 /// Service that notifies ViewModels about application lifecycle events.

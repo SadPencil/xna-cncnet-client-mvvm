@@ -1,4 +1,4 @@
-namespace DXMainClientMVVMContract.ViewServices
+namespace DXMainClientMvvmContract.ViewServices
 {
     /// <summary>
     /// Service for handling URL opening with trust verification.

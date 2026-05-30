@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Generic;
+using DXMainClientMvvmContract.Generic;
 
 namespace DXMainClientView.Generic;
 

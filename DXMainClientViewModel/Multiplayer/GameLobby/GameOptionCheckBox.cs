@@ -1,5 +1,5 @@
-using DXMainClientMVVMContract.Domain.Multiplayer;
-using DXMainClientMVVMContract.Multiplayer.GameLobby;
+using DXMainClientMvvmContract.Domain.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 

@@ -15,6 +15,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DXMainClientMVVMContract\DXMainClientMvvmContract.csproj" />
+    <ProjectReference Include="..\DXMainClientMvvmContract\DXMainClientMvvmContract.csproj" />
   </ItemGroup>
 </Project>

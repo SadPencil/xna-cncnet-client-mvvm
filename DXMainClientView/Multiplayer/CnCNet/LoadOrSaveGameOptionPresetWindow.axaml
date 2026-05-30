@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vmc="using:DXMainClientMVVMContract.Multiplayer.CnCNet"
+             xmlns:vmc="using:DXMainClientMvvmContract.Multiplayer.CnCNet"
              x:Class="DXMainClientView.Multiplayer.CnCNet.LoadOrSaveGameOptionPresetWindow"
              x:DataType="vmc:ILoadOrSaveGameOptionPresetWindowViewModel"
              IsVisible="{Binding IsWindowVisible}">

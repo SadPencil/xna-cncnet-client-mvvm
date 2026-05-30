@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Online;
+using DXMainClientMvvmContract.Online;
 using ClientCore;
 using ClientCore.Enums;
 using DXMainClientViewModel.Online.EventArguments;

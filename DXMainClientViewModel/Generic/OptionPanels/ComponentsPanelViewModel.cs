@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Generic.OptionPanels;
+using DXMainClientMvvmContract.Generic.OptionPanels;
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel.Generic.OptionPanels;
 

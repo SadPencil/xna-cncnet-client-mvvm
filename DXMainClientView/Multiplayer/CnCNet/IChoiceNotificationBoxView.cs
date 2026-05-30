@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Multiplayer.CnCNet;
+using DXMainClientMvvmContract.Multiplayer.CnCNet;
 
 namespace DXMainClientView.Multiplayer.CnCNet;
 

@@ -1,4 +1,4 @@
-namespace DXMainClientMVVMContract.Generic.OptionPanels;
+namespace DXMainClientMvvmContract.Generic.OptionPanels;
 
 /// <summary>
 /// Read-only view of data for a game list item in options.

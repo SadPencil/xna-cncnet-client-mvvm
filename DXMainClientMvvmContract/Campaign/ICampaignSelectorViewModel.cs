@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientMVVMContract.Campaign;
+namespace DXMainClientMvvmContract.Campaign;
 
 public interface ICampaignSelectorViewModel : INotifyPropertyChanged
 {

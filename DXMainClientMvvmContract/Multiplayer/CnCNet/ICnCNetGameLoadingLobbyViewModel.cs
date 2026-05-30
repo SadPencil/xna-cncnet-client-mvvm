@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 
-using DXMainClientMVVMContract.Domain.Multiplayer;
-using DXMainClientMVVMContract.Online;
+using DXMainClientMvvmContract.Domain.Multiplayer;
+using DXMainClientMvvmContract.Online;
 
-namespace DXMainClientMVVMContract.Multiplayer.CnCNet;
+namespace DXMainClientMvvmContract.Multiplayer.CnCNet;
 
 public interface ICnCNetGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
 {

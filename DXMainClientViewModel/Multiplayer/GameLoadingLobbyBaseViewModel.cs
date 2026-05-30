@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
 
 using Rampastring.Tools;
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer;
 

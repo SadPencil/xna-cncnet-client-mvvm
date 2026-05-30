@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace DXMainClientMVVMContract.Multiplayer;
+namespace DXMainClientMvvmContract.Multiplayer;
 
 /// <summary>
 /// Read-only view of display info for a player in the loading lobby.

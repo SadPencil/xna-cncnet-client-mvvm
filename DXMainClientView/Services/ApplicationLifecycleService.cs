@@ -3,7 +3,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 
 namespace DXMainClientView.Services;

@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Generic;
+using DXMainClientMvvmContract.Generic;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,7 +10,7 @@ using DXMainClientViewModel.Online.EventArguments;
 using Rampastring.Tools;
 using System;
 using System.Threading;
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel.Generic
 {

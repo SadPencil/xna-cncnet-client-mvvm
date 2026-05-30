@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 using CommunityToolkit.Mvvm.Input;
 
-using DXMainClientMVVMContract.Domain.Multiplayer;
-using DXMainClientMVVMContract.Online;
+using DXMainClientMvvmContract.Domain.Multiplayer;
+using DXMainClientMvvmContract.Online;
 
-namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
+namespace DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
 {

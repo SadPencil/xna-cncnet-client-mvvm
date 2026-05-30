@@ -1,6 +1,6 @@
-using DXMainClientMVVMContract.Generic;
-using DXMainClientMVVMContract.Generic.OptionPanels;
-using DXMainClientMVVMContract.Campaign;
+using DXMainClientMvvmContract.Generic;
+using DXMainClientMvvmContract.Generic.OptionPanels;
+using DXMainClientMvvmContract.Campaign;
 using System;
 using System.Globalization;
 using System.IO;
@@ -23,7 +23,7 @@ using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Rampastring.Tools;
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel;
 

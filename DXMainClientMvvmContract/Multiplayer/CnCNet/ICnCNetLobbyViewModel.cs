@@ -3,9 +3,9 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-using DXMainClientMVVMContract.Multiplayer.GameLobby;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
 
-namespace DXMainClientMVVMContract.Multiplayer.CnCNet;
+namespace DXMainClientMvvmContract.Multiplayer.CnCNet;
 
 public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
 {

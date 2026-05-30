@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
+namespace DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 /// <summary>
 /// Read-only view of a game option dropdown.

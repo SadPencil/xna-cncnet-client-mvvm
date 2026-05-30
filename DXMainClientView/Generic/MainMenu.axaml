@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vmc="using:DXMainClientMVVMContract.Generic"
+             xmlns:vmc="using:DXMainClientMvvmContract.Generic"
              xmlns:local="using:DXMainClientView.Generic"
              xmlns:campaign="using:DXMainClientView.Campaign"
              x:Class="DXMainClientView.Generic.MainMenu"

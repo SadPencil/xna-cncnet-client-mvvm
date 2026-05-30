@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace DXMainClientMVVMContract.Domain;
+namespace DXMainClientMvvmContract.Domain;
 
 /// <summary>
 /// Read-only view of a mission definition.

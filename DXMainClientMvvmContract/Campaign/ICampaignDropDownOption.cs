@@ -1,6 +1,6 @@
 using Rampastring.Tools;
 
-namespace DXMainClientMVVMContract.Campaign;
+namespace DXMainClientMvvmContract.Campaign;
 
 /// <summary>
 /// Abstracts a campaign dropdown option's business logic.

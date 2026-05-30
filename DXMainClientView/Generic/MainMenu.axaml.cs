@@ -1,6 +1,6 @@
-using DXMainClientMVVMContract.Generic;
-using DXMainClientMVVMContract.Generic.OptionPanels;
-using DXMainClientMVVMContract.Campaign;
+using DXMainClientMvvmContract.Generic;
+using DXMainClientMvvmContract.Generic.OptionPanels;
+using DXMainClientMvvmContract.Campaign;
 
 using System.ComponentModel;
 

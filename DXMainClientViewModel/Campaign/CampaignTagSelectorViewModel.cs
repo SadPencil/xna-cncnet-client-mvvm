@@ -1,5 +1,5 @@
-using DXMainClientMVVMContract.Domain;
-using DXMainClientMVVMContract.Campaign;
+using DXMainClientMvvmContract.Domain;
+using DXMainClientMvvmContract.Campaign;
 
 using System;
 using System.Collections.Generic;

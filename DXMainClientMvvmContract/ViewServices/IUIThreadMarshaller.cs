@@ -1,6 +1,6 @@
 using System;
 
-namespace DXMainClientMVVMContract.ViewServices
+namespace DXMainClientMvvmContract.ViewServices
 {
     /// <summary>
     /// Provides UI thread marshaling functionality.

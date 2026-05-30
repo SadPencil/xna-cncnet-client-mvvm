@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Domain.Multiplayer;
+using DXMainClientMvvmContract.Domain.Multiplayer;
 
 using Rampastring.Tools;
 

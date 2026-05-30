@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace DXMainClientMVVMContract.Multiplayer;
+namespace DXMainClientMvvmContract.Multiplayer;
 
 public interface ILANGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
 {

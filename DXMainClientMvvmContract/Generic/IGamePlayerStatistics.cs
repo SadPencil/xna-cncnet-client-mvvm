@@ -1,4 +1,4 @@
-namespace DXMainClientMVVMContract.Generic;
+namespace DXMainClientMvvmContract.Generic;
 
 /// <summary>
 /// Read-only view of a player's statistics in a game.

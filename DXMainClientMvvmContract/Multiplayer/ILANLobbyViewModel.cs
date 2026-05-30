@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientMVVMContract.Multiplayer;
+namespace DXMainClientMvvmContract.Multiplayer;
 
 public interface ILANLobbyViewModel : INotifyPropertyChanged
 {

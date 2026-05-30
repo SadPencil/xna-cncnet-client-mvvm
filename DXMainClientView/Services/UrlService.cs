@@ -5,7 +5,7 @@ using ClientCore;
 
 using Rampastring.Tools;
 
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientView.Services
 {

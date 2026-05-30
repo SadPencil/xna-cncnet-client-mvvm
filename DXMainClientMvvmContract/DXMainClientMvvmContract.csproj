@@ -2,8 +2,8 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <RootNamespace>DXMainClientMVVMContract</RootNamespace>
-    <AssemblyName>DXMainClientMVVMContract</AssemblyName>
+    <RootNamespace>DXMainClientMvvmContract</RootNamespace>
+    <AssemblyName>DXMainClientMvvmContract</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />

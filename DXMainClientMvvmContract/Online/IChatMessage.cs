@@ -1,6 +1,6 @@
 using System;
 
-namespace DXMainClientMVVMContract.Online;
+namespace DXMainClientMvvmContract.Online;
 
 /// <summary>
 /// Read-only view of a chat message.

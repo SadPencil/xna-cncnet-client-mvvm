@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer;
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ using DXMainClientViewModel.Services;
 using Rampastring.Tools;
 
 using Timer = System.Timers.Timer;
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer;
 

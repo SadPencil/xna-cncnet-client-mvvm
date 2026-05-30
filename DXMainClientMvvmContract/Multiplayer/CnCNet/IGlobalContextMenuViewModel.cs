@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientMVVMContract.Multiplayer.CnCNet;
+namespace DXMainClientMvvmContract.Multiplayer.CnCNet;
 
 public interface IGlobalContextMenuViewModel : INotifyPropertyChanged
 {

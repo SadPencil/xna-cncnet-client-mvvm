@@ -2,7 +2,7 @@ using System;
 
 using Avalonia.Threading;
 
-using DXMainClientMVVMContract.ViewServices;
+using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientView.Services;
 

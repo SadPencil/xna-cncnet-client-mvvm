@@ -1,6 +1,6 @@
 using Rampastring.Tools;
 
-namespace DXMainClientMVVMContract.Domain.Multiplayer;
+namespace DXMainClientMvvmContract.Domain.Multiplayer;
 
 /// <summary>
 /// Represents a game session setting that can be broadcast to the lobby.

@@ -1,6 +1,6 @@
 using System;
 
-namespace DXMainClientMVVMContract.Generic;
+namespace DXMainClientMvvmContract.Generic;
 
 /// <summary>
 /// Read-only view of total statistics across all games.

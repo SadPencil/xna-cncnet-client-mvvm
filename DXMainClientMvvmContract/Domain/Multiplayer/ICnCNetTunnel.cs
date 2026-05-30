@@ -1,4 +1,4 @@
-namespace DXMainClientMVVMContract.Domain.Multiplayer;
+namespace DXMainClientMvvmContract.Domain.Multiplayer;
 
 /// <summary>
 /// Read-only view of a CnCNet tunnel server.
