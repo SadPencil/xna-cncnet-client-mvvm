@@ -16,7 +16,7 @@ namespace DTAClient.Online
     /// Acts as an interface between the CnCNet connection class
     /// and the user-interface's classes.
     /// </summary>
-    public class CnCNetManager : IConnectionManager
+    public class CnCNetManager : IConnectionManager // checked
     {
         // When implementing IConnectionManager functions, pay special attention
         // to thread-safety.
