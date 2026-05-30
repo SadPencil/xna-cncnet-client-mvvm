@@ -13,14 +13,32 @@
                   Width="800"
                   Canvas.Left="0" Canvas.Top="0" />
 
-    <!-- ========== Decorative images from [ExtraPictureBoxes] ========== -->
-    <Border x:Name="mmtdcl" Width="0" Height="0" />
-    <Border x:Name="mmtdcr" Width="0" Height="0" />
-    <Border x:Name="mmbox1" Width="0" Height="0" />
-    <Border x:Name="mmbox2" Width="0" Height="0" />
-
-    <!-- ========== Menu Buttons (positioned by INI overlay) ========== -->
-    <!-- Hidden buttons (Visible=0 in INI) -->
+    <!-- ========== Programmatic controls (created in MainMenu.Initialize() in original) ========== -->
+    <!-- Menu buttons -->
+    <Button x:Name="btnNewCampaign"
+            Command="{Binding StartCampaignCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnLoadGame"
+            Command="{Binding LoadGameCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnSkirmish"
+            Command="{Binding StartSkirmishCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnCnCNet"
+            Command="{Binding JoinCnCNetCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnLan"
+            Command="{Binding HostLANGameCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnOptions"
+            Command="{Binding OpenOptionsCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnExtras"
+            Command="{Binding OpenExtrasCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
+    <Button x:Name="btnExit"
+            Command="{Binding ExitCommand}"
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnMapEditor"
             Command="{Binding OpenMapEditorCommand}"
             IsVisible="{Binding IsMapEditorButtonVisible}" />
@@ -30,33 +48,10 @@
             Command="{Binding OpenStatisticsCommand}"
             IsVisible="{Binding IsStatisticsButtonVisible}" />
 
-    <!-- Visible menu buttons -->
-    <Button x:Name="btnCnCNet"
-            Command="{Binding JoinCnCNetCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-    <Button x:Name="btnNewCampaign"
-            Command="{Binding StartCampaignCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-    <Button x:Name="btnSkirmish"
-            Command="{Binding StartSkirmishCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-    <Button x:Name="btnLoadGame"
-            Command="{Binding LoadGameCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-    <Button x:Name="btnLan"
-            Command="{Binding HostLANGameCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-    <Button x:Name="btnExtras"
-            Command="{Binding OpenExtrasCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-    <Button x:Name="btnOptions"
-            Command="{Binding OpenOptionsCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-    <Button x:Name="btnExit"
-            Command="{Binding ExitCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}" />
-
-    <!-- ========== Version Info (lblVersion is XNALinkLabel in original) ========== -->
+    <!-- Labels -->
+    <TextBlock x:Name="lblCnCNetStatus" />
+    <TextBlock x:Name="lblCnCNetPlayerCount"
+               Text="{Binding CnCNetPlayerCountText}" />
     <Button x:Name="lblVersion"
             Content="{Binding VersionText}"
             Command="{Binding OpenVersionCommand}"
@@ -66,14 +61,11 @@
             Padding="0"
             FontSize="12"
             Cursor="Hand" />
-
-    <!-- ========== Update Status ========== -->
     <TextBlock x:Name="lblUpdateStatus"
                Text="{Binding UpdateStatusText}"
-               IsEnabled="{Binding IsUpdateStatusEnabled}"
-               FontSize="13" />
+               IsEnabled="{Binding IsUpdateStatusEnabled}" />
 
-    <!-- ========== Update Notification Banner ========== -->
+    <!-- ========== Update Notification Banner (Avalonia-specific, not in original XNA) ========== -->
     <Border x:Name="updateNotification"
             IsVisible="{Binding IsUpdateNotificationVisible}"
             Background="#333333"
@@ -98,14 +90,7 @@
       </StackPanel>
     </Border>
 
-    <!-- ========== Online Player Count ========== -->
-    <TextBlock x:Name="lblCnCNetStatus"
-               FontSize="12" />
-    <TextBlock x:Name="lblCnCNetPlayerCount"
-               Text="{Binding CnCNetPlayerCountText}"
-               FontSize="12" />
-
-    <!-- ========== Message Box (modal overlay) ========== -->
+    <!-- ========== Message Box (Avalonia-specific, not in original XNA) ========== -->
     <Border x:Name="messageBoxOverlay"
             IsVisible="{Binding IsMessageBoxVisible}"
             Background="#80000000"
@@ -139,7 +124,7 @@
       </Panel>
     </Border>
 
-    <!-- ========== Yes/No Dialog (modal overlay) ========== -->
+    <!-- ========== Yes/No Dialog (Avalonia-specific, not in original XNA) ========== -->
     <Border x:Name="yesNoDialogOverlay"
             IsVisible="{Binding IsYesNoDialogVisible}"
             Background="#80000000"
