@@ -13,7 +13,7 @@ namespace DTAClient
     /// Utility for restarting the client with administrator privileges.
     /// </summary>
     [SupportedOSPlatform("windows")]
-    public static class AdminRestarter
+    public static class AdminRestarter // checked
     {
         /// <summary>
         /// Checks if the application is running with administrator privileges.
