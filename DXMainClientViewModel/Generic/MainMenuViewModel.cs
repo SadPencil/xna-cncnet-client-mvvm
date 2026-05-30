@@ -1,4 +1,7 @@
 using DXMainClientMvvmContract.Generic;
+using DXMainClientMvvmContract.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer.CnCNet;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -46,6 +49,10 @@ namespace DXMainClientViewModel.Generic
         private readonly StatisticsWindowViewModel statisticsWindowViewModel;
         private readonly UpdateWindowViewModel updateWindowViewModel;
         private readonly CnCNetUserData cncNetUserData;
+        private readonly ISkirmishLobbyViewModel skirmishLobbyViewModel;
+        private readonly ICnCNetLobbyViewModel cncNetLobbyViewModel;
+        private readonly ILANLobbyViewModel lanLobbyViewModel;
+        private readonly IPrivateMessagingWindowViewModel privateMessagingWindowViewModel;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -142,7 +149,11 @@ namespace DXMainClientViewModel.Generic
             ExtrasWindowViewModel extrasWindowViewModel,
             StatisticsWindowViewModel statisticsWindowViewModel,
             UpdateWindowViewModel updateWindowViewModel,
-            CnCNetUserData cncNetUserData)
+            CnCNetUserData cncNetUserData,
+            ISkirmishLobbyViewModel skirmishLobbyViewModel,
+            ICnCNetLobbyViewModel cncNetLobbyViewModel,
+            ILANLobbyViewModel lanLobbyViewModel,
+            IPrivateMessagingWindowViewModel privateMessagingWindowViewModel)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -159,6 +170,10 @@ namespace DXMainClientViewModel.Generic
             this.statisticsWindowViewModel = statisticsWindowViewModel;
             this.updateWindowViewModel = updateWindowViewModel;
             this.cncNetUserData = cncNetUserData;
+            this.skirmishLobbyViewModel = skirmishLobbyViewModel;
+            this.cncNetLobbyViewModel = cncNetLobbyViewModel;
+            this.lanLobbyViewModel = lanLobbyViewModel;
+            this.privateMessagingWindowViewModel = privateMessagingWindowViewModel;
 
             AppDomain.CurrentDomain.ProcessExit += (_, _) => Clean();
 
@@ -272,12 +287,16 @@ namespace DXMainClientViewModel.Generic
         {
             if (UserINISettings.Instance.StopMusicOnMenu)
                 musicPlayer.Stop();
+
+            skirmishLobbyViewModel.IsVisible = true;
         }
 
         [RelayCommand]
         private void JoinCnCNet()
         {
             ActivePanel = MainMenuPanel.SECONDARY;
+            topBarViewModel.IsExpanded = true;
+            cncNetLobbyViewModel.IsVisible = true;
         }
 
         [RelayCommand]
@@ -290,6 +309,7 @@ namespace DXMainClientViewModel.Generic
                 connectionManager.Disconnect();
 
             IsLanMode = true;
+            lanLobbyViewModel.IsVisible = true;
         }
 
         [RelayCommand]

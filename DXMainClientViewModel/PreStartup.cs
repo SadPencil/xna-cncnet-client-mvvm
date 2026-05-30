@@ -421,7 +421,11 @@ public static class PreStartup
             sp.GetRequiredService<ExtrasWindowViewModel>(),
             sp.GetRequiredService<StatisticsWindowViewModel>(),
             sp.GetRequiredService<UpdateWindowViewModel>(),
-            sp.GetRequiredService<CnCNetUserData>()));
+            sp.GetRequiredService<CnCNetUserData>(),
+            sp.GetRequiredService<ISkirmishLobbyViewModel>(),
+            sp.GetRequiredService<ICnCNetLobbyViewModel>(),
+            sp.GetRequiredService<ILANLobbyViewModel>(),
+            sp.GetRequiredService<IPrivateMessagingWindowViewModel>()));
         services.AddSingleton<IMainMenuViewModel>(sp =>
             sp.GetRequiredService<MainMenuViewModel>());
 
