@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public class PlayerExtraOptions
+    public class PlayerExtraOptions // checked
     {
         private static string INVALID_OPTIONS_MESSAGE => "Invalid player extra options message".L10N("Client:Main:InvalidPlayerExtraOptionsMessage");
         private static string MAPPING_ERROR_PREFIX => "Auto Allying:".L10N("Client:Main:AutoAllyingPrefix");
