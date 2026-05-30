@@ -40,6 +40,7 @@ namespace DXMainClientViewModel.Generic
         private readonly GameLoadingWindowViewModel gameLoadingWindowViewModel;
         private readonly ExtrasWindowViewModel extrasWindowViewModel;
         private readonly StatisticsWindowViewModel statisticsWindowViewModel;
+        private readonly CnCNetUserData cncNetUserData;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -138,7 +139,8 @@ namespace DXMainClientViewModel.Generic
             CampaignSelectorViewModel campaignSelectorViewModel,
             GameLoadingWindowViewModel gameLoadingWindowViewModel,
             ExtrasWindowViewModel extrasWindowViewModel,
-            StatisticsWindowViewModel statisticsWindowViewModel)
+            StatisticsWindowViewModel statisticsWindowViewModel,
+            CnCNetUserData cncNetUserData)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -152,6 +154,9 @@ namespace DXMainClientViewModel.Generic
             this.gameLoadingWindowViewModel = gameLoadingWindowViewModel;
             this.extrasWindowViewModel = extrasWindowViewModel;
             this.statisticsWindowViewModel = statisticsWindowViewModel;
+            this.cncNetUserData = cncNetUserData;
+
+            AppDomain.CurrentDomain.ProcessExit += (_, _) => Clean();
 
             // Subscribe to TopBar state changes for panel switching
             topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
@@ -456,6 +461,8 @@ namespace DXMainClientViewModel.Generic
 
             if (connectionManager.IsConnected)
                 connectionManager.Disconnect();
+
+            cncNetUserData.Save();
         }
 
         #endregion
@@ -483,6 +490,15 @@ namespace DXMainClientViewModel.Generic
         private void OnGameProcessStarting()
         {
             UserINISettings.Instance.ReloadSettings();
+
+            try
+            {
+                optionsWindowViewModel.RefreshSettings();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Refreshing settings failed: " + ex.ToString());
+            }
         }
 
         private void OnGameProcessExitedInternal()
@@ -492,6 +508,8 @@ namespace DXMainClientViewModel.Generic
 
         private void HandleGameProcessExited()
         {
+            gameLoadingWindowViewModel.ListSaves();
+
             if (!UserINISettings.Instance.StopMusicOnMenu)
                 musicPlayer.PlayThemeSong();
         }
@@ -700,6 +718,8 @@ namespace DXMainClientViewModel.Generic
                             OnCustomComponentsOutdated();
                     });
             }
+
+            optionsWindowViewModel.PostInit();
         }
 
         private void CheckAndApplyTranslationGameFiles(bool skipVersionCheck = false)
