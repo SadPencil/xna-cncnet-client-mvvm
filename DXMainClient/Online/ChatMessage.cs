@@ -3,7 +3,7 @@ using System;
 
 namespace DTAClient.Online
 {
-    public class ChatMessage
+    public class ChatMessage // checked
     {
         /// <summary>
         /// Creates a new ChatMessage instance.
