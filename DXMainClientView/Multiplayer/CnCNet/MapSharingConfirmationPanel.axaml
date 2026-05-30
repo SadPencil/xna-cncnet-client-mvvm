@@ -4,48 +4,44 @@
              x:Class="DXMainClientView.Multiplayer.CnCNet.MapSharingConfirmationPanel"
              x:DataType="vm:IMapSharingConfirmationPanelViewModel"
              IsVisible="{Binding IsPanelVisible}">
-  <Border Background="#1A1A2E"
-          BorderBrush="#555555"
+  <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+          BorderBrush="{DynamicResource XnaPanelBorderBrush}"
           BorderThickness="1"
-          CornerRadius="4"
           Padding="16"
           Width="400"
           HorizontalAlignment="Center"
           VerticalAlignment="Center">
     <StackPanel Spacing="12">
       <TextBlock Text="Map Download Required"
-                 FontSize="16" FontWeight="Bold"
-                 Foreground="White" />
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}" />
 
       <!-- Map name -->
       <StackPanel Orientation="Horizontal" Spacing="8">
-        <TextBlock Text="Map:" Foreground="#AAAAAA" FontSize="13" VerticalAlignment="Center" />
-        <TextBlock Text="{Binding MapName}" Foreground="White" FontSize="13" VerticalAlignment="Center" />
+        <TextBlock Text="Map:" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding MapName}" Foreground="{DynamicResource XnaAltBrush}" VerticalAlignment="Center" />
       </StackPanel>
 
       <!-- Host name -->
       <StackPanel Orientation="Horizontal" Spacing="8">
-        <TextBlock Text="Host:" Foreground="#AAAAAA" FontSize="13" VerticalAlignment="Center" />
-        <TextBlock Text="{Binding HostName}" Foreground="White" FontSize="13" VerticalAlignment="Center" />
+        <TextBlock Text="Host:" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding HostName}" Foreground="{DynamicResource XnaAltBrush}" VerticalAlignment="Center" />
       </StackPanel>
 
       <!-- Status -->
       <TextBlock Text="{Binding StatusText}"
                  TextWrapping="Wrap"
-                 FontSize="13"
-                 Foreground="#CCCCCC" />
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
         <Button Content="Download"
                 Command="{Binding DownloadMapCommand}"
                 Width="92" Height="23"
-                FontSize="13"
                 IsEnabled="{Binding IsDownloadAvailable}" />
         <Button Content="Cancel"
                 Command="{Binding CancelCommand}"
-                Width="92" Height="23"
-                FontSize="13" />
+                Width="92" Height="23" />
       </StackPanel>
     </StackPanel>
   </Border>

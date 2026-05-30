@@ -8,8 +8,8 @@
   <Canvas>
     <!-- Description label -->
     <TextBlock Text="SELECT SESSION TYPE"
-               FontSize="14" FontWeight="Bold"
-               Foreground="White"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="160" Canvas.Top="12" />
 
     <!-- New Game button -->
