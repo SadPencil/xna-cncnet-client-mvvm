@@ -71,8 +71,38 @@ public partial class LoadingScreen : UserControl
             Dispatcher.UIThread.Post(() =>
             {
                 if (ViewModel is { IsLoading: false })
+                {
+                    ShowPrivacyNotificationIfNeeded();
                     Completed?.Invoke(this, EventArgs.Empty);
+                }
             });
         }
+    }
+
+    private void ShowPrivacyNotificationIfNeeded()
+    {
+        if (ViewModel?.ShouldShowPrivacyNotification != true)
+            return;
+
+        if (TopLevel.GetTopLevel(this) is not Window window)
+            return;
+
+        var overlayContent = window.FindControl<ContentControl>("OverlayContent");
+        if (overlayContent == null)
+            return;
+
+        var privacyNotificationVM = App.ServiceProvider!.GetRequiredService<IPrivacyNotificationViewModel>();
+        var privacyNotification = new PrivacyNotification();
+        privacyNotification.ViewModel = privacyNotificationVM;
+        overlayContent.Content = privacyNotification;
+
+        privacyNotificationVM.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(IPrivacyNotificationViewModel.IsVisible) &&
+                privacyNotificationVM.IsVisible == false)
+            {
+                Dispatcher.UIThread.Post(() => overlayContent.Content = null);
+            }
+        };
     }
 }
