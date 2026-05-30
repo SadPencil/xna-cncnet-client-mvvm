@@ -33,6 +33,11 @@ public partial class MainWindow : Window
         loadingScreen = new LoadingScreen();
         loadingScreen.Completed += OnLoadingCompleted; // Subscribe before setting DataContext to ensure we catch completion events
         loadingScreen.ViewModel = loadingScreenVM;
+
+        // Set design resolution for ViewBox scaling (INI overlay may override later)
+        loadingScreen.Width = 800;
+        loadingScreen.Height = 600;
+
         return loadingScreen;
     }
 
