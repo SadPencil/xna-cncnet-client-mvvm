@@ -10,7 +10,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// <summary>
     /// A CnCNet tunnel server.
     /// </summary>
-    public class CnCNetTunnel
+    public class CnCNetTunnel // checked
     {
         private const int REQUEST_TIMEOUT = 10000; // In milliseconds
         private const int PING_TIMEOUT = 1000;
