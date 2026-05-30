@@ -10,6 +10,7 @@ using DXMainClientViewModel.Online.EventArguments;
 using Rampastring.Tools;
 using System;
 using System.Threading;
+using System.Timers;
 using DXMainClientMvvmContract.ViewServices;
 
 namespace DXMainClientViewModel.Generic
@@ -21,6 +22,10 @@ namespace DXMainClientViewModel.Generic
     /// </summary>
     public partial class TopBarViewModel : ObservableObject, ITopBarViewModel
     {
+        private const double DOWN_TIME_WAIT_SECONDS = 1.0;
+        private const double EVENT_DOWN_TIME_WAIT_SECONDS = 2.0;
+        private const double STARTUP_DOWN_TIME_WAIT_SECONDS = 3.5;
+
         private readonly CnCNetManager connectionManager;
         private readonly PrivateMessageHandler privateMessageHandler;
         private readonly IUIThreadMarshaller uiThreadMarshaller;
@@ -28,6 +33,8 @@ namespace DXMainClientViewModel.Generic
 
         private CancellationTokenSource? cncnetPlayerCountCancellationSource;
         private static readonly object locker = new object();
+
+        private System.Timers.Timer? _autoHideTimer;
 
         [ObservableProperty]
         private string connectionStatusText = "OFFLINE".L10N("Client:Main:StatusOffline");
@@ -101,6 +108,10 @@ namespace DXMainClientViewModel.Generic
             privateMessageHandler.UnreadMessageCountUpdated += OnUnreadMessageCountUpdated;
 
             optionsWindowViewModel.PropertyChanged += OnOptionsWindowPropertyChanged;
+
+            // Start expanded (like original: DOWN_TIME_WAIT_SECONDS - STARTUP_DOWN_TIME_WAIT_SECONDS)
+            IsExpanded = true;
+            StartAutoHideTimer(STARTUP_DOWN_TIME_WAIT_SECONDS);
         }
 
         partial void OnIsLanModeChanged(bool value)
@@ -146,11 +157,34 @@ namespace DXMainClientViewModel.Generic
             SwitchToPrimary();
         }
 
+        [RelayCommand]
+        private void Expand()
+        {
+            IsExpanded = true;
+            StartAutoHideTimer(DOWN_TIME_WAIT_SECONDS);
+        }
+
         #endregion
 
         public void Clean()
         {
             cncnetPlayerCountCancellationSource?.Cancel();
+            _autoHideTimer?.Dispose();
+            _autoHideTimer = null;
+        }
+
+        private void StartAutoHideTimer(double seconds)
+        {
+            _autoHideTimer?.Stop();
+            _autoHideTimer?.Dispose();
+            _autoHideTimer = new System.Timers.Timer(seconds * 1000);
+            _autoHideTimer.Elapsed += (s, e) =>
+            {
+                _autoHideTimer?.Stop();
+                uiThreadMarshaller.AddCallback(() => IsExpanded = false);
+            };
+            _autoHideTimer.AutoReset = false;
+            _autoHideTimer.Start();
         }
 
         #region Event Handlers
@@ -196,6 +230,7 @@ namespace DXMainClientViewModel.Generic
         {
             ConnectionStatusText = "CONNECTING...".L10N("Client:Main:StatusConnecting");
             IsExpanded = true;
+            StartAutoHideTimer(EVENT_DOWN_TIME_WAIT_SECONDS);
         }
 
         private void OnWelcomeMessageReceived(object? sender, ServerMessageEventArgs e)

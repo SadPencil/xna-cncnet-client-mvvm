@@ -4,6 +4,7 @@ using System.ComponentModel;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -21,6 +22,13 @@ public partial class TopBar : UserControl, ITopBarView
 
         _slideTransform = new TranslateTransform(0, -39);
         RenderTransform = _slideTransform;
+
+        PointerMoved += OnPointerMoved;
+    }
+
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        _viewModel?.ExpandCommand.Execute(null);
     }
 
     public ITopBarViewModel? ViewModel
