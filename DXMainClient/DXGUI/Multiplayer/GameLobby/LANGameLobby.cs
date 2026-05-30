@@ -22,7 +22,7 @@ using DTAClient.DXGUI.Multiplayer.CnCNet;
 
 namespace DTAClient.DXGUI.Multiplayer.GameLobby
 {
-    public class LANGameLobby : MultiplayerGameLobby
+    public class LANGameLobby : MultiplayerGameLobby // checked
     {
         private const int GAME_OPTION_SPECIAL_FLAG_COUNT = 5;
 
