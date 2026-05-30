@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
@@ -12,6 +13,9 @@ public interface IGameFiltersPanelViewModel : INotifyPropertyChanged
     bool HideIncompatibleGames { get; set; }
     int MaxPlayerCount { get; set; }
     bool IsPanelVisible { get; set; }
+
+    IReadOnlyList<GameOptionFilterDefinition> FilterDefinitions { get; }
+    IReadOnlyList<GameOptionFilterValue> FilterValues { get; }
 
     IRelayCommand ApplyFiltersCommand { get; }
     IRelayCommand ResetFiltersCommand { get; }

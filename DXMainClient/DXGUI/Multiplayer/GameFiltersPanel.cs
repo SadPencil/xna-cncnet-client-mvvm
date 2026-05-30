@@ -24,7 +24,7 @@ namespace DTAClient.DXGUI.Multiplayer
         public XNAPanel GetContentPanel() => ContentPanel;
     }
 
-    public class GameFiltersPanel : XNAPanel
+    public class GameFiltersPanel : XNAPanel // checked
     {
         private const int minPlayerCount = 2;
         private const int maxPlayerCount = 8;
