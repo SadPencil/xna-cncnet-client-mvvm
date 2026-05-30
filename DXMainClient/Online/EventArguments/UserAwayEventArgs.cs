@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class UserAwayEventArgs : EventArgs
+    public class UserAwayEventArgs : EventArgs // checked
     {
         public UserAwayEventArgs(string user, string awayReason)
         {
