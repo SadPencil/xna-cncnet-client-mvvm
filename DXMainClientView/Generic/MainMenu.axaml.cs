@@ -1,6 +1,9 @@
 using DXMainClientMvvmContract.Generic;
 using DXMainClientMvvmContract.Generic.OptionPanels;
 using DXMainClientMvvmContract.Campaign;
+using DXMainClientMvvmContract.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer.CnCNet;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 using System.ComponentModel;
 
@@ -119,5 +122,25 @@ public partial class MainMenu : UserControl
     public void SetGameLoadingWindowViewModel(IGameLoadingWindowViewModel vm)
     {
         gameLoadingWindow.ViewModel = vm;
+    }
+
+    public void SetSkirmishLobbyViewModel(ISkirmishLobbyViewModel vm)
+    {
+        skirmishLobby.ViewModel = vm;
+    }
+
+    public void SetCnCNetLobbyViewModel(ICnCNetLobbyViewModel vm)
+    {
+        cncNetLobby.ViewModel = vm;
+    }
+
+    public void SetLANLobbyViewModel(ILANLobbyViewModel vm)
+    {
+        lanLobby.ViewModel = vm;
+    }
+
+    public void SetPrivateMessagingWindowViewModel(IPrivateMessagingWindowViewModel vm)
+    {
+        privateMessagingWindow.ViewModel = vm;
     }
 }

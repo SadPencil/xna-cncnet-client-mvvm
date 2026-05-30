@@ -1,5 +1,8 @@
 using DXMainClientMvvmContract.Generic;
 using DXMainClientMvvmContract.Campaign;
+using DXMainClientMvvmContract.Multiplayer;
+using DXMainClientMvvmContract.Multiplayer.CnCNet;
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 using System;
 
@@ -58,6 +61,10 @@ public partial class MainWindow : Window
         var optionsWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IOptionsWindowViewModel>();
         var extrasWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IExtrasWindowViewModel>();
         var gameLoadingWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IGameLoadingWindowViewModel>();
+        var skirmishLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ISkirmishLobbyViewModel>();
+        var cncNetLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ICnCNetLobbyViewModel>();
+        var lanLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ILANLobbyViewModel>();
+        var privateMessagingVM = ViewConstants.ServiceProvider.GetRequiredService<IPrivateMessagingWindowViewModel>();
 
         var mainMenu = new MainMenu();
         mainMenu.ViewModel = mainMenuVM;
@@ -66,6 +73,10 @@ public partial class MainWindow : Window
         mainMenu.SetOptionsWindowViewModel(optionsWindowVM);
         mainMenu.SetExtrasWindowViewModel(extrasWindowVM);
         mainMenu.SetGameLoadingWindowViewModel(gameLoadingWindowVM);
+        mainMenu.SetSkirmishLobbyViewModel(skirmishLobbyVM);
+        mainMenu.SetCnCNetLobbyViewModel(cncNetLobbyVM);
+        mainMenu.SetLANLobbyViewModel(lanLobbyVM);
+        mainMenu.SetPrivateMessagingWindowViewModel(privateMessagingVM);
 
         return mainMenu;
     }
