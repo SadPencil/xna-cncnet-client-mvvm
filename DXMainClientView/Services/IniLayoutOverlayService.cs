@@ -446,14 +446,16 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Apply DistanceFromRightBorder (sets X based on right edge)
         if (distRight.HasValue && parentWidth > 0)
         {
-            double x = parentWidth - control.Width - distRight.Value;
+            double controlWidth = double.IsNaN(control.Width) ? 0 : control.Width;
+            double x = parentWidth - controlWidth - distRight.Value;
             Canvas.SetLeft(control, x);
         }
 
         // Apply DistanceFromBottomBorder (sets Y based on bottom edge)
         if (distBottom.HasValue && parentHeight > 0)
         {
-            double y = parentHeight - control.Height - distBottom.Value;
+            double controlHeight = double.IsNaN(control.Height) ? 0 : control.Height;
+            double y = parentHeight - controlHeight - distBottom.Value;
             Canvas.SetTop(control, y);
         }
 
