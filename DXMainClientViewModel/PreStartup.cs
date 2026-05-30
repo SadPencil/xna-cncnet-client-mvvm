@@ -353,6 +353,7 @@ public static class PreStartup
             sp.GetRequiredService<GameLoadingWindowViewModel>(),
             sp.GetRequiredService<ExtrasWindowViewModel>(),
             sp.GetRequiredService<StatisticsWindowViewModel>(),
+            sp.GetRequiredService<UpdateWindowViewModel>(),
             sp.GetRequiredService<CnCNetUserData>()));
         services.AddSingleton<IMainMenuViewModel>(sp =>
             sp.GetRequiredService<MainMenuViewModel>());

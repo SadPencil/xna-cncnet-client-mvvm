@@ -8,6 +8,7 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
 {
     int SelectedPanelIndex { get; set; }
     bool IsComponentsPanelVisible { get; }
+    bool IsUpdaterPanelVisible { get; }
     bool IsComponentDownloadInProgress { get; set; }
     bool IsVisible { get; set; }
 

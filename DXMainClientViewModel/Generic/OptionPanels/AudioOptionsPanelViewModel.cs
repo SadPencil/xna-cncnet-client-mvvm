@@ -50,6 +50,12 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
     [ObservableProperty]
     private bool _isHostedGameSoundEnabled;
 
+    /// <summary>
+    /// Indicates whether a restart is required after saving settings.
+    /// In the original, base.Save() checks IFileSetting entries for restart needs.
+    /// </summary>
+    public bool IsRestartRequired { get; private set; }
+
     // --- Constructor ---
 
     public AudioOptionsPanelViewModel(UserINISettings iniSettings, IClientSoundService clientSoundService)

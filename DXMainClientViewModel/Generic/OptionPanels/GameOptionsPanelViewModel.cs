@@ -54,6 +54,11 @@ public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsP
     [ObservableProperty]
     private bool _showHotkeyConfiguration;
 
+    /// <summary>
+    /// Indicates whether a restart is required after saving settings.
+    /// </summary>
+    public bool IsRestartRequired { get; private set; }
+
     // --- Constructor ---
 
     public GameOptionsPanelViewModel(UserINISettings iniSettings)
