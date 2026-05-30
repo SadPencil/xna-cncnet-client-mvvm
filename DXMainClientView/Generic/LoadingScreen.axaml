@@ -5,20 +5,6 @@
              x:DataType="vm:ILoadingScreenViewModel"
              Background="Transparent">
   <Canvas>
-    <!-- ExtraControls from LoadingScreen.ini: logo, text, legal -->
-    <Border x:Name="logo" Width="0" Height="0" />
-    <Border x:Name="text" Width="0" Height="0" />
-    <Border x:Name="legal" Width="0" Height="0" />
-
-    <!-- Border panels from GenericWindow.ini [$ExtraControls] -->
-    <Border x:Name="rabt" Width="0" Height="0" />
-    <Border x:Name="rabb" Width="0" Height="0" />
-    <Border x:Name="rabl" Width="0" Height="0" />
-    <Border x:Name="rabr" Width="0" Height="0" />
-    <Border x:Name="ractl" Width="0" Height="0" />
-    <Border x:Name="ractr" Width="0" Height="0" />
-    <Border x:Name="racbl" Width="0" Height="0" />
-    <Border x:Name="racbr" Width="0" Height="0" />
 
     <!-- Status text -->
     <TextBlock x:Name="lblLoadingText"
