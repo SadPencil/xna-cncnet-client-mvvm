@@ -23,6 +23,4 @@ public interface IStatisticsWindowViewModel : INotifyPropertyChanged
     IRelayCommand ReturnCommand { get; }
     IRelayCommand<int> SelectGameCommand { get; }
     IRelayCommand ConfirmClearCommand { get; }
-
-    void Initialize();
 }

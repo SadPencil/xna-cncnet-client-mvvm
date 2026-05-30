@@ -15,10 +15,6 @@ public interface ISkirmishLobbyViewModel : IGameLobbyViewModel
     IRelayCommand AddAiPlayerCommand { get; }
     IRelayCommand RemoveSelectedPlayerCommand { get; }
     IRelayCommand RandomizeSidesCommand { get; }
-    new IRelayCommand LaunchGameCommand { get; }
-    new IRelayCommand LeaveGameCommand { get; }
     IRelayCommand DismissErrorCommand { get; }
     IRelayCommand DismissNoticeCommand { get; }
-
-    new void Initialize();
 }

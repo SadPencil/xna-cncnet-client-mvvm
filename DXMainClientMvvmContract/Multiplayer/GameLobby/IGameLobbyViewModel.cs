@@ -58,7 +58,4 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     IRelayCommand ToggleSearchAllModesCommand { get; }
     IRelayCommand OpenGameSettingsCommand { get; }
     IRelayCommand OpenMapSelectionCommand { get; }
-
-    // --- Lifecycle ---
-    void Initialize();
 }
