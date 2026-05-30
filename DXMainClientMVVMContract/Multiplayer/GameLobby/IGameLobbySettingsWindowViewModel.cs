@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel.Multiplayer.GameLobby;
+namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 public interface IGameLobbySettingsWindowViewModel : INotifyPropertyChanged
 {

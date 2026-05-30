@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Generic"
+             xmlns:vmc="using:DXMainClientMVVMContract.Generic"
              x:Class="DXMainClientView.Generic.OptionsWindow"
-             x:DataType="vm:IOptionsWindowViewModel"
+             x:DataType="vmc:IOptionsWindowViewModel"
              IsVisible="{Binding IsVisible}"
              Width="576" Height="475">
   <Panel>

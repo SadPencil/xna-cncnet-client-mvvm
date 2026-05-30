@@ -1,5 +1,5 @@
+using DXMainClientMVVMContract.Multiplayer.CnCNet;
 using Avalonia.Controls;
-using DXMainClientViewModel.Multiplayer.CnCNet;
 
 namespace DXMainClientView.Multiplayer.CnCNet;
 

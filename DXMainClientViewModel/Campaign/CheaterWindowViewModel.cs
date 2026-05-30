@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract.Campaign;
 
 #nullable enable
 using System;

@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract.Domain.Multiplayer;
 ﻿using System;
 
 namespace DXMainClientViewModel.Domain.Multiplayer.CnCNet

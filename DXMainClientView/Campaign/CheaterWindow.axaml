@@ -1,8 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:DXMainClientViewModel.Campaign"
+        xmlns:vmc="using:DXMainClientMVVMContract.Campaign"
         x:Class="DXMainClientView.Campaign.CheaterWindow"
-        x:DataType="vm:ICheaterWindowViewModel"
+        x:DataType="vmc:ICheaterWindowViewModel"
         Title="{Binding TitleText}"
         Width="334" Height="453"
         WindowStartupLocation="CenterScreen">

@@ -1,4 +1,4 @@
-using DXMainClientViewModel.Multiplayer;
+using DXMainClientMVVMContract.Multiplayer;
 
 namespace DXMainClientView.Multiplayer;
 

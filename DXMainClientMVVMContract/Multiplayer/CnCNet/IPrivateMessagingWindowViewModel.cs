@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel.Multiplayer.CnCNet;
+namespace DXMainClientMVVMContract.Multiplayer.CnCNet;
 
 public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
 {

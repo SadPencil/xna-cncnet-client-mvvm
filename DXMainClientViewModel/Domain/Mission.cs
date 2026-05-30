@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract.Domain;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;

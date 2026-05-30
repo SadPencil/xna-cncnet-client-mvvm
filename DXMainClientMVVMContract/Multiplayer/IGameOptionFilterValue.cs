@@ -1,4 +1,4 @@
-namespace DXMainClientViewModel.Multiplayer;
+namespace DXMainClientMVVMContract.Multiplayer;
 
 /// <summary>
 /// Read-only view of a game option filter value.

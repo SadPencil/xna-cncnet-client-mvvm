@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract.Campaign;
 using System;
 
 namespace DXMainClientViewModel.Campaign;

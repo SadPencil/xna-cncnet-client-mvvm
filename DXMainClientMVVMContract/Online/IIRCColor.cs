@@ -1,4 +1,4 @@
-namespace DXMainClientViewModel.Online;
+namespace DXMainClientMVVMContract.Online;
 
 /// <summary>
 /// Read-only view of an IRC color definition.

@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Multiplayer"
+             xmlns:vmc="using:DXMainClientMVVMContract.Multiplayer"
              x:Class="DXMainClientView.Multiplayer.LANGameCreationWindow"
-             x:DataType="vm:ILANGameCreationWindowViewModel"
+             x:DataType="vmc:ILANGameCreationWindowViewModel"
              IsVisible="{Binding IsWindowVisible}"
              Width="447" Height="77">
   <Canvas>

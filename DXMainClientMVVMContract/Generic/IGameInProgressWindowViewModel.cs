@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace DXMainClientViewModel.Generic;
+namespace DXMainClientMVVMContract.Generic;
 
 public interface IGameInProgressWindowViewModel : INotifyPropertyChanged
 {

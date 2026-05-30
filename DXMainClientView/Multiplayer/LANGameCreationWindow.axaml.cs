@@ -1,5 +1,5 @@
+using DXMainClientMVVMContract.Multiplayer;
 using Avalonia.Controls;
-using DXMainClientViewModel.Multiplayer;
 
 namespace DXMainClientView.Multiplayer;
 

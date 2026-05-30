@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
-using DXMainClientViewModel.Domain.Multiplayer;
-using DXMainClientViewModel.Online;
+using DXMainClientMVVMContract.Domain.Multiplayer;
+using DXMainClientMVVMContract.Online;
 
-namespace DXMainClientViewModel.Multiplayer.GameLobby;
+namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
 {

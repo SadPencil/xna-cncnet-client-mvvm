@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Generic"
+             xmlns:vmc="using:DXMainClientMVVMContract.Generic"
              x:Class="DXMainClientView.Generic.LoadingScreen"
-             x:DataType="vm:ILoadingScreenViewModel"
+             x:DataType="vmc:ILoadingScreenViewModel"
              Background="Transparent">
   <Canvas>
 

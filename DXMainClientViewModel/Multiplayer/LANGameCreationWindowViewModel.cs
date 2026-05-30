@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract.Multiplayer;
 
 using System;
 using System.IO;

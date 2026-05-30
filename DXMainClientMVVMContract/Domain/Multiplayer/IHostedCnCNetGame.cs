@@ -1,6 +1,6 @@
 using System;
 
-namespace DXMainClientViewModel.Domain.Multiplayer;
+namespace DXMainClientMVVMContract.Domain.Multiplayer;
 
 /// <summary>
 /// Read-only view of a hosted CnCNet game.

@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace DXMainClientViewModel.Multiplayer.GameLobby;
+namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 /// <summary>
 /// Read-only view of a game option checkbox.

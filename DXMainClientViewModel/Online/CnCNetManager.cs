@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract;
 using ClientCore;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online.EventArguments;

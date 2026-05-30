@@ -1,10 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Generic"
+             xmlns:vmc="using:DXMainClientMVVMContract.Generic"
              xmlns:local="using:DXMainClientView.Generic"
              xmlns:campaign="using:DXMainClientView.Campaign"
              x:Class="DXMainClientView.Generic.MainMenu"
-             x:DataType="vm:IMainMenuViewModel"
+             x:DataType="vmc:IMainMenuViewModel"
              Width="1280" Height="720"
              Background="Transparent">
   <Canvas x:Name="MainCanvas">

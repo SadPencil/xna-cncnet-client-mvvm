@@ -1,4 +1,4 @@
-namespace DXMainClientViewModel.Multiplayer.GameLobby;
+namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 /// <summary>
 /// Represents the visual state of a player slot indicator.

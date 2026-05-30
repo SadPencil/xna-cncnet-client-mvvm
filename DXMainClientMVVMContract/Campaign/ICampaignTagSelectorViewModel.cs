@@ -3,9 +3,9 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-using DXMainClientViewModel.Domain;
+using DXMainClientMVVMContract.Domain;
 
-namespace DXMainClientViewModel.Campaign;
+namespace DXMainClientMVVMContract.Campaign;
 
 
 public interface ICampaignTagSelectorViewModel : INotifyPropertyChanged

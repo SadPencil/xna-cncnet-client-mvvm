@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel.Multiplayer.GameLobby;
+namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 public interface ISkirmishLobbyViewModel : IGameLobbyViewModel
 {

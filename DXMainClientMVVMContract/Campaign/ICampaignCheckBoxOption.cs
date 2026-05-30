@@ -1,6 +1,6 @@
 using Rampastring.Tools;
 
-namespace DXMainClientViewModel.Campaign;
+namespace DXMainClientMVVMContract.Campaign;
 
 /// <summary>
 /// Abstracts a campaign checkbox option's business logic.

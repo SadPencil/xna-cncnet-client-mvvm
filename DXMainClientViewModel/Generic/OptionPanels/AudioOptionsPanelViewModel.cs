@@ -1,3 +1,5 @@
+using DXMainClientMVVMContract.Generic.OptionPanels;
+using DXMainClientMVVMContract;
 
 using System;
 

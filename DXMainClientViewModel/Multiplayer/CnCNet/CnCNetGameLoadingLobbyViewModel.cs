@@ -1,3 +1,7 @@
+using DXMainClientMVVMContract;
+using DXMainClientMVVMContract.Online;
+using DXMainClientMVVMContract.Domain.Multiplayer;
+using DXMainClientMVVMContract.Multiplayer.CnCNet;
 using System;
 using System.Collections.Generic;
 using System.Text;

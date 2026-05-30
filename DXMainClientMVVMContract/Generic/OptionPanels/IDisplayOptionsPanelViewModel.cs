@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel.Generic.OptionPanels;
+namespace DXMainClientMVVMContract.Generic.OptionPanels;
 
 public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
 {

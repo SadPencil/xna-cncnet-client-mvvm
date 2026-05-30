@@ -1,3 +1,7 @@
+using DXMainClientMVVMContract;
+using DXMainClientMVVMContract.Online;
+using DXMainClientMVVMContract.Domain.Multiplayer;
+using DXMainClientMVVMContract.Multiplayer.GameLobby;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;

@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Generic"
+             xmlns:vmc="using:DXMainClientMVVMContract.Generic"
              x:Class="DXMainClientView.Generic.UpdateWindow"
-             x:DataType="vm:IUpdateWindowViewModel"
+             x:DataType="vmc:IUpdateWindowViewModel"
              IsVisible="{Binding IsVisible}"
              Width="446" Height="270">
   <Canvas>

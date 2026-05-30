@@ -1,10 +1,10 @@
+using DXMainClientMVVMContract.Generic;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using DXMainClientViewModel.Generic;
 
 namespace DXMainClientView.Generic;
 

@@ -1,4 +1,4 @@
-using DXMainClientViewModel.Campaign;
+using DXMainClientMVVMContract.Campaign;
 
 namespace DXMainClientView.Campaign;
 

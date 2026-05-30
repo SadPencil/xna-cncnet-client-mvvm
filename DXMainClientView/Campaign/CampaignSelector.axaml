@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Campaign"
+             xmlns:vmc="using:DXMainClientMVVMContract.Campaign"
              x:Class="DXMainClientView.Campaign.CampaignSelector"
-             x:DataType="vm:ICampaignSelectorViewModel"
+             x:DataType="vmc:ICampaignSelectorViewModel"
              IsVisible="{Binding IsVisible}"
              Width="672" Height="600">
   <Canvas>
@@ -21,7 +21,7 @@
              Canvas.Left="12" Canvas.Top="30"
              Width="322" Height="554">
       <ListBox.ItemTemplate>
-        <DataTemplate x:DataType="vm:ICampaignListItem">
+        <DataTemplate x:DataType="vmc:ICampaignListItem">
           <TextBlock Text="{Binding Text}" />
         </DataTemplate>
       </ListBox.ItemTemplate>

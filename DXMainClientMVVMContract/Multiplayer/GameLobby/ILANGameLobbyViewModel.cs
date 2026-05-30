@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel.Multiplayer.GameLobby;
+namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 public interface ILANGameLobbyViewModel : IMultiplayerGameLobbyViewModel
 {

@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Generic"
+             xmlns:vmc="using:DXMainClientMVVMContract.Generic"
              x:Class="DXMainClientView.Generic.PrivacyNotification"
-             x:DataType="vm:IPrivacyNotificationViewModel"
+             x:DataType="vmc:IPrivacyNotificationViewModel"
              IsVisible="{Binding IsVisible}">
   <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
           BorderBrush="{DynamicResource XnaPanelBorderBrush}"

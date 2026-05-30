@@ -1,8 +1,8 @@
+using DXMainClientMVVMContract;
 using System;
 using System.Linq;
 
 using ClientCore;
-using DXMainClientViewModel;
 using Rampastring.Tools;
 
 namespace DXMainClientView.Services

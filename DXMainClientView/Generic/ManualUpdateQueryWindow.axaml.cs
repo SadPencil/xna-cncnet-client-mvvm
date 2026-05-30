@@ -1,5 +1,5 @@
+using DXMainClientMVVMContract.Generic;
 using Avalonia.Controls;
-using DXMainClientViewModel.Generic;
 
 namespace DXMainClientView.Generic;
 

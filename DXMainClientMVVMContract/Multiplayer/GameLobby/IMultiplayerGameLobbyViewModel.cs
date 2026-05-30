@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel.Multiplayer.GameLobby;
+namespace DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 public interface IMultiplayerGameLobbyViewModel : IGameLobbyViewModel
 {

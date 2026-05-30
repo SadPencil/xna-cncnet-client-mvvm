@@ -1,3 +1,5 @@
+using DXMainClientMVVMContract;
+using DXMainClientMVVMContract.Multiplayer;
 
 using System;
 using System.Collections.Generic;

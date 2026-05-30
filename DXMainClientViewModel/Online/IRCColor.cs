@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract.Online;
 namespace DXMainClientViewModel.Online
 {
     public class IRCColor : IIRCColor

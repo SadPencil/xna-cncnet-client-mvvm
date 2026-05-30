@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:DXMainClientViewModel.Generic"
+             xmlns:vmc="using:DXMainClientMVVMContract.Generic"
              x:Class="DXMainClientView.Generic.TopBar"
-             x:DataType="vm:ITopBarViewModel"
+             x:DataType="vmc:ITopBarViewModel"
              Height="39"
              ClipToBounds="False">
   <Panel Background="{DynamicResource XnaPanelBackgroundBrush}">

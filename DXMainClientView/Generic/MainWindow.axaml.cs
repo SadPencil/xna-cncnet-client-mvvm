@@ -1,10 +1,10 @@
+using DXMainClientMVVMContract.Generic;
+using DXMainClientMVVMContract.Campaign;
 using System;
 
 using Avalonia.Controls;
 using Avalonia.Threading;
 
-using DXMainClientViewModel.Campaign;
-using DXMainClientViewModel.Generic;
 
 using Microsoft.Extensions.DependencyInjection;
 

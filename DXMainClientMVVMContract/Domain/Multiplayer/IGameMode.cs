@@ -1,4 +1,4 @@
-namespace DXMainClientViewModel.Domain.Multiplayer;
+namespace DXMainClientMVVMContract.Domain.Multiplayer;
 
 /// <summary>
 /// Read-only view of a game mode.

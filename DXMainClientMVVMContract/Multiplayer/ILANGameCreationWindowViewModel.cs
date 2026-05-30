@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
-namespace DXMainClientViewModel.Multiplayer;
+namespace DXMainClientMVVMContract.Multiplayer;
 
 public interface ILANGameCreationWindowViewModel : INotifyPropertyChanged
 {

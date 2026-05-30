@@ -1,6 +1,6 @@
 using System;
 
-namespace DXMainClientViewModel.Multiplayer.CnCNet;
+namespace DXMainClientMVVMContract.Multiplayer.CnCNet;
 
 /// <summary>
 /// Read-only view of data for a pending yes/no dialog.

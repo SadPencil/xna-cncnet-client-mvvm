@@ -1,6 +1,6 @@
 using System;
 
-namespace DXMainClientViewModel.Campaign;
+namespace DXMainClientMVVMContract.Campaign;
 
 /// <summary>
 /// Service for launching the campaign game process and tracking its lifecycle.

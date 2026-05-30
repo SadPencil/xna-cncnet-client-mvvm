@@ -1,3 +1,5 @@
+using DXMainClientMVVMContract;
+using DXMainClientMVVMContract.Multiplayer.CnCNet;
 using System;
 using System.Timers;
 

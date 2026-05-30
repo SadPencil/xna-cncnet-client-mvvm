@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace DXMainClientViewModel.Campaign;
+namespace DXMainClientMVVMContract.Campaign;
 
 /// <summary>
 /// Read-only view of a campaign list item.

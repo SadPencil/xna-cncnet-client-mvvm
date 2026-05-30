@@ -1,4 +1,4 @@
-using DXMainClientViewModel.Multiplayer.GameLobby;
+using DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 namespace DXMainClientView.Multiplayer.GameLobby;
 

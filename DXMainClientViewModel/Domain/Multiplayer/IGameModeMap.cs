@@ -1,3 +1,4 @@
+using DXMainClientMVVMContract.Domain.Multiplayer;
 ﻿#nullable enable
 using System.Collections.Generic;
 

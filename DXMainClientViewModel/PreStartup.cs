@@ -1,3 +1,8 @@
+using DXMainClientMVVMContract.Generic;
+using DXMainClientMVVMContract.Generic.OptionPanels;
+using DXMainClientMVVMContract.Campaign;
+using DXMainClientMVVMContract.Services;
+using DXMainClientMVVMContract;
 using System;
 using System.Globalization;
 using System.IO;

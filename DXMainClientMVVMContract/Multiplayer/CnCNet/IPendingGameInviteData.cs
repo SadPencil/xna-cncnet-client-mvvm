@@ -1,4 +1,4 @@
-namespace DXMainClientViewModel.Multiplayer.CnCNet;
+namespace DXMainClientMVVMContract.Multiplayer.CnCNet;
 
 /// <summary>
 /// Read-only view of data for a pending game invite notification.

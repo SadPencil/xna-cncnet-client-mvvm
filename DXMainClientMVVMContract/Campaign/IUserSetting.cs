@@ -1,4 +1,4 @@
-namespace DXMainClientViewModel.Campaign;
+namespace DXMainClientMVVMContract.Campaign;
 
 /// <summary>
 /// Abstracts a user-configurable setting that can be saved/loaded and reset to default.

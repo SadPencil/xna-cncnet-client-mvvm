@@ -1,3 +1,6 @@
+using DXMainClientMVVMContract;
+using DXMainClientMVVMContract.Domain.Multiplayer;
+using DXMainClientMVVMContract.Multiplayer.GameLobby;
 using System;
 using System.Collections.Generic;
 using System.IO;
