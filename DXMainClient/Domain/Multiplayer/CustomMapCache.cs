@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public class CustomMapCache
+    public class CustomMapCache // checked
     {
         [JsonInclude]
         [JsonPropertyName("version")]
