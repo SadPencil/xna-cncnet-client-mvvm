@@ -11,7 +11,7 @@ using SixLabors.ImageSharp;
 
 namespace DTAClient.Domain.Multiplayer;
 
-public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
+public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor // checked
 {
     public static new readonly FastMapPreviewExtractor Instance = new FastMapPreviewExtractor();
 
