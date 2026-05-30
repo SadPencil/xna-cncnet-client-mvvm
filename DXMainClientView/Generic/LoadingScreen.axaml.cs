@@ -1,8 +1,12 @@
-using DXMainClientMvvmContract.Generic;
+using System;
+using System.ComponentModel;
 
 using Avalonia.Controls;
-using Avalonia.Media.Imaging;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Threading;
+
+using DXMainClientMvvmContract.Generic;
 
 using DXMainClientView.Services;
 
@@ -12,6 +16,8 @@ namespace DXMainClientView.Generic;
 
 public partial class LoadingScreen : UserControl
 {
+    public event EventHandler Completed;
+
     public LoadingScreen()
     {
         InitializeComponent();
@@ -42,9 +48,32 @@ public partial class LoadingScreen : UserControl
         catch { }
     }
 
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ILoadingScreenViewModel.IsLoading))
+        {
+            var loadingScreenVM = (ILoadingScreenViewModel)sender!;
+            if (!loadingScreenVM.IsLoading)
+            {
+                // TODO: should I wrap it in UIThread?
+                Dispatcher.UIThread.Post(() => Completed?.Invoke(this, EventArgs.Empty));
+            }
+        }
+    }
+
     public ILoadingScreenViewModel? ViewModel
     {
-        get => DataContext as ILoadingScreenViewModel;
-        set => DataContext = value;
+        get => field;
+        set
+        {
+            if (field != null)
+                field.PropertyChanged -= OnViewModelPropertyChanged;
+
+            field = value;
+            DataContext = value;
+
+            if (field != null)
+                field.PropertyChanged += OnViewModelPropertyChanged;
+        }
     }
 }

@@ -38,14 +38,15 @@ public partial class MainWindow : Window
         loadingScreen.Width = 800;
         loadingScreen.Height = 600;
 
-        loadingScreenVM.Completed += OnLoadingCompleted;
+        loadingScreen.Completed += OnLoadingCompleted;
 
         return loadingScreen;
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)
     {
-        ((ILoadingScreenViewModel)sender!).Completed -= OnLoadingCompleted;
+        ((LoadingScreen)sender!).Completed -= OnLoadingCompleted;
+        // TODO: should I fire loadingScreen.Completed in UIThread and therefore remove this Dispatcher call?
         Dispatcher.UIThread.Post(TransitionToMainMenu);
     }
 

@@ -32,6 +32,7 @@ public interface ICampaignSelectorViewModel : INotifyPropertyChanged
 
     List<ICampaignCheckBoxOption> CheckBoxOptions { get; }
     List<ICampaignDropDownOption> DropDownOptions { get; }
+    // TODO: this interface was preserved for Campaign settings. Needs to find another way for expressing the dropdown and checkbox options in the UI.
     List<IUserSetting> UserSettings { get; }
 
     IRelayCommand LaunchCampaignCommand { get; }
