@@ -506,12 +506,28 @@ namespace DXMainClientViewModel.Generic
         {
             if (e.PropertyName == nameof(ITopBarViewModel.LastSwitchType))
             {
-                ActivePanel = topBarViewModel.LastSwitchType switch
+                var switchType = topBarViewModel.LastSwitchType;
+
+                // Hide all child views before switching
+                cncNetLobbyViewModel.IsVisible = false;
+                privateMessagingWindowViewModel.IsWindowVisible = false;
+
+                ActivePanel = switchType switch
                 {
                     SwitchType.PRIMARY => MainMenuPanel.PRIMARY,
                     SwitchType.SECONDARY => MainMenuPanel.SECONDARY,
                     _ => MainMenuPanel.PRIMARY
                 };
+
+                // Show the appropriate child view
+                if (switchType == SwitchType.SECONDARY)
+                {
+                    cncNetLobbyViewModel.IsVisible = true;
+                }
+                else if (switchType == SwitchType.PRIVATE_MESSAGES)
+                {
+                    privateMessagingWindowViewModel.IsWindowVisible = true;
+                }
             }
         }
 
