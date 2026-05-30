@@ -17,6 +17,7 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
     private const int VOLUME_SCALE = 10;
 
     private readonly UserINISettings iniSettings;
+    private readonly IClientSoundService clientSoundService;
 
     // --- Observable state ---
 
@@ -49,9 +50,10 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
 
     // --- Constructor ---
 
-    public AudioOptionsPanelViewModel(UserINISettings iniSettings)
+    public AudioOptionsPanelViewModel(UserINISettings iniSettings, IClientSoundService clientSoundService)
     {
         this.iniSettings = iniSettings;
+        this.clientSoundService = clientSoundService;
     }
 
     // --- Commands ---
@@ -63,6 +65,7 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
         SoundVolume = (int)(iniSettings.SoundVolume * VOLUME_SCALE);
         VoiceVolume = (int)(iniSettings.VoiceVolume * VOLUME_SCALE);
         ClientVolume = (int)(iniSettings.ClientVolume * VOLUME_SCALE);
+        clientSoundService.SetVolume(ClientVolume / (float)VOLUME_SCALE);
 
         IsScoreShuffleEnabled = iniSettings.IsScoreShuffle;
         IsMainMenuMusicEnabled = iniSettings.PlayMainMenuMusic;
@@ -88,12 +91,14 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
 
     // --- Property change handlers ---
 
+    partial void OnClientVolumeChanged(int value)
+    {
+        clientSoundService.SetVolume(value / (float)VOLUME_SCALE);
+    }
+
     partial void OnIsMainMenuMusicEnabledChanged(bool value)
     {
-        if (!value)
-        {
-            IsStopMusicOnMenuDisabled = false;
-        }
+        IsStopMusicOnMenuDisabled = value;
     }
 }
 

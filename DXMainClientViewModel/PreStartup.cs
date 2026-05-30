@@ -125,8 +125,8 @@ public static class PreStartup
                 UserINISettings.Instance,
                 sp.GetRequiredService<DirectDrawWrapperManager>(),
                 sp.GetRequiredService<IResolutionProvider>()));
-        services.AddSingleton<IAudioOptionsPanelViewModel>(_ =>
-            new AudioOptionsPanelViewModel(UserINISettings.Instance));
+        services.AddSingleton<IAudioOptionsPanelViewModel>(sp =>
+            new AudioOptionsPanelViewModel(UserINISettings.Instance, sp.GetRequiredService<IClientSoundService>()));
         services.AddSingleton<IGameOptionsPanelViewModel>(_ =>
             new GameOptionsPanelViewModel(UserINISettings.Instance));
         services.AddSingleton<ICnCNetOptionsPanelViewModel>(sp =>
