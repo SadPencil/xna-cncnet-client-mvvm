@@ -23,7 +23,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// A helper class for extracting preview images from maps.
     /// </summary>
-    public class MapPreviewExtractor : IMapPreviewExtractor
+    public class MapPreviewExtractor : IMapPreviewExtractor // checked
     {
         public static readonly MapPreviewExtractor Instance = new MapPreviewExtractor();
 

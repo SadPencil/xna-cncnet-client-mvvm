@@ -6,7 +6,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// A player in the game lobby.
     /// </summary>
-    public class PlayerInfo
+    public class PlayerInfo // checked
     {
         public PlayerInfo() { }
 

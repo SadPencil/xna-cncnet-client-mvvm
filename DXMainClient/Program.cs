@@ -16,7 +16,7 @@ using System.Threading;
 
 namespace DTAClient
 {
-    static class Program
+    static class Program // checked
     {
         static Program()
         {

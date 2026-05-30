@@ -6,7 +6,7 @@ using ClientCore.PlatformShim;
 
 namespace DTAClient.Domain
 {
-    public static class FinalSunSettings
+    public static class FinalSunSettings // checked
     {
         /// <summary>
         /// Checks for the existence of the FinalSun settings file and writes it if it doesn't exist.

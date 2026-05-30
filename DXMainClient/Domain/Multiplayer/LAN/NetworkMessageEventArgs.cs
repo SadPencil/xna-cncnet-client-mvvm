@@ -2,7 +2,7 @@
 
 namespace DTAClient.Domain.Multiplayer.LAN
 {
-    public class NetworkMessageEventArgs : EventArgs
+    public class NetworkMessageEventArgs : EventArgs // checked
     {
         public NetworkMessageEventArgs(string message)
         {

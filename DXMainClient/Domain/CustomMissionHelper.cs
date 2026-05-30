@@ -13,7 +13,7 @@ using ClientCore.Extensions;
 using Rampastring.Tools;
 
 namespace DTAClient.Domain;
-internal static class CustomMissionHelper
+internal static class CustomMissionHelper // checked
 {
     public static List<(string extension, string filename)>? CustomMissionSupplementDefinition { get; private set; }
 

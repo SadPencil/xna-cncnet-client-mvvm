@@ -2,7 +2,7 @@
 
 namespace DTAClient.Domain.Multiplayer.LAN
 {
-    public class ServerStringCommandHandler : LANServerCommandHandler
+    public class ServerStringCommandHandler : LANServerCommandHandler // checked
     {
         public ServerStringCommandHandler(string commandName,
             Action<LANPlayerInfo, string> handler)

@@ -10,7 +10,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// A color for the multiplayer game lobby.
     /// </summary>
-    public class MultiplayerColor
+    public class MultiplayerColor // checked
     {
         public int GameColorIndex { get; private set; }
         public string Name { get; private set; }

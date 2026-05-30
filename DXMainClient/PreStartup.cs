@@ -42,7 +42,7 @@ namespace DTAClient
         public List<string> UnknownStartupParams { get; }
     }
 
-    static class PreStartup
+    static class PreStartup // checked
     {
         private static readonly Stopwatch startupStopwatch = Stopwatch.StartNew();
         public static TimeSpan StartupElapsed => startupStopwatch.Elapsed;

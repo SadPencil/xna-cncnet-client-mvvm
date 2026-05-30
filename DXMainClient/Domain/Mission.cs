@@ -15,7 +15,7 @@ namespace DTAClient.Domain
     /// <summary>
     /// A Tiberian Sun mission listed in Battle(E).ini.
     /// </summary>
-    public class Mission
+    public class Mission // checked
     {
         public Mission(IniSection missionSection, string missionCodeName)
         {

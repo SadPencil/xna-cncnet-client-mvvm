@@ -10,7 +10,7 @@ using Rampastring.Tools;
 
 namespace DTAClient.Domain
 {
-    public class DirectDrawWrapperManager
+    public class DirectDrawWrapperManager // checked
     {
         private const string RENDERERS_INI = "Renderers.ini";
         private List<DirectDrawWrapper> renderers;

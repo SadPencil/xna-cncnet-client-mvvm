@@ -11,7 +11,7 @@ namespace DTAClient.Domain
     /// <summary>
     /// A single-player saved game.
     /// </summary>
-    public class SavedGame
+    public class SavedGame // checked
     {
         const string SAVED_GAME_PATH = "Saved Games/";
         const int MAX_SCENARIO_DESCRIPTION_BYTES = 1024 * 1024;

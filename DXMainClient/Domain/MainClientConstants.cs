@@ -10,7 +10,7 @@ using Rampastring.Tools;
 
 namespace DTAClient.Domain
 {
-    public static class MainClientConstants
+    public static class MainClientConstants // checked
     {
         public static string GAME_NAME_LONG = "CnCNet Client";
         public static string GAME_NAME_SHORT = "CnCNet";

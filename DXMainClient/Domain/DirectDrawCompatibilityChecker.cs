@@ -21,7 +21,7 @@ namespace DTAClient.Domain;
 /// Handles checking and fixing DirectDraw compatibility issues with user interaction.
 /// </summary>
 [SupportedOSPlatform("windows")]
-public static class DirectDrawCompatibilityChecker
+public static class DirectDrawCompatibilityChecker // checked
 {
     private static readonly IReadOnlyList<string> OSCompatibilityValues = [
         "WIN8RTM", "WIN7RTM", "VISTASP2", "VISTASP1", "VISTARTM", "WINXPSP3", "WINXPSP2", "WIN98", "WIN95"

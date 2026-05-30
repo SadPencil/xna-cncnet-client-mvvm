@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace DTAClient.Domain.Multiplayer.LAN
 {
-    public class LANPlayerInfo : PlayerInfo
+    public class LANPlayerInfo : PlayerInfo // checked
     {
         public LANPlayerInfo(Encoding encoding)
         {

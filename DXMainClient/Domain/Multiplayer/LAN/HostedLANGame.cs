@@ -10,7 +10,7 @@ using Rampastring.Tools;
 
 namespace DTAClient.Domain.LAN
 {
-    class HostedLANGame : GenericHostedGame
+    class HostedLANGame : GenericHostedGame // checked
     {
         public IPEndPoint EndPoint { get; set; }
 

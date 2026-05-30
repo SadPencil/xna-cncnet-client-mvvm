@@ -13,7 +13,7 @@ namespace DTAClient.Domain
     /// <summary>
     /// A DirectDraw wrapper option.
     /// </summary>
-    public class DirectDrawWrapper
+    public class DirectDrawWrapper // checked
     {
         /// <summary>
         /// Creates a new DirectDrawWrapper instance and parses its configuration

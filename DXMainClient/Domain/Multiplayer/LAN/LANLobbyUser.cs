@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DTAClient.Domain.Multiplayer.LAN
 {
-    public class LANLobbyUser
+    public class LANLobbyUser // checked
     {
         public LANLobbyUser(string name, Texture2D gameTexture, IPEndPoint endPoint)
         {

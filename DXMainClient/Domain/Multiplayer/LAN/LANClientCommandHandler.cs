@@ -1,6 +1,6 @@
 ﻿namespace DTAClient.Domain.Multiplayer.LAN
 {
-    public abstract class LANClientCommandHandler
+    public abstract class LANClientCommandHandler // checked
     {
         public LANClientCommandHandler(string commandName)
         {

@@ -2,7 +2,7 @@
 
 namespace DTAClient.Domain.LAN
 {
-    public class LANColor
+    public class LANColor // checked
     {
         public LANColor(string name, Color xnaColor)
         {
