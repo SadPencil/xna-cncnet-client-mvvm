@@ -22,7 +22,7 @@ namespace DXMainClientViewModel.Generic
 
         private readonly IGameProcessService gameProcessService;
         private readonly IDiscordHandlerService discordHandler;
-        private readonly ICampaignSelectorViewModel campaignSelectorViewModel;
+        private readonly CampaignSelectorViewModel campaignSelectorViewModel;
 
         [ObservableProperty]
         private List<SavedGame> savedGames = new();
@@ -51,7 +51,7 @@ namespace DXMainClientViewModel.Generic
         public GameLoadingWindowViewModel(
             IGameProcessService gameProcessService,
             IDiscordHandlerService discordHandler,
-            ICampaignSelectorViewModel campaignSelectorViewModel)
+            CampaignSelectorViewModel campaignSelectorViewModel)
         {
             this.gameProcessService = gameProcessService;
             this.discordHandler = discordHandler;

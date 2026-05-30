@@ -15,7 +15,7 @@ namespace DXMainClientViewModel.Generic
     /// </summary>
     public partial class ExtrasWindowViewModel : ObservableObject, IExtrasWindowViewModel
     {
-        private readonly IStatisticsWindowViewModel statisticsWindowViewModel;
+        private readonly StatisticsWindowViewModel statisticsWindowViewModel;
 
         [ObservableProperty]
         private bool isVisible;
@@ -23,7 +23,7 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isMapEditorAvailable;
 
-        public ExtrasWindowViewModel(IStatisticsWindowViewModel statisticsWindowViewModel)
+        public ExtrasWindowViewModel(StatisticsWindowViewModel statisticsWindowViewModel)
         {
             this.statisticsWindowViewModel = statisticsWindowViewModel;
             IsMapEditorAvailable = !string.IsNullOrEmpty(ClientConfiguration.Instance.MapEditorExePath);

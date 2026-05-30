@@ -34,8 +34,8 @@ namespace DXMainClientViewModel.Generic
         private readonly IMusicPlayerService musicPlayer;
         private readonly IUIThreadMarshaller uiThreadMarshaller;
         private readonly CnCNetManager connectionManager;
-        private readonly IOptionsWindowViewModel optionsWindowViewModel;
-        private readonly ITopBarViewModel topBarViewModel;
+        private readonly OptionsWindowViewModel optionsWindowViewModel;
+        private readonly TopBarViewModel topBarViewModel;
         private readonly CampaignSelectorViewModel campaignSelectorViewModel;
         private readonly GameLoadingWindowViewModel gameLoadingWindowViewModel;
         private readonly ExtrasWindowViewModel extrasWindowViewModel;
@@ -133,8 +133,8 @@ namespace DXMainClientViewModel.Generic
             IMusicPlayerService musicPlayer,
             IUIThreadMarshaller uiThreadMarshaller,
             CnCNetManager connectionManager,
-            IOptionsWindowViewModel optionsWindowViewModel,
-            ITopBarViewModel topBarViewModel,
+            OptionsWindowViewModel optionsWindowViewModel,
+            TopBarViewModel topBarViewModel,
             CampaignSelectorViewModel campaignSelectorViewModel,
             GameLoadingWindowViewModel gameLoadingWindowViewModel,
             ExtrasWindowViewModel extrasWindowViewModel,

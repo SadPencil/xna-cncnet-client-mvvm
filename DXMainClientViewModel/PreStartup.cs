@@ -140,30 +140,47 @@ public static class PreStartup
         services.AddSingleton<DirectDrawWrapperManager>();
 
         // Option panel ViewModels
-        services.AddSingleton<IDisplayOptionsPanelViewModel>(sp =>
+        services.AddSingleton<DisplayOptionsPanelViewModel>(sp =>
             new DisplayOptionsPanelViewModel(
                 UserINISettings.Instance,
                 sp.GetRequiredService<DirectDrawWrapperManager>(),
                 sp.GetRequiredService<IResolutionProvider>()));
-        services.AddSingleton<IAudioOptionsPanelViewModel>(sp =>
+        services.AddSingleton<IDisplayOptionsPanelViewModel>(sp =>
+            sp.GetRequiredService<DisplayOptionsPanelViewModel>());
+
+        services.AddSingleton<AudioOptionsPanelViewModel>(sp =>
             new AudioOptionsPanelViewModel(UserINISettings.Instance, sp.GetRequiredService<IClientSoundService>()));
-        services.AddSingleton<IGameOptionsPanelViewModel>(_ =>
+        services.AddSingleton<IAudioOptionsPanelViewModel>(sp =>
+            sp.GetRequiredService<AudioOptionsPanelViewModel>());
+
+        services.AddSingleton<GameOptionsPanelViewModel>(_ =>
             new GameOptionsPanelViewModel(UserINISettings.Instance));
-        services.AddSingleton<ICnCNetOptionsPanelViewModel>(sp =>
+        services.AddSingleton<IGameOptionsPanelViewModel>(sp =>
+            sp.GetRequiredService<GameOptionsPanelViewModel>());
+
+        services.AddSingleton<CnCNetOptionsPanelViewModel>(sp =>
             new CnCNetOptionsPanelViewModel(UserINISettings.Instance, sp.GetRequiredService<GameCollection>()));
-        services.AddSingleton<IUpdaterOptionsPanelViewModel>(_ =>
+        services.AddSingleton<ICnCNetOptionsPanelViewModel>(sp =>
+            sp.GetRequiredService<CnCNetOptionsPanelViewModel>());
+
+        services.AddSingleton<UpdaterOptionsPanelViewModel>(_ =>
             new UpdaterOptionsPanelViewModel(UserINISettings.Instance));
-        services.AddSingleton<IComponentsPanelViewModel>(sp =>
+        services.AddSingleton<IUpdaterOptionsPanelViewModel>(sp =>
+            sp.GetRequiredService<UpdaterOptionsPanelViewModel>());
+
+        services.AddSingleton<ComponentsPanelViewModel>(sp =>
             new ComponentsPanelViewModel(sp.GetRequiredService<IUIThreadMarshaller>()));
+        services.AddSingleton<IComponentsPanelViewModel>(sp =>
+            sp.GetRequiredService<ComponentsPanelViewModel>());
 
         // OptionsWindowViewModel - resolves all option panels from DI
         services.AddSingleton<OptionsWindowViewModel>(sp => new OptionsWindowViewModel(
-            sp.GetRequiredService<IDisplayOptionsPanelViewModel>(),
-            sp.GetRequiredService<IAudioOptionsPanelViewModel>(),
-            sp.GetRequiredService<IGameOptionsPanelViewModel>(),
-            sp.GetRequiredService<ICnCNetOptionsPanelViewModel>(),
-            sp.GetRequiredService<IUpdaterOptionsPanelViewModel>(),
-            sp.GetRequiredService<IComponentsPanelViewModel>()));
+            sp.GetRequiredService<DisplayOptionsPanelViewModel>(),
+            sp.GetRequiredService<AudioOptionsPanelViewModel>(),
+            sp.GetRequiredService<GameOptionsPanelViewModel>(),
+            sp.GetRequiredService<CnCNetOptionsPanelViewModel>(),
+            sp.GetRequiredService<UpdaterOptionsPanelViewModel>(),
+            sp.GetRequiredService<ComponentsPanelViewModel>()));
         services.AddSingleton<IOptionsWindowViewModel>(sp =>
             sp.GetRequiredService<OptionsWindowViewModel>());
 
@@ -176,30 +193,48 @@ public static class PreStartup
         services.AddSingleton<ITopBarViewModel>(sp =>
             sp.GetRequiredService<TopBarViewModel>());
 
+        // CampaignSelectorViewModel
+        services.AddTransient<CampaignSelectorViewModel>();
+        services.AddTransient<ICampaignSelectorViewModel>(sp =>
+            sp.GetRequiredService<CampaignSelectorViewModel>());
+
+        // GameLoadingWindowViewModel
+        services.AddTransient<GameLoadingWindowViewModel>();
+        services.AddTransient<IGameLoadingWindowViewModel>(sp =>
+            sp.GetRequiredService<GameLoadingWindowViewModel>());
+
+        // StatisticsWindowViewModel
+        services.AddTransient<StatisticsWindowViewModel>();
+        services.AddTransient<IStatisticsWindowViewModel>(sp =>
+            sp.GetRequiredService<StatisticsWindowViewModel>());
+
+        // ExtrasWindowViewModel
+        services.AddTransient<ExtrasWindowViewModel>();
+        services.AddTransient<IExtrasWindowViewModel>(sp =>
+            sp.GetRequiredService<ExtrasWindowViewModel>());
+
         // MainMenuViewModel
-        services.AddSingleton<IMainMenuViewModel>(sp => new MainMenuViewModel(
+        services.AddSingleton<MainMenuViewModel>(sp => new MainMenuViewModel(
             sp.GetRequiredService<IUpdateService>(),
             sp.GetRequiredService<IGameProcessService>(),
             sp.GetRequiredService<IDiscordHandlerService>(),
             sp.GetRequiredService<IMusicPlayerService>(),
             sp.GetRequiredService<IUIThreadMarshaller>(),
             sp.GetRequiredService<CnCNetManager>(),
-            sp.GetRequiredService<IOptionsWindowViewModel>(),
-            sp.GetRequiredService<ITopBarViewModel>(),
-            (CampaignSelectorViewModel)sp.GetRequiredService<ICampaignSelectorViewModel>(),
-            (GameLoadingWindowViewModel)sp.GetRequiredService<IGameLoadingWindowViewModel>(),
-            (ExtrasWindowViewModel)sp.GetRequiredService<IExtrasWindowViewModel>(),
-            (StatisticsWindowViewModel)sp.GetRequiredService<IStatisticsWindowViewModel>()));
+            sp.GetRequiredService<OptionsWindowViewModel>(),
+            sp.GetRequiredService<TopBarViewModel>(),
+            sp.GetRequiredService<CampaignSelectorViewModel>(),
+            sp.GetRequiredService<GameLoadingWindowViewModel>(),
+            sp.GetRequiredService<ExtrasWindowViewModel>(),
+            sp.GetRequiredService<StatisticsWindowViewModel>()));
+        services.AddSingleton<IMainMenuViewModel>(sp =>
+            sp.GetRequiredService<MainMenuViewModel>());
 
         services.AddTransient<ILoadingScreenViewModel, LoadingScreenViewModel>();
         services.AddTransient<IPrivacyNotificationViewModel, PrivacyNotificationViewModel>();
         services.AddTransient<IUpdateQueryWindowViewModel, UpdateQueryWindowViewModel>();
         services.AddTransient<IManualUpdateQueryWindowViewModel, ManualUpdateQueryWindowViewModel>();
         services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
-        services.AddTransient<IStatisticsWindowViewModel, StatisticsWindowViewModel>();
-        services.AddTransient<IExtrasWindowViewModel, ExtrasWindowViewModel>();
         services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
-        services.AddTransient<ICampaignSelectorViewModel, CampaignSelectorViewModel>();
-        services.AddTransient<IGameLoadingWindowViewModel, GameLoadingWindowViewModel>();
     }
 }

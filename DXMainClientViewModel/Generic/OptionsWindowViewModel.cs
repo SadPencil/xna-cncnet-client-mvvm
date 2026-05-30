@@ -18,12 +18,12 @@ namespace DXMainClientViewModel.Generic
     /// </summary>
     public partial class OptionsWindowViewModel : ObservableObject, IOptionsWindowViewModel
     {
-        private readonly IDisplayOptionsPanelViewModel displayOptionsPanel;
-        private readonly IAudioOptionsPanelViewModel audioOptionsPanel;
-        private readonly IGameOptionsPanelViewModel gameOptionsPanel;
-        private readonly ICnCNetOptionsPanelViewModel cncnetOptionsPanel;
-        private readonly IUpdaterOptionsPanelViewModel updaterOptionsPanel;
-        private readonly IComponentsPanelViewModel componentsPanel;
+        private readonly DisplayOptionsPanelViewModel displayOptionsPanel;
+        private readonly AudioOptionsPanelViewModel audioOptionsPanel;
+        private readonly GameOptionsPanelViewModel gameOptionsPanel;
+        private readonly CnCNetOptionsPanelViewModel cncnetOptionsPanel;
+        private readonly UpdaterOptionsPanelViewModel updaterOptionsPanel;
+        private readonly ComponentsPanelViewModel componentsPanel;
 
         private Action<bool>? yesNoDialogCallback;
 
@@ -63,12 +63,12 @@ namespace DXMainClientViewModel.Generic
         public event EventHandler? ForceUpdateRequested;
 
         public OptionsWindowViewModel(
-            IDisplayOptionsPanelViewModel displayOptionsPanel,
-            IAudioOptionsPanelViewModel audioOptionsPanel,
-            IGameOptionsPanelViewModel gameOptionsPanel,
-            ICnCNetOptionsPanelViewModel cncnetOptionsPanel,
-            IUpdaterOptionsPanelViewModel updaterOptionsPanel,
-            IComponentsPanelViewModel componentsPanel)
+            DisplayOptionsPanelViewModel displayOptionsPanel,
+            AudioOptionsPanelViewModel audioOptionsPanel,
+            GameOptionsPanelViewModel gameOptionsPanel,
+            CnCNetOptionsPanelViewModel cncnetOptionsPanel,
+            UpdaterOptionsPanelViewModel updaterOptionsPanel,
+            ComponentsPanelViewModel componentsPanel)
         {
             this.displayOptionsPanel = displayOptionsPanel;
             this.audioOptionsPanel = audioOptionsPanel;
