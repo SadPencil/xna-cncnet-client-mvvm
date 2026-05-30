@@ -201,6 +201,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         for (int i = 0; i < MAX_PLAYER_COUNT; i++)
         {
             slots[i] = new PlayerSlotObservable();
+            slots[i].PropertyChanged += PlayerSlot_PropertyChanged;
             InitPlayerSlotOptions(slots[i], sides, selectorNames);
         }
         PlayerSlots = slots;
@@ -594,7 +595,24 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GameModeFilterOptions = options;
 
         int selectedIndex = options.FindIndex(o => o == currentSelection);
-        SelectedGameModeFilterIndex = selectedIndex >= 0 ? selectedIndex : 0;
+        selectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
+
+        if (SelectedGameModeFilterIndex == selectedIndex)
+        {
+            // Force refresh even if index didn't change
+            RefreshGameModeFilterFromIndex(selectedIndex);
+            MapSearchText = string.Empty;
+            ListMaps();
+
+            if (SelectedMapIndex == -1)
+                SelectedMapIndex = 0;
+            else
+                ChangeMap(GameModeMap);
+        }
+        else
+        {
+            SelectedGameModeFilterIndex = selectedIndex;
+        }
     }
 
     private void RefreshGameModeFilterFromIndex(int index)
@@ -967,6 +985,25 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         PlayerNames = Players.Select(p => p.Name).ToList();
 
         PlayerUpdatingInProgress = false;
+    }
+
+    private static readonly string[] PlayerSlotUserEditableProperties = new[]
+    {
+        nameof(PlayerSlotObservable.SelectedSideIndex),
+        nameof(PlayerSlotObservable.SelectedColorIndex),
+        nameof(PlayerSlotObservable.SelectedStartIndex),
+        nameof(PlayerSlotObservable.SelectedTeamIndex),
+        nameof(PlayerSlotObservable.SelectedNameIndex),
+    };
+
+    private void PlayerSlot_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (PlayerUpdatingInProgress)
+            return;
+        if (e.PropertyName == null || !Array.Exists(PlayerSlotUserEditableProperties, p => p == e.PropertyName))
+            return;
+
+        CopyPlayerDataFromUI();
     }
 
     protected virtual void CopyPlayerDataFromUI()

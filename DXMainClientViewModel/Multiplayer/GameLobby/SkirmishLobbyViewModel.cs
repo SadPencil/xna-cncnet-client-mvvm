@@ -463,6 +463,12 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         RandomSeed = random.Next();
     }
 
+    protected override void CopyPlayerDataFromUI()
+    {
+        base.CopyPlayerDataFromUI();
+        UpdateDiscordPresence();
+    }
+
     protected override void UpdateDiscordPresence(bool resetTimer = false)
     {
         if (DiscordHandler == null || Map == null || GameMode == null)
