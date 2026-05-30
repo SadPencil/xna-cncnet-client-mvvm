@@ -7,7 +7,6 @@ using DXMainClientMvvmContract.Domain;
 
 namespace DXMainClientMvvmContract.Campaign;
 
-
 public interface ICampaignTagSelectorViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> CampaignTags { get; }
