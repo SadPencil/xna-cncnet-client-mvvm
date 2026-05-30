@@ -2,7 +2,7 @@
 
 namespace DTAClient.Domain.Multiplayer.CnCNet
 {
-    public class SHA1EventArgs : EventArgs
+    public class SHA1EventArgs : EventArgs // checked
     {
         public SHA1EventArgs(string sha1, string mapName)
         {
