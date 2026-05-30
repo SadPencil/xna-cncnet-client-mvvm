@@ -10,7 +10,7 @@ namespace DTAClient.Domain.Multiplayer;
 /// Processes image extraction requests sequentially to limit CPU usage to a single thread.
 /// Images are disposed via ref-counting once evicted and all caller leases are released.
 /// </summary>
-public class MapPreviewCacheManager : DisposableCacheManagerBase<Map, Image>, IMapPreviewCacheManager
+public class MapPreviewCacheManager : DisposableCacheManagerBase<Map, Image>, IMapPreviewCacheManager // checked
 {
     public MapPreviewCacheManager(int capacity) : base(capacity) { }
 
