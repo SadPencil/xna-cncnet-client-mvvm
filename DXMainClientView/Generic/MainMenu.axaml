@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DXMainClientViewModel.Generic"
              xmlns:local="using:DXMainClientView.Generic"
+             xmlns:campaign="using:DXMainClientView.Campaign"
              x:Class="DXMainClientView.Generic.MainMenu"
              x:DataType="vm:IMainMenuViewModel"
              Background="Transparent">
@@ -178,6 +179,7 @@
     </Border>
 
     <!-- ========== Child Windows (IsVisible bound to their own ViewModels) ========== -->
+    <campaign:CampaignSelector x:Name="campaignSelector" />
     <local:OptionsWindow x:Name="optionsWindow" />
     <local:ExtrasWindow x:Name="extrasWindow" />
     <local:GameLoadingWindow x:Name="gameLoadingWindow" />

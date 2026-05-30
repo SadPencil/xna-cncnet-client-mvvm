@@ -3,7 +3,7 @@ using DXMainClientViewModel.Campaign;
 
 namespace DXMainClientView.Campaign;
 
-public partial class CampaignSelector : Window, ICampaignSelectorView
+public partial class CampaignSelector : UserControl
 {
     public CampaignSelector()
     {
@@ -14,15 +14,5 @@ public partial class CampaignSelector : Window, ICampaignSelectorView
     {
         get => DataContext as ICampaignSelectorViewModel;
         set => DataContext = value;
-    }
-
-    void ICampaignSelectorView.Show()
-    {
-        this.Show();
-    }
-
-    void ICampaignSelectorView.Hide()
-    {
-        Close();
     }
 }

@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using DXMainClientView.Campaign;
 using DXMainClientView.Services;
 using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Generic;
@@ -79,61 +78,23 @@ public partial class MainMenu : UserControl
             lblCnCNetPlayerCount.IsVisible = isVisible;
     }
 
-    // --- Child window wiring ---
+    // --- Child window wiring (all are UserControls with IsVisible="{Binding IsVisible}") ---
 
-    private CampaignSelector? campaignSelectorWindow;
-
-    /// <summary>
-    /// Wires up the CampaignSelector ViewModel. The CampaignSelector is a separate Window
-    /// that shows/hides based on IsVisible.
-    /// </summary>
     public void SetCampaignSelectorViewModel(ICampaignSelectorViewModel vm)
     {
-        vm.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName != nameof(ICampaignSelectorViewModel.IsVisible))
-                return;
-            Dispatcher.UIThread.Post(() =>
-            {
-                if (vm.IsVisible)
-                {
-                    if (campaignSelectorWindow == null)
-                    {
-                        campaignSelectorWindow = new CampaignSelector { ViewModel = vm };
-                        campaignSelectorWindow.Closed += (_, _) => campaignSelectorWindow = null;
-                    }
-                    campaignSelectorWindow.Show();
-                }
-                else
-                {
-                    campaignSelectorWindow?.Close();
-                }
-            });
-        };
+        campaignSelector.ViewModel = vm;
     }
 
-    /// <summary>
-    /// Sets the OptionsWindow ViewModel. The OptionsWindow is a UserControl
-    /// with IsVisible="{Binding IsVisible}" so it shows/hides automatically.
-    /// </summary>
     public void SetOptionsWindowViewModel(IOptionsWindowViewModel vm)
     {
         optionsWindow.ViewModel = vm;
     }
 
-    /// <summary>
-    /// Sets the ExtrasWindow ViewModel. The ExtrasWindow is a UserControl
-    /// with IsVisible="{Binding IsVisible}" so it shows/hides automatically.
-    /// </summary>
     public void SetExtrasWindowViewModel(IExtrasWindowViewModel vm)
     {
         extrasWindow.ViewModel = vm;
     }
 
-    /// <summary>
-    /// Sets the GameLoadingWindow ViewModel. The GameLoadingWindow is a UserControl
-    /// with IsVisible="{Binding IsVisible}" so it shows/hides automatically.
-    /// </summary>
     public void SetGameLoadingWindowViewModel(IGameLoadingWindowViewModel vm)
     {
         gameLoadingWindow.ViewModel = vm;

@@ -1,11 +1,10 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:DXMainClientViewModel.Campaign"
-        x:Class="DXMainClientView.Campaign.CampaignSelector"
-        x:DataType="vm:ICampaignSelectorViewModel"
-        Title="Campaign"
-        Width="800" Height="600"
-        WindowStartupLocation="CenterScreen">
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DXMainClientViewModel.Campaign"
+             x:Class="DXMainClientView.Campaign.CampaignSelector"
+             x:DataType="vm:ICampaignSelectorViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="800" Height="600">
   <DockPanel>
     <!-- Bottom buttons -->
     <StackPanel DockPanel.Dock="Bottom" Margin="12" Orientation="Horizontal"
@@ -43,4 +42,4 @@
       </StackPanel>
     </Grid>
   </DockPanel>
-</Window>
+</UserControl>
