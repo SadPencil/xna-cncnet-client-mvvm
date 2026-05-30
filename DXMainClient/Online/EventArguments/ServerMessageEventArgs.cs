@@ -5,7 +5,7 @@ namespace DTAClient.Online.EventArguments
     /// <summary>
     /// Generic event argument class for a IRC server message.
     /// </summary>
-    public class ServerMessageEventArgs : EventArgs
+    public class ServerMessageEventArgs : EventArgs // checked
     {
         public ServerMessageEventArgs(string message)
         {
