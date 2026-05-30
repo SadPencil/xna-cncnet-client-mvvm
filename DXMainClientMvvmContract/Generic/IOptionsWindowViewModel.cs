@@ -9,6 +9,14 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     int SelectedPanelIndex { get; set; }
     bool IsComponentsPanelVisible { get; }
     bool IsUpdaterPanelVisible { get; }
+
+    // Panel visibility (derived from SelectedPanelIndex)
+    bool IsDisplayPanelVisible { get; }
+    bool IsAudioPanelVisible { get; }
+    bool IsGamePanelVisible { get; }
+    bool IsCnCNetPanelVisible { get; }
+    bool IsUpdaterPanelVisibleInner { get; }
+    bool IsComponentsPanelVisibleInner { get; }
     bool IsComponentDownloadInProgress { get; set; }
     bool IsVisible { get; set; }
 
@@ -22,6 +30,7 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
 
     IRelayCommand SaveCommand { get; }
     IRelayCommand CancelCommand { get; }
+    IRelayCommand<int> SelectPanelCommand { get; }
     IRelayCommand OpenComponentsPanelCommand { get; }
     IRelayCommand ForceUpdateCommand { get; }
     IRelayCommand DismissMessageBoxCommand { get; }

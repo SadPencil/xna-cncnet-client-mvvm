@@ -35,6 +35,16 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private int selectedPanelIndex;
 
+        partial void OnSelectedPanelIndexChanged(int value)
+        {
+            IsDisplayPanelVisible = value == 0;
+            IsAudioPanelVisible = value == 1;
+            IsGamePanelVisible = value == 2;
+            IsCnCNetPanelVisible = value == 3;
+            IsUpdaterPanelVisibleInner = value == 4;
+            IsComponentsPanelVisibleInner = value == 5;
+        }
+
         [ObservableProperty]
         private bool isComponentsPanelVisible;
 
@@ -46,6 +56,25 @@ namespace DXMainClientViewModel.Generic
 
         [ObservableProperty]
         private bool isVisible;
+
+        // Panel visibility (derived from SelectedPanelIndex)
+        [ObservableProperty]
+        private bool isDisplayPanelVisible = true;
+
+        [ObservableProperty]
+        private bool isAudioPanelVisible;
+
+        [ObservableProperty]
+        private bool isGamePanelVisible;
+
+        [ObservableProperty]
+        private bool isCnCNetPanelVisible;
+
+        [ObservableProperty]
+        private bool isUpdaterPanelVisibleInner;
+
+        [ObservableProperty]
+        private bool isComponentsPanelVisibleInner;
 
         // Dialog state
         [ObservableProperty]
@@ -167,6 +196,12 @@ namespace DXMainClientViewModel.Generic
             }
 
             IsVisible = false;
+        }
+
+        [RelayCommand]
+        private void SelectPanel(int index)
+        {
+            SelectedPanelIndex = index;
         }
 
         [RelayCommand]

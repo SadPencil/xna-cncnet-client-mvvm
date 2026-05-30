@@ -12,17 +12,17 @@
                   Orientation="Horizontal" Spacing="2"
                   Canvas.Left="12" Canvas.Top="12">
         <Button x:Name="tabDisplay" Content="Display" Width="92" Height="23" FontWeight="Bold"
-                Tag="0" />
+                Command="{Binding SelectPanelCommand}" CommandParameter="0" />
         <Button x:Name="tabAudio" Content="Audio" Width="92" Height="23" FontWeight="Bold"
-                Tag="1" />
+                Command="{Binding SelectPanelCommand}" CommandParameter="1" />
         <Button x:Name="tabGame" Content="Game" Width="92" Height="23" FontWeight="Bold"
-                Tag="2" />
+                Command="{Binding SelectPanelCommand}" CommandParameter="2" />
         <Button x:Name="tabCnCNet" Content="CnCNet" Width="92" Height="23" FontWeight="Bold"
-                Tag="3" />
+                Command="{Binding SelectPanelCommand}" CommandParameter="3" />
         <Button x:Name="tabUpdater" Content="Updater" Width="92" Height="23" FontWeight="Bold"
-                Tag="4" />
+                Command="{Binding SelectPanelCommand}" CommandParameter="4" />
         <Button x:Name="tabComponents" Content="Components" Width="92" Height="23" FontWeight="Bold"
-                Tag="5"
+                Command="{Binding SelectPanelCommand}" CommandParameter="5"
                 IsVisible="{Binding IsComponentsPanelVisible}" />
       </StackPanel>
 
@@ -35,6 +35,7 @@
               Background="{DynamicResource XnaPanelBackgroundBrush}"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
+              IsVisible="{Binding IsDisplayPanelVisible}"
               Canvas.Left="12" Canvas.Top="37"
               Width="552" Height="389">
         <ScrollViewer>
@@ -75,9 +76,9 @@
               Background="{DynamicResource XnaPanelBackgroundBrush}"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
+              IsVisible="{Binding IsAudioPanelVisible}"
               Canvas.Left="12" Canvas.Top="37"
-              Width="552" Height="389"
-              IsVisible="False">
+              Width="552" Height="389">
         <ScrollViewer>
           <StackPanel Margin="12" Spacing="8">
             <TextBlock Text="Music Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
@@ -98,9 +99,9 @@
               Background="{DynamicResource XnaPanelBackgroundBrush}"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
+              IsVisible="{Binding IsGamePanelVisible}"
               Canvas.Left="12" Canvas.Top="37"
-              Width="552" Height="389"
-              IsVisible="False">
+              Width="552" Height="389">
         <ScrollViewer>
           <StackPanel Margin="12" Spacing="8">
             <TextBlock Text="Game Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
@@ -114,9 +115,9 @@
               Background="{DynamicResource XnaPanelBackgroundBrush}"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
+              IsVisible="{Binding IsCnCNetPanelVisible}"
               Canvas.Left="12" Canvas.Top="37"
-              Width="552" Height="389"
-              IsVisible="False">
+              Width="552" Height="389">
         <ScrollViewer>
           <StackPanel Margin="12" Spacing="8">
             <TextBlock Text="CnCNet Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
@@ -130,9 +131,9 @@
               Background="{DynamicResource XnaPanelBackgroundBrush}"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
+              IsVisible="{Binding IsUpdaterPanelVisibleInner}"
               Canvas.Left="12" Canvas.Top="37"
-              Width="552" Height="389"
-              IsVisible="False">
+              Width="552" Height="389">
         <ScrollViewer>
           <StackPanel Margin="12" Spacing="8">
             <TextBlock Text="Updater Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
@@ -146,9 +147,9 @@
               Background="{DynamicResource XnaPanelBackgroundBrush}"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
+              IsVisible="{Binding IsComponentsPanelVisibleInner}"
               Canvas.Left="12" Canvas.Top="37"
-              Width="552" Height="389"
-              IsVisible="False">
+              Width="552" Height="389">
         <ScrollViewer>
           <StackPanel Margin="12" Spacing="8">
             <TextBlock Text="Components" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
