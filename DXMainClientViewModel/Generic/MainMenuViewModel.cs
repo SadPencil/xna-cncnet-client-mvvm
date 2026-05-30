@@ -5,6 +5,7 @@ using ClientCore;
 using ClientCore.Enums;
 using ClientCore.Extensions;
 using ClientCore.I18N;
+using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online;
@@ -35,6 +36,10 @@ namespace DXMainClientViewModel.Generic
         private readonly CnCNetManager connectionManager;
         private readonly IOptionsWindowViewModel optionsWindowViewModel;
         private readonly ITopBarViewModel topBarViewModel;
+        private readonly CampaignSelectorViewModel campaignSelectorViewModel;
+        private readonly GameLoadingWindowViewModel gameLoadingWindowViewModel;
+        private readonly ExtrasWindowViewModel extrasWindowViewModel;
+        private readonly StatisticsWindowViewModel statisticsWindowViewModel;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -121,26 +126,6 @@ namespace DXMainClientViewModel.Generic
         /// </summary>
         public event Action? OptionsWindowClosed;
 
-        /// <summary>
-        /// Domain event: fired when campaign selector should open. Parent subscribes.
-        /// </summary>
-        public event Action? CampaignRequested;
-
-        /// <summary>
-        /// Domain event: fired when load game window should open. Parent subscribes.
-        /// </summary>
-        public event Action? LoadGameRequested;
-
-        /// <summary>
-        /// Domain event: fired when extras window should open. Parent subscribes.
-        /// </summary>
-        public event Action? ExtrasRequested;
-
-        /// <summary>
-        /// Domain event: fired when statistics window should open. Parent subscribes.
-        /// </summary>
-        public event Action? StatisticsRequested;
-
         public MainMenuViewModel(
             IUpdateService updateService,
             IGameProcessService gameProcessService,
@@ -149,7 +134,11 @@ namespace DXMainClientViewModel.Generic
             IUIThreadMarshaller uiThreadMarshaller,
             CnCNetManager connectionManager,
             IOptionsWindowViewModel optionsWindowViewModel,
-            ITopBarViewModel topBarViewModel)
+            ITopBarViewModel topBarViewModel,
+            CampaignSelectorViewModel campaignSelectorViewModel,
+            GameLoadingWindowViewModel gameLoadingWindowViewModel,
+            ExtrasWindowViewModel extrasWindowViewModel,
+            StatisticsWindowViewModel statisticsWindowViewModel)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -159,6 +148,10 @@ namespace DXMainClientViewModel.Generic
             this.connectionManager = connectionManager;
             this.optionsWindowViewModel = optionsWindowViewModel;
             this.topBarViewModel = topBarViewModel;
+            this.campaignSelectorViewModel = campaignSelectorViewModel;
+            this.gameLoadingWindowViewModel = gameLoadingWindowViewModel;
+            this.extrasWindowViewModel = extrasWindowViewModel;
+            this.statisticsWindowViewModel = statisticsWindowViewModel;
 
             // Subscribe to TopBar state changes for panel switching
             topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
@@ -246,19 +239,19 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void StartCampaign()
         {
-            CampaignRequested?.Invoke();
+            campaignSelectorViewModel.IsVisible = true;
         }
 
         [RelayCommand]
         private void ContinueCampaign()
         {
-            CampaignRequested?.Invoke();
+            campaignSelectorViewModel.IsVisible = true;
         }
 
         [RelayCommand]
         private void LoadGame()
         {
-            LoadGameRequested?.Invoke();
+            gameLoadingWindowViewModel.IsVisible = true;
         }
 
         [RelayCommand]
@@ -301,7 +294,7 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void OpenStatistics()
         {
-            StatisticsRequested?.Invoke();
+            statisticsWindowViewModel.IsVisible = true;
         }
 
         [RelayCommand]
@@ -313,7 +306,7 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void OpenExtras()
         {
-            ExtrasRequested?.Invoke();
+            extrasWindowViewModel.IsVisible = true;
         }
 
         [RelayCommand]

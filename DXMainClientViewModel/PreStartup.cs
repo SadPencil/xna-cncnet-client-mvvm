@@ -185,7 +185,11 @@ public static class PreStartup
             sp.GetRequiredService<IUIThreadMarshaller>(),
             sp.GetRequiredService<CnCNetManager>(),
             sp.GetRequiredService<IOptionsWindowViewModel>(),
-            sp.GetRequiredService<ITopBarViewModel>()));
+            sp.GetRequiredService<ITopBarViewModel>(),
+            (CampaignSelectorViewModel)sp.GetRequiredService<ICampaignSelectorViewModel>(),
+            (GameLoadingWindowViewModel)sp.GetRequiredService<IGameLoadingWindowViewModel>(),
+            (ExtrasWindowViewModel)sp.GetRequiredService<IExtrasWindowViewModel>(),
+            (StatisticsWindowViewModel)sp.GetRequiredService<IStatisticsWindowViewModel>()));
 
         services.AddTransient<ILoadingScreenViewModel, LoadingScreenViewModel>();
         services.AddTransient<IPrivacyNotificationViewModel, PrivacyNotificationViewModel>();

@@ -65,6 +65,12 @@ namespace DXMainClientViewModel.Generic
             CanDeleteSavedGame = hasSelection;
         }
 
+        partial void OnIsVisibleChanged(bool value)
+        {
+            if (value)
+                ListSaves();
+        }
+
         /// <summary>
         /// Opens the window and refreshes the saved games list.
         /// </summary>
