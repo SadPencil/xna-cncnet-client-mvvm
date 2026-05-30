@@ -29,12 +29,12 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     /// The available game option filter definitions.
     /// The View uses these to create the filter UI controls.
     /// </summary>
-    public IReadOnlyList<GameOptionFilterDefinition> FilterDefinitions => _filterDefinitions;
+    public IReadOnlyList<IGameOptionFilterDefinition> FilterDefinitions => _filterDefinitions;
 
     /// <summary>
     /// The current filter values. The View binds dropdown selected indices to these.
     /// </summary>
-    public IReadOnlyList<GameOptionFilterValue> FilterValues => _filterValues;
+    public IReadOnlyList<IGameOptionFilterValue> FilterValues => _filterValues;
 
     // --- Observable state ---
 

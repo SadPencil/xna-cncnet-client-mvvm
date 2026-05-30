@@ -3,12 +3,12 @@ namespace DXMainClientViewModel.Multiplayer;
 /// <summary>
 /// Represents the current value of a game option filter.
 /// </summary>
-public sealed class GameOptionFilterValue
+public sealed class GameOptionFilterValue : IGameOptionFilterValue
 {
     /// <summary>
     /// The filter definition this value corresponds to.
     /// </summary>
-    public required GameOptionFilterDefinition Definition { get; init; }
+    public required IGameOptionFilterDefinition Definition { get; init; }
 
     /// <summary>
     /// The selected index in the UI dropdown.

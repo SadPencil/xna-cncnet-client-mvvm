@@ -12,7 +12,7 @@ public interface IGameLoadingLobbyViewModel : INotifyPropertyChanged
     string GameMode { get; }
     string HostName { get; }
     IReadOnlyList<string> PlayerNames { get; }
-    IReadOnlyList<PlayerDisplayInfo> PlayerDisplayInfo { get; }
+    IReadOnlyList<IPlayerDisplayInfo> PlayerDisplayInfo { get; }
     IReadOnlyList<string> ChatMessages { get; }
     IReadOnlyList<string> SavedGameNames { get; }
     int SelectedSavedGameIndex { get; set; }

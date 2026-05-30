@@ -56,13 +56,13 @@ namespace DXMainClientViewModel.Generic
         /// Detailed statistics for the selected game.
         /// </summary>
         [ObservableProperty]
-        private List<GamePlayerStatistics> selectedGamePlayers = new();
+        private List<IGamePlayerStatistics> selectedGamePlayers = new();
 
         /// <summary>
         /// Total statistics values.
         /// </summary>
         [ObservableProperty]
-        private TotalStatistics totalStatistics = new();
+        private ITotalStatistics totalStatistics = new TotalStatistics();
 
         public StatisticsWindowViewModel(MapLoader mapLoader)
         {
@@ -184,7 +184,7 @@ namespace DXMainClientViewModel.Generic
                 players.Add(player);
             }
 
-            SelectedGamePlayers = players.OrderByDescending(p => p.Score).ToList();
+            SelectedGamePlayers = players.OrderByDescending(p => p.Score).Cast<IGamePlayerStatistics>().ToList();
         }
 
         private void ReadStatistics()
@@ -576,7 +576,7 @@ namespace DXMainClientViewModel.Generic
     /// <summary>
     /// Represents a player's statistics in a game.
     /// </summary>
-    public class GamePlayerStatistics
+    public class GamePlayerStatistics : IGamePlayerStatistics
     {
         public string Name { get; set; }
         public int Kills { get; set; }
@@ -598,7 +598,7 @@ namespace DXMainClientViewModel.Generic
     /// <summary>
     /// Represents total statistics across all games.
     /// </summary>
-    public class TotalStatistics
+    public class TotalStatistics : ITotalStatistics
     {
         public int GamesStarted { get; set; }
         public int GamesFinished { get; set; }

@@ -2,6 +2,6 @@ namespace DXMainClientViewModel.Online
 {
     public interface IMessageView
     {
-        void AddMessage(ChatMessage message);
+        void AddMessage(IChatMessage message);
     }
 }

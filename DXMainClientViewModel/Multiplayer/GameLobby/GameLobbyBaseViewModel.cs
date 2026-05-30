@@ -75,7 +75,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     private string _gameName = string.Empty;
 
     [ObservableProperty]
-    private IReadOnlyList<MapListItem> _mapListItems = Array.Empty<MapListItem>();
+    private IReadOnlyList<IMapListItem> _mapListItems = Array.Empty<IMapListItem>();
 
     [ObservableProperty]
     private int _selectedMapIndex = -1;
@@ -102,13 +102,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     private bool _isMapSortButtonEnabled = true;
 
     [ObservableProperty]
-    private IReadOnlyList<PlayerSlotObservable> _playerSlots = Array.Empty<PlayerSlotObservable>();
+    private IReadOnlyList<IPlayerSlotObservable> _playerSlots = Array.Empty<IPlayerSlotObservable>();
 
     [ObservableProperty]
-    private IReadOnlyList<GameOptionCheckBox> _checkBoxes = Array.Empty<GameOptionCheckBox>();
+    private IReadOnlyList<IGameOptionCheckBox> _checkBoxes = Array.Empty<IGameOptionCheckBox>();
 
     [ObservableProperty]
-    private IReadOnlyList<GameOptionDropDown> _dropDowns = Array.Empty<GameOptionDropDown>();
+    private IReadOnlyList<IGameOptionDropDown> _dropDowns = Array.Empty<IGameOptionDropDown>();
 
     [ObservableProperty]
     private int _launchButtonRank;
@@ -487,7 +487,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             return;
         }
 
-        var item = MapListItems[SelectedMapIndex];
+        var item = (MapListItem)MapListItems[SelectedMapIndex];
         ChangeMap(item.Source);
     }
 
@@ -508,7 +508,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             return;
         }
 
-        var gmm = MapListItems[hoveredIndex].Source;
+        var gmm = ((MapListItem)MapListItems[hoveredIndex]).Source;
         if (gmm.Map.UntranslatedName != gmm.Map.Name)
             MapListTooltipText = "Original name:".L10N("Client:Main:OriginalMapName") + " " + gmm.Map.UntranslatedName;
         else
@@ -640,13 +640,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         disableGameOptionUpdateBroadcast = true;
 
         // Reset forced options
-        foreach (var cb in CheckBoxes)
+        foreach (GameOptionCheckBox cb in CheckBoxes)
             cb.IsEnabled = true;
-        foreach (var dd in DropDowns)
+        foreach (GameOptionDropDown dd in DropDowns)
             dd.IsEnabled = true;
 
         // Enable all sides and colors by default
-        foreach (var slot in PlayerSlots)
+        foreach (PlayerSlotObservable slot in PlayerSlots)
         {
             slot.SideSelectable = Enumerable.Repeat(true, slot.SideSelectable.Count()).ToArray();
             slot.ColorSelectable = Enumerable.Repeat(true, slot.ColorSelectable.Count()).ToArray();
@@ -663,7 +663,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             startOptions.Add(i.ToString());
             startSelectable.Add(GameModeMap.AllowedStartingLocations.Contains(i));
         }
-        foreach (var slot in PlayerSlots)
+        foreach (PlayerSlotObservable slot in PlayerSlots)
         {
             slot.StartOptions = startOptions;
             slot.StartSelectable = startSelectable;
@@ -675,8 +675,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             AIPlayers.Clear();
 
         // Clone lists to track which options were NOT forced
-        var checkBoxListClone = new List<GameOptionCheckBox>(CheckBoxes);
-        var dropDownListClone = new List<GameOptionDropDown>(DropDowns);
+        var checkBoxListClone = CheckBoxes.Cast<GameOptionCheckBox>().ToList();
+        var dropDownListClone = DropDowns.Cast<GameOptionDropDown>().ToList();
 
         // Apply forced options from GameMode and Map
         ApplyForcedCheckBoxOptions(checkBoxListClone, GameMode.ForcedCheckBoxValues);
@@ -756,7 +756,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         foreach (var option in forcedOptions)
         {
-            var cb = CheckBoxes.FirstOrDefault(c => c.Name == option.Key);
+            var cb = CheckBoxes.Cast<GameOptionCheckBox>().FirstOrDefault(c => c.Name == option.Key);
             if (cb != null)
             {
                 cb.IsChecked = option.Value;
@@ -770,7 +770,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         foreach (var option in forcedOptions)
         {
-            var dd = DropDowns.FirstOrDefault(d => d.Name == option.Key);
+            var dd = DropDowns.Cast<GameOptionDropDown>().FirstOrDefault(d => d.Name == option.Key);
             if (dd != null)
             {
                 dd.SelectedIndex = option.Value;
@@ -806,7 +806,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         PlayerUpdatingInProgress = true;
 
-        var slots = (List<PlayerSlotObservable>)PlayerSlots;
+        var slots = (IReadOnlyList<PlayerSlotObservable>)PlayerSlots;
         bool allowOptionsChange = AllowPlayerOptionsChange();
         var extraOpts = playerExtraOptions;
 
@@ -935,7 +935,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         ClearReadyStatuses();
 
-        var slots = PlayerSlots;
+        var slots = (IReadOnlyList<PlayerSlotObservable>)PlayerSlots;
 
         var oldSideId = Players.Find(p => p.Name == ProgramConstants.PLAYERNAME)?.SideId;
 
@@ -998,7 +998,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         int defaultSide = 0;
         int allowedSideCount = disallowedSideArray.Count(b => !b);
 
-        var slots = PlayerSlots;
+        var slots = (IReadOnlyList<PlayerSlotObservable>)PlayerSlots;
 
         if (allowedSideCount == 1)
         {
@@ -1139,7 +1139,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
                 returnValue[disallowedSideIndex] = true;
         }
 
-        foreach (var cb in CheckBoxes)
+        foreach (GameOptionCheckBox cb in CheckBoxes)
             cb.Setting.ApplyDisallowedSideIndex(returnValue);
 
         return returnValue;
@@ -1341,7 +1341,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         foreach (var kvp in preset.GetCheckBoxValues())
         {
-            var cb = CheckBoxes.FirstOrDefault(c => c.Name == kvp.Key);
+            var cb = CheckBoxes.Cast<GameOptionCheckBox>().FirstOrDefault(c => c.Name == kvp.Key);
             if (cb != null && cb.IsEnabled)
             {
                 cb.IsChecked = kvp.Value;
@@ -1351,7 +1351,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         foreach (var kvp in preset.GetDropDownValues())
         {
-            var dd = DropDowns.FirstOrDefault(d => d.Name == kvp.Key);
+            var dd = DropDowns.Cast<GameOptionDropDown>().FirstOrDefault(d => d.Name == kvp.Key);
             if (dd != null && dd.IsEnabled)
             {
                 dd.SelectedIndex = kvp.Value;
@@ -1371,12 +1371,12 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         if (GameMode == null || Map == null)
             return Rank.None;
 
-        foreach (var cb in CheckBoxes)
+        foreach (GameOptionCheckBox cb in CheckBoxes)
         {
             if (cb.Setting.AllowScoring)
                 return Rank.None;
         }
-        foreach (var dd in DropDowns)
+        foreach (GameOptionDropDown dd in DropDowns)
         {
             if (dd.Setting.AllowScoring)
                 return Rank.None;
@@ -1631,9 +1631,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         spawnIni.AddSection(settings);
         WriteSpawnIniAdditions(spawnIni);
 
-        foreach (var cb in CheckBoxes)
+        foreach (GameOptionCheckBox cb in CheckBoxes)
             cb.Setting.ApplySpawnIniCode(spawnIni);
-        foreach (var dd in DropDowns)
+        foreach (GameOptionDropDown dd in DropDowns)
             dd.Setting.ApplySpawnIniCode(spawnIni);
 
         // Forced spawn.ini options
@@ -1750,9 +1750,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             mapIni.SetStringValue("Basic", "OriginalFilename", mapIniFileName);
         }
 
-        foreach (var cb in CheckBoxes)
+        foreach (GameOptionCheckBox cb in CheckBoxes)
             cb.Setting.ApplyMapCode(mapIni, GameMode);
-        foreach (var dd in DropDowns)
+        foreach (GameOptionDropDown dd in DropDowns)
             dd.Setting.ApplyMapCode(mapIni, GameMode);
 
         mapIni.MoveSectionToFirst("MultiplayerDialogSettings");
@@ -1893,7 +1893,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             Map.UntranslatedName, GameMode.UntranslatedUIName, Players.Count, GameModeMap.IsCoop);
 
         bool isValidForStar = true;
-        foreach (var cb in CheckBoxes)
+        foreach (GameOptionCheckBox cb in CheckBoxes)
         {
             if (!cb.Setting.AllowScoring)
             {
@@ -1903,7 +1903,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
         if (isValidForStar)
         {
-            foreach (var dd in DropDowns)
+            foreach (GameOptionDropDown dd in DropDowns)
             {
                 if (!dd.Setting.AllowScoring)
                 {

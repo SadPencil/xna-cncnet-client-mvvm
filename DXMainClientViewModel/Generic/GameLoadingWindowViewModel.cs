@@ -89,7 +89,7 @@ namespace DXMainClientViewModel.Generic
             SavedGame sg = SavedGames[SelectedSavedGameIndex];
             Logger.Log("Loading saved game " + sg.FileName);
 
-            Mission mission = campaignSelectorViewModel.UniqueIDToMissions
+            Mission mission = (Mission)campaignSelectorViewModel.UniqueIDToMissions
                 .GetValueOrDefault(sg.CustomMissionID, null);
 
             CustomMissionHelper.DeleteSupplementalMissionFiles();

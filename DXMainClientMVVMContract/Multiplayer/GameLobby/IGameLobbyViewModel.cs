@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
-using DXMainClientViewModel.Domain.Multiplayer;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
@@ -20,7 +19,7 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     int SelectedPlayerIndex { get; set; }
 
     // --- Map list ---
-    IReadOnlyList<MapListItem> MapListItems { get; }
+    IReadOnlyList<IMapListItem> MapListItems { get; }
     int SelectedMapIndex { get; set; }
     IReadOnlyList<string> GameModeFilterOptions { get; }
     int SelectedGameModeFilterIndex { get; set; }
@@ -31,11 +30,11 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     bool IsMapSortButtonEnabled { get; }
 
     // --- Player slots (8 slots) ---
-    IReadOnlyList<PlayerSlotObservable> PlayerSlots { get; }
+    IReadOnlyList<IPlayerSlotObservable> PlayerSlots { get; }
 
     // --- Game options ---
-    IReadOnlyList<GameOptionCheckBox> CheckBoxes { get; }
-    IReadOnlyList<GameOptionDropDown> DropDowns { get; }
+    IReadOnlyList<IGameOptionCheckBox> CheckBoxes { get; }
+    IReadOnlyList<IGameOptionDropDown> DropDowns { get; }
 
     // --- Launch state ---
     int LaunchButtonRank { get; }

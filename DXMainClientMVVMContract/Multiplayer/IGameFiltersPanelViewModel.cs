@@ -14,8 +14,8 @@ public interface IGameFiltersPanelViewModel : INotifyPropertyChanged
     int MaxPlayerCount { get; set; }
     bool IsPanelVisible { get; set; }
 
-    IReadOnlyList<GameOptionFilterDefinition> FilterDefinitions { get; }
-    IReadOnlyList<GameOptionFilterValue> FilterValues { get; }
+    IReadOnlyList<IGameOptionFilterDefinition> FilterDefinitions { get; }
+    IReadOnlyList<IGameOptionFilterValue> FilterValues { get; }
 
     IRelayCommand ApplyFiltersCommand { get; }
     IRelayCommand ResetFiltersCommand { get; }

@@ -46,10 +46,10 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
 
     // --- Properties delegated to child ---
 
-    public IReadOnlyDictionary<int, Mission> UniqueIDToMissions =>
-        campaignSelector?.UniqueIDToMissions ?? new Dictionary<int, Mission>();
-    public IReadOnlyCollection<Mission> AllMissions =>
-        campaignSelector?.AllMissions ?? Array.Empty<Mission>();
+    public IReadOnlyDictionary<int, IMission> UniqueIDToMissions =>
+        campaignSelector?.UniqueIDToMissions ?? new Dictionary<int, IMission>();
+    public IReadOnlyCollection<IMission> AllMissions =>
+        campaignSelector?.AllMissions ?? Array.Empty<IMission>();
 
     // --- Constructor ---
 

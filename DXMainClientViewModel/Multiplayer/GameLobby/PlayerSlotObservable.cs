@@ -6,7 +6,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// <summary>
 /// Observable state for a single player slot (dropdowns for name, side, color, start, team).
 /// </summary>
-public class PlayerSlotObservable : ObservableObject
+public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
 {
     private string _playerName = string.Empty;
     public string PlayerName

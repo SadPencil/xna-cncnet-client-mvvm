@@ -69,10 +69,10 @@ namespace DXMainClientViewModel.Campaign
         private Mission? missionToLaunch;
 
         private List<Mission> _allMissions = [];
-        public IReadOnlyCollection<Mission> AllMissions { get => _allMissions; }
+        public IReadOnlyCollection<IMission> AllMissions { get => _allMissions; }
 
         private Dictionary<int, Mission> _uniqueIDToMissions = new();
-        public IReadOnlyDictionary<int, Mission> UniqueIDToMissions => _uniqueIDToMissions;
+        public IReadOnlyDictionary<int, IMission> UniqueIDToMissions => (IReadOnlyDictionary<int, IMission>)_uniqueIDToMissions;
 
         private readonly Action? onReturnRequested;
 
@@ -105,7 +105,7 @@ namespace DXMainClientViewModel.Campaign
         #region Observable Properties
 
         [ObservableProperty]
-        private IReadOnlyList<CampaignListItem> campaignListItems = [];
+        private IReadOnlyList<ICampaignListItem> campaignListItems = [];
 
         [ObservableProperty]
         private int selectedCampaignIndex = -1;
@@ -336,7 +336,7 @@ namespace DXMainClientViewModel.Campaign
             SelectedCampaignIndex = -1;
 
             // Select missions with the filter
-            IEnumerable<Mission> missions = AllMissions;
+            IEnumerable<Mission> missions = AllMissions.Cast<Mission>();
             if (disableCustomMissions && disableOfficialMissions)
             {
                 // do nothing

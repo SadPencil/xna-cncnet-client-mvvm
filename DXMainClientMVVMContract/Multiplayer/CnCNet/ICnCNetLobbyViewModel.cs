@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
-
-using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Multiplayer.GameLobby;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
@@ -34,11 +32,11 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
 
     // View-reactive state
     string? PendingMessage { get; set; }
-    PendingYesNoDialogData? PendingYesNoDialog { get; set; }
+    IPendingYesNoDialogData? PendingYesNoDialog { get; set; }
     bool IsUpdateCheckNeeded { get; set; }
     bool IsLoginWindowVisible { get; set; }
     bool IsGameCreationPanelVisible { get; set; }
-    PendingGameInviteData? PendingGameInvite { get; set; }
+    IPendingGameInviteData? PendingGameInvite { get; set; }
     string? SoundToPlay { get; set; }
 
     IRelayCommand CreateGameCommand { get; }
@@ -57,15 +55,15 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     // Lifecycle methods
     void Initialize();
     void SetGameLobbies(ICnCNetGameLobbyViewModel gameLobby, ICnCNetGameLoadingLobbyViewModel gameLoadingLobby);
-    void SetPrivateMessagingWindow(PrivateMessagingWindowViewModel pmWindow);
+    void SetPrivateMessagingWindow(IPrivateMessagingWindowViewModel pmWindow);
     void SwitchOn();
     void SwitchOff();
     void Clean();
 
     // Coordination methods (called by parent MainMenu)
-    void OnGameCreated(string gameRoomName, string channelName, string password, int maxPlayers, CnCNetTunnel tunnel, int skillLevel);
-    void OnLoadedGameCreated(string gameRoomName, string channelName, string password, CnCNetTunnel tunnel);
-    void OnPasswordEntered(HostedCnCNetGame game, string password);
+    void OnGameCreated(string gameRoomName, string channelName, string password, int maxPlayers, Domain.Multiplayer.ICnCNetTunnel tunnel, int skillLevel);
+    void OnLoadedGameCreated(string gameRoomName, string channelName, string password, Domain.Multiplayer.ICnCNetTunnel tunnel);
+    void OnPasswordEntered(Domain.Multiplayer.IHostedCnCNetGame game, string password);
     void OnGameLobbyLeft();
     void OnGameLoadingLobbyLeft();
     void OnGameFiltersPanelClosed();

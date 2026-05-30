@@ -75,7 +75,7 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
 
     // Store game data for View
     private readonly List<GameListItemData> _gameListItems = new();
-    public IReadOnlyList<GameListItemData> GameListItems => _gameListItems;
+    public IReadOnlyList<IGameListItemData> GameListItems => _gameListItems;
 
     // --- Constructor ---
 
@@ -186,6 +186,6 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
 /// <summary>
 /// Data for a game list item.
 /// </summary>
-public record GameListItemData(string InternalName, string UIName, bool IsLocalGame, bool IsFollowed);
+public record GameListItemData(string InternalName, string UIName, bool IsLocalGame, bool IsFollowed) : IGameListItemData;
 
 

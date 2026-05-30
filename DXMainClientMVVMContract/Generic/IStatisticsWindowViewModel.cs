@@ -14,8 +14,8 @@ public interface IStatisticsWindowViewModel : INotifyPropertyChanged
     bool IncludeSpectatedGames { get; set; }
     List<string> StatisticEntrySummaries { get; }
     bool IsVisible { get; set; }
-    List<GamePlayerStatistics> SelectedGamePlayers { get; }
-    TotalStatistics TotalStatistics { get; }
+    List<IGamePlayerStatistics> SelectedGamePlayers { get; }
+    ITotalStatistics TotalStatistics { get; }
     bool ShowClearConfirmation { get; set; }
 
     IRelayCommand RefreshCommand { get; }

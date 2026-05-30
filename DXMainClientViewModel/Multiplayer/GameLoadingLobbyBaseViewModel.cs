@@ -79,7 +79,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     public IReadOnlyList<string> SavedGameNames => _savedGameNames;
 
     private readonly System.Collections.ObjectModel.ObservableCollection<PlayerDisplayInfo> _playerDisplayInfo = new();
-    public IReadOnlyList<PlayerDisplayInfo> PlayerDisplayInfo => _playerDisplayInfo;
+    public IReadOnlyList<IPlayerDisplayInfo> PlayerDisplayInfo => _playerDisplayInfo;
 
     // --- Events ---
     public event EventHandler? GameLeft;
@@ -423,7 +423,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 /// <summary>
 /// Display info for a player in the loading lobby.
 /// </summary>
-public class PlayerDisplayInfo
+public class PlayerDisplayInfo : IPlayerDisplayInfo
 {
     public string Name { get; }
     public bool IsPresent { get; }

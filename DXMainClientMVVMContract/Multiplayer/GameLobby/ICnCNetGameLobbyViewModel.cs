@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 using DXMainClientViewModel.Domain.Multiplayer;
-using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
@@ -17,14 +16,14 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     int SkillLevel { get; }
     bool IsCustomPassword { get; }
     bool TunnelErrorMode { get; }
-    IRCColor ChatColor { get; set; }
+    IIRCColor ChatColor { get; set; }
 
     // --- Commands ---
     IRelayCommand ChangeTunnelCommand { get; }
     IRelayCommand LeaveGameLobbyCommand { get; }
 
     // --- Lifecycle (called by main lobby when creating/joining game) ---
-    void SetUp(Channel channel, bool isHost, int maxPlayers, CnCNetTunnel tunnel, string hostName, bool isCustomPassword, int skillLevel);
+    void SetUp(IChannel channel, bool isHost, int maxPlayers, ICnCNetTunnel tunnel, string hostName, bool isCustomPassword, int skillLevel);
     void OnJoined();
     void Clear();
     void LeaveGameLobby();

@@ -1,6 +1,6 @@
 namespace DXMainClientViewModel.Online
 {
-    public class IRCColor
+    public class IRCColor : IIRCColor
     {
         public IRCColor(string name, bool selectable, int r, int g, int b, int ircColorId)
         {

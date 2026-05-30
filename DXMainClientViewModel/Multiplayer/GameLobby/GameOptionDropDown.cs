@@ -7,7 +7,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// <summary>
 /// Observable wrapper for a game option dropdown.
 /// </summary>
-public class GameOptionDropDown : ObservableObject
+public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
 {
     public IGameSessionSetting Setting { get; }
 

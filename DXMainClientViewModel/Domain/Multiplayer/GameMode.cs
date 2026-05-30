@@ -13,7 +13,7 @@ namespace DXMainClientViewModel.Domain.Multiplayer
     /// <summary>
     /// A multiplayer game mode.
     /// </summary>
-    public class GameMode : GameModeMapBase, ICloneable
+    public class GameMode : GameModeMapBase, ICloneable, IGameMode
     {
         public GameMode(string name)
         {

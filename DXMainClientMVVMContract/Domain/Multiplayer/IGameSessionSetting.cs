@@ -36,7 +36,7 @@ public interface IGameSessionSetting
     /// <summary>Applies the associated code to the map INI file.</summary>
     /// <param name="mapIni">The map INI file.</param>
     /// <param name="gameMode">Currently selected gamemode, if applicable.</param>
-    void ApplyMapCode(IniFile mapIni, GameMode gameMode);
+    void ApplyMapCode(IniFile mapIni, IGameMode gameMode);
 
     /// <summary>Applies disallowed side indexes based on this setting's state.</summary>
     /// <param name="disallowedArray">Array of booleans indicating which sides are disallowed.</param>

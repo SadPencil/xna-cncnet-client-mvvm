@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 
 namespace DXMainClientViewModel.Generic;
@@ -9,4 +10,6 @@ public interface ILoadingScreenViewModel : INotifyPropertyChanged
     int ProgressPercentage { get; }
     bool IsIndeterminate { get; }
     bool IsLoading { get; }
+
+    event EventHandler Completed;
 }

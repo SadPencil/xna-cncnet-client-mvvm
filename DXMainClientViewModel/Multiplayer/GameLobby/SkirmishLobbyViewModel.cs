@@ -359,7 +359,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
                 int savedIndex = skirmishSettingsIni.GetIntValue("GameOptions", dd.Name, dd.SelectedIndex);
                 if (savedIndex > -1 && savedIndex < dd.Items.Count)
-                    dd.SelectedIndex = savedIndex;
+                    ((GameOptionDropDown)dd).SelectedIndex = savedIndex;
             }
 
             foreach (var cb in CheckBoxes)
@@ -384,7 +384,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
                     }
                 }
 
-                cb.IsChecked = skirmishSettingsIni.GetBooleanValue("GameOptions", cb.Name, cb.IsChecked);
+                ((GameOptionCheckBox)cb).IsChecked = skirmishSettingsIni.GetBooleanValue("GameOptions", cb.Name, cb.IsChecked);
             }
         }
     }

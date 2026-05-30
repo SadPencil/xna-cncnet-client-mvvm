@@ -1136,7 +1136,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
 
         for (int i = 0; i < CheckBoxes.Count; i++)
         {
-            var chkBox = CheckBoxes[i];
+            var chkBox = (GameOptionCheckBox)CheckBoxes[i];
 
             bool oldValue = chkBox.IsChecked;
             chkBox.IsChecked = Conversions.IntFromString(parts[i], -1) > 0;
@@ -1154,7 +1154,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         {
             int index = Conversions.IntFromString(parts[CheckBoxes.Count + i], -1);
 
-            var dd = DropDowns[i];
+            var dd = (GameOptionDropDown)DropDowns[i];
 
             if (index < 0 || index >= dd.Items.Count)
                 return;

@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
+using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Online;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
@@ -14,9 +14,9 @@ public interface ICnCNetGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
 
     IRelayCommand ChangeTunnelCommand { get; }
 
-    void SetUp(bool isHost, CnCNetTunnel tunnel, Channel channel, string hostName);
+    void SetUp(bool isHost, ICnCNetTunnel tunnel, IChannel channel, string hostName);
     void OnJoined();
     void Clear();
-    void ChangeChatColor(IRCColor color);
-    void OnTunnelSelected(CnCNetTunnel tunnel);
+    void ChangeChatColor(IIRCColor color);
+    void OnTunnelSelected(ICnCNetTunnel tunnel);
 }

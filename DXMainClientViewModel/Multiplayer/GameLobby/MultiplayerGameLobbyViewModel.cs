@@ -176,7 +176,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         // Add Spectator side to all player slots (matches original MultiplayerGameLobby.Initialize)
         const string spectatorName = "Spectator";
         string spectatorL10N = spectatorName.L10N("Client:Sides:SpectatorSide");
-        foreach (var slot in PlayerSlots)
+        foreach (PlayerSlotObservable slot in PlayerSlots)
         {
             var sideOptions = new List<string>(slot.SideOptions) { spectatorL10N };
             slot.SideOptions = sideOptions;

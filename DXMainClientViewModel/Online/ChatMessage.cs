@@ -2,7 +2,7 @@ using System;
 
 namespace DXMainClientViewModel.Online
 {
-    public class ChatMessage
+    public class ChatMessage : IChatMessage
     {
         /// <summary>
         /// Creates a new ChatMessage instance.

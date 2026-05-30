@@ -7,14 +7,15 @@ using DXMainClientViewModel.Domain;
 
 namespace DXMainClientViewModel.Campaign;
 
+
 public interface ICampaignTagSelectorViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> CampaignTags { get; }
     int SelectedTagIndex { get; set; }
     string? SelectedTagName { get; }
     bool IsVisible { get; set; }
-    IReadOnlyDictionary<int, Mission> UniqueIDToMissions { get; }
-    IReadOnlyCollection<Mission> AllMissions { get; }
+    IReadOnlyDictionary<int, IMission> UniqueIDToMissions { get; }
+    IReadOnlyCollection<IMission> AllMissions { get; }
 
     IRelayCommand SelectTagCommand { get; }
     IRelayCommand ShowAllCampaignsCommand { get; }

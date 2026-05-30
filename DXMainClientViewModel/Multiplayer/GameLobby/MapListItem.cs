@@ -6,7 +6,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// <summary>
 /// Represents a single item in the map list for display.
 /// </summary>
-public class MapListItem : ObservableObject
+public class MapListItem : ObservableObject, IMapListItem
 {
     /// <summary>
     /// The source GameModeMap this item represents.

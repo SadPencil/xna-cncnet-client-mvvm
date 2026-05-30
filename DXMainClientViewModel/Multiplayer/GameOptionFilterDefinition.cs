@@ -3,7 +3,7 @@ namespace DXMainClientViewModel.Multiplayer;
 /// <summary>
 /// Defines a game option filter that can be displayed in the filters panel.
 /// </summary>
-public sealed class GameOptionFilterDefinition
+public sealed class GameOptionFilterDefinition : IGameOptionFilterDefinition
 {
     /// <summary>
     /// The name of the game option (matches INI key).

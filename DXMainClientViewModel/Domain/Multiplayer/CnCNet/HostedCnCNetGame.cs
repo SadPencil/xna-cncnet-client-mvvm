@@ -2,7 +2,7 @@
 
 namespace DXMainClientViewModel.Domain.Multiplayer.CnCNet
 {
-    public class HostedCnCNetGame : GenericHostedGame
+    public class HostedCnCNetGame : GenericHostedGame, IHostedCnCNetGame
     {
         public HostedCnCNetGame() { }
 
@@ -30,7 +30,7 @@ namespace DXMainClientViewModel.Domain.Multiplayer.CnCNet
         public bool Tunneled { get; set; }
         public bool IsLadder { get; set; }
         public string MatchID { get; set; }
-        public CnCNetTunnel TunnelServer { get; set; }
+        public ICnCNetTunnel TunnelServer { get; set; }
         public int[] BroadcastedGameOptionValues { get; set; }
 
         public override int Ping => TunnelServer.PingInMs;

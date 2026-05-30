@@ -94,7 +94,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private bool _tunnelErrorMode;
 
     [ObservableProperty]
-    private IRCColor _chatColor;
+    private IIRCColor _chatColor;
 
     // --- IsHost ---
     private bool _isHost;
@@ -221,25 +221,25 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         }
     }
 
-    public void SetUp(Channel channel, bool isHost, int playerLimit,
-        CnCNetTunnel tunnel, string hostName, bool isCustomPassword,
+    public void SetUp(IChannel channel, bool isHost, int playerLimit,
+        ICnCNetTunnel tunnel, string hostName, bool isCustomPassword,
         int skillLevel)
     {
-        this.channel = channel;
-        channel.MessageAdded += Channel_MessageAdded;
-        channel.CTCPReceived += Channel_CTCPReceived;
-        channel.UserKicked += Channel_UserKicked;
-        channel.UserQuitIRC += Channel_UserQuitIRC;
-        channel.UserLeft += Channel_UserLeft;
-        channel.UserAdded += Channel_UserAdded;
-        channel.UserNameChanged += Channel_UserNameChanged;
-        channel.UserListReceived += Channel_UserListReceived;
+        this.channel = (Channel)channel;
+        this.channel.MessageAdded += Channel_MessageAdded;
+        this.channel.CTCPReceived += Channel_CTCPReceived;
+        this.channel.UserKicked += Channel_UserKicked;
+        this.channel.UserQuitIRC += Channel_UserQuitIRC;
+        this.channel.UserLeft += Channel_UserLeft;
+        this.channel.UserAdded += Channel_UserAdded;
+        this.channel.UserNameChanged += Channel_UserNameChanged;
+        this.channel.UserListReceived += Channel_UserListReceived;
 
         this.hostName = hostName;
         PlayerLimit = playerLimit;
         IsCustomPassword = isCustomPassword;
         SkillLevel = ClientConfiguration.Instance.NormalizeSkillLevel(skillLevel);
-        this._gameRoomNameValue = channel.UIName;
+        this._gameRoomNameValue = this.channel.UIName;
 
         hostUploadedMaps.Clear();
         chatCommandDownloadedMaps.Clear();
@@ -259,11 +259,11 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         }
         else
         {
-            channel.ChannelModesChanged += Channel_ChannelModesChanged;
+            this.channel.ChannelModesChanged += Channel_ChannelModesChanged;
             AIPlayers.Clear();
         }
 
-        tunnelHandler.CurrentTunnel = tunnel;
+        tunnelHandler.CurrentTunnel = (CnCNetTunnel)tunnel;
         tunnelHandler.CurrentTunnelPinged += TunnelHandler_CurrentTunnelPinged;
         SelectedTunnelName = tunnel?.Name ?? string.Empty;
 
@@ -1222,7 +1222,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 if (gameOptionIndex >= CheckBoxes.Count)
                     break;
 
-                GameOptionCheckBox checkBox = CheckBoxes[gameOptionIndex];
+                GameOptionCheckBox checkBox = (GameOptionCheckBox)CheckBoxes[gameOptionIndex];
 
                 if (checkBox.IsChecked != boolArray[optionIndex])
                 {
@@ -1232,7 +1232,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                         AddNotice(string.Format("The game host has disabled {0}".L10N("Client:Main:HostDisableOption"), checkBox.Name));
                 }
 
-                CheckBoxes[gameOptionIndex].IsChecked = boolArray[optionIndex];
+                ((GameOptionCheckBox)CheckBoxes[gameOptionIndex]).IsChecked = boolArray[optionIndex];
             }
         }
 
@@ -1254,7 +1254,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 return;
             }
 
-            GameOptionDropDown dd = DropDowns[i - checkBoxIntegerCount];
+            GameOptionDropDown dd = (GameOptionDropDown)DropDowns[i - checkBoxIntegerCount];
 
             if (ddSelectedIndex < -1 || ddSelectedIndex >= dd.Items.Count)
                 continue;
@@ -1265,7 +1265,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 AddNotice(string.Format("The game host has set {0} to {1}".L10N("Client:Main:HostSetOption"), ddName, dd.Items[ddSelectedIndex]));
             }
 
-            DropDowns[i - checkBoxIntegerCount].SelectedIndex = ddSelectedIndex;
+            ((GameOptionDropDown)DropDowns[i - checkBoxIntegerCount]).SelectedIndex = ddSelectedIndex;
         }
 
         bool parseSuccess = int.TryParse(parts[partIndex + 6], out int randomSeed);
@@ -1471,7 +1471,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         iniFile.SetIntValue("Settings", "Port", localPlayer.Port);
     }
 
-    protected override void SendChatMessage(string message) => channel.SendChatMessage(message, ChatColor);
+    protected override void SendChatMessage(string message) => channel.SendChatMessage(message, (IRCColor)ChatColor);
 
     // --- Notifications ---
 
@@ -2105,12 +2105,12 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
         List<int> gameOptionValues = new();
 
-        int checkboxCount = CheckBoxes.Count(cb => cb.Setting.BroadcastToLobby);
+        int checkboxCount = CheckBoxes.Cast<GameOptionCheckBox>().Count(cb => cb.Setting.BroadcastToLobby);
         if (checkboxCount > 0)
         {
             bool[] checkboxValues = new bool[checkboxCount];
             for (int i = 0; i < checkboxCount; i++)
-                checkboxValues[i] = CheckBoxes.Where(cb => cb.Setting.BroadcastToLobby).ElementAt(i).IsChecked;
+                checkboxValues[i] = CheckBoxes.Cast<GameOptionCheckBox>().Where(cb => cb.Setting.BroadcastToLobby).ElementAt(i).IsChecked;
 
             List<byte> byteList = Conversions.BoolArrayIntoBytes(checkboxValues).ToList();
 
@@ -2123,9 +2123,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 gameOptionValues.Add(BinaryPrimitives.ReadInt32LittleEndian(byteArray.AsSpan(i * 4)));
         }
 
-        int dropdownCount = DropDowns.Count(dd => dd.Setting.BroadcastToLobby);
+        int dropdownCount = DropDowns.Cast<GameOptionDropDown>().Count(dd => dd.Setting.BroadcastToLobby);
         if (dropdownCount > 0)
-            gameOptionValues.AddRange(DropDowns.Where(dd => dd.Setting.BroadcastToLobby).Select(dd => dd.SelectedIndex));
+            gameOptionValues.AddRange(DropDowns.Cast<GameOptionDropDown>().Where(dd => dd.Setting.BroadcastToLobby).Select(dd => dd.SelectedIndex));
 
         sb.Append(";");
         if (gameOptionValues.Count > 0)
@@ -2139,12 +2139,12 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     public List<IGameSessionSetting> GetBroadcastableSettings()
     {
         var settings = new List<IGameSessionSetting>();
-        foreach (var cb in CheckBoxes)
+        foreach (GameOptionCheckBox cb in CheckBoxes)
         {
             if (cb.Setting.BroadcastToLobby)
                 settings.Add(cb.Setting);
         }
-        foreach (var dd in DropDowns)
+        foreach (GameOptionDropDown dd in DropDowns)
         {
             if (dd.Setting.BroadcastToLobby)
                 settings.Add(dd.Setting);
@@ -2152,8 +2152,8 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         return settings;
     }
 
-    public int GetBroadcastableCheckboxCount() => CheckBoxes.Count(cb => cb.Setting.BroadcastToLobby);
-    public int GetBroadcastableDropdownCount() => DropDowns.Count(dd => dd.Setting.BroadcastToLobby);
+    public int GetBroadcastableCheckboxCount() => CheckBoxes.Cast<GameOptionCheckBox>().Count(cb => cb.Setting.BroadcastToLobby);
+    public int GetBroadcastableDropdownCount() => DropDowns.Cast<GameOptionDropDown>().Count(dd => dd.Setting.BroadcastToLobby);
 
     // --- Abstract implementations ---
 

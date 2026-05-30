@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace DXMainClientViewModel.Online
 {
-    public class Channel : IMessageView
+    public class Channel : IMessageView, IChannel
     {
         const int MESSAGE_LIMIT = 1024;
 
@@ -247,6 +247,8 @@ namespace DXMainClientViewModel.Online
         {
             TargetChangeTooFast?.Invoke(this, new MessageEventArgs(message));
         }
+
+        void IMessageView.AddMessage(IChatMessage message) => AddMessage((ChatMessage)message);
 
         public void AddMessage(ChatMessage message)
         {

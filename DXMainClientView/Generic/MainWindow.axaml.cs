@@ -37,14 +37,14 @@ public partial class MainWindow : Window
         loadingScreen.Width = 800;
         loadingScreen.Height = 600;
 
-        ((LoadingScreenViewModel)loadingScreenVM).Completed += OnLoadingCompleted;
+        loadingScreenVM.Completed += OnLoadingCompleted;
 
         return loadingScreen;
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)
     {
-        ((LoadingScreenViewModel)sender!).Completed -= OnLoadingCompleted;
+        ((ILoadingScreenViewModel)sender!).Completed -= OnLoadingCompleted;
         Dispatcher.UIThread.Post(TransitionToMainMenu);
     }
 

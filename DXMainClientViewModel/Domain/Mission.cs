@@ -1,6 +1,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -15,7 +16,7 @@ namespace DXMainClientViewModel.Domain
     /// <summary>
     /// A Tiberian Sun mission listed in Battle(E).ini.
     /// </summary>
-    public class Mission
+    public class Mission : IMission
     {
         public Mission(IniSection missionSection, string missionCodeName)
         {
@@ -94,6 +95,9 @@ namespace DXMainClientViewModel.Domain
         public bool BuildOffAlly { get; private set; }
         public bool PlayerAlwaysOnNormalDifficulty { get; private set; }
         public IReadOnlyCollection<string> Tags { get; private set; }
+
+        // INotifyPropertyChanged - properties are set during construction only
+        public event PropertyChangedEventHandler? PropertyChanged { add { } remove { } }
 
         /// <summary>
         /// This property is not set through the ini file.

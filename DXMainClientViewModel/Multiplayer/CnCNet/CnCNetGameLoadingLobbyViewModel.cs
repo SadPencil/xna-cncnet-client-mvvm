@@ -135,18 +135,18 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
     /// <summary>
     /// Sets up events and information before joining the channel.
     /// </summary>
-    public void SetUp(bool isHost, CnCNetTunnel tunnel, Channel channel, string hostName)
+    public void SetUp(bool isHost, ICnCNetTunnel tunnel, IChannel channel, string hostName)
     {
-        this.channel = channel;
+        this.channel = (Channel)channel;
         this.hostName = hostName;
 
-        channel.MessageAdded += Channel_MessageAdded;
-        channel.UserAdded += Channel_UserAdded;
-        channel.UserLeft += Channel_UserLeft;
-        channel.UserQuitIRC += Channel_UserQuitIRC;
-        channel.CTCPReceived += Channel_CTCPReceived;
+        this.channel.MessageAdded += Channel_MessageAdded;
+        this.channel.UserAdded += Channel_UserAdded;
+        this.channel.UserLeft += Channel_UserLeft;
+        this.channel.UserQuitIRC += Channel_UserQuitIRC;
+        this.channel.CTCPReceived += Channel_CTCPReceived;
 
-        tunnelHandler.CurrentTunnel = tunnel;
+        tunnelHandler.CurrentTunnel = (CnCNetTunnel)tunnel;
         tunnelHandler.CurrentTunnelPinged += TunnelHandler_CurrentTunnelPinged;
 
         started = false;
@@ -241,9 +241,9 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
         tunnelHandler.CurrentTunnelPinged -= TunnelHandler_CurrentTunnelPinged;
     }
 
-    public void ChangeChatColor(IRCColor color)
+    public void ChangeChatColor(IIRCColor color)
     {
-        chatColor = color;
+        chatColor = (IRCColor)color;
         ChatColorIndex = color.IrcColorId;
     }
 
@@ -252,11 +252,11 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
     /// <summary>
     /// Called by View when user selects a tunnel from the tunnel selection window.
     /// </summary>
-    public void OnTunnelSelected(CnCNetTunnel tunnel)
+    public void OnTunnelSelected(ICnCNetTunnel tunnel)
     {
         channel?.SendCTCPMessage($"{CHANGE_TUNNEL_SERVER_MESSAGE} {tunnel.Address}:{tunnel.Port}",
             QueuedMessageType.SYSTEM_MESSAGE, 10);
-        HandleTunnelServerChange(tunnel);
+        HandleTunnelServerChange((CnCNetTunnel)tunnel);
     }
 
     // --- Channel event handlers ---

@@ -8,7 +8,7 @@ namespace DXMainClientViewModel.Campaign;
 
 public interface ICampaignSelectorViewModel : INotifyPropertyChanged
 {
-    IReadOnlyList<CampaignListItem> CampaignListItems { get; }
+    IReadOnlyList<ICampaignListItem> CampaignListItems { get; }
     int SelectedCampaignIndex { get; set; }
     string MissionDescriptionText { get; }
     string? MissionPreviewImagePath { get; }
@@ -28,8 +28,8 @@ public interface ICampaignSelectorViewModel : INotifyPropertyChanged
 
     ICheaterWindowViewModel CheaterWindow { get; }
 
-    IReadOnlyCollection<Domain.Mission> AllMissions { get; }
-    IReadOnlyDictionary<int, Domain.Mission> UniqueIDToMissions { get; }
+    IReadOnlyCollection<Domain.IMission> AllMissions { get; }
+    IReadOnlyDictionary<int, Domain.IMission> UniqueIDToMissions { get; }
 
     List<ICampaignCheckBoxOption> CheckBoxOptions { get; }
     List<ICampaignDropDownOption> DropDownOptions { get; }

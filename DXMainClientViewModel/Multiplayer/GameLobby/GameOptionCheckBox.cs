@@ -6,7 +6,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// <summary>
 /// Observable wrapper for a game option checkbox.
 /// </summary>
-public class GameOptionCheckBox : ObservableObject
+public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
 {
     public IGameSessionSetting Setting { get; }
 

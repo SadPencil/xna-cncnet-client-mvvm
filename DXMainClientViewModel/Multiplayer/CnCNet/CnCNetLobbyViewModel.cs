@@ -38,7 +38,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     // Services that the lobby interacts with but does not own
     private ICnCNetGameLobbyViewModel? gameLobby;
     private ICnCNetGameLoadingLobbyViewModel? gameLoadingLobby;
-    private PrivateMessagingWindowViewModel? pmWindow;
+    private IPrivateMessagingWindowViewModel? pmWindow;
 
     private Channel? currentChatChannel;
     private string localGameID;
@@ -114,7 +114,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private string? pendingMessage;
 
     [ObservableProperty]
-    private PendingYesNoDialogData? pendingYesNoDialog;
+    private IPendingYesNoDialogData? pendingYesNoDialog;
 
     [ObservableProperty]
     private bool isUpdateCheckNeeded;
@@ -126,7 +126,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private bool isGameCreationPanelVisible;
 
     [ObservableProperty]
-    private PendingGameInviteData? pendingGameInvite;
+    private IPendingGameInviteData? pendingGameInvite;
 
     [ObservableProperty]
     private string? soundToPlay;
@@ -214,7 +214,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// <summary>
     /// Sets the private messaging window reference for invite handling.
     /// </summary>
-    public void SetPrivateMessagingWindow(PrivateMessagingWindowViewModel pmWindow)
+    public void SetPrivateMessagingWindow(IPrivateMessagingWindowViewModel pmWindow)
     {
         this.pmWindow = pmWindow;
     }
@@ -370,7 +370,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// <summary>
     /// Called when a game creation completes.
     /// </summary>
-    public void OnGameCreated(string gameRoomName, string channelName, string password, int maxPlayers, CnCNetTunnel tunnel, int skillLevel)
+    public void OnGameCreated(string gameRoomName, string channelName, string password, int maxPlayers, ICnCNetTunnel tunnel, int skillLevel)
     {
         if (gameLobby == null || gameLoadingLobby == null)
             return;
@@ -396,13 +396,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         IsGameCreationPanelVisible = false;
 
-        pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
+        (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
 
     /// <summary>
     /// Called when a loaded game creation completes.
     /// </summary>
-    public void OnLoadedGameCreated(string gameRoomName, string channelName, string password, CnCNetTunnel tunnel)
+    public void OnLoadedGameCreated(string gameRoomName, string channelName, string password, ICnCNetTunnel tunnel)
     {
         if (gameLobby == null || gameLoadingLobby == null)
             return;
@@ -421,15 +421,15 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         IsGameCreationPanelVisible = false;
 
-        pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
+        (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
 
     /// <summary>
     /// Called when the user confirms a password for joining a game.
     /// </summary>
-    public void OnPasswordEntered(HostedCnCNetGame game, string password)
+    public void OnPasswordEntered(IHostedCnCNetGame game, string password)
     {
-        JoinGame(game, password, connectionManager.MainChannel);
+        JoinGame((HostedCnCNetGame)game, password, connectionManager.MainChannel);
     }
 
     [RelayCommand]
@@ -484,7 +484,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         isInGameRoom = false;
         UpdateLogoutButtonText();
-        pmWindow?.ClearInviteChannelInfo();
+        (pmWindow as PrivateMessagingWindowViewModel)?.ClearInviteChannelInfo();
     }
 
     /// <summary>
@@ -494,7 +494,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         isInGameRoom = false;
         UpdateLogoutButtonText();
-        pmWindow?.ClearInviteChannelInfo();
+        (pmWindow as PrivateMessagingWindowViewModel)?.ClearInviteChannelInfo();
     }
 
     /// <summary>
@@ -1561,11 +1561,11 @@ public enum SortDirection
 /// <summary>
 /// Data for a pending game invite notification.
 /// </summary>
-public record PendingGameInviteData(string Sender, string GameName, string ChannelName, string Password);
+public record PendingGameInviteData(string Sender, string GameName, string ChannelName, string Password) : IPendingGameInviteData;
 
 /// <summary>
 /// Data for a pending yes/no dialog.
 /// </summary>
-public record PendingYesNoDialogData(string Title, string Text, Action<bool> Callback);
+public record PendingYesNoDialogData(string Title, string Text, Action<bool> Callback) : IPendingYesNoDialogData;
 
 

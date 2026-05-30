@@ -22,7 +22,7 @@ public interface ICnCNetOptionsPanelViewModel : INotifyPropertyChanged
     bool IsAutoConnectOnStartupAllowed { get; }
     bool IsDiscordIntegrationGloballyDisabled { get; }
     IReadOnlyList<string> FollowedGameNames { get; }
-    IReadOnlyList<GameListItemData> GameListItems { get; }
+    IReadOnlyList<IGameListItemData> GameListItems { get; }
 
     IRelayCommand LoadSettingsCommand { get; }
     IRelayCommand SaveSettingsCommand { get; }
