@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class GameOptionPresetEventArgs : EventArgs
+    public class GameOptionPresetEventArgs : EventArgs // checked
     {
         public string PresetName { get; }
 
