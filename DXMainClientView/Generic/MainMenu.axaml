@@ -57,17 +57,21 @@
 
     <!-- ========== ExtraControls from INI [ExtraControls] section ========== -->
     <Button x:Name="btnQuickmatch" />
-    <TextBlock x:Name="txtVersion" />
     <TextBlock x:Name="lblPoweredBy" />
     <Button x:Name="btnCnCNetLogo" />
     <Button x:Name="btnPhobos" />
     <Button x:Name="btnAres" />
 
-    <!-- ========== Version Info ========== -->
-    <TextBlock x:Name="lblVersion"
-               Text="{Binding VersionText}"
-               IsVisible="{Binding ShowVersionInfo}"
-               FontSize="12" />
+    <!-- ========== Version Info (lblVersion is XNALinkLabel in original) ========== -->
+    <Button x:Name="lblVersion"
+            Content="{Binding VersionText}"
+            Command="{Binding OpenVersionCommand}"
+            IsVisible="{Binding ShowVersionInfo}"
+            Background="Transparent"
+            BorderThickness="0"
+            Padding="0"
+            FontSize="12"
+            Cursor="Hand" />
 
     <!-- ========== Update Status ========== -->
     <TextBlock x:Name="lblUpdateStatus"
