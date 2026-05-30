@@ -1,6 +1,6 @@
 ﻿namespace DTAClient.Online.EventArguments
 {
-    public class PrivateMessageEventArgs : CnCNetPrivateMessageEventArgs
+    public class PrivateMessageEventArgs : CnCNetPrivateMessageEventArgs // checked
     {
         public readonly IRCUser ircUser;
 
