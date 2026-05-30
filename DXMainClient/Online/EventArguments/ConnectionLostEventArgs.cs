@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class ConnectionLostEventArgs : EventArgs
+    public class ConnectionLostEventArgs : EventArgs // checked
     {
         public ConnectionLostEventArgs(string reason)
         {
