@@ -8,7 +8,7 @@ namespace DTAClient.Online
     /// removal and lookup operations while always keeping the list sorted
     /// by combining Dictionary and LinkedList.
     /// </summary>
-    public class SortedUserCollection<T> : IUserCollection<T>
+    public class SortedUserCollection<T> : IUserCollection<T> // checked
     {
         public SortedUserCollection(Func<T, T, int> userComparer)
         {
