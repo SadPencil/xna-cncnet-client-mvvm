@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace DTAClient.Online
 {
-    public sealed class CnCNetGameCheck
+    public sealed class CnCNetGameCheck // checked
     {
         private static readonly CnCNetGameCheck _instance = new CnCNetGameCheck();
 
