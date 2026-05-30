@@ -5,7 +5,7 @@ namespace DTAClient.Online
     /// <summary>
     /// A struct containing information on an IRC server.
     /// </summary>
-    public struct Server
+    public struct Server // checked
     {
         public Server(string host, string name, int[] ports)
         {
