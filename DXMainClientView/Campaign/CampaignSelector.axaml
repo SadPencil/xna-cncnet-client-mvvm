@@ -21,7 +21,7 @@
              Canvas.Left="12" Canvas.Top="30"
              Width="322" Height="554">
       <ListBox.ItemTemplate>
-        <DataTemplate x:DataType="vm:CampaignListItem">
+        <DataTemplate x:DataType="vm:ICampaignListItem">
           <TextBlock Text="{Binding Text}" />
         </DataTemplate>
       </ListBox.ItemTemplate>

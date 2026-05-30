@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -17,6 +16,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DXMainClientMVVMContract\DXMainClientMVVMContract.csproj" />
-    <ProjectReference Include="..\DXMainClientViewModel\DXMainClientViewModel.csproj" />
   </ItemGroup>
 </Project>

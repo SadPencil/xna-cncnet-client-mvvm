@@ -1,22 +1,23 @@
-using System;
-using System.Text;
-using Avalonia;
+﻿using System;
+
 using DXMainClientView.Services;
+
 using DXMainClientViewModel;
 using DXMainClientViewModel.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DXMainClientView;
+namespace DXMainClientExe.Desktop;
 
-public class Program
+class Program
 {
     [STAThread]
-    public static void Main(string[] args)
-    {
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    public static void Main(string[] args) => DXMainClientView.Startup.Run(BuildServiceProvider(), args);
 
+    private static ServiceProvider BuildServiceProvider()
+    {
         // ViewModel project initializes domain services
-        var services = PreStartup.Initialize();
+        var services = DXMainClientViewModel.PreStartup.Initialize();
 
         // View project adds GUI-related services only
         services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
@@ -25,15 +26,7 @@ public class Program
         services.AddSingleton<IUrlService, UrlService>();
         services.AddSingleton<IApplicationLifecycleService, ApplicationLifecycleService>();
 
-        App.ServiceProvider = services.BuildServiceProvider();
-
-        BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+        return services.BuildServiceProvider();
     }
 
-    private static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
-            .UsePlatformDetect()
-            .WithInterFont()
-            .LogToTrace();
 }

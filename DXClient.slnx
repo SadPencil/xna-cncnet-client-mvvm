@@ -32,6 +32,7 @@
     <Platform Solution="WindowsXNADebug|*" Project="x86" />
     <Platform Solution="WindowsXNARelease|*" Project="x86" />
   </Project>
+  <Project Path="DXMainClientExe/DXMainClientExe.csproj" />
   <Project Path="DXMainClientMVVMContract/DXMainClientMVVMContract.csproj" />
   <Project Path="DXMainClientView/DXMainClientView.csproj" />
   <Project Path="DXMainClientViewModel/DXMainClientViewModel.csproj" />
