@@ -3,7 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using DXMainClientView.Campaign;
 using DXMainClientView.Services;
+using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -74,5 +76,45 @@ public partial class MainMenu : UserControl
             lblCnCNetStatus.IsVisible = isVisible;
         if (lblCnCNetPlayerCount != null)
             lblCnCNetPlayerCount.IsVisible = isVisible;
+    }
+
+    // --- Child window wiring ---
+
+    private ICampaignSelectorViewModel? campaignSelectorViewModel;
+    private CampaignSelector? campaignSelectorWindow;
+
+    /// <summary>
+    /// Wires up the CampaignSelector ViewModel so the View observes IsVisible
+    /// and shows/hides the CampaignSelector window accordingly.
+    /// </summary>
+    public void SetCampaignSelectorViewModel(ICampaignSelectorViewModel vm)
+    {
+        campaignSelectorViewModel = vm;
+        vm.PropertyChanged += OnCampaignSelectorPropertyChanged;
+    }
+
+    private void OnCampaignSelectorPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(ICampaignSelectorViewModel.IsVisible))
+            return;
+
+        var vm = (ICampaignSelectorViewModel)sender!;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (vm.IsVisible)
+            {
+                if (campaignSelectorWindow == null)
+                {
+                    campaignSelectorWindow = new CampaignSelector();
+                    campaignSelectorWindow.ViewModel = vm;
+                    campaignSelectorWindow.Closed += (_, _) => campaignSelectorWindow = null;
+                }
+                campaignSelectorWindow.Show();
+            }
+            else
+            {
+                campaignSelectorWindow?.Close();
+            }
+        });
     }
 }

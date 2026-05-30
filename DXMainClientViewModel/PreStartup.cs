@@ -1,8 +1,10 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using ClientCore;
 using ClientCore.I18N;
+using ClientCore.Settings;
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
@@ -73,6 +75,20 @@ public static class PreStartup
 
         Logger.Log("Loading settings.");
         UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
+
+        // --- Client resolution initialization (same as DXMainClient Startup.Execute lines 133-147) ---
+        if (!UserINISettings.Instance.BorderlessWindowedClient)
+        {
+            var (bestWidth, bestHeight) = GetBestRecommendedResolution();
+            UserINISettings.Instance.ClientResolutionX = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionX", bestWidth);
+            UserINISettings.Instance.ClientResolutionY = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionY", bestHeight);
+        }
+        else
+        {
+            var (safeWidth, safeHeight) = GetSafeFullScreenResolution();
+            UserINISettings.Instance.ClientResolutionX = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionX", safeWidth);
+            UserINISettings.Instance.ClientResolutionY = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionY", safeHeight);
+        }
 
         // --- Player name initialization (same as DXMainClient GameClass.Initialize) ---
         string playerName = UserINISettings.Instance.PlayerName.Value.Trim();
@@ -195,24 +211,24 @@ public static class PreStartup
         services.AddSingleton<ITopBarViewModel>(sp =>
             sp.GetRequiredService<TopBarViewModel>());
 
-        // CampaignSelectorViewModel
-        services.AddTransient<CampaignSelectorViewModel>();
-        services.AddTransient<ICampaignSelectorViewModel>(sp =>
+        // CampaignSelectorViewModel (singleton: MainMenuViewModel holds a reference and sets IsVisible)
+        services.AddSingleton<CampaignSelectorViewModel>();
+        services.AddSingleton<ICampaignSelectorViewModel>(sp =>
             sp.GetRequiredService<CampaignSelectorViewModel>());
 
-        // GameLoadingWindowViewModel
-        services.AddTransient<GameLoadingWindowViewModel>();
-        services.AddTransient<IGameLoadingWindowViewModel>(sp =>
+        // GameLoadingWindowViewModel (singleton: MainMenuViewModel holds a reference and sets IsVisible)
+        services.AddSingleton<GameLoadingWindowViewModel>();
+        services.AddSingleton<IGameLoadingWindowViewModel>(sp =>
             sp.GetRequiredService<GameLoadingWindowViewModel>());
 
-        // StatisticsWindowViewModel
-        services.AddTransient<StatisticsWindowViewModel>();
-        services.AddTransient<IStatisticsWindowViewModel>(sp =>
+        // StatisticsWindowViewModel (singleton: MainMenuViewModel holds a reference and sets IsVisible)
+        services.AddSingleton<StatisticsWindowViewModel>();
+        services.AddSingleton<IStatisticsWindowViewModel>(sp =>
             sp.GetRequiredService<StatisticsWindowViewModel>());
 
-        // ExtrasWindowViewModel
-        services.AddTransient<ExtrasWindowViewModel>();
-        services.AddTransient<IExtrasWindowViewModel>(sp =>
+        // ExtrasWindowViewModel (singleton: MainMenuViewModel holds a reference and sets IsVisible)
+        services.AddSingleton<ExtrasWindowViewModel>();
+        services.AddSingleton<IExtrasWindowViewModel>(sp =>
             sp.GetRequiredService<ExtrasWindowViewModel>());
 
         // MainMenuViewModel
@@ -238,5 +254,51 @@ public static class PreStartup
         services.AddTransient<IManualUpdateQueryWindowViewModel, ManualUpdateQueryWindowViewModel>();
         services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
         services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
+    }
+
+    /// <summary>
+    /// Gets the best recommended resolution from ClientConfiguration.
+    /// Replicates ScreenResolution.GetBestRecommendedResolution() without XNA dependency.
+    /// </summary>
+    private static (int Width, int Height) GetBestRecommendedResolution()
+    {
+        var recommended = ClientConfiguration.Instance.RecommendedResolutions
+            .Where(r => !string.IsNullOrWhiteSpace(r))
+            .ToList();
+
+        if (recommended.Count > 0)
+        {
+            string best = recommended[0];
+            int bestArea = 0;
+            foreach (var res in recommended)
+            {
+                var parts = res.Split('x');
+                if (parts.Length == 2
+                    && int.TryParse(parts[0], out int w) && int.TryParse(parts[1], out int h))
+                {
+                    int area = w * h;
+                    if (area > bestArea)
+                    {
+                        best = res;
+                        bestArea = area;
+                    }
+                }
+            }
+            var bestParts = best.Split('x');
+            if (bestParts.Length == 2
+                && int.TryParse(bestParts[0], out int bw) && int.TryParse(bestParts[1], out int bh))
+                return (bw, bh);
+        }
+
+        return (1920, 1080);
+    }
+
+    /// <summary>
+    /// Gets a safe full-screen resolution default.
+    /// Replicates ScreenResolution.SafeFullScreenResolution without XNA dependency.
+    /// </summary>
+    private static (int Width, int Height) GetSafeFullScreenResolution()
+    {
+        return (3840, 2160);
     }
 }

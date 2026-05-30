@@ -3,6 +3,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Threading;
 
+using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Generic;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -50,10 +51,12 @@ public partial class MainWindow : Window
     {
         var mainMenuVM = App.ServiceProvider!.GetRequiredService<IMainMenuViewModel>();
         var topBarVM = App.ServiceProvider!.GetRequiredService<ITopBarViewModel>();
+        var campaignSelectorVM = App.ServiceProvider!.GetRequiredService<ICampaignSelectorViewModel>();
 
         var mainMenu = new MainMenu();
         mainMenu.ViewModel = mainMenuVM;
         mainMenu.SetTopBarViewModel(topBarVM);
+        mainMenu.SetCampaignSelectorViewModel(campaignSelectorVM);
 
         return mainMenu;
     }

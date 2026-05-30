@@ -62,7 +62,10 @@
     <Button x:Name="btnPhobos" />
     <Button x:Name="btnAres" />
 
-    <!-- ========== Version Info (lblVersion is XNALinkLabel in original) ========== -->
+    <!-- ========== Version Info ========== -->
+    <!-- txtVersion is the static "Version:" label (XNALabel ExtraControl in original, positioned by INI) -->
+    <TextBlock x:Name="txtVersion" Text="Version:" />
+    <!-- lblVersion is the dynamic version value (XNALinkLabel in original) -->
     <Button x:Name="lblVersion"
             Content="{Binding VersionText}"
             Command="{Binding OpenVersionCommand}"
