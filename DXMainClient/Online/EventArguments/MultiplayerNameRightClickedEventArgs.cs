@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class MultiplayerNameRightClickedEventArgs : EventArgs
+    public class MultiplayerNameRightClickedEventArgs : EventArgs // checked
     {
         public string PlayerName { get; }
 
