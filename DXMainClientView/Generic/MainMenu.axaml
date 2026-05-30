@@ -55,13 +55,6 @@
             Command="{Binding ExitCommand}"
             IsEnabled="{Binding AreButtonsEnabled}" />
 
-    <!-- ========== ExtraControls from INI [ExtraControls] section ========== -->
-    <Button x:Name="btnQuickmatch" />
-    <TextBlock x:Name="lblPoweredBy" />
-    <Button x:Name="btnCnCNetLogo" />
-    <Button x:Name="btnPhobos" />
-    <Button x:Name="btnAres" />
-
     <!-- ========== Version Info (lblVersion is XNALinkLabel in original) ========== -->
     <Button x:Name="lblVersion"
             Content="{Binding VersionText}"
