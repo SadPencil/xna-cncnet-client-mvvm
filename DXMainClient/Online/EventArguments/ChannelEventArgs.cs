@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class ChannelEventArgs : EventArgs
+    public class ChannelEventArgs : EventArgs // checked
     {
         public ChannelEventArgs(string channelName)
         {
