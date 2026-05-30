@@ -17,5 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DXMainClientMvvmContract\DXMainClientMvvmContract.csproj" />
     <ProjectReference Include="..\DXMainClientView\DXMainClientView.csproj" />
+      <ProjectReference Include="..\DXMainClientViewModel\DXMainClientViewModel.csproj" />
   </ItemGroup>
 </Project>
