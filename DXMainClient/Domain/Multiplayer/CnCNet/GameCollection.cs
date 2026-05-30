@@ -11,7 +11,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// <summary>
     /// A class for storing the collection of supported CnCNet games.
     /// </summary>
-    public class GameCollection
+    public class GameCollection // checked
     {
         public List<CnCNetGame> GameList { get; private set; }
 
