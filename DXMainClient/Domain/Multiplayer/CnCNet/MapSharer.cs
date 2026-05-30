@@ -16,7 +16,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// <summary>
     /// Handles sharing maps.
     /// </summary>
-    public static class MapSharer
+    public static class MapSharer // checked
     {
         public static event EventHandler<MapEventArgs> MapUploadFailed;
 
