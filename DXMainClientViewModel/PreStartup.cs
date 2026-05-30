@@ -338,6 +338,9 @@ public static class PreStartup
         services.AddSingleton<IExtrasWindowViewModel>(sp =>
             sp.GetRequiredService<ExtrasWindowViewModel>());
 
+        // UpdateWindowViewModel
+        services.AddSingleton<UpdateWindowViewModel>();
+
         // MainMenuViewModel
         services.AddSingleton<MainMenuViewModel>(sp => new MainMenuViewModel(
             sp.GetRequiredService<IUpdateService>(),
