@@ -11,7 +11,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// An instance of a Map in a given GameMode
     /// </summary>
-    public record GameModeMap : IGameModeMap
+    public record GameModeMap : IGameModeMap // checked
     {
         public required GameMode GameMode { get; init; }
         public required Map Map { get; init; }
