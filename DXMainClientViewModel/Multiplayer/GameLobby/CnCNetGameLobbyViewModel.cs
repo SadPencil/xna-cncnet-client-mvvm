@@ -738,6 +738,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         else
         {
             AddChatMessage($"{e.Message.SenderName}: {e.Message.Message}");
+
+            if (e.Message.SenderName != null)
+                RaiseMessageSoundRequested();
         }
     }
 
