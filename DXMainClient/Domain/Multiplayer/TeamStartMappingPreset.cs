@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public class TeamStartMappingPreset
+    public class TeamStartMappingPreset // checked
     {
         [JsonInclude]
         [JsonPropertyName("n")]
