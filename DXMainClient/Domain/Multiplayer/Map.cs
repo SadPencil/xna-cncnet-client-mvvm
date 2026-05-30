@@ -40,7 +40,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// A multiplayer map.
     /// </summary>
-    public class Map : GameModeMapBase
+    public class Map : GameModeMapBase // checked
     {
         [JsonConstructor]
         public Map(string baseFilePath)
