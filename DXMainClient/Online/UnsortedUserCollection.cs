@@ -8,7 +8,7 @@ namespace DTAClient.Online
     /// removal and lookup operations by using a dictionary. Does not
     /// keep the list sorted.
     /// </summary>
-    public class UnsortedUserCollection<T> : IUserCollection<T>
+    public class UnsortedUserCollection<T> : IUserCollection<T> // checked
     {
         private Dictionary<string, T> dictionary = new Dictionary<string, T>();
 
