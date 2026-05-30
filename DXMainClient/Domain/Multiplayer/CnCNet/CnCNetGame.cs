@@ -13,7 +13,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// <summary>
     /// A class for games supported on CnCNet (DTA, TI, TS, RA1/2, etc.)
     /// </summary>
-    public abstract class CnCNetGame
+    public abstract class CnCNetGame // checked
     {
         private readonly Lazy<Image?> lazyImage;
         private readonly Lazy<Texture2D?> lazyTexture;
