@@ -26,7 +26,7 @@ namespace DTAClient.Domain.Multiplayer
         Removed
     }
 
-    public class MapLoader : IDisposable
+    public class MapLoader : IDisposable // checked
     {
         private const string CUSTOM_MAPS_DIRECTORY = "Maps/Custom";
 
