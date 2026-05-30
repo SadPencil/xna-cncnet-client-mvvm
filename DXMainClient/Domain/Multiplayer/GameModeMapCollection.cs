@@ -8,7 +8,7 @@ using ClientCore;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public class GameModeMapCollection : IReadOnlyGameModeMapCollection
+    public class GameModeMapCollection : IReadOnlyGameModeMapCollection // checked
     {
         private readonly List<GameModeMap> items;
         private readonly Dictionary<string, Map> mapHashIndex;
