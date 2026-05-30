@@ -8,7 +8,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// <summary>
     /// A class for updating of the CnCNet game/player count.
     /// </summary>
-    public static class CnCNetPlayerCountTask
+    public static class CnCNetPlayerCountTask // checked
     {
         public static int PlayerCount { get; private set; }
 
