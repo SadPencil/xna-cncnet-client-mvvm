@@ -52,11 +52,17 @@ public partial class MainWindow : Window
         var mainMenuVM = App.ServiceProvider!.GetRequiredService<IMainMenuViewModel>();
         var topBarVM = App.ServiceProvider!.GetRequiredService<ITopBarViewModel>();
         var campaignSelectorVM = App.ServiceProvider!.GetRequiredService<ICampaignSelectorViewModel>();
+        var optionsWindowVM = App.ServiceProvider!.GetRequiredService<IOptionsWindowViewModel>();
+        var extrasWindowVM = App.ServiceProvider!.GetRequiredService<IExtrasWindowViewModel>();
+        var gameLoadingWindowVM = App.ServiceProvider!.GetRequiredService<IGameLoadingWindowViewModel>();
 
         var mainMenu = new MainMenu();
         mainMenu.ViewModel = mainMenuVM;
         mainMenu.SetTopBarViewModel(topBarVM);
         mainMenu.SetCampaignSelectorViewModel(campaignSelectorVM);
+        mainMenu.SetOptionsWindowViewModel(optionsWindowVM);
+        mainMenu.SetExtrasWindowViewModel(extrasWindowVM);
+        mainMenu.SetGameLoadingWindowViewModel(gameLoadingWindowVM);
 
         return mainMenu;
     }

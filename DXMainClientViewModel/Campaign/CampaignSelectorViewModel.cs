@@ -120,7 +120,7 @@ namespace DXMainClientViewModel.Campaign
         private bool isControlsEnabled = true;
 
         [ObservableProperty]
-        private bool isVisible = true;
+        private bool isVisible;
 
         [ObservableProperty]
         private IReadOnlyList<string> difficultyNames = DifficultyNamesArray;

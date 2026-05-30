@@ -177,5 +177,10 @@
       </Panel>
     </Border>
 
+    <!-- ========== Child Windows (IsVisible bound to their own ViewModels) ========== -->
+    <local:OptionsWindow x:Name="optionsWindow" />
+    <local:ExtrasWindow x:Name="extrasWindow" />
+    <local:GameLoadingWindow x:Name="gameLoadingWindow" />
+
   </Canvas>
 </UserControl>

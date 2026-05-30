@@ -7,6 +7,7 @@ using DXMainClientView.Campaign;
 using DXMainClientView.Services;
 using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Generic;
+using DXMainClientViewModel.Generic.OptionPanels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView.Generic;
@@ -80,41 +81,61 @@ public partial class MainMenu : UserControl
 
     // --- Child window wiring ---
 
-    private ICampaignSelectorViewModel? campaignSelectorViewModel;
     private CampaignSelector? campaignSelectorWindow;
 
     /// <summary>
-    /// Wires up the CampaignSelector ViewModel so the View observes IsVisible
-    /// and shows/hides the CampaignSelector window accordingly.
+    /// Wires up the CampaignSelector ViewModel. The CampaignSelector is a separate Window
+    /// that shows/hides based on IsVisible.
     /// </summary>
     public void SetCampaignSelectorViewModel(ICampaignSelectorViewModel vm)
     {
-        campaignSelectorViewModel = vm;
-        vm.PropertyChanged += OnCampaignSelectorPropertyChanged;
+        vm.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName != nameof(ICampaignSelectorViewModel.IsVisible))
+                return;
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (vm.IsVisible)
+                {
+                    if (campaignSelectorWindow == null)
+                    {
+                        campaignSelectorWindow = new CampaignSelector { ViewModel = vm };
+                        campaignSelectorWindow.Closed += (_, _) => campaignSelectorWindow = null;
+                    }
+                    campaignSelectorWindow.Show();
+                }
+                else
+                {
+                    campaignSelectorWindow?.Close();
+                }
+            });
+        };
     }
 
-    private void OnCampaignSelectorPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    /// <summary>
+    /// Sets the OptionsWindow ViewModel. The OptionsWindow is a UserControl
+    /// with IsVisible="{Binding IsVisible}" so it shows/hides automatically.
+    /// </summary>
+    public void SetOptionsWindowViewModel(IOptionsWindowViewModel vm)
     {
-        if (e.PropertyName != nameof(ICampaignSelectorViewModel.IsVisible))
-            return;
+        optionsWindow.ViewModel = vm;
+    }
 
-        var vm = (ICampaignSelectorViewModel)sender!;
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (vm.IsVisible)
-            {
-                if (campaignSelectorWindow == null)
-                {
-                    campaignSelectorWindow = new CampaignSelector();
-                    campaignSelectorWindow.ViewModel = vm;
-                    campaignSelectorWindow.Closed += (_, _) => campaignSelectorWindow = null;
-                }
-                campaignSelectorWindow.Show();
-            }
-            else
-            {
-                campaignSelectorWindow?.Close();
-            }
-        });
+    /// <summary>
+    /// Sets the ExtrasWindow ViewModel. The ExtrasWindow is a UserControl
+    /// with IsVisible="{Binding IsVisible}" so it shows/hides automatically.
+    /// </summary>
+    public void SetExtrasWindowViewModel(IExtrasWindowViewModel vm)
+    {
+        extrasWindow.ViewModel = vm;
+    }
+
+    /// <summary>
+    /// Sets the GameLoadingWindow ViewModel. The GameLoadingWindow is a UserControl
+    /// with IsVisible="{Binding IsVisible}" so it shows/hides automatically.
+    /// </summary>
+    public void SetGameLoadingWindowViewModel(IGameLoadingWindowViewModel vm)
+    {
+        gameLoadingWindow.ViewModel = vm;
     }
 }
