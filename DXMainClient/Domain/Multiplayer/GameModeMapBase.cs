@@ -12,7 +12,7 @@ using Rampastring.Tools;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public abstract class GameModeMapBase
+    public abstract class GameModeMapBase // checked
     {
         public const int MAX_PLAYERS = 8;
 
