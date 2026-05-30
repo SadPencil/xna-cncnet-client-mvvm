@@ -1,4 +1,3 @@
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Online;
 using DXMainClientMVVMContract.Domain.Multiplayer;
 using DXMainClientMVVMContract.Multiplayer.CnCNet;
@@ -21,6 +20,7 @@ using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Online.EventArguments;
 
 using Rampastring.Tools;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 

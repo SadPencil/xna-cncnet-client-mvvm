@@ -1,4 +1,3 @@
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Multiplayer;
 
 using System;
@@ -9,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DXMainClientViewModel.Online;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer;
 

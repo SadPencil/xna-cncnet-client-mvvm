@@ -1,8 +1,9 @@
-using DXMainClientMVVMContract.Services;
 using System;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+
+using DXMainClientMVVMContract.ViewServices;
 
 
 namespace DXMainClientView.Services;

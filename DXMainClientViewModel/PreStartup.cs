@@ -1,8 +1,6 @@
 using DXMainClientMVVMContract.Generic;
 using DXMainClientMVVMContract.Generic.OptionPanels;
 using DXMainClientMVVMContract.Campaign;
-using DXMainClientMVVMContract.Services;
-using DXMainClientMVVMContract;
 using System;
 using System.Globalization;
 using System.IO;
@@ -25,6 +23,7 @@ using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Rampastring.Tools;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel;
 
@@ -35,10 +34,9 @@ namespace DXMainClientViewModel;
 public static class PreStartup
 {
     /// <summary>
-    /// Initializes all non-UI systems, registers domain services in the DI container,
-    /// and returns the service collection for the View layer to add UI-specific services.
+    /// Initializes all non-UI systems.
     /// </summary>
-    public static ServiceCollection Initialize()
+    public static void Initialize()
     {
         // --- Culture (same as DXMainClient PreStartup) ---
         Translation.InitialUICulture = CultureInfo.CurrentUICulture;
@@ -240,15 +238,10 @@ public static class PreStartup
 
         ClientConfiguration.Instance.RefreshSettings();
 
-        // --- DI container with domain services ---
-        var services = new ServiceCollection();
-        ConfigureServices(services);
-
         Logger.Log("PreStartup initialization complete.");
-        return services;
     }
 
-    private static void ConfigureServices(ServiceCollection services)
+    public static void ConfigureServices(ServiceCollection services)
     {
         // Core services
         services.AddSingleton<Random>(_ => new Random());

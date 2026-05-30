@@ -1,5 +1,3 @@
-using DXMainClientMVVMContract.Services;
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Generic;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -19,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Generic
 {

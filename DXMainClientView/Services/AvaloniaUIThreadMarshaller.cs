@@ -1,6 +1,8 @@
-using DXMainClientMVVMContract;
 using System;
+
 using Avalonia.Threading;
+
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientView.Services;
 

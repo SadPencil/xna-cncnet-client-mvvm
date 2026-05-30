@@ -1,5 +1,3 @@
-using DXMainClientMVVMContract.Services;
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Multiplayer;
 using System;
 using System.Collections.Generic;
@@ -27,6 +25,7 @@ using DXMainClientViewModel.Services;
 using Rampastring.Tools;
 
 using Timer = System.Timers.Timer;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer;
 

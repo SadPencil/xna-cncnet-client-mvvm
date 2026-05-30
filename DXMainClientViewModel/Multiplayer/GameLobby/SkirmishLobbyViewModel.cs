@@ -1,4 +1,3 @@
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Multiplayer.GameLobby;
 
 using System;
@@ -18,6 +17,7 @@ using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
 
 using Rampastring.Tools;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 

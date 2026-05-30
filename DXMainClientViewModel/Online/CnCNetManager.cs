@@ -1,4 +1,3 @@
-using DXMainClientMVVMContract;
 using ClientCore;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online.EventArguments;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Online
 {

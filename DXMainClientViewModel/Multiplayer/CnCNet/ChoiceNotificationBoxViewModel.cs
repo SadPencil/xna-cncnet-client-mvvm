@@ -1,10 +1,10 @@
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Multiplayer.CnCNet;
 using System;
 using System.Timers;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 

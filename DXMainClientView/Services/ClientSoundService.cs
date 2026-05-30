@@ -1,4 +1,4 @@
-using DXMainClientMVVMContract;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientView.Services
 {

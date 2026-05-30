@@ -1,4 +1,4 @@
-namespace DXMainClientMVVMContract
+namespace DXMainClientMVVMContract.ViewServices
 {
     /// <summary>
     /// Service interface for client UI sound effects volume.

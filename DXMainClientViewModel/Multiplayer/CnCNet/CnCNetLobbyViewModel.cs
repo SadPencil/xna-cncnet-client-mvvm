@@ -1,5 +1,4 @@
 using DXMainClientMVVMContract.Multiplayer.GameLobby;
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Domain.Multiplayer;
 using DXMainClientMVVMContract.Multiplayer.CnCNet;
 
@@ -22,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using SixLabors.ImageSharp;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer.CnCNet;
 

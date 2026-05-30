@@ -1,5 +1,3 @@
-using DXMainClientMVVMContract.Services;
-using DXMainClientMVVMContract;
 using DXMainClientMVVMContract.Multiplayer.GameLobby;
 using System;
 using System.Collections.Generic;
@@ -22,6 +20,7 @@ using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Services;
 using Rampastring.Tools;
 using Timer = System.Timers.Timer;
+using DXMainClientMVVMContract.ViewServices;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
