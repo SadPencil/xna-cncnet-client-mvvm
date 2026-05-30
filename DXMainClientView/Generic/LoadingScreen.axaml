@@ -24,14 +24,14 @@
     <TextBlock x:Name="lblLoadingText"
                Canvas.Left="20" Canvas.Bottom="40"
                Text="{Binding StatusText}"
-               Foreground="#AAAAAA"
+               Foreground="{DynamicResource XnaSubtleTextBrush}"
                FontSize="14" />
 
     <!-- Current task text -->
     <TextBlock x:Name="lblCurrentTask"
                Canvas.Left="20" Canvas.Bottom="20"
                Text="{Binding CurrentTaskText}"
-               Foreground="#888888"
+               Foreground="{DynamicResource XnaSubtleTextBrush}"
                FontSize="12" />
   </Canvas>
 </UserControl>

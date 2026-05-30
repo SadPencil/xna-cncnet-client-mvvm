@@ -5,7 +5,7 @@
              x:DataType="vm:ITopBarViewModel"
              Height="39"
              ClipToBounds="False">
-  <Panel Background="#1A1A2E">
+  <Panel Background="{DynamicResource XnaPanelBackgroundBrush}">
     <!-- Left: Main button -->
     <Button x:Name="btnMainButton"
             Content="{Binding MainButtonText}"
@@ -13,8 +13,7 @@
             IsEnabled="{Binding AreSwitchButtonsClickable}"
             HorizontalAlignment="Left"
             Margin="4,4,0,4"
-            Width="100"
-            FontSize="12" />
+            Width="100" />
 
     <!-- Center: CnCNet Lobby and Private Messages buttons -->
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
@@ -22,14 +21,12 @@
               Content="CnCNet (F3)"
               Command="{Binding SwitchToSecondaryCommand}"
               IsEnabled="{Binding AreSwitchButtonsClickable}"
-              Width="110"
-              FontSize="12" />
+              Width="110" />
       <Button x:Name="btnPrivateMessages"
               Content="Messages (F4)"
               Command="{Binding SwitchToTertiaryCommand}"
               IsEnabled="{Binding AreSwitchButtonsClickable}"
-              Width="110"
-              FontSize="12" />
+              Width="110" />
     </StackPanel>
 
     <!-- Right: Options, Logout, Connection status, Player count -->
@@ -37,26 +34,22 @@
       <TextBlock x:Name="lblConnectionStatus"
                  Text="{Binding ConnectionStatusText}"
                  VerticalAlignment="Center"
-                 Foreground="#AAAAAA"
-                 FontSize="11" />
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
       <TextBlock x:Name="lblPlayerCount"
                  Text="{Binding PlayerCountText}"
                  IsVisible="{Binding IsPlayerCountVisible}"
                  VerticalAlignment="Center"
-                 Foreground="#AAAAAA"
-                 FontSize="11" />
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
       <Button x:Name="btnOptions"
               Content="Options (F12)"
               Command="{Binding OpenOptionsCommand}"
               IsEnabled="{Binding IsOptionsButtonClickable}"
-              Width="80"
-              FontSize="11" />
+              Width="80" />
       <Button x:Name="btnLogout"
               Content="Logout"
               Command="{Binding LogoutCommand}"
               IsEnabled="{Binding IsLogoutButtonClickable}"
-              Width="60"
-              FontSize="11" />
+              Width="60" />
     </StackPanel>
   </Panel>
 </UserControl>

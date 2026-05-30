@@ -4,10 +4,9 @@
              x:Class="DXMainClientView.Generic.PrivacyNotification"
              x:DataType="vm:IPrivacyNotificationViewModel"
              IsVisible="{Binding IsVisible}">
-  <Border Background="#2A2A3E"
-          BorderBrush="#555555"
+  <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+          BorderBrush="{DynamicResource XnaPanelBorderBrush}"
           BorderThickness="1"
-          CornerRadius="4"
           Padding="16,12"
           MaxWidth="800"
           HorizontalAlignment="Stretch"
@@ -16,32 +15,27 @@
       <!-- Description text -->
       <TextBlock Text="{Binding DescriptionText}"
                  TextWrapping="Wrap"
-                 FontSize="13"
-                 Foreground="#CCCCCC" />
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
 
       <!-- Links row -->
       <StackPanel Orientation="Horizontal" Spacing="4">
         <TextBlock Text="More information: "
-                   FontSize="12"
-                   Foreground="#AAAAAA"
+                   Foreground="{DynamicResource XnaSubtleTextBrush}"
                    VerticalAlignment="Center" />
         <Button Content="{Binding TermsAndConditionsUrl}"
                 Command="{Binding OpenTermsAndConditionsCommand}"
                 Background="Transparent"
                 Foreground="#4A9EFF"
-                FontSize="12"
                 Padding="0"
                 BorderThickness="0"
                 Cursor="Hand" />
         <TextBlock Text="|"
-                   FontSize="12"
-                   Foreground="#AAAAAA"
+                   Foreground="{DynamicResource XnaSubtleTextBrush}"
                    VerticalAlignment="Center" />
         <Button Content="{Binding PrivacyPolicyUrl}"
                 Command="{Binding OpenPrivacyPolicyCommand}"
                 Background="Transparent"
                 Foreground="#4A9EFF"
-                FontSize="12"
                 Padding="0"
                 BorderThickness="0"
                 Cursor="Hand" />
@@ -50,15 +44,13 @@
       <!-- Explanation text -->
       <TextBlock Text="{Binding ExplanationText}"
                  TextWrapping="Wrap"
-                 FontSize="12"
-                 Foreground="#999999" />
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
 
       <!-- Accept button -->
       <Button Content="{Binding AcceptButtonText}"
               Command="{Binding AcceptCommand}"
               HorizontalAlignment="Right"
-              Padding="16,6"
-              FontSize="13" />
+              Padding="16,6" />
     </StackPanel>
   </Border>
 </UserControl>

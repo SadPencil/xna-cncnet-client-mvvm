@@ -10,8 +10,7 @@
     <TextBlock Name="lblDescription"
                Text="{Binding DescriptionText}"
                Canvas.Left="12" Canvas.Top="9"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Changelog link -->
     <Button Content="View Changelog"
@@ -19,7 +18,6 @@
             Canvas.Left="12" Canvas.Top="50"
             Background="Transparent"
             Foreground="Goldenrod"
-            FontSize="12"
             Padding="0"
             BorderThickness="0"
             Cursor="Hand" />
@@ -28,21 +26,18 @@
     <TextBlock Name="lblUpdateSize"
                Text="{Binding UpdateSizeText}"
                Canvas.Left="12" Canvas.Top="80"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Yes button -->
     <Button Content="Yes"
             Command="{Binding AcceptCommand}"
             Canvas.Left="12" Canvas.Top="110"
-            Width="75" Height="23"
-            FontSize="13" />
+            Width="75" Height="23" />
 
     <!-- No button -->
     <Button Content="No"
             Command="{Binding DeclineCommand}"
             Canvas.Left="164" Canvas.Top="110"
-            Width="75" Height="23"
-            FontSize="13" />
+            Width="75" Height="23" />
   </Canvas>
 </UserControl>

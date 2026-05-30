@@ -10,19 +10,16 @@
     <TextBlock Name="lblDescription"
                Text="{Binding DescriptionText}"
                Canvas.Left="12" Canvas.Top="9"
-               Foreground="White"
-               FontSize="13"
+               Foreground="{DynamicResource XnaAltBrush}"
                TextWrapping="Wrap" />
 
     <!-- Current file progress percentage label -->
     <TextBlock Text="Progress percentage of current file:"
                Canvas.Left="12" Canvas.Top="90"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
     <TextBlock Text="{Binding CurrentFilePercentage, StringFormat={}{0}%}"
                Canvas.Left="409" Canvas.Top="90"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Current file progress bar -->
     <ProgressBar Name="prgCurrentFile"
@@ -35,18 +32,15 @@
     <TextBlock Name="lblCurrentFile"
                Text="{Binding CurrentFileName}"
                Canvas.Left="12" Canvas.Top="142"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Total progress percentage label -->
     <TextBlock Text="Total progress percentage:"
                Canvas.Left="12" Canvas.Top="170"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
     <TextBlock Text="{Binding TotalPercentage, StringFormat={}{0}%}"
                Canvas.Left="409" Canvas.Top="170"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Total progress bar -->
     <ProgressBar Name="prgTotal"
@@ -59,14 +53,12 @@
     <TextBlock Name="lblUpdaterStatus"
                Text="{Binding UpdaterStatusText}"
                Canvas.Left="12" Canvas.Top="240"
-               Foreground="White"
-               FontSize="13" />
+               Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Cancel button -->
     <Button Content="Cancel"
             Command="{Binding CancelCommand}"
             Canvas.Left="301" Canvas.Top="240"
-            Width="133" Height="23"
-            FontSize="13" />
+            Width="133" Height="23" />
   </Canvas>
 </UserControl>
