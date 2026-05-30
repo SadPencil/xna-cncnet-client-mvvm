@@ -1,9 +1,6 @@
-using System;
-using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Media;
-using Avalonia.Threading;
 using DXMainClientView.Services;
 using DXMainClientViewModel.Generic;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,11 +9,6 @@ namespace DXMainClientView.Generic;
 
 public partial class LoadingScreen : UserControl
 {
-    /// <summary>
-    /// Raised when loading completes (IsLoading becomes false).
-    /// </summary>
-    public event EventHandler? Completed;
-
     public LoadingScreen()
     {
         InitializeComponent();
@@ -25,10 +17,8 @@ public partial class LoadingScreen : UserControl
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        // Set default background (matching original: AssetLoader.LoadTexture("loadingscreen.png"))
         ApplyDefaultBackground("loadingscreen.png");
 
-        // Apply INI layout overrides (LoadingScreen.ini + GenericWindow.ini)
         var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "LoadingScreen");
     }
@@ -52,57 +42,6 @@ public partial class LoadingScreen : UserControl
     public ILoadingScreenViewModel? ViewModel
     {
         get => DataContext as ILoadingScreenViewModel;
-        set
-        {
-            if (DataContext is ILoadingScreenViewModel old)
-                old.PropertyChanged -= OnViewModelPropertyChanged;
-
-            DataContext = value;
-
-            if (value != null)
-                value.PropertyChanged += OnViewModelPropertyChanged;
-        }
-    }
-
-    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ILoadingScreenViewModel.IsLoading))
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                if (ViewModel is { IsLoading: false })
-                {
-                    ShowPrivacyNotificationIfNeeded();
-                    Completed?.Invoke(this, EventArgs.Empty);
-                }
-            });
-        }
-    }
-
-    private void ShowPrivacyNotificationIfNeeded()
-    {
-        if (ViewModel?.ShouldShowPrivacyNotification != true)
-            return;
-
-        if (TopLevel.GetTopLevel(this) is not Window window)
-            return;
-
-        var overlayContent = window.FindControl<ContentControl>("OverlayContent");
-        if (overlayContent == null)
-            return;
-
-        var privacyNotificationVM = App.ServiceProvider!.GetRequiredService<IPrivacyNotificationViewModel>();
-        var privacyNotification = new PrivacyNotification();
-        privacyNotification.ViewModel = privacyNotificationVM;
-        overlayContent.Content = privacyNotification;
-
-        privacyNotificationVM.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(IPrivacyNotificationViewModel.IsVisible) &&
-                privacyNotificationVM.IsVisible == false)
-            {
-                Dispatcher.UIThread.Post(() => overlayContent.Content = null);
-            }
-        };
+        set => DataContext = value;
     }
 }

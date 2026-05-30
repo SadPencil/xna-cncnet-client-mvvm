@@ -1,4 +1,4 @@
-using System;
+using System.ComponentModel;
 
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -14,6 +14,7 @@ public partial class MainWindow : Window
 {
     private LoadingScreen? loadingScreen;
     private MainMenu? mainMenu;
+    private ILoadingScreenViewModel? loadingScreenVM;
 
     public MainWindow()
     {
@@ -30,21 +31,60 @@ public partial class MainWindow : Window
 
     private LoadingScreen GetLoadingScreen()
     {
-        var loadingScreenVM = App.ServiceProvider!.GetRequiredService<ILoadingScreenViewModel>();
+        loadingScreenVM = App.ServiceProvider!.GetRequiredService<ILoadingScreenViewModel>();
         loadingScreen = new LoadingScreen();
-        loadingScreen.Completed += OnLoadingCompleted; // Subscribe before setting DataContext to ensure we catch completion events
         loadingScreen.ViewModel = loadingScreenVM;
 
         // Set design resolution for ViewBox scaling (INI overlay may override later)
         loadingScreen.Width = 800;
         loadingScreen.Height = 600;
 
+        loadingScreenVM.PropertyChanged += OnLoadingScreenPropertyChanged;
+
         return loadingScreen;
     }
 
-    private void OnLoadingCompleted(object? sender, EventArgs e)
+    private void OnLoadingScreenPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Dispatcher.UIThread.Post(TransitionToMainMenu);
+        if (e.PropertyName == nameof(ILoadingScreenViewModel.IsLoading))
+        {
+            Dispatcher.UIThread.Post(HandleLoadingCompleted);
+        }
+    }
+
+    private void HandleLoadingCompleted()
+    {
+        if (loadingScreenVM is not { IsLoading: false })
+            return;
+
+        loadingScreenVM.PropertyChanged -= OnLoadingScreenPropertyChanged;
+
+        ShowPrivacyNotificationIfNeeded();
+        TransitionToMainMenu();
+    }
+
+    private void ShowPrivacyNotificationIfNeeded()
+    {
+        if (loadingScreenVM?.ShouldShowPrivacyNotification != true)
+            return;
+
+        var overlayContent = this.FindControl<ContentControl>("OverlayContent");
+        if (overlayContent == null)
+            return;
+
+        var privacyNotificationVM = App.ServiceProvider!.GetRequiredService<IPrivacyNotificationViewModel>();
+        var privacyNotification = new PrivacyNotification();
+        privacyNotification.ViewModel = privacyNotificationVM;
+        overlayContent.Content = privacyNotification;
+
+        privacyNotificationVM.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(IPrivacyNotificationViewModel.IsVisible) &&
+                privacyNotificationVM.IsVisible == false)
+            {
+                Dispatcher.UIThread.Post(() => overlayContent.Content = null);
+            }
+        };
     }
 
     private MainMenu GetMainMenu()
@@ -69,11 +109,8 @@ public partial class MainWindow : Window
 
     private void TransitionToMainMenu()
     {
-        if (loadingScreen != null)
-        {
-            loadingScreen.Completed -= OnLoadingCompleted;
-            loadingScreen = null;
-        }
+        loadingScreen = null;
+        loadingScreenVM = null;
 
         MainContent.Content = mainMenu;
     }
