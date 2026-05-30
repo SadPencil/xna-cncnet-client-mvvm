@@ -3,7 +3,7 @@ using SixLabors.ImageSharp;
 
 namespace DTAClient.Domain.Multiplayer;
 
-public interface IMapPreviewExtractor
+public interface IMapPreviewExtractor // checked
 {
     /// <summary>
     /// Extracts map preview image as a bitmap.
