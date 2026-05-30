@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace DTAClient.Online
 {
-    public class RecentPlayer
+    public class RecentPlayer // checked
     {
         [JsonInclude]
         public string PlayerName { get; set; }
