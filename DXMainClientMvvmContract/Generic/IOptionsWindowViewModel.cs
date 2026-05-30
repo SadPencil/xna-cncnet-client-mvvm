@@ -30,7 +30,12 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
 
     IRelayCommand SaveCommand { get; }
     IRelayCommand CancelCommand { get; }
-    IRelayCommand<int> SelectPanelCommand { get; }
+    IRelayCommand SelectDisplayPanelCommand { get; }
+    IRelayCommand SelectAudioPanelCommand { get; }
+    IRelayCommand SelectGamePanelCommand { get; }
+    IRelayCommand SelectCnCNetPanelCommand { get; }
+    IRelayCommand SelectUpdaterPanelCommand { get; }
+    IRelayCommand SelectComponentsPanelCommand { get; }
     IRelayCommand OpenComponentsPanelCommand { get; }
     IRelayCommand ForceUpdateCommand { get; }
     IRelayCommand DismissMessageBoxCommand { get; }

@@ -12,17 +12,17 @@
                   Orientation="Horizontal" Spacing="2"
                   Canvas.Left="12" Canvas.Top="12">
         <Button x:Name="tabDisplay" Content="Display" Width="92" Height="23" FontWeight="Bold"
-                Command="{Binding SelectPanelCommand}" CommandParameter="0" />
+                Command="{Binding SelectDisplayPanelCommand}" />
         <Button x:Name="tabAudio" Content="Audio" Width="92" Height="23" FontWeight="Bold"
-                Command="{Binding SelectPanelCommand}" CommandParameter="1" />
+                Command="{Binding SelectAudioPanelCommand}" />
         <Button x:Name="tabGame" Content="Game" Width="92" Height="23" FontWeight="Bold"
-                Command="{Binding SelectPanelCommand}" CommandParameter="2" />
+                Command="{Binding SelectGamePanelCommand}" />
         <Button x:Name="tabCnCNet" Content="CnCNet" Width="92" Height="23" FontWeight="Bold"
-                Command="{Binding SelectPanelCommand}" CommandParameter="3" />
+                Command="{Binding SelectCnCNetPanelCommand}" />
         <Button x:Name="tabUpdater" Content="Updater" Width="92" Height="23" FontWeight="Bold"
-                Command="{Binding SelectPanelCommand}" CommandParameter="4" />
+                Command="{Binding SelectUpdaterPanelCommand}" />
         <Button x:Name="tabComponents" Content="Components" Width="92" Height="23" FontWeight="Bold"
-                Command="{Binding SelectPanelCommand}" CommandParameter="5"
+                Command="{Binding SelectComponentsPanelCommand}"
                 IsVisible="{Binding IsComponentsPanelVisible}" />
       </StackPanel>
 

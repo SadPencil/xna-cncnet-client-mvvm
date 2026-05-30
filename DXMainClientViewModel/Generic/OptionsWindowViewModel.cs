@@ -199,10 +199,22 @@ namespace DXMainClientViewModel.Generic
         }
 
         [RelayCommand]
-        private void SelectPanel(int index)
-        {
-            SelectedPanelIndex = index;
-        }
+        private void SelectDisplayPanel() => SelectedPanelIndex = 0;
+
+        [RelayCommand]
+        private void SelectAudioPanel() => SelectedPanelIndex = 1;
+
+        [RelayCommand]
+        private void SelectGamePanel() => SelectedPanelIndex = 2;
+
+        [RelayCommand]
+        private void SelectCnCNetPanel() => SelectedPanelIndex = 3;
+
+        [RelayCommand]
+        private void SelectUpdaterPanel() => SelectedPanelIndex = 4;
+
+        [RelayCommand]
+        private void SelectComponentsPanel() => SelectedPanelIndex = 5;
 
         [RelayCommand]
         private void OpenComponentsPanel()
