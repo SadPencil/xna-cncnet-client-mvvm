@@ -5,7 +5,7 @@ namespace DTAClient.Online
     /// <summary>
     /// A queued network message.
     /// </summary>
-    public class QueuedMessage
+    public class QueuedMessage // checked
     {
         private const int DEFAULT_DELAY = -1;
         private const int REPLACE_DELAY = 1;
