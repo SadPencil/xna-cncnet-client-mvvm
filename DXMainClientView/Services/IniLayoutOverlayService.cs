@@ -633,7 +633,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             var brush = new ImageBrush
             {
                 Source = bitmap,
-                Stretch = Stretch.UniformToFill,
+                Stretch = Stretch.Fill,
                 TileMode = TileMode.None
             };
 
@@ -708,10 +708,14 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
             if (isHover)
             {
-                // Store hover brush and set up pointer handlers
-                var idleBrush = button.Background as ImageBrush;
+                // Capture current background (may be IdleTexture's ImageBrush or style default)
+                var idleBrush = button.Background;
                 button.PointerEntered += (_, _) => button.Background = brush;
-                button.PointerExited += (_, _) => button.Background = idleBrush;
+                button.PointerExited += (_, _) =>
+                {
+                    if (idleBrush != null)
+                        button.Background = idleBrush;
+                };
             }
             else
             {
@@ -748,10 +752,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         {
             brush.Stretch = drawMode?.ToLower() switch
             {
-                "stretched" => Stretch.UniformToFill,
+                "stretched" => Stretch.Fill,
                 "centered" => Stretch.None,
                 "tiled" => Stretch.None,
-                _ => Stretch.UniformToFill
+                _ => Stretch.Fill
             };
 
             if (drawMode?.ToLower() == "tiled")

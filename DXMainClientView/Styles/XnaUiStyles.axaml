@@ -70,7 +70,7 @@
 
   <Style Selector="Button:pointerover">
     <Setter Property="Foreground" Value="{StaticResource XnaButtonHoverBrush}" />
-    <Setter Property="Background" Value="{StaticResource XnaFocusBrush}" />
+    <!-- Background NOT overridden here - INI overlay handles hover textures via PointerEntered/Exited -->
   </Style>
 
   <Style Selector="Button:pressed">
