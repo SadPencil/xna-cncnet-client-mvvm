@@ -14,7 +14,6 @@ public partial class MainWindow : Window
 {
     private LoadingScreen? loadingScreen;
     private MainMenu? mainMenu;
-    private ILoadingScreenViewModel? loadingScreenVM;
 
     public MainWindow()
     {
@@ -31,7 +30,7 @@ public partial class MainWindow : Window
 
     private LoadingScreen GetLoadingScreen()
     {
-        loadingScreenVM = App.ServiceProvider!.GetRequiredService<ILoadingScreenViewModel>();
+        var loadingScreenVM = App.ServiceProvider!.GetRequiredService<ILoadingScreenViewModel>();
         loadingScreen = new LoadingScreen();
         loadingScreen.Completed += OnLoadingCompleted; // Subscribe before setting DataContext to ensure we catch completion events
         loadingScreen.ViewModel = loadingScreenVM;
@@ -77,24 +76,5 @@ public partial class MainWindow : Window
         }
 
         MainContent.Content = mainMenu;
-
-        if (loadingScreenVM?.ShouldShowPrivacyNotification == true)
-        {
-            var privacyNotificationVM = App.ServiceProvider!.GetRequiredService<IPrivacyNotificationViewModel>();
-            var privacyNotification = new PrivacyNotification();
-            privacyNotification.ViewModel = privacyNotificationVM;
-            OverlayContent.Content = privacyNotification;
-
-            privacyNotificationVM.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(IPrivacyNotificationViewModel.IsVisible) &&
-                    privacyNotificationVM.IsVisible == false)
-                {
-                    Dispatcher.UIThread.Post(() => OverlayContent.Content = null);
-                }
-            };
-        }
-
-        loadingScreenVM = null;
     }
 }
