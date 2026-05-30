@@ -14,7 +14,7 @@ namespace DTAClient.Domain.Multiplayer.CnCNet
     /// A <see cref="CnCNetGame"/> that loads its texture from a custom icon file, or falls back
     /// to the unknown game icon embedded in the assembly.
     /// </summary>
-    internal sealed class CustomCnCNetGame : CnCNetGame
+    internal sealed class CustomCnCNetGame : CnCNetGame // checked
     {
         private static readonly Lazy<Image> lazyFallbackImage = new(() =>
             Image.Load(
