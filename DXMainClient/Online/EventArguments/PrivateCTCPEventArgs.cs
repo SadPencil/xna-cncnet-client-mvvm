@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class PrivateCTCPEventArgs : EventArgs
+    public class PrivateCTCPEventArgs : EventArgs // checked
     {
         public PrivateCTCPEventArgs(string sender, string message)
         {
