@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class JoinUserEventArgs : EventArgs
+    public class JoinUserEventArgs : EventArgs // checked
     {
         public IRCUser IrcUser { get; }
 
