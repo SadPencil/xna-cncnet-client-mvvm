@@ -17,7 +17,7 @@ namespace DXMainClientViewModel.Multiplayer;
 public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewModel
 {
     private readonly Action<string>? onMessageSend;
-    private readonly Action<string>? onLinkOpen;
+    private readonly IUrlService urlService;
 
     // --- Observable state ---
 
@@ -27,6 +27,12 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
     [ObservableProperty]
     private bool _isAutoScrollEnabled = true;
 
+    [ObservableProperty]
+    private string? _pendingUntrustedUrl;
+
+    [ObservableProperty]
+    private bool _isUntrustedUrlDialogVisible;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _messages = new();
@@ -34,10 +40,10 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
 
     // --- Constructor ---
 
-    public ChatListBoxViewModel(Action<string>? onMessageSend = null, Action<string>? onLinkOpen = null)
+    public ChatListBoxViewModel(IUrlService urlService, Action<string>? onMessageSend = null)
     {
+        this.urlService = urlService;
         this.onMessageSend = onMessageSend;
-        this.onLinkOpen = onLinkOpen;
     }
 
     // --- Commands ---
@@ -61,8 +67,35 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
     [RelayCommand]
     private void OpenLink(string? link)
     {
-        if (!string.IsNullOrEmpty(link))
-            onLinkOpen?.Invoke(link);
+        if (string.IsNullOrEmpty(link))
+            return;
+
+        if (urlService.IsTrustedUrl(link))
+        {
+            urlService.OpenUrl(link);
+        }
+        else
+        {
+            PendingUntrustedUrl = link;
+            IsUntrustedUrlDialogVisible = true;
+        }
+    }
+
+    [RelayCommand]
+    private void ConfirmOpenUrl()
+    {
+        if (!string.IsNullOrEmpty(PendingUntrustedUrl))
+            urlService.OpenUrl(PendingUntrustedUrl);
+
+        PendingUntrustedUrl = null;
+        IsUntrustedUrlDialogVisible = false;
+    }
+
+    [RelayCommand]
+    private void CancelOpenUrl()
+    {
+        PendingUntrustedUrl = null;
+        IsUntrustedUrlDialogVisible = false;
     }
 
     // --- Message management (called by parent ViewModel) ---

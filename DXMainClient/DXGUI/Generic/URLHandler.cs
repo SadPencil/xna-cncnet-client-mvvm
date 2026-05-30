@@ -12,7 +12,7 @@ using Rampastring.XNAUI;
 
 namespace DTAClient.DXGUI.Generic
 {
-    public static class URLHandler
+    public static class URLHandler // checked
     {
         /// <summary>
         /// Checks whether a URL is safe before opening it, prompting a warning as an XNAMessageBox otherwise.

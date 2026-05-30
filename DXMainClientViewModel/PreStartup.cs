@@ -74,6 +74,26 @@ public static class PreStartup
         Logger.Log("Loading settings.");
         UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
 
+        // --- Player name initialization (same as DXMainClient GameClass.Initialize) ---
+        string playerName = UserINISettings.Instance.PlayerName.Value.Trim();
+
+        if (UserINISettings.Instance.AutoRemoveUnderscoresFromName)
+        {
+            while (playerName.EndsWith("_"))
+                playerName = playerName.Substring(0, playerName.Length - 1);
+        }
+
+        if (string.IsNullOrEmpty(playerName))
+        {
+            playerName = Environment.UserName;
+            playerName = playerName.Substring(playerName.IndexOf("\\") + 1);
+        }
+
+        playerName = Domain.Multiplayer.CnCNet.NameValidator.GetValidOfflineName(playerName);
+
+        ProgramConstants.PLAYERNAME = playerName;
+        UserINISettings.Instance.PlayerName.Value = playerName;
+
         // --- Theme resource path (same as DXMainClient Startup.Execute) ---
         ProgramConstants.RESOURCES_DIR = SafePath.CombineDirectoryPath(
             ProgramConstants.BASE_RESOURCE_PATH,
@@ -125,8 +145,8 @@ public static class PreStartup
                 UserINISettings.Instance,
                 sp.GetRequiredService<DirectDrawWrapperManager>(),
                 sp.GetRequiredService<IResolutionProvider>()));
-        services.AddSingleton<IAudioOptionsPanelViewModel>(_ =>
-            new AudioOptionsPanelViewModel(UserINISettings.Instance));
+        services.AddSingleton<IAudioOptionsPanelViewModel>(sp =>
+            new AudioOptionsPanelViewModel(UserINISettings.Instance, sp.GetRequiredService<IClientSoundService>()));
         services.AddSingleton<IGameOptionsPanelViewModel>(_ =>
             new GameOptionsPanelViewModel(UserINISettings.Instance));
         services.AddSingleton<ICnCNetOptionsPanelViewModel>(sp =>

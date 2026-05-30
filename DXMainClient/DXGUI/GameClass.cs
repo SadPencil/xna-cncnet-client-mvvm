@@ -37,7 +37,7 @@ namespace DTAClient.DXGUI
     /// The main class for the game. Sets up asset search paths
     /// and initializes components.
     /// </summary>
-    public class GameClass : Game
+    public class GameClass : Game // checked
     {
         public GameClass()
         {

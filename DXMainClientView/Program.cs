@@ -20,6 +20,8 @@ public class Program
         // View project adds GUI-related services only
         services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
         services.AddSingleton<IIniLayoutOverlayService, IniLayoutOverlayService>();
+        services.AddSingleton<IClientSoundService, ClientSoundService>();
+        services.AddSingleton<IUrlService, UrlService>();
 
         App.ServiceProvider = services.BuildServiceProvider();
 

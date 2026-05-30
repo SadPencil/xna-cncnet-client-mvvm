@@ -8,7 +8,7 @@ using System;
 
 namespace DTAClient.DXGUI.Generic.OptionPanels
 {
-    class AudioOptionsPanel : XNAOptionsPanel
+    class AudioOptionsPanel : XNAOptionsPanel // checked
     {
         private const int VOLUME_MIN = 0;
         private const int VOLUME_MAX = 10;

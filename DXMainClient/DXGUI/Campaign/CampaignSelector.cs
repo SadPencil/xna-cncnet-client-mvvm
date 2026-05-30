@@ -25,7 +25,7 @@ using Rampastring.XNAUI.XNAControls;
 
 namespace DTAClient.DXGUI.Campaign
 {
-    public class CampaignSelector : XNAWindow
+    public class CampaignSelector : XNAWindow // checked
     {
         private const int DEFAULT_WIDTH = 650;
         private const int DEFAULT_HEIGHT = 600;
