@@ -13,7 +13,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// A multiplayer game mode.
     /// </summary>
-    public class GameMode : GameModeMapBase, ICloneable
+    public class GameMode : GameModeMapBase, ICloneable // checked
     {
         public GameMode(string name)
         {
