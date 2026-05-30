@@ -347,6 +347,7 @@ public static class PreStartup
             sp.GetRequiredService<IDiscordHandlerService>(),
             sp.GetRequiredService<IMusicPlayerService>(),
             sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<IApplicationLifecycleService>(),
             sp.GetRequiredService<CnCNetManager>(),
             sp.GetRequiredService<OptionsWindowViewModel>(),
             sp.GetRequiredService<TopBarViewModel>(),

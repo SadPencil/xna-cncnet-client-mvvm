@@ -8,4 +8,9 @@ namespace DXMainClientViewModel.Services;
 public interface IApplicationLifecycleService
 {
     event EventHandler ApplicationClosing;
+
+    /// <summary>
+    /// Requests the application to shut down.
+    /// </summary>
+    void Shutdown();
 }

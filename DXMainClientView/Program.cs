@@ -3,6 +3,7 @@ using System.Text;
 using Avalonia;
 using DXMainClientView.Services;
 using DXMainClientViewModel;
+using DXMainClientViewModel.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView;
@@ -22,6 +23,7 @@ public class Program
         services.AddSingleton<IIniLayoutOverlayService, IniLayoutOverlayService>();
         services.AddSingleton<IClientSoundService, ClientSoundService>();
         services.AddSingleton<IUrlService, UrlService>();
+        services.AddSingleton<IApplicationLifecycleService, ApplicationLifecycleService>();
 
         App.ServiceProvider = services.BuildServiceProvider();
 

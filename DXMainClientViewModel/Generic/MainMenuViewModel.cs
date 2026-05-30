@@ -9,6 +9,7 @@ using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online;
+using DXMainClientViewModel.Services;
 using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace DXMainClientViewModel.Generic
         private readonly IDiscordHandlerService discordHandler;
         private readonly IMusicPlayerService musicPlayer;
         private readonly IUIThreadMarshaller uiThreadMarshaller;
+        private readonly IApplicationLifecycleService lifecycleService;
         private readonly CnCNetManager connectionManager;
         private readonly OptionsWindowViewModel optionsWindowViewModel;
         private readonly TopBarViewModel topBarViewModel;
@@ -108,11 +110,6 @@ namespace DXMainClientViewModel.Generic
         private MainMenuPanel activePanel = MainMenuPanel.PRIMARY;
 
         /// <summary>
-        /// Domain event: fired when client should exit. App shell subscribes.
-        /// </summary>
-        public event Action? ExitRequested;
-
-        /// <summary>
         /// Domain event: fired when skirmish lobby is exited. Parent subscribes.
         /// </summary>
         public event Action? SkirmishLobbyExited;
@@ -133,6 +130,7 @@ namespace DXMainClientViewModel.Generic
             IDiscordHandlerService discordHandler,
             IMusicPlayerService musicPlayer,
             IUIThreadMarshaller uiThreadMarshaller,
+            IApplicationLifecycleService lifecycleService,
             CnCNetManager connectionManager,
             OptionsWindowViewModel optionsWindowViewModel,
             TopBarViewModel topBarViewModel,
@@ -147,6 +145,7 @@ namespace DXMainClientViewModel.Generic
             this.discordHandler = discordHandler;
             this.musicPlayer = musicPlayer;
             this.uiThreadMarshaller = uiThreadMarshaller;
+            this.lifecycleService = lifecycleService;
             this.connectionManager = connectionManager;
             this.optionsWindowViewModel = optionsWindowViewModel;
             this.topBarViewModel = topBarViewModel;
@@ -795,7 +794,7 @@ namespace DXMainClientViewModel.Generic
         private void ExitClient()
         {
             Logger.Log("Exiting.");
-            ExitRequested?.Invoke();
+            lifecycleService.Shutdown();
             musicPlayer.Dispose();
         }
 
