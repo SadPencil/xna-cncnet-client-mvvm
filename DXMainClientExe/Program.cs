@@ -7,7 +7,11 @@ namespace DXMainClientExe;
 internal class Program
 {
     [STAThread]
-    public static void Main(string[] args) => DXMainClientView.Startup.Run(BuildServiceProvider(), args);
+    public static void Main(string[] args)
+    {
+        DXMainClientViewModel.PreStartup.Initialize();
+        DXMainClientView.Startup.Run(BuildServiceProvider(), args);
+    }
 
     private static ServiceProvider BuildServiceProvider()
     {
