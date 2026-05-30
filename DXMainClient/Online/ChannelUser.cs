@@ -5,7 +5,7 @@ namespace DTAClient.Online
     /// <summary>
     /// An user on an IRC channel.
     /// </summary>
-    public class ChannelUser
+    public class ChannelUser // checked
     {
         public ChannelUser(IRCUser ircUser)
         {
