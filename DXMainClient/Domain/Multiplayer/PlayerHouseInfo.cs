@@ -4,7 +4,7 @@ using ClientCore;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public class PlayerHouseInfo
+    public class PlayerHouseInfo // checked
     {
         public int SideIndex { get; set; }
 
