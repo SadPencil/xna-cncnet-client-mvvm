@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class ChannelCTCPEventArgs : EventArgs
+    public class ChannelCTCPEventArgs : EventArgs // checked
     {
         public ChannelCTCPEventArgs(string userName, string message)
         {
