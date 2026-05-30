@@ -6,7 +6,7 @@ using Rampastring.Tools;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public class CoopMapInfo
+    public class CoopMapInfo // checked
     {
         [JsonInclude]
         public List<CoopHouseInfo> EnemyHouses = new List<CoopHouseInfo>();
