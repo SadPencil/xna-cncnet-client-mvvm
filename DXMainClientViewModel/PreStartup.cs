@@ -138,6 +138,8 @@ public static class PreStartup
         services.AddSingleton<IMusicPlayerService, MusicPlayerService>();
         services.AddSingleton<IResolutionProvider, ResolutionProvider>();
         services.AddSingleton<DirectDrawWrapperManager>();
+        services.AddSingleton<IFileIntegrityService, FileIntegrityService>();
+        services.AddSingleton<ICampaignGameProcessService, CampaignGameProcessService>();
 
         // Option panel ViewModels
         services.AddSingleton<DisplayOptionsPanelViewModel>(sp =>
