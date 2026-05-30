@@ -3,7 +3,7 @@ using System.IO;
 using Rampastring.Tools;
 
 namespace DTAClient.Domain.Multiplayer;
-public class MapFileWatcher
+public class MapFileWatcher // checked
 {
     private readonly string mapsDirectory;
     private readonly string mapFileExtension;
