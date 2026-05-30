@@ -4,6 +4,7 @@ namespace DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 public interface ISkirmishLobbyViewModel : IGameLobbyViewModel
 {
+    bool IsVisible { get; set; }
     bool ShowPlayerNamesInGame { get; set; }
 
     // Error/Notice display (View binds to these)

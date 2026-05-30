@@ -84,6 +84,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     [ObservableProperty]
     private bool _isEnabled;
 
+    [ObservableProperty]
+    private bool _isVisible;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _gameNames = new();

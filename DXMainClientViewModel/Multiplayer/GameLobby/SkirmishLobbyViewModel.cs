@@ -34,6 +34,9 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
     // --- Observable state ---
 
     [ObservableProperty]
+    private bool _isVisible;
+
+    [ObservableProperty]
     private bool _showPlayerNamesInGame;
 
     [ObservableProperty]

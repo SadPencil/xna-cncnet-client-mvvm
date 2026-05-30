@@ -7,6 +7,7 @@ namespace DXMainClientMvvmContract.Multiplayer;
 
 public interface ILANLobbyViewModel : INotifyPropertyChanged
 {
+    bool IsVisible { get; set; }
     IReadOnlyList<string> GameNames { get; }
     IReadOnlyList<string> PlayerNames { get; }
     IReadOnlyList<string> ChatMessages { get; }
