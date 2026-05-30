@@ -23,7 +23,7 @@ namespace DTAClient.DXGUI.Multiplayer.GameLobby
     /// <summary>
     /// A generic base class for multiplayer game lobbies (CnCNet and LAN).
     /// </summary>
-    public abstract class MultiplayerGameLobby : GameLobbyBase, ISwitchable
+    public abstract class MultiplayerGameLobby : GameLobbyBase, ISwitchable // checked
     {
         private const int MAX_DICE = 10;
         private const int MAX_DIE_SIDES = 100;
