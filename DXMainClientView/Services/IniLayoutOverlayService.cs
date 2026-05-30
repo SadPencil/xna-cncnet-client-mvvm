@@ -64,13 +64,24 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             }
         }
 
-        // Apply root-level properties from [GenericWindow] first (defaults),
-        // then from the section-specific section (overrides).
+        // Apply root-level properties. Only inherit [GenericWindow] defaults
+        // if the main section explicitly references it via $BaseSection.
+        // This matches the original XNA behavior where only INItializableWindow
+        // subclasses inherit from GenericWindow; XNAWindow-based windows (MainMenu, etc.)
+        // do NOT inherit GenericWindow's BackgroundTexture.
+        var mainSection = iniFile.GetSection(sectionName);
         var genericSection = iniFile.GetSection("GenericWindow");
-        if (genericSection != null)
+
+        bool inheritsGeneric = false;
+        if (mainSection != null)
+        {
+            string baseSection = mainSection.GetStringValue("$BaseSection", string.Empty);
+            inheritsGeneric = string.Equals(baseSection, "GenericWindow", StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (inheritsGeneric && genericSection != null)
             ApplyProperties(control, genericSection, iniFile, "GenericWindow");
 
-        var mainSection = iniFile.GetSection(sectionName);
         if (mainSection != null)
             ApplyProperties(control, mainSection, iniFile, sectionName);
 

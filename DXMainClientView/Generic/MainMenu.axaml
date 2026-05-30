@@ -57,7 +57,7 @@
 
     <!-- ========== ExtraControls from INI [ExtraControls] section ========== -->
     <Button x:Name="btnQuickmatch" />
-    <TextBlock x:Name="lblVersionLabel" />
+    <TextBlock x:Name="txtVersion" />
     <TextBlock x:Name="lblPoweredBy" />
     <Button x:Name="btnCnCNetLogo" />
     <Button x:Name="btnPhobos" />

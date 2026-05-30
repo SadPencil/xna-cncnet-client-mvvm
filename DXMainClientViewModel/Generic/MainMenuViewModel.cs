@@ -121,6 +121,26 @@ namespace DXMainClientViewModel.Generic
         /// </summary>
         public event Action? OptionsWindowClosed;
 
+        /// <summary>
+        /// Domain event: fired when campaign selector should open. Parent subscribes.
+        /// </summary>
+        public event Action? CampaignRequested;
+
+        /// <summary>
+        /// Domain event: fired when load game window should open. Parent subscribes.
+        /// </summary>
+        public event Action? LoadGameRequested;
+
+        /// <summary>
+        /// Domain event: fired when extras window should open. Parent subscribes.
+        /// </summary>
+        public event Action? ExtrasRequested;
+
+        /// <summary>
+        /// Domain event: fired when statistics window should open. Parent subscribes.
+        /// </summary>
+        public event Action? StatisticsRequested;
+
         public MainMenuViewModel(
             IUpdateService updateService,
             IGameProcessService gameProcessService,
@@ -226,19 +246,19 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void StartCampaign()
         {
-            // Navigation handled by View observing this command
+            CampaignRequested?.Invoke();
         }
 
         [RelayCommand]
         private void ContinueCampaign()
         {
-            // Navigation handled by View observing this command
+            CampaignRequested?.Invoke();
         }
 
         [RelayCommand]
         private void LoadGame()
         {
-            // Navigation handled by View observing this command
+            LoadGameRequested?.Invoke();
         }
 
         [RelayCommand]
@@ -281,7 +301,7 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void OpenStatistics()
         {
-            // Navigation handled by View observing this command
+            StatisticsRequested?.Invoke();
         }
 
         [RelayCommand]
@@ -293,7 +313,7 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void OpenExtras()
         {
-            // Navigation handled by View observing this command
+            ExtrasRequested?.Invoke();
         }
 
         [RelayCommand]
