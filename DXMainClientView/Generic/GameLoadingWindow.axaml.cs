@@ -24,7 +24,7 @@ public partial class GameLoadingWindow : UserControl, IGameLoadingWindowView
         ApplyDefaultBackground("loadmissionbg.png");
 
         // Apply INI layout overrides
-        var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "GameLoadingWindow");
     }
 
@@ -32,7 +32,7 @@ public partial class GameLoadingWindow : UserControl, IGameLoadingWindowView
     {
         try
         {
-            var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

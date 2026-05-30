@@ -24,7 +24,7 @@ public partial class OptionsWindow : UserControl, IOptionsWindowView
         ApplyDefaultBackground("optionsbg.png");
 
         // Apply INI layout overrides (OptionsWindow.ini if it exists)
-        var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "OptionsWindow");
     }
 
@@ -32,7 +32,7 @@ public partial class OptionsWindow : UserControl, IOptionsWindowView
     {
         try
         {
-            var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

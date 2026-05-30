@@ -31,7 +31,7 @@ public partial class MainWindow : Window
 
     private LoadingScreen GetLoadingScreen()
     {
-        var loadingScreenVM = App.ServiceProvider!.GetRequiredService<ILoadingScreenViewModel>();
+        var loadingScreenVM = ViewConstants.ServiceProvider.GetRequiredService<ILoadingScreenViewModel>();
         loadingScreen = new LoadingScreen();
         loadingScreen.ViewModel = loadingScreenVM;
 
@@ -51,12 +51,12 @@ public partial class MainWindow : Window
 
     private MainMenu GetMainMenu()
     {
-        var mainMenuVM = App.ServiceProvider!.GetRequiredService<IMainMenuViewModel>();
-        var topBarVM = App.ServiceProvider!.GetRequiredService<ITopBarViewModel>();
-        var campaignSelectorVM = App.ServiceProvider!.GetRequiredService<ICampaignSelectorViewModel>();
-        var optionsWindowVM = App.ServiceProvider!.GetRequiredService<IOptionsWindowViewModel>();
-        var extrasWindowVM = App.ServiceProvider!.GetRequiredService<IExtrasWindowViewModel>();
-        var gameLoadingWindowVM = App.ServiceProvider!.GetRequiredService<IGameLoadingWindowViewModel>();
+        var mainMenuVM = ViewConstants.ServiceProvider.GetRequiredService<IMainMenuViewModel>();
+        var topBarVM = ViewConstants.ServiceProvider.GetRequiredService<ITopBarViewModel>();
+        var campaignSelectorVM = ViewConstants.ServiceProvider.GetRequiredService<ICampaignSelectorViewModel>();
+        var optionsWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IOptionsWindowViewModel>();
+        var extrasWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IExtrasWindowViewModel>();
+        var gameLoadingWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IGameLoadingWindowViewModel>();
 
         var mainMenu = new MainMenu();
         mainMenu.ViewModel = mainMenuVM;

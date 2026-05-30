@@ -29,7 +29,7 @@ public partial class MainMenu : UserControl
         ApplyDefaultBackground("MainMenu/mainmenubg.png");
 
         // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini)
-        var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "MainMenu");
     }
 
@@ -37,7 +37,7 @@ public partial class MainMenu : UserControl
     {
         try
         {
-            var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

@@ -14,7 +14,7 @@ public class Startup
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        App.ServiceProvider = serviceProvider;
+        ViewConstants.ServiceProvider = serviceProvider;
 
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);

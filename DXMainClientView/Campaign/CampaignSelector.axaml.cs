@@ -24,7 +24,7 @@ public partial class CampaignSelector : UserControl
         ApplyDefaultBackground("MainMenu/dbak.png");
 
         // Apply INI layout overrides (CampaignSelector.ini -> GenericWindow.ini)
-        var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "CampaignSelector");
     }
 
@@ -32,7 +32,7 @@ public partial class CampaignSelector : UserControl
     {
         try
         {
-            var iniOverlay = App.ServiceProvider?.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

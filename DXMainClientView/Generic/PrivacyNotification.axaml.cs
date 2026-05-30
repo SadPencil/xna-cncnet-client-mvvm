@@ -11,7 +11,7 @@ public partial class PrivacyNotification : UserControl, IPrivacyNotificationView
     public PrivacyNotification()
     {
         InitializeComponent();
-        ViewModel = App.ServiceProvider?.GetRequiredService<IPrivacyNotificationViewModel>();
+        ViewModel = ViewConstants.ServiceProvider.GetRequiredService<IPrivacyNotificationViewModel>();
     }
 
     public IPrivacyNotificationViewModel? ViewModel

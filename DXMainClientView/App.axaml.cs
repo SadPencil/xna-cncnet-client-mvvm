@@ -10,8 +10,6 @@ namespace DXMainClientView;
 
 public class App : Application
 {
-    internal static ServiceProvider? ServiceProvider { get; set; }
-
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
