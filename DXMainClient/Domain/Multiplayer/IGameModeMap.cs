@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DTAClient.Domain.Multiplayer
 {
-    public interface IGameModeMap
+    public interface IGameModeMap // checked
     {
         public List<int> AllowedStartingLocations { get; }
         public int CoopDifficultyLevel { get; }
