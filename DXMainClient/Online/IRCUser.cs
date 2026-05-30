@@ -6,7 +6,7 @@ namespace DTAClient.Online
     /// <summary>
     /// A user on an IRC server.
     /// </summary>
-    public class IRCUser : ICloneable
+    public class IRCUser : ICloneable // checked
     {
         public IRCUser() { }
 
