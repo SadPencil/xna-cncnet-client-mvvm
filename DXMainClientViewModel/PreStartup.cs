@@ -2,9 +2,16 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using System.Threading;
+using System.Threading.Tasks;
 using ClientCore;
+using ClientCore.Enums;
 using ClientCore.I18N;
+using ClientCore.INIProcessing;
 using ClientCore.Settings;
+using ClientUpdater;
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
@@ -126,6 +133,119 @@ public static class PreStartup
         Logger.Log("Resource path: " + ProgramConstants.GetResourcePath());
         Logger.Log("Base resource path: " + ProgramConstants.GetBaseResourcePath());
 
+        // --- Delete obsolete files from old target project versions (same as DXMainClient PreStartup) ---
+        Task.Run(() =>
+        {
+            gameDirectory.EnumerateFiles("mainclient.log").SingleOrDefault()?.Delete();
+            gameDirectory.EnumerateFiles("aunchupdt.dat").SingleOrDefault()?.Delete();
+
+            try
+            {
+                gameDirectory.EnumerateFiles("wsock32.dll").SingleOrDefault()?.Delete();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Deleting wsock32.dll failed! Error message: " + ex.ToString());
+            }
+        });
+
+        // --- Custom mission initialization (same as DXMainClient PreStartup lines 195-196) ---
+        CustomMissionHelper.Initialize();
+        CustomMissionHelper.DeleteSupplementalMissionFiles();
+
+        // --- Startup initialization (same as DXMainClient Startup.Execute lines 46-129) ---
+
+        Logger.Log("Initializing updater.");
+
+        SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "version_u");
+
+        Updater.Initialize(
+            ProgramConstants.GamePath,
+            ProgramConstants.GetBaseResourcePath(),
+            ClientConfiguration.Instance.SettingsIniName,
+            ClientConfiguration.Instance.LocalGame,
+            SafePath.GetFile(ProgramConstants.StartupExecutable).Name);
+
+        Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
+        Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
+        Logger.Log("ProcessArchitecture: " + RuntimeInformation.ProcessArchitecture);
+        Logger.Log("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);
+        Logger.Log("Selected OS profile: " + MainClientConstants.OSId);
+        Logger.Log("Current culture: " + CultureInfo.CurrentCulture);
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            // The query in CheckSystemSpecifications takes lots of time,
+            // so we'll do it in a separate thread to make startup faster
+            Thread checkSpecsThread = new Thread(CheckSystemSpecifications);
+            checkSpecsThread.Start();
+        }
+
+        // Using tasks here causes crashes on Wine for some reason
+        Thread onlineIdThread = new Thread(GenerateOnlineId);
+        onlineIdThread.Start();
+
+        if (ClientConfiguration.Instance.ClientGameType == ClientType.Ares)
+            Task.Run(() => PruneFiles(SafePath.GetDirectory(ProgramConstants.GamePath, "debug"), DateTime.Now.AddDays(-7)));
+
+        Task.Run(MigrateOldLogFiles);
+
+        // Start INI file preprocessor
+        PreprocessorBackgroundTask.Instance.Run();
+
+        DirectoryInfo updaterFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Updater");
+
+        if (updaterFolder.Exists)
+        {
+            Logger.Log("Attempting to delete temporary updater directory.");
+            try
+            {
+                updaterFolder.Delete(true);
+            }
+            catch
+            {
+            }
+        }
+
+        if (ClientConfiguration.Instance.CreateSavedGamesDirectory)
+        {
+            DirectoryInfo savedGamesFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Saved Games");
+
+            if (!savedGamesFolder.Exists)
+            {
+                Logger.Log("Saved Games directory does not exist - attempting to create one.");
+                try
+                {
+                    savedGamesFolder.Create();
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        if (Updater.CustomComponents != null)
+        {
+            Logger.Log("Removing partial custom component downloads.");
+            foreach (var component in Updater.CustomComponents)
+            {
+                try
+                {
+                    SafePath.DeleteFileIfExists(ProgramConstants.GamePath, FormattableString.Invariant($"{component.LocalPath}_u"));
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        FinalSunSettings.WriteFinalSunIniAsync();
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            WriteInstallPathToRegistry();
+
+        ClientConfiguration.Instance.RefreshSettings();
+
         // --- DI container with domain services ---
         var services = new ServiceCollection();
         ConfigureServices(services);
@@ -141,7 +261,7 @@ public static class PreStartup
 
         // Domain services
         services.AddSingleton<GameCollection>();
-        services.AddSingleton<CnCNetUserData>(_ => new CnCNetUserData(() => { })); // TODO: empty callback? check it
+        services.AddSingleton<CnCNetUserData>(_ => new CnCNetUserData(() => { }));
         services.AddSingleton<CnCNetManager>();
         services.AddSingleton<MapLoader>();
         services.AddSingleton<PrivateMessageHandler>();
@@ -244,7 +364,8 @@ public static class PreStartup
             sp.GetRequiredService<CampaignSelectorViewModel>(),
             sp.GetRequiredService<GameLoadingWindowViewModel>(),
             sp.GetRequiredService<ExtrasWindowViewModel>(),
-            sp.GetRequiredService<StatisticsWindowViewModel>()));
+            sp.GetRequiredService<StatisticsWindowViewModel>(),
+            sp.GetRequiredService<CnCNetUserData>()));
         services.AddSingleton<IMainMenuViewModel>(sp =>
             sp.GetRequiredService<MainMenuViewModel>());
 
@@ -254,6 +375,258 @@ public static class PreStartup
         services.AddTransient<IManualUpdateQueryWindowViewModel, ManualUpdateQueryWindowViewModel>();
         services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
         services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
+    }
+
+    /// <summary>
+    /// Writes processor, graphics card and memory info to the log file.
+    /// </summary>
+    [SupportedOSPlatform("windows")]
+    private static void CheckSystemSpecifications()
+    {
+        string cpu = string.Empty;
+        string videoController = string.Empty;
+        string memory = string.Empty;
+
+        System.Management.ManagementObjectSearcher searcher;
+
+        try
+        {
+            searcher = new System.Management.ManagementObjectSearcher("SELECT * FROM Win32_Processor");
+
+            foreach (var proc in searcher.Get())
+            {
+                cpu = cpu + proc["Name"].ToString().Trim() + " (" + proc["NumberOfCores"] + " cores) ";
+            }
+        }
+        catch
+        {
+            cpu = "CPU info not found";
+        }
+
+        try
+        {
+            searcher = new System.Management.ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+
+            foreach (System.Management.ManagementObject mo in searcher.Get())
+            {
+                var currentBitsPerPixel = mo.Properties["CurrentBitsPerPixel"];
+                var description = mo.Properties["Description"];
+                if (currentBitsPerPixel != null && description != null)
+                {
+                    if (currentBitsPerPixel.Value != null)
+                        videoController = videoController + "Video controller: " + description.Value.ToString().Trim() + " ";
+                }
+            }
+        }
+        catch
+        {
+            cpu = "Video controller info not found";
+        }
+
+        try
+        {
+            searcher = new System.Management.ManagementObjectSearcher("Select * From Win32_PhysicalMemory");
+            ulong total = 0;
+
+            foreach (System.Management.ManagementObject ram in searcher.Get())
+            {
+                total += Convert.ToUInt64(ram.GetPropertyValue("Capacity"));
+            }
+
+            if (total != 0)
+                memory = "Total physical memory: " + (total >= 1073741824 ? total / 1073741824 + "GB" : total / 1048576 + "MB");
+        }
+        catch
+        {
+            cpu = "Memory info not found";
+        }
+
+        Logger.Log(string.Format("Hardware info: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
+    }
+
+    /// <summary>
+    /// Generate an ID for online play.
+    /// </summary>
+    private static void GenerateOnlineId()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            try
+            {
+                System.Management.ManagementObjectCollection mbsList = null;
+                System.Management.ManagementObjectSearcher mbs = new System.Management.ManagementObjectSearcher("Select * From Win32_processor");
+                mbsList = mbs.Get();
+                string cpuid = "";
+
+                foreach (System.Management.ManagementObject mo in mbsList)
+                    cpuid = mo["ProcessorID"].ToString();
+
+                System.Management.ManagementObjectSearcher mos = new System.Management.ManagementObjectSearcher("SELECT * FROM Win32_BaseBoard");
+                var moc = mos.Get();
+                string mbid = "";
+
+                foreach (System.Management.ManagementObject mo in moc)
+                    mbid = (string)mo["SerialNumber"];
+
+                string sid = new System.Security.Principal.SecurityIdentifier((byte[])new System.DirectoryServices.DirectoryEntry(string.Format("WinNT://{0},Computer", Environment.MachineName)).Children.Cast<System.DirectoryServices.DirectoryEntry>().First().InvokeGet("objectSID"), 0).AccountDomainSid.Value;
+
+                Connection.SetId(cpuid + mbid + sid);
+                using Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\" + ClientConfiguration.Instance.InstallationPathRegKey);
+                key.SetValue("Ident", cpuid + mbid + sid);
+            }
+            catch (Exception)
+            {
+                Random rn = new Random();
+
+                using Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\" + ClientConfiguration.Instance.InstallationPathRegKey);
+                string str = rn.Next(Int32.MaxValue - 1).ToString();
+
+                try
+                {
+                    Object o = key.GetValue("Ident");
+                    if (o == null)
+                        key.SetValue("Ident", str);
+                    else
+                        str = o.ToString();
+                }
+                catch { }
+
+                Connection.SetId(str);
+            }
+        }
+        else
+        {
+            try
+            {
+                string machineId = File.ReadAllText("/var/lib/dbus/machine-id");
+
+                Connection.SetId(machineId);
+            }
+            catch (Exception)
+            {
+                Connection.SetId(new Random().Next(int.MaxValue - 1).ToString());
+            }
+        }
+    }
+
+    /// <summary>
+    /// Recursively deletes all files from the specified directory that were created at <paramref name="pruneThresholdTime"/> or before.
+    /// If directory is empty after deleting files, the directory itself will also be deleted.
+    /// </summary>
+    private static void PruneFiles(DirectoryInfo directory, DateTime pruneThresholdTime)
+    {
+        if (!directory.Exists)
+            return;
+
+        try
+        {
+            foreach (FileSystemInfo fsEntry in directory.EnumerateFileSystemInfos())
+            {
+                if ((fsEntry.Attributes & FileAttributes.Directory) == FileAttributes.Directory)
+                    PruneFiles(new DirectoryInfo(fsEntry.FullName), pruneThresholdTime);
+                else
+                {
+                    try
+                    {
+                        FileInfo fileInfo = new FileInfo(fsEntry.FullName);
+                        if (fileInfo.CreationTime <= pruneThresholdTime)
+                            fileInfo.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log("PruneFiles: Could not delete file " + fsEntry.Name +
+                            ". Error message: " + ex.ToString());
+                        continue;
+                    }
+                }
+            }
+
+            if (!directory.EnumerateFileSystemInfos().Any())
+                directory.Delete();
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("PruneFiles: An error occurred while pruning files from " +
+               directory.Name + ". Message: " + ex.ToString());
+        }
+    }
+
+    /// <summary>
+    /// Move log files from obsolete directories to currently used ones and adjust filenames.
+    /// </summary>
+    private static void MigrateOldLogFiles()
+    {
+        MigrateLogFiles(SafePath.GetDirectory(ProgramConstants.ClientUserFilesPath, "ClientCrashLogs"), "ClientCrashLog*.txt");
+        MigrateLogFiles(SafePath.GetDirectory(ProgramConstants.ClientUserFilesPath, "GameCrashLogs"), "EXCEPT*.txt");
+        MigrateLogFiles(SafePath.GetDirectory(ProgramConstants.ClientUserFilesPath, "SyncErrorLogs"), "SYNC*.txt");
+    }
+
+    /// <summary>
+    /// Move log files matching given search pattern from ErrorLogs to the new directory.
+    /// </summary>
+    private static void MigrateLogFiles(DirectoryInfo newDirectory, string searchPattern)
+    {
+        DirectoryInfo currentDirectory = SafePath.GetDirectory(ProgramConstants.ClientUserFilesPath, "ErrorLogs");
+        try
+        {
+            if (!currentDirectory.Exists)
+                return;
+
+            if (!newDirectory.Exists)
+                newDirectory.Create();
+
+            foreach (FileInfo file in currentDirectory.EnumerateFiles(searchPattern))
+            {
+                string filenameTS = Path.GetFileNameWithoutExtension(file.Name);
+                string[] ts = filenameTS.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+
+                string timestamp = string.Empty;
+                string baseFilename = Path.GetFileNameWithoutExtension(ts[0]);
+
+                if (ts.Length >= 6)
+                {
+                    timestamp = string.Format("_{0}_{1}_{2}_{3}_{4}",
+                        ts[3], ts[2].PadLeft(2, '0'), ts[1].PadLeft(2, '0'), ts[4].PadLeft(2, '0'), ts[5].PadLeft(2, '0'));
+                }
+
+                string newFilename = SafePath.CombineFilePath(newDirectory.FullName, baseFilename, timestamp, file.Extension);
+                file.MoveTo(newFilename);
+            }
+
+            if (!currentDirectory.EnumerateFiles().Any())
+                currentDirectory.Delete();
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("MigrateLogFiles: An error occured while moving log files from " +
+                currentDirectory.Name + " to " +
+                newDirectory.Name + ". Message: " + ex.ToString());
+        }
+    }
+
+    /// <summary>
+    /// Writes the game installation path to the Windows registry.
+    /// </summary>
+    [SupportedOSPlatform("windows")]
+    private static void WriteInstallPathToRegistry()
+    {
+        if (!UserINISettings.Instance.WritePathToRegistry)
+        {
+            Logger.Log("Skipping writing installation path to the Windows Registry because of INI setting.");
+            return;
+        }
+
+        Logger.Log("Writing installation path to the Windows registry.");
+
+        try
+        {
+            using Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SOFTWARE\\" + ClientConfiguration.Instance.InstallationPathRegKey);
+            key.SetValue("InstallPath", ProgramConstants.GamePath);
+        }
+        catch
+        {
+            Logger.Log("Failed to write installation path to the Windows registry");
+        }
     }
 
     /// <summary>

@@ -8,6 +8,9 @@
         CanResize="True"
         Background="#000000">
   <Viewbox Stretch="Uniform">
-    <ContentControl x:Name="MainContent" />
+    <Grid>
+      <ContentControl x:Name="MainContent" />
+      <ContentControl x:Name="OverlayContent" />
+    </Grid>
   </Viewbox>
 </Window>

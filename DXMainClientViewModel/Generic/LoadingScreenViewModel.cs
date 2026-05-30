@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.Settings;
 using DXMainClientViewModel.Domain.Multiplayer;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Online;
@@ -23,6 +24,7 @@ namespace DXMainClientViewModel.Generic
     {
         private readonly MapLoader mapLoader;
         private readonly IUpdateService updateService;
+        private readonly CnCNetManager connectionManager;
 
         [ObservableProperty]
         private string statusText = "Loading...";
@@ -39,14 +41,18 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private bool isLoading = true;
 
+        [ObservableProperty]
+        private bool shouldShowPrivacyNotification;
+
         private Task? updaterInitTask;
         private Task? mapLoadTask;
         private Timer? pollingTimer;
 
-        public LoadingScreenViewModel(MapLoader mapLoader, IUpdateService updateService)
+        public LoadingScreenViewModel(MapLoader mapLoader, IUpdateService updateService, CnCNetManager connectionManager)
         {
             this.mapLoader = mapLoader;
             this.updateService = updateService;
+            this.connectionManager = connectionManager;
 
             Initialize();
         }
@@ -134,6 +140,14 @@ namespace DXMainClientViewModel.Generic
 
             ProgramConstants.GAME_VERSION = ClientConfiguration.Instance.ModMode ?
                 "N/A" : updateService.GameVersion;
+
+            if (UserINISettings.Instance.AutomaticCnCNetLogin &&
+                NameValidator.IsNameValid(ProgramConstants.PLAYERNAME, out _) == NameValidationError.None)
+            {
+                connectionManager.Connect();
+            }
+
+            ShouldShowPrivacyNotification = !UserINISettings.Instance.PrivacyPolicyAccepted;
 
             IsLoading = false;
 
