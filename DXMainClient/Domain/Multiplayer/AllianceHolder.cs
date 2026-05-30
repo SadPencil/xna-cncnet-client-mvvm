@@ -9,7 +9,7 @@ namespace DTAClient.Domain.Multiplayer
     /// <summary>
     /// A helper class for setting up alliances in spawn.ini.
     /// </summary>
-    public static class AllianceHolder
+    public static class AllianceHolder // checked
     {
         public static void WriteInfoToSpawnIni(
             List<PlayerInfo> players,
