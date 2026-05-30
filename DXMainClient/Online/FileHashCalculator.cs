@@ -14,7 +14,7 @@ using Rampastring.Tools;
 
 namespace DTAClient.Online
 {
-    public class FileHashCalculator
+    public class FileHashCalculator // checked
     {
         private const string CONFIGNAME = "FHCConfig.ini";
         private bool calculateGameExeHash = true;
