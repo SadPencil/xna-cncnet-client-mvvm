@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>DXMainClientMvvmContract</RootNamespace>
@@ -10,6 +11,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
+    <ProjectReference Include="..\Rampastring.XNAUI\Rampastring.Tools\Rampastring.Tools.csproj" />
   </ItemGroup>
 </Project>
