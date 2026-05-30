@@ -17,7 +17,7 @@ namespace DTAClient.Online
     /// <summary>
     /// The CnCNet connection handler.
     /// </summary>
-    public class Connection
+    public class Connection // checked
     {
         private const int MAX_RECONNECT_COUNT = 8;
         private const int MAX_ERROR_COUNT = 30;
