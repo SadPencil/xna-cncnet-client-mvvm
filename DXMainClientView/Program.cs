@@ -21,6 +21,7 @@ public class Program
         services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
         services.AddSingleton<IIniLayoutOverlayService, IniLayoutOverlayService>();
         services.AddSingleton<IClientSoundService, ClientSoundService>();
+        services.AddSingleton<IUrlService, UrlService>();
 
         App.ServiceProvider = services.BuildServiceProvider();
 
