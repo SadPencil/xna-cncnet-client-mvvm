@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace DTAClient.Online
 {
-    public class Channel : IMessageView
+    public class Channel : IMessageView // checked
     {
         const int MESSAGE_LIMIT = 1024;
 
