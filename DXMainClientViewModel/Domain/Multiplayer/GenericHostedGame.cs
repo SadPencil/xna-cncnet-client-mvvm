@@ -1,4 +1,5 @@
 ﻿using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
+
 using System;
 
 using ClientCore;
@@ -9,7 +10,7 @@ namespace DXMainClientViewModel.Domain.Multiplayer
     /// A base class for hosted games.
     /// CnCNet and LAN games derive from this.
     /// </summary>
-    public abstract class GenericHostedGame: IEquatable<GenericHostedGame>
+    public abstract class GenericHostedGame : IEquatable<GenericHostedGame>
     {
         public virtual string RoomName { get; set; }
         public bool Incompatible { get; set; }

@@ -2,6 +2,7 @@
 using ClientCore.Enums;
 
 using Rampastring.Tools;
+
 using System.Collections.Generic;
 
 namespace DXMainClientViewModel.Domain.Multiplayer
@@ -13,7 +14,7 @@ namespace DXMainClientViewModel.Domain.Multiplayer
     {
         public static void WriteInfoToSpawnIni(
             List<PlayerInfo> players,
-            List<PlayerInfo> aiPlayers, 
+            List<PlayerInfo> aiPlayers,
             List<int> multiCmbIndexes,
             List<PlayerHouseInfo> playerHouseInfos,
             List<TeamStartMapping> teamStartMappings,

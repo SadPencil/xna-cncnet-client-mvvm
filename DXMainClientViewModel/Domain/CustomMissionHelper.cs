@@ -13,6 +13,7 @@ using ClientCore.Extensions;
 using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Domain;
+
 public static class CustomMissionHelper
 {
     public static List<(string extension, string filename)>? CustomMissionSupplementDefinition { get; private set; }

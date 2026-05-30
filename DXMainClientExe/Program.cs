@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DXMainClientExe.Desktop;
+namespace DXMainClientExe;
 
 class Program
 {

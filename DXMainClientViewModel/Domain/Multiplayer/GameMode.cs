@@ -1,5 +1,6 @@
 using DXMainClientMVVMContract.Domain.Multiplayer;
-﻿using ClientCore;
+
+using ClientCore;
 using ClientCore.Extensions;
 
 using Rampastring.Tools;

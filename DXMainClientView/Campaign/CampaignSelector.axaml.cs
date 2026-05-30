@@ -1,8 +1,11 @@
 using DXMainClientMVVMContract.Campaign;
+
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+
 using DXMainClientView.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView.Campaign;

@@ -1,8 +1,10 @@
 using System;
 using System.IO;
+
 using Rampastring.Tools;
 
 namespace DXMainClientViewModel.Domain.Multiplayer;
+
 public class MapFileWatcher
 {
     private readonly string mapsDirectory;

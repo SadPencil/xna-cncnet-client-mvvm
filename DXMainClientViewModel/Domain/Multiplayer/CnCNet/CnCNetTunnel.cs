@@ -1,5 +1,7 @@
 using DXMainClientMVVMContract.Domain.Multiplayer;
-﻿using Rampastring.Tools;
+
+using Rampastring.Tools;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;

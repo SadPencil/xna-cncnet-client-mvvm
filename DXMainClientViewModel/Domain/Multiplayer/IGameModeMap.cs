@@ -1,5 +1,5 @@
 using DXMainClientMVVMContract.Domain.Multiplayer;
-﻿#nullable enable
+#nullable enable
 using System.Collections.Generic;
 
 namespace DXMainClientViewModel.Domain.Multiplayer

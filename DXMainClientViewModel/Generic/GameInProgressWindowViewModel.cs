@@ -1,14 +1,18 @@
 using DXMainClientMVVMContract.Generic;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+
 using ClientCore;
 using ClientCore.Enums;
+
 using Rampastring.Tools;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 using SixLabors.ImageSharp;
 
 namespace DXMainClientViewModel.Generic

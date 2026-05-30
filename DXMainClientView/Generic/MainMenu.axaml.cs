@@ -1,12 +1,16 @@
 using DXMainClientMVVMContract.Generic;
 using DXMainClientMVVMContract.Generic.OptionPanels;
 using DXMainClientMVVMContract.Campaign;
+
 using System.ComponentModel;
+
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+
 using DXMainClientView.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView.Generic;

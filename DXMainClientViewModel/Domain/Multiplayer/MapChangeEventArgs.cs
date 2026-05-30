@@ -1,6 +1,7 @@
 ﻿using System;
 
 namespace DXMainClientViewModel.Domain.Multiplayer;
+
 public class MapChangedEventArgs : EventArgs
 {
     public Map Map { get; set; }

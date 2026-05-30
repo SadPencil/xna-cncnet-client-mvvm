@@ -1,4 +1,5 @@
 using DXMainClientMVVMContract.Online;
+
 using System;
 
 namespace DXMainClientViewModel.Online

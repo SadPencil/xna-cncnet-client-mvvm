@@ -1,5 +1,7 @@
 using DXMainClientMVVMContract.Generic;
+
 using Avalonia.Controls;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView.Generic;

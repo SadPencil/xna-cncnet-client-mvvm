@@ -1053,6 +1053,6 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
             IsStartLocationSelectionEnabled = true;
         }
     }
-} 
+}
 
 

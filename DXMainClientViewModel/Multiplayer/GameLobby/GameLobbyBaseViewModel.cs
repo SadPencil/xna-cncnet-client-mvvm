@@ -2014,6 +2014,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     // --- Helper ---
     protected string AILevelToName(int aiLevel) => ProgramConstants.GetAILevelName(aiLevel);
-} 
+}
 
 

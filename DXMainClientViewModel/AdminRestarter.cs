@@ -5,6 +5,7 @@ using System.Runtime.Versioning;
 using System.Security.Principal;
 
 using Rampastring.Tools;
+
 using ClientCore;
 
 namespace DXMainClientViewModel

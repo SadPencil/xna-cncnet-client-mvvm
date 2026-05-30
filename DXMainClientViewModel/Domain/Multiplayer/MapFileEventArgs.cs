@@ -2,6 +2,7 @@
 using System.IO;
 
 namespace DXMainClientViewModel.Domain.Multiplayer;
+
 public class MapFileEventArgs : EventArgs
 {
     public string FilePath { get; set; }

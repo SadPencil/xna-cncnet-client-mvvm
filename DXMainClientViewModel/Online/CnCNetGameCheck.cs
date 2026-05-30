@@ -1,4 +1,5 @@
 ﻿using ClientCore;
+
 using System.Diagnostics;
 using System.Threading;
 
@@ -39,13 +40,14 @@ namespace DXMainClientViewModel.Online
 
         private void CheatEngineWatchEvent()
         {
-            if (!ProgramConstants.IsInGame) 
+            if (!ProgramConstants.IsInGame)
                 return;
 
             Process[] processlist = Process.GetProcesses();
             foreach (Process process in processlist)
             {
-                try {
+                try
+                {
                     if (process.ProcessName.Contains("cheatengine") ||
                         process.MainWindowTitle.ToLower().Contains("cheat engine")
                         )
@@ -72,7 +74,8 @@ namespace DXMainClientViewModel.Online
                 Process[] processlist = Process.GetProcesses();
                 foreach (Process process in processlist)
                 {
-                    try {
+                    try
+                    {
                         if (process.ProcessName.Contains(gameExecutableName))
                         {
                             process.Kill();

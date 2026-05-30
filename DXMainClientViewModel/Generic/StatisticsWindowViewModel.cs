@@ -2,11 +2,15 @@ using DXMainClientMVVMContract.Generic;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.Statistics;
+
 using DXMainClientViewModel.Domain.Multiplayer;
+
 using Rampastring.Tools;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

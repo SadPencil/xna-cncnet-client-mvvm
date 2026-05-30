@@ -1,7 +1,9 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+
 using DXMainClientView.Generic;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView;

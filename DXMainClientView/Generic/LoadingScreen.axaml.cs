@@ -1,8 +1,11 @@
 using DXMainClientMVVMContract.Generic;
+
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Media;
+
 using DXMainClientView.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DXMainClientView.Generic;

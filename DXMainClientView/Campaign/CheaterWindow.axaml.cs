@@ -1,4 +1,5 @@
 using DXMainClientMVVMContract.Campaign;
+
 using Avalonia.Controls;
 
 namespace DXMainClientView.Campaign;

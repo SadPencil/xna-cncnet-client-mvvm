@@ -17,7 +17,7 @@ namespace DXMainClientViewModel.Online
         public bool IsAdmin { get; set; }
 
         public bool IsFriend { get; set; }
-        
+
         public bool HasVoice => IRCUser.HasVoice;
 
         public static int ChannelUserComparison(ChannelUser u1, ChannelUser u2)
@@ -27,7 +27,7 @@ namespace DXMainClientViewModel.Online
 
             if (u1.HasVoice != u2.HasVoice)
                 return u1.HasVoice ? -1 : 1;
-            
+
             if (u1.IsFriend != u2.IsFriend)
                 return u1.IsFriend ? -1 : 1;
 

@@ -1,4 +1,5 @@
 using DXMainClientMVVMContract.Campaign;
+
 using System.ComponentModel;
 
 namespace DXMainClientViewModel.Campaign;

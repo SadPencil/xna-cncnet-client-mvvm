@@ -10,7 +10,7 @@ namespace DXMainClientViewModel.Online.EventArguments
             UserName = userName;
             ExtraInfo = extraInfo;
         }
-        
+
         public string Ident { get; private set; }
 
         public string UserName { get; private set; }

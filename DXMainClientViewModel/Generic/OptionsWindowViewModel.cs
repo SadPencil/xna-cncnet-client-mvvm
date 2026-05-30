@@ -2,10 +2,13 @@ using DXMainClientMVVMContract.Generic;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.Enums;
+
 using Rampastring.Tools;
+
 using System;
 
 using DXMainClientViewModel.Generic.OptionPanels;
