@@ -217,8 +217,6 @@ namespace DXMainClientViewModel.Generic
 
         partial void OnIsLanModeChanged(bool value)
         {
-            if (value)
-                connectionManager.Disconnect();
         }
 
         partial void OnIsMessageBoxVisibleChanged(bool value)
