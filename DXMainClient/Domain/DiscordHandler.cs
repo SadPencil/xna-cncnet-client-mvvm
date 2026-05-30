@@ -15,7 +15,7 @@ namespace DTAClient.Domain
     /// <summary>
     /// A class for handling Discord integration.
     /// </summary>
-    public class DiscordHandler : IDisposable
+    public class DiscordHandler : IDisposable // checked
     {
         private const int MaxDiscordPresenceTextUtf8ByteLength = 128;
         private const string DiscordPresenceTruncateSuffix = "...";
