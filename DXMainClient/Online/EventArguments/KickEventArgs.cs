@@ -2,7 +2,7 @@
 
 namespace DTAClient.Online.EventArguments
 {
-    public class KickEventArgs : EventArgs
+    public class KickEventArgs : EventArgs // checked
     {
         public KickEventArgs(string channelName, string userName)
         {
