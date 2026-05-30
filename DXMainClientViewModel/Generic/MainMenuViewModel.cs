@@ -217,6 +217,9 @@ namespace DXMainClientViewModel.Generic
 
         partial void OnIsLanModeChanged(bool value)
         {
+            // TODO: removed to match the original behavior. But what's the expected behavior here?
+            //if (value)
+            //    connectionManager.Disconnect();
         }
 
         partial void OnIsMessageBoxVisibleChanged(bool value)
