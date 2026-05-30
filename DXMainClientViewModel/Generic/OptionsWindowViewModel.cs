@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.Enums;
+using ClientUpdater;
 
 using Rampastring.Tools;
 
@@ -36,6 +37,9 @@ namespace DXMainClientViewModel.Generic
 
         [ObservableProperty]
         private bool isComponentsPanelVisible;
+
+        [ObservableProperty]
+        private bool isUpdaterPanelVisible;
 
         [ObservableProperty]
         private bool isComponentDownloadInProgress;
@@ -81,7 +85,23 @@ namespace DXMainClientViewModel.Generic
             this.updaterOptionsPanel = updaterOptionsPanel;
             this.componentsPanel = componentsPanel;
 
-            IsComponentsPanelVisible = !ClientConfiguration.Instance.ModMode;
+            // Original: if ModMode || no update mirrors -> hide both updater and components tabs
+            // else if no custom components -> hide only components tab
+            if (ClientConfiguration.Instance.ModMode || Updater.UpdateMirrors == null || Updater.UpdateMirrors.Count < 1)
+            {
+                IsUpdaterPanelVisible = false;
+                IsComponentsPanelVisible = false;
+            }
+            else if (Updater.CustomComponents == null || Updater.CustomComponents.Count < 1)
+            {
+                IsUpdaterPanelVisible = true;
+                IsComponentsPanelVisible = false;
+            }
+            else
+            {
+                IsUpdaterPanelVisible = true;
+                IsComponentsPanelVisible = true;
+            }
         }
 
         partial void OnIsMessageBoxVisibleChanged(bool value)
@@ -254,35 +274,51 @@ namespace DXMainClientViewModel.Generic
         #region Private Methods
 
         /// <summary>
-        /// Reloads all panels from INI to detect possible setting value changes.
-        /// Shows a message to the user if any settings were changed.
+        /// Refreshes the option panels to account for possible
+        /// changes that could affect their functionality.
+        /// Shows the popup to inform the user if needed.
         /// Corresponds to RefreshOptionPanels() in the original OptionsWindow.
         /// </summary>
-        private void RefreshOptionPanels()
+        /// <returns>A bool that determines whether the
+        /// settings values were changed.</returns>
+        private bool RefreshOptionPanels()
         {
-            // Re-load all panels to pick up any INI changes
+            // Re-load all panels to pick up any INI changes.
+            // In the original, RefreshPanel() checks IFileSetting entries and returns
+            // true if any setting value was forced to change (e.g., a resolution no longer available).
+            // Currently the ViewModel panels don't have this concept, so we just reload.
             displayOptionsPanel.LoadSettingsCommand.Execute(null);
             audioOptionsPanel.LoadSettingsCommand.Execute(null);
             gameOptionsPanel.LoadSettingsCommand.Execute(null);
             cncnetOptionsPanel.LoadSettingsCommand.Execute(null);
             updaterOptionsPanel.LoadSettingsCommand.Execute(null);
+
+            return false;
         }
 
         private void SaveSettings()
         {
-            RefreshOptionPanels();
+            if (RefreshOptionPanels())
+                return;
 
             bool restartRequired = false;
 
             try
             {
                 displayOptionsPanel.SaveSettingsCommand.Execute(null);
-                restartRequired = displayOptionsPanel.IsRestartRequired;
+                restartRequired = displayOptionsPanel.IsRestartRequired || restartRequired;
 
                 audioOptionsPanel.SaveSettingsCommand.Execute(null);
+                restartRequired = audioOptionsPanel.IsRestartRequired || restartRequired;
+
                 gameOptionsPanel.SaveSettingsCommand.Execute(null);
+                restartRequired = gameOptionsPanel.IsRestartRequired || restartRequired;
+
                 cncnetOptionsPanel.SaveSettingsCommand.Execute(null);
+                restartRequired = cncnetOptionsPanel.IsRestartRequired || restartRequired;
+
                 updaterOptionsPanel.SaveSettingsCommand.Execute(null);
+                restartRequired = updaterOptionsPanel.IsRestartRequired || restartRequired;
 
                 UserINISettings.Instance.SaveSettings();
             }

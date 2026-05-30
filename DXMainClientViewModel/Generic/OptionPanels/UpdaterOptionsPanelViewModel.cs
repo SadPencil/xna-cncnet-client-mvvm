@@ -52,6 +52,11 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
 
     public event EventHandler? ForceUpdateRequested;
 
+    /// <summary>
+    /// Indicates whether a restart is required after saving settings.
+    /// </summary>
+    public bool IsRestartRequired { get; private set; }
+
     // --- Constructor ---
 
     public UpdaterOptionsPanelViewModel(UserINISettings iniSettings)

@@ -87,6 +87,11 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         ProgramConstants.PlayerNameChanged += ProgramConstants_PlayerNameChanged;
     }
 
+    public void Open()
+    {
+        UpdateDiscordPresence(true);
+    }
+
     // --- Commands ---
 
     [RelayCommand]
@@ -169,7 +174,8 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
     private string? CheckGameValidity()
     {
-        int totalPlayerCount = Players.Count(p => p.SideId < SideCount)
+        int spectatorSideIndex = SideCount + RandomSelectorCount;
+        int totalPlayerCount = Players.Count(p => p.SideId < spectatorSideIndex)
             + AIPlayers.Count;
 
         if (GameModeMap != null && GameModeMap.MultiplayerOnly)
@@ -206,7 +212,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
             }
         }
 
-        if (GameModeMap != null && GameModeMap.IsCoop && Players[0].SideId >= SideCount)
+        if (GameModeMap != null && GameModeMap.IsCoop && Players[0].SideId == spectatorSideIndex)
         {
             return "Co-op missions cannot be spectated. You'll have to show a bit more effort to cheat here.".L10N("Client:Main:CoOpMissionSpectatorPrompt");
         }
@@ -245,9 +251,9 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
             if (ClientConfiguration.Instance.SaveSkirmishGameOptions)
             {
-                foreach (var dd in DropDowns)
+                foreach (var dd in DropDowns.Cast<GameOptionDropDown>())
                 {
-                    skirmishSettingsIni.SetStringValue("GameOptions", dd.Name, dd.SelectedIndex + "");
+                    skirmishSettingsIni.SetStringValue("GameOptions", dd.Name, dd.UserSelectedIndex + "");
                 }
 
                 foreach (var cb in CheckBoxes)
@@ -337,7 +343,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
         if (ClientConfiguration.Instance.SaveSkirmishGameOptions)
         {
-            foreach (var dd in DropDowns)
+            foreach (var dd in DropDowns.Cast<GameOptionDropDown>())
             {
                 if (GameMode != null)
                 {
@@ -359,9 +365,11 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
                     }
                 }
 
-                int savedIndex = skirmishSettingsIni.GetIntValue("GameOptions", dd.Name, dd.SelectedIndex);
+                int savedIndex = skirmishSettingsIni.GetIntValue("GameOptions", dd.Name, dd.UserSelectedIndex);
+                dd.UserSelectedIndex = savedIndex;
+
                 if (savedIndex > -1 && savedIndex < dd.Items.Count)
-                    ((GameOptionDropDown)dd).SelectedIndex = savedIndex;
+                    dd.SelectedIndex = savedIndex;
             }
 
             foreach (var cb in CheckBoxes)
@@ -406,7 +414,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
             pInfo.ColorId = 0;
         }
 
-        if (pInfo.TeamId < 0 || pInfo.TeamId > 4 ||
+        if (pInfo.TeamId < 0 || pInfo.TeamId >= ProgramConstants.TEAMS.Count + 1 ||
             (!(GameModeMap?.IsCoop ?? false)) && (GameModeMap?.ForceNoTeams ?? false))
         {
             pInfo.TeamId = 0;
@@ -453,6 +461,12 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
     {
         base.OnGameProcessExited();
         RandomSeed = random.Next();
+    }
+
+    protected override void CopyPlayerDataFromUI()
+    {
+        base.CopyPlayerDataFromUI();
+        UpdateDiscordPresence();
     }
 
     protected override void UpdateDiscordPresence(bool resetTimer = false)

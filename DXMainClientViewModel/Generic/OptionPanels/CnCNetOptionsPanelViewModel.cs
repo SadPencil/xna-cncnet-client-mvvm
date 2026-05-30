@@ -80,6 +80,11 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
 
     // --- Constructor ---
 
+    /// <summary>
+    /// Indicates whether a restart is required after saving settings.
+    /// </summary>
+    public bool IsRestartRequired { get; private set; }
+
     public CnCNetOptionsPanelViewModel(UserINISettings iniSettings, GameCollection gameCollection)
     {
         this.iniSettings = iniSettings;

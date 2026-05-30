@@ -80,6 +80,8 @@ namespace DXMainClientViewModel.Generic
             PollLoadingStatus();
         }
 
+        private DateTime lastLogTime = DateTime.MinValue;
+
         private void PollLoadingStatus()
         {
             bool updaterDone = updaterInitTask == null || updaterInitTask.Status == TaskStatus.RanToCompletion;
@@ -110,15 +112,25 @@ namespace DXMainClientViewModel.Generic
                 throw new Exception("Map loading task failed.", mapLoadTask.Exception);
             }
 
-            // Update status text (mirrors original logging logic)
-            if (!updaterDone && !mapLoadDone)
-                CurrentTaskText = "Waiting for updater initialization and loading maps...";
-            else if (!updaterDone)
-                CurrentTaskText = "Waiting for updater initialization...";
-            else if (!mapLoadDone)
-                CurrentTaskText = "Waiting for loading maps...";
-            else
-                throw new Exception("Assert failed. No pending tasks. This should not happen.");
+            // Throttle logging to every 5 seconds (mirrors original Update() behavior)
+            var now = DateTime.Now;
+            if ((now - lastLogTime).TotalSeconds > 5)
+            {
+                lastLogTime = now;
+
+                string logMessage;
+                if (!updaterDone && !mapLoadDone)
+                    logMessage = "LoadingScreen: Waiting for updater initialization and loading maps...";
+                else if (!updaterDone)
+                    logMessage = "LoadingScreen: Waiting for updater initialization...";
+                else if (!mapLoadDone)
+                    logMessage = "LoadingScreen: Waiting for loading maps...";
+                else
+                    throw new Exception("Assert failed. No pending tasks. This should not happen.");
+
+                Logger.Log(logMessage);
+                CurrentTaskText = logMessage;
+            }
         }
 
         private void InitUpdater()

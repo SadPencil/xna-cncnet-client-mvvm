@@ -95,6 +95,12 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     [ObservableProperty]
     private string _messageBoxMessage = string.Empty;
 
+    [ObservableProperty]
+    private bool _isDirectDrawCompatFixRequired;
+
+    [ObservableProperty]
+    private bool _directDrawCompatFixRequiresAdmin;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _ingameResolutionOptions = new();
@@ -422,12 +428,47 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
 
         if (restartRequired)
             IsRestartRequired = true;
+
+#if ISWINDOWS
+        // Check for DirectDraw compatibility issues after renderer change
+        if (isChangingRenderer && newSelectedRenderer != null && !newSelectedRenderer.IsDummy)
+        {
+            DirectDrawCompatibilityChecker.Examine(out bool requireFix, out bool requireAdmin, out IEnumerable<string> problematicExeNames);
+            if (requireFix)
+            {
+                IsDirectDrawCompatFixRequired = true;
+                DirectDrawCompatFixRequiresAdmin = requireAdmin;
+            }
+        }
+#endif
     }
 
     [RelayCommand]
     private void DismissMessageBox()
     {
         IsMessageBoxVisible = false;
+    }
+
+    [RelayCommand]
+    private void ApplyDirectDrawCompatFix()
+    {
+#if ISWINDOWS
+        try
+        {
+            DirectDrawCompatibilityChecker.Fix();
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("Failed to apply DirectDraw compatibility fix: " + ex.Message);
+        }
+#endif
+        IsDirectDrawCompatFixRequired = false;
+    }
+
+    [RelayCommand]
+    private void DismissDirectDrawCompatFix()
+    {
+        IsDirectDrawCompatFixRequired = false;
     }
 
     // --- Property change handlers ---

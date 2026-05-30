@@ -44,6 +44,7 @@ namespace DXMainClientViewModel.Generic
         private readonly GameLoadingWindowViewModel gameLoadingWindowViewModel;
         private readonly ExtrasWindowViewModel extrasWindowViewModel;
         private readonly StatisticsWindowViewModel statisticsWindowViewModel;
+        private readonly UpdateWindowViewModel updateWindowViewModel;
         private readonly CnCNetUserData cncNetUserData;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
@@ -140,6 +141,7 @@ namespace DXMainClientViewModel.Generic
             GameLoadingWindowViewModel gameLoadingWindowViewModel,
             ExtrasWindowViewModel extrasWindowViewModel,
             StatisticsWindowViewModel statisticsWindowViewModel,
+            UpdateWindowViewModel updateWindowViewModel,
             CnCNetUserData cncNetUserData)
         {
             this.updateService = updateService;
@@ -155,12 +157,16 @@ namespace DXMainClientViewModel.Generic
             this.gameLoadingWindowViewModel = gameLoadingWindowViewModel;
             this.extrasWindowViewModel = extrasWindowViewModel;
             this.statisticsWindowViewModel = statisticsWindowViewModel;
+            this.updateWindowViewModel = updateWindowViewModel;
             this.cncNetUserData = cncNetUserData;
 
             AppDomain.CurrentDomain.ProcessExit += (_, _) => Clean();
 
             // Subscribe to TopBar state changes for panel switching
             topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
+
+            // Subscribe to options window closed to trigger custom component dialog
+            optionsWindowViewModel.PropertyChanged += OnOptionsWindowPropertyChanged;
 
             ShowVersionInfo = !ClientConfiguration.Instance.ModMode;
 
@@ -368,16 +374,20 @@ namespace DXMainClientViewModel.Generic
         [RelayCommand]
         private void AcceptUpdate()
         {
-            updateService.StartUpdate();
+            updateWindowViewModel.SetData(updateService.ServerGameVersion);
+            updateWindowViewModel.IsVisible = true;
             UpdateStatusText = "Updating...".L10N("Client:Main:Updating");
             AreButtonsEnabled = false;
+            updateService.StartUpdate();
         }
 
         [RelayCommand]
         private void ForceUpdateCommand()
         {
             AreButtonsEnabled = false;
-            updateService.ForceUpdate();
+            optionsWindowViewModel.OnClosed();
+            updateWindowViewModel.IsVisible = true;
+            updateWindowViewModel.ForceUpdate();
             UpdateStatusText = "Force updating...".L10N("Client:Main:ForceUpdating");
         }
 
@@ -457,6 +467,7 @@ namespace DXMainClientViewModel.Generic
             updateService.FileIdentifiersUpdated -= OnFileIdentifiersUpdated;
 
             cncnetPlayerCountCancellationSource?.Cancel();
+            topBarViewModel.Clean();
 
             if (AreButtonsEnabled == false)
                 updateService.StopUpdate();
@@ -484,8 +495,18 @@ namespace DXMainClientViewModel.Generic
             }
         }
 
+        private void OnOptionsWindowPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(OptionsWindowViewModel.IsVisible) && !optionsWindowViewModel.IsVisible)
+            {
+                OnOptionsWindowClosed();
+            }
+        }
+
         private void OnGameProcessStarted()
         {
+            // Original calls MusicOff() which initiates a fade-out
+            musicPlayer.StartFadeOut(1.0f, null);
             IsMusicPlaying = false;
         }
 
@@ -512,7 +533,12 @@ namespace DXMainClientViewModel.Generic
         {
             gameLoadingWindowViewModel.ListSaves();
 
-            if (!UserINISettings.Instance.StopMusicOnMenu)
+            // If music is disabled on menus, check if the main menu is the top-most
+            // window of the top bar and only play music if it is.
+            // LAN has the top bar disabled, so to detect the LAN game lobby
+            // we'll check whether we're NOT in LAN mode.
+            if (!UserINISettings.Instance.StopMusicOnMenu ||
+                (!IsLanMode && topBarViewModel.LastSwitchType == SwitchType.PRIMARY))
                 musicPlayer.PlayThemeSong();
         }
 
@@ -523,6 +549,21 @@ namespace DXMainClientViewModel.Generic
 
         private void OnSettingsSaved(object? sender, EventArgs e)
         {
+            // Music state management: if music is playing and user disabled it, fade out.
+            // If music is not playing and user enabled it while on main menu, play.
+            if (musicPlayer.IsAvailable)
+            {
+                if (musicPlayer.IsPlaying)
+                {
+                    if (!UserINISettings.Instance.PlayMainMenuMusic)
+                        musicPlayer.StartFadeOut(1.0f, null);
+                }
+                else if (topBarViewModel.LastSwitchType == SwitchType.PRIMARY && !IsLanMode)
+                {
+                    musicPlayer.PlayThemeSong();
+                }
+            }
+
             if (!connectionManager.IsConnected)
                 ProgramConstants.PLAYERNAME = UserINISettings.Instance.PlayerName;
 
@@ -550,7 +591,12 @@ namespace DXMainClientViewModel.Generic
             if (IsUpdateNotificationVisible)
                 return;
 
-            if (IsYesNoDialogVisible)
+            // Original checks: UpdateInProgress (mapped to !AreButtonsEnabled)
+            if (!AreButtonsEnabled)
+                return;
+
+            // Original checks: firstRunMessageBox visible OR optionsWindow.Enabled
+            if (IsYesNoDialogVisible || optionsWindowViewModel.IsVisible)
             {
                 customComponentDialogQueued = true;
                 return;
