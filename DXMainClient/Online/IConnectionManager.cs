@@ -5,7 +5,7 @@ namespace DTAClient.Online
     /// <summary>
     /// An interface for handling IRC messages.
     /// </summary>
-    public interface IConnectionManager
+    public interface IConnectionManager // checked
     {
         void OnWelcomeMessageReceived(string message);
 
