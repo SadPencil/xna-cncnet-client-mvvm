@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace DTAClient.Domain.Multiplayer;
-public class MapChangedEventArgs : EventArgs
+public class MapChangedEventArgs : EventArgs // checked
 {
     public Map Map { get; set; }
     public MapChangeType ChangeType { get; set; }
