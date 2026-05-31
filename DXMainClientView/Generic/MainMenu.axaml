@@ -6,6 +6,7 @@
              xmlns:mp="using:DXMainClientView.Multiplayer"
              xmlns:cncnet="using:DXMainClientView.Multiplayer.CnCNet"
              xmlns:gamelobby="using:DXMainClientView.Multiplayer.GameLobby"
+             xmlns:controls="using:DXMainClientView.Controls"
              x:Class="DXMainClientView.Generic.MainMenu"
              x:DataType="vmc:IMainMenuViewModel"
              Width="1280" Height="720"
@@ -243,14 +244,52 @@
       </Panel>
     </Border>
 
-    <!-- ========== Child Windows (IsVisible bound to their own ViewModels) ========== -->
-    <campaign:CampaignSelector x:Name="campaignSelector" />
-    <local:OptionsWindow x:Name="optionsWindow" />
-    <local:ExtrasWindow x:Name="extrasWindow" />
-    <local:StatisticsWindow x:Name="statisticsWindow" />
-    <local:GameLoadingWindow x:Name="gameLoadingWindow" />
+    <!-- ========== Child Windows with darkening overlay ========== -->
 
-    <!-- ========== Lobby Views ========== -->
+    <!-- Campaign Selector (full-screen, no darkening needed) -->
+    <campaign:CampaignSelector x:Name="campaignSelector" />
+
+    <!-- Options Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="optionsOverlay"
+                             IsPanelVisible="{Binding IsOptionsOverlayVisible}"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:OptionsWindow x:Name="optionsWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- Extras Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="extrasOverlay"
+                             IsPanelVisible="{Binding IsExtrasOverlayVisible}"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:ExtrasWindow x:Name="extrasWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- Statistics Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="statisticsOverlay"
+                             IsPanelVisible="{Binding IsStatisticsOverlayVisible}"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:StatisticsWindow x:Name="statisticsWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- Game Loading Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="gameLoadingOverlay"
+                             IsPanelVisible="{Binding IsGameLoadingOverlayVisible}"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:GameLoadingWindow x:Name="gameLoadingWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- ========== Lobby Views (full-screen, no darkening) ========== -->
     <gamelobby:SkirmishLobby x:Name="skirmishLobby" />
     <cncnet:CnCNetLobby x:Name="cncNetLobby" />
     <mp:LANLobby x:Name="lanLobby" />
