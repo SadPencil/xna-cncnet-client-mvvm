@@ -5,14 +5,19 @@
   <Application.Styles>
     <FluentTheme />
 
-    <!--
-      Override Button template: use a minimal template without FluentTheme hover styling.
-      This game client uses image-based buttons (IdleTexture/HoverTexture from INI).
-      The FluentTheme's :pointerover visual state overrides custom Background (ImageBrush),
-      causing buttons to "disappear" on hover. Our INI overlay handles hover via
-      PointerEntered/PointerExited handlers instead.
-    -->
+    <!-- Global default font size: 12 (matching XNAUI default) -->
+    <Style Selector="TextBlock">
+      <Setter Property="FontSize" Value="12" />
+    </Style>
     <Style Selector="Button">
+      <Setter Property="FontSize" Value="12" />
+      <!--
+        Override Button template: use a minimal template without FluentTheme hover styling.
+        This game client uses image-based buttons (IdleTexture/HoverTexture from INI).
+        The FluentTheme's :pointerover visual state overrides custom Background (ImageBrush),
+        causing buttons to "disappear" on hover. Our INI overlay handles hover via
+        PointerEntered/PointerExited handlers instead.
+      -->
       <Setter Property="Template">
         <ControlTemplate>
           <Border Background="{TemplateBinding Background}"
@@ -27,6 +32,15 @@
           </Border>
         </ControlTemplate>
       </Setter>
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="CheckBox">
+      <Setter Property="FontSize" Value="12" />
     </Style>
   </Application.Styles>
 </Application>
