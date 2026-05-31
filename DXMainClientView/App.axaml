@@ -39,6 +39,13 @@
     </Style>
     <Style Selector="ComboBox">
       <Setter Property="FontSize" Value="12" />
+      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
+    </Style>
+    <Style Selector="ComboBox:focus">
+      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
+    </Style>
+    <Style Selector="ComboBox:pointerover">
+      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
     </Style>
 
     <!-- ComboBoxItem: override template to use INI theme colors -->
