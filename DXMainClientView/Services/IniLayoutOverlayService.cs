@@ -7,6 +7,7 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
@@ -796,17 +797,17 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                         button.PointerExited += (_, _) => button.Background = idleBrush;
                     }
 
-                    // Text color change on hover (matching XNA TextColorIdle → TextColorHover)
-                    var idleForeground = button.Foreground;
-                    var hoverColor = ParseColorFromConfig("ButtonHoverColor")
+                    // Text color: ButtonTextColor=AltUIColor (idle) → ButtonHoverColor (hover)
+                    // Matches XNA: settings.ButtonTextColor = settings.AltColor (AltUIColor)
+                    var buttonTextColor = ParseColorFromConfig("AltUIColor")
+                        ?? Color.Parse("#FFFFFF");
+                    var buttonHoverColor = ParseColorFromConfig("ButtonHoverColor")
                         ?? Color.Parse("#FCFCFC");
-                    var hoverForeground = new SolidColorBrush(hoverColor);
+                    button.Foreground = new SolidColorBrush(buttonTextColor);
+                    var hoverForeground = new SolidColorBrush(buttonHoverColor);
                     button.PointerEntered += (_, _) => button.Foreground = hoverForeground;
                     button.PointerExited += (_, _) =>
-                    {
-                        if (idleForeground != null)
-                            button.Foreground = idleForeground;
-                    };
+                        button.Foreground = new SolidColorBrush(buttonTextColor);
                 }
             }
 
@@ -817,6 +818,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     /// <summary>
     /// Applies checkbox textures matching XNAClientCheckBox behavior:
     /// checkBoxClear.png (unchecked) and checkBoxChecked.png (checked).
+    /// Uses a style to override the checkbox indicator with custom images.
     /// Text color: IdleColor=UILabelColor, HighlightColor=AltUIColor on hover.
     /// </summary>
     private static void ApplyCheckBoxTextures(CheckBox checkBox)
@@ -830,9 +832,72 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         var clearBitmap = new Bitmap(clearFile);
         var checkedBitmap = checkedFile != null ? new Bitmap(checkedFile) : clearBitmap;
 
-        // Set checkbox size from texture
-        checkBox.MinWidth = clearBitmap.PixelSize.Width;
-        checkBox.MinHeight = clearBitmap.PixelSize.Height;
+        var clearBrush = new ImageBrush
+        {
+            Source = clearBitmap,
+            Stretch = Stretch.Fill,
+            TileMode = TileMode.None
+        };
+        var checkedBrush = new ImageBrush
+        {
+            Source = checkedBitmap,
+            Stretch = Stretch.Fill,
+            TileMode = TileMode.None
+        };
+
+        int imgW = clearBitmap.PixelSize.Width;
+        int imgH = clearBitmap.PixelSize.Height;
+
+        // Override the checkbox template entirely to use custom images
+        // instead of Avalonia's default checkmark glyph
+        var clearBorder = new Border
+        {
+            Width = imgW,
+            Height = imgH,
+            Background = clearBrush,
+        };
+        var checkedBorder = new Border
+        {
+            Width = imgW,
+            Height = imgH,
+            Background = checkedBrush,
+            IsVisible = checkBox.IsChecked == true,
+        };
+
+        // Toggle checked image when IsChecked changes
+        checkBox.PropertyChanged += (_, e) =>
+        {
+            if (e.Property == ToggleButton.IsCheckedProperty)
+                checkedBorder.IsVisible = checkBox.IsChecked == true;
+        };
+
+        var imageGrid = new Grid
+        {
+            Width = imgW,
+            Height = imgH,
+            Children = { clearBorder, checkedBorder },
+        };
+
+        // Build new content: image + original text
+        var originalContent = checkBox.Content;
+        var textBlock = new Avalonia.Controls.TextBlock
+        {
+            Text = originalContent?.ToString() ?? "",
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+        };
+
+        // Override the template to show our custom images
+        checkBox.Template = new FuncControlTemplate<CheckBox>((cb, _) =>
+            new Avalonia.Controls.StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = 5,
+                Children =
+                {
+                    imageGrid,
+                    textBlock
+                }
+            });
 
         // Text color: IdleColor (UILabelColor) → HighlightColor (AltUIColor) on hover
         var idleColor = ParseColorFromConfig("UILabelColor") ?? Color.Parse("#C4C4C4");
