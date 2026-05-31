@@ -46,6 +46,7 @@
       <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
       <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
       <Setter Property="Foreground" Value="{DynamicResource XnaAltBrush}" />
+      <Setter Property="Padding" Value="0" />
       <!-- Minimal template: no FluentTheme visual states to override colors -->
       <Setter Property="Template">
         <ControlTemplate>
@@ -53,14 +54,15 @@
             <Border Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}">
-              <DockPanel LastChildFill="True">
+                    Padding="0">
+              <DockPanel LastChildFill="True" Margin="0">
                 <Image DockPanel.Dock="Right"
                        Name="DropDownGlyph"
                        Source="{DynamicResource XnaComboBoxArrow}"
                        Width="20"
                        Stretch="Uniform"
-                       VerticalAlignment="Stretch" />
+                       VerticalAlignment="Stretch"
+                       Margin="0" />
                 <ContentPresenter Name="ContentPresenter"
                                   Content="{TemplateBinding SelectionBoxItem}"
                                   HorizontalAlignment="Stretch"
