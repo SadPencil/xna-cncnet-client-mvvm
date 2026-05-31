@@ -117,17 +117,6 @@
     <Style Selector="TextBox">
       <Setter Property="FontSize" Value="12" />
     </Style>
-
-    <!-- Hide TextBox internal buttons/scrollbars -->
-    <Style Selector="TextBox /template/ Button">
-      <Setter Property="IsVisible" Value="False" />
-    </Style>
-    <Style Selector="TextBox /template/ ScrollBar">
-      <Setter Property="IsVisible" Value="False" />
-    </Style>
-    <Style Selector="TextBox /template/ RepeatButton">
-      <Setter Property="IsVisible" Value="False" />
-    </Style>
     <Style Selector="CheckBox">
       <Setter Property="FontSize" Value="12" />
     </Style>

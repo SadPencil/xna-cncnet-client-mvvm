@@ -248,7 +248,7 @@
           <TextBlock Text="Player Name:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,0" />
           <TextBox x:Name="tbPlayerName"
                    Text="{Binding PlayerName}"
-                   Width="200" Height="23"
+                   Width="200"
                    MaxLength="16"
                    HorizontalAlignment="Left" />
           <Button x:Name="btnConfigureHotkeys"
