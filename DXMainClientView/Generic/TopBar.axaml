@@ -86,7 +86,7 @@
                 
                  Foreground="{DynamicResource XnaSubtleTextBrush}" />
       <!-- Options button -->
-      <Button x:Name="topBarBtnOptions"
+      <Button x:Name="btnOptions"
               Content="Options"
               Command="{Binding OpenOptionsCommand}"
               IsEnabled="{Binding IsOptionsButtonClickable}"
