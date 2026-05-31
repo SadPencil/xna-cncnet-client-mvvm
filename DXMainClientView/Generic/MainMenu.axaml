@@ -246,8 +246,14 @@
 
     <!-- ========== Child Windows with darkening overlay ========== -->
 
-    <!-- Campaign Selector (full-screen, no darkening needed) -->
-    <campaign:CampaignSelector x:Name="campaignSelector" />
+    <!-- Campaign Selector (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="campaignOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <campaign:CampaignSelector x:Name="campaignSelector" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
 
     <!-- Options Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="optionsOverlay"
@@ -285,11 +291,43 @@
       </controls:DarkeningPanel.ChildContent>
     </controls:DarkeningPanel>
 
-    <!-- ========== Lobby Views (full-screen, no darkening) ========== -->
-    <gamelobby:SkirmishLobby x:Name="skirmishLobby" />
-    <cncnet:CnCNetLobby x:Name="cncNetLobby" />
-    <mp:LANLobby x:Name="lanLobby" />
-    <cncnet:PrivateMessagingWindow x:Name="privateMessagingWindow" />
+    <!-- ========== Lobby Views with darkening overlay ========== -->
+
+    <!-- Skirmish Lobby (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="skirmishOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <gamelobby:SkirmishLobby x:Name="skirmishLobby" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- CnCNet Lobby (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="cncNetOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <cncnet:CnCNetLobby x:Name="cncNetLobby" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- LAN Lobby (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="lanOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <mp:LANLobby x:Name="lanLobby" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- Private Messaging Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="pmOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <cncnet:PrivateMessagingWindow x:Name="privateMessagingWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
 
   </Canvas>
 </UserControl>

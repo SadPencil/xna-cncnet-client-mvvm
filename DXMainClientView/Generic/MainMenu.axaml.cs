@@ -163,6 +163,7 @@ public partial class MainMenu : UserControl
     public void SetCampaignSelectorViewModel(ICampaignSelectorViewModel vm)
     {
         campaignSelector.ViewModel = vm;
+        WireOverlayVisibility(campaignSelector, campaignOverlay);
     }
 
     public void SetOptionsWindowViewModel(IOptionsWindowViewModel vm)
@@ -189,6 +190,30 @@ public partial class MainMenu : UserControl
         WireOverlayVisibility(gameLoadingWindow, gameLoadingOverlay);
     }
 
+    public void SetSkirmishLobbyViewModel(ISkirmishLobbyViewModel vm)
+    {
+        skirmishLobby.ViewModel = vm;
+        WireOverlayVisibility(skirmishLobby, skirmishOverlay);
+    }
+
+    public void SetCnCNetLobbyViewModel(ICnCNetLobbyViewModel vm)
+    {
+        cncNetLobby.ViewModel = vm;
+        WireOverlayVisibility(cncNetLobby, cncNetOverlay);
+    }
+
+    public void SetLANLobbyViewModel(ILANLobbyViewModel vm)
+    {
+        lanLobby.ViewModel = vm;
+        WireOverlayVisibility(lanLobby, lanOverlay);
+    }
+
+    public void SetPrivateMessagingWindowViewModel(IPrivateMessagingWindowViewModel vm)
+    {
+        privateMessagingWindow.ViewModel = vm;
+        WireOverlayVisibility(privateMessagingWindow, pmOverlay);
+    }
+
     /// <summary>
     /// Binds a DarkeningPanel's visibility to a child view's IsVisible.
     /// Pure View-layer logic: observes one control's property, reflects to another.
@@ -201,25 +226,5 @@ public partial class MainMenu : UserControl
                 overlay.IsPanelVisible = child.IsVisible;
         };
         overlay.IsPanelVisible = child.IsVisible;
-    }
-
-    public void SetSkirmishLobbyViewModel(ISkirmishLobbyViewModel vm)
-    {
-        skirmishLobby.ViewModel = vm;
-    }
-
-    public void SetCnCNetLobbyViewModel(ICnCNetLobbyViewModel vm)
-    {
-        cncNetLobby.ViewModel = vm;
-    }
-
-    public void SetLANLobbyViewModel(ILANLobbyViewModel vm)
-    {
-        lanLobby.ViewModel = vm;
-    }
-
-    public void SetPrivateMessagingWindowViewModel(IPrivateMessagingWindowViewModel vm)
-    {
-        privateMessagingWindow.ViewModel = vm;
     }
 }
