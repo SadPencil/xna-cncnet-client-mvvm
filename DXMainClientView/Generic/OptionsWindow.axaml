@@ -346,7 +346,7 @@
                     <CheckBox Content="{Binding UIName}"
                               IsChecked="{Binding IsFollowed}"
                               Foreground="{DynamicResource XnaTextBrush}"
-                              Margin="0,1,8,1" />
+                              Margin="0,1" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
