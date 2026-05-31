@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <DotnetLibrariesVersion>8.0.0</DotnetLibrariesVersion>
-    <AvaloniaVersion>11.2.3</AvaloniaVersion>
+    <AvaloniaVersion>11.3.17</AvaloniaVersion>
   </PropertyGroup>
   <ItemGroup>
     <GlobalPackageReference Include="GitVersion.MsBuild" Version="5.12.0" />
