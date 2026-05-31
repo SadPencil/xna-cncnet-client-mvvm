@@ -50,7 +50,8 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
                   Padding="{TemplateBinding Padding}">
-            <ContentPresenter Content="{TemplateBinding Content}"
+            <ContentPresenter Background="Transparent"
+                              Content="{TemplateBinding Content}"
                               ContentTemplate="{TemplateBinding ContentTemplate}"
                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
