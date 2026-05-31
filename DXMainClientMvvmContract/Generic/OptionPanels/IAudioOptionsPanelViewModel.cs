@@ -13,7 +13,7 @@ public interface IAudioOptionsPanelViewModel : INotifyPropertyChanged
     bool IsScoreShuffleEnabled { get; set; }
     bool IsMainMenuMusicEnabled { get; set; }
     bool IsStopMusicOnMenuDisabled { get; set; }
-    bool IsStopMusicOnMenuCheckboxEnabled { get; }
+    bool IsStopMusicOnMenuAllowed { get; }
     bool IsGameLobbyMessageSoundEnabled { get; set; }
     bool IsHostedGameSoundEnabled { get; set; }
 

@@ -75,7 +75,7 @@
                       Foreground="{DynamicResource XnaTextBrush}" />
             <CheckBox x:Name="chkBorderlessWindowedMode" Content="Borderless Windowed Mode"
                       IsChecked="{Binding IsBorderlessWindowedModeEnabled}"
-                      IsEnabled="{Binding IsBorderlessWindowedModeCheckboxEnabled}"
+                      IsEnabled="{Binding IsBorderlessWindowedModeAllowed}"
                       Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,0" />
             <CheckBox x:Name="chkBackBufferInVRAM" Content="Back Buffer in Video Memory"
                       IsChecked="{Binding IsBackBufferStoredInVideoMemory}"
@@ -197,7 +197,7 @@
                     Foreground="{DynamicResource XnaTextBrush}" />
           <CheckBox x:Name="chkStopMusicOnMenu" Content="Don't Stop Music on Menu"
                     IsChecked="{Binding IsStopMusicOnMenuDisabled}"
-                    IsEnabled="{Binding IsStopMusicOnMenuCheckboxEnabled}"
+                    IsEnabled="{Binding IsStopMusicOnMenuAllowed}"
                     Foreground="{DynamicResource XnaTextBrush}" />
           <CheckBox x:Name="chkGameLobbyMessageSound" Content="Play Sound on Game Lobby Messages"
                     IsChecked="{Binding IsGameLobbyMessageSoundEnabled}"
