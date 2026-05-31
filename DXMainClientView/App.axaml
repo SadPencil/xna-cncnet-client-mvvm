@@ -117,6 +117,11 @@
     <Style Selector="TextBox">
       <Setter Property="FontSize" Value="12" />
     </Style>
+
+    <!-- Hide TextBox scrollbar/arrow buttons -->
+    <Style Selector="TextBox /template/ ScrollBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
     <Style Selector="CheckBox">
       <Setter Property="FontSize" Value="12" />
     </Style>
