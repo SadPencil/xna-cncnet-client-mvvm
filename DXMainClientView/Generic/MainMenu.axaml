@@ -215,6 +215,7 @@
     <campaign:CampaignSelector x:Name="campaignSelector" />
     <local:OptionsWindow x:Name="optionsWindow" />
     <local:ExtrasWindow x:Name="extrasWindow" />
+    <local:StatisticsWindow x:Name="statisticsWindow" />
     <local:GameLoadingWindow x:Name="gameLoadingWindow" />
 
     <!-- ========== Lobby Views ========== -->

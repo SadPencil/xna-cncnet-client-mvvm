@@ -175,6 +175,11 @@ public partial class MainMenu : UserControl
         extrasWindow.ViewModel = vm;
     }
 
+    public void SetStatisticsWindowViewModel(IStatisticsWindowViewModel vm)
+    {
+        statisticsWindow.ViewModel = vm;
+    }
+
     public void SetGameLoadingWindowViewModel(IGameLoadingWindowViewModel vm)
     {
         gameLoadingWindow.ViewModel = vm;

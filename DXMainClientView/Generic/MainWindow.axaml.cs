@@ -60,6 +60,7 @@ public partial class MainWindow : Window
         var campaignSelectorVM = ViewConstants.ServiceProvider.GetRequiredService<ICampaignSelectorViewModel>();
         var optionsWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IOptionsWindowViewModel>();
         var extrasWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IExtrasWindowViewModel>();
+        var statisticsWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IStatisticsWindowViewModel>();
         var gameLoadingWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IGameLoadingWindowViewModel>();
         var skirmishLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ISkirmishLobbyViewModel>();
         var cncNetLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ICnCNetLobbyViewModel>();
@@ -72,6 +73,7 @@ public partial class MainWindow : Window
         mainMenu.SetCampaignSelectorViewModel(campaignSelectorVM);
         mainMenu.SetOptionsWindowViewModel(optionsWindowVM);
         mainMenu.SetExtrasWindowViewModel(extrasWindowVM);
+        mainMenu.SetStatisticsWindowViewModel(statisticsWindowVM);
         mainMenu.SetGameLoadingWindowViewModel(gameLoadingWindowVM);
         mainMenu.SetSkirmishLobbyViewModel(skirmishLobbyVM);
         mainMenu.SetCnCNetLobbyViewModel(cncNetLobbyVM);
