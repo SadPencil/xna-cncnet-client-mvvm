@@ -7,6 +7,23 @@
              Width="1220" Height="728">
   <Canvas x:Name="MainCanvas">
 
+      <!-- ========== TOP BAR AREA ========== -->
+
+      <!-- Color Label + Dropdown -->
+      <TextBlock x:Name="lblColor"
+                 Text="YOUR COLOR:"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 FontSize="11"
+                 Canvas.Left="300" Canvas.Top="14" />
+      <ComboBox x:Name="ddColor"
+                ItemsSource="{Binding ColorOptions}"
+                SelectedIndex="{Binding SelectedColorIndex}"
+                IsEnabled="{Binding IsEnabled}"
+                Width="150" Height="21"
+                FontSize="11"
+                Canvas.Left="395" Canvas.Top="12" />
+
       <!-- ========== LEFT COLUMN: Game List ========== -->
 
       <!-- Game List -->

@@ -23,20 +23,34 @@
                  FontSize="11"
                  Canvas.Left="360" Canvas.Top="14" />
 
+      <!-- Color Label + Dropdown -->
+      <TextBlock x:Name="lblColor"
+                 Text="YOUR COLOR:"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 FontSize="11"
+                 Canvas.Left="450" Canvas.Top="14" />
+      <ComboBox x:Name="ddColor"
+                ItemsSource="{Binding ColorOptions}"
+                SelectedIndex="{Binding SelectedColorIndex}"
+                Width="150" Height="21"
+                FontSize="11"
+                Canvas.Left="545" Canvas.Top="12" />
+
       <!-- Current Channel Label + Dropdown -->
       <TextBlock x:Name="lblCurrentChannel"
                  Text="CURRENT CHANNEL:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                  FontSize="11"
-                 Canvas.Left="580" Canvas.Top="14" />
+                 Canvas.Left="720" Canvas.Top="14" />
       <ComboBox x:Name="ddCurrentChannel"
                 ItemsSource="{Binding ChannelOptions}"
                 SelectedIndex="{Binding SelectedChannelIndex}"
                 IsEnabled="{Binding IsChannelDropdownEnabled}"
                 Width="200" Height="21"
                 FontSize="11"
-                Canvas.Left="780" Canvas.Top="12" />
+                Canvas.Left="870" Canvas.Top="12" />
 
       <!-- ========== LEFT COLUMN: Game List ========== -->
 
@@ -248,8 +262,86 @@
           <TextBlock Text="{Binding PendingMessage}"
                      TextWrapping="Wrap"
                      Foreground="{DynamicResource XnaAltBrush}" />
+          <Button Content="OK"
+                  HorizontalAlignment="Center"
+                  Width="100" Height="23"
+                  FontSize="11" FontWeight="Bold"
+                  Click="OnDismissMessage" />
         </StackPanel>
       </Border>
+      </Panel>
+    </Border>
+
+    <!-- ========== YES/NO DIALOG OVERLAY ========== -->
+    <Border IsVisible="{Binding PendingYesNoDialog, Converter={x:Static ObjectConverters.IsNotNull}}"
+            Background="#80000000"
+            Canvas.Left="0" Canvas.Top="0"
+            Width="1220" Height="728">
+      <Panel>
+        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1"
+                Padding="16"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Text="{Binding PendingYesNoDialog.Title}"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}" />
+            <TextBlock Text="{Binding PendingYesNoDialog.Text}"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource XnaAltBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+              <Button Content="Yes"
+                      Width="100" Height="23"
+                      FontSize="11" FontWeight="Bold"
+                      Click="OnYesNoDialogYes" />
+              <Button Content="No"
+                      Width="100" Height="23"
+                      FontSize="11" FontWeight="Bold"
+                      Click="OnYesNoDialogNo" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </Panel>
+    </Border>
+
+    <!-- ========== GAME INVITE OVERLAY ========== -->
+    <Border IsVisible="{Binding PendingGameInvite, Converter={x:Static ObjectConverters.IsNotNull}}"
+            Background="#80000000"
+            Canvas.Left="0" Canvas.Top="0"
+            Width="1220" Height="728">
+      <Panel>
+        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1"
+                Padding="16"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Game Invitation"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}" />
+            <TextBlock TextWrapping="Wrap"
+                       Foreground="{DynamicResource XnaAltBrush}">
+              <Run Text="{Binding PendingGameInvite.Sender}" />
+              <Run Text=" has invited you to " />
+              <Run Text="{Binding PendingGameInvite.GameName}" />
+            </TextBlock>
+            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+              <Button Content="Accept"
+                      Width="100" Height="23"
+                      FontSize="11" FontWeight="Bold"
+                      Command="{Binding AcceptGameInviteCommand}" />
+              <Button Content="Decline"
+                      Width="100" Height="23"
+                      FontSize="11" FontWeight="Bold"
+                      Command="{Binding DismissGameInviteCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
       </Panel>
     </Border>
 

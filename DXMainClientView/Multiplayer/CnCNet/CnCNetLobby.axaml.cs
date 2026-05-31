@@ -65,6 +65,23 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         set => DataContext = value;
     }
 
+    private void OnYesNoDialogYes(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        ViewModel?.PendingYesNoDialog?.Callback?.Invoke(true);
+        if (ViewModel != null) ViewModel.PendingYesNoDialog = null;
+    }
+
+    private void OnYesNoDialogNo(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        ViewModel?.PendingYesNoDialog?.Callback?.Invoke(false);
+        if (ViewModel != null) ViewModel.PendingYesNoDialog = null;
+    }
+
+    private void OnDismissMessage(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (ViewModel != null) ViewModel.PendingMessage = null;
+    }
+
     void ISwitchableView.Show() => IsVisible = true;
     void ISwitchableView.Hide() => IsVisible = false;
     string ISwitchableView.GetDisplayName() => "CnCNet Lobby";
