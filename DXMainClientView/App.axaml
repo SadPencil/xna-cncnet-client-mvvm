@@ -118,8 +118,14 @@
       <Setter Property="FontSize" Value="12" />
     </Style>
 
-    <!-- Hide TextBox scrollbar/arrow buttons -->
+    <!-- Hide TextBox internal buttons/scrollbars -->
+    <Style Selector="TextBox /template/ Button">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
     <Style Selector="TextBox /template/ ScrollBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="TextBox /template/ RepeatButton">
       <Setter Property="IsVisible" Value="False" />
     </Style>
     <Style Selector="CheckBox">
