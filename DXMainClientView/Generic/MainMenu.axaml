@@ -277,8 +277,9 @@
     </controls:DarkeningPanel>
 
     <!-- TopBar (last in Canvas = top z-order, always above DarkeningPanels) -->
+    <!-- TODO: how to sync the width of topbar  with the window width? -->         
     <local:TopBar x:Name="topBar"
-                  Width="800"
+                  Width="1280"
                   Canvas.Left="0" Canvas.Top="0" />
 
   </Canvas>
