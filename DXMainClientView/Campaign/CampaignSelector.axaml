@@ -71,7 +71,6 @@
           <CheckBox Content="{Binding Name}"
                     IsChecked="{Binding Checked}"
                     Foreground="{DynamicResource XnaTextBrush}"
-                    FontSize="11"
                     Margin="0,2" />
         </DataTemplate>
       </ItemsControl.ItemTemplate>
@@ -110,7 +109,6 @@
           <TextBlock Text="{Binding .}"
                      FontWeight="Bold"
                      Foreground="{DynamicResource XnaTextBrush}"
-                     FontSize="11"
                      HorizontalAlignment="Center" />
         </DataTemplate>
       </ItemsControl.ItemTemplate>
@@ -167,11 +165,11 @@
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
               <Button Content="OK"
                       Width="100" Height="23"
-                      FontSize="11" FontWeight="Bold"
+                      FontWeight="Bold"
                       Command="{Binding CheaterWindow.ConfirmCommand}" />
               <Button Content="Cancel"
                       Width="100" Height="23"
-                      FontSize="11" FontWeight="Bold"
+                      FontWeight="Bold"
                       Command="{Binding CheaterWindow.CancelCommand}" />
             </StackPanel>
           </StackPanel>

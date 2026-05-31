@@ -14,14 +14,14 @@
                  Text="YOUR COLOR:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="300" Canvas.Top="14" />
       <ComboBox x:Name="ddColor"
                 ItemsSource="{Binding ColorOptions}"
                 SelectedIndex="{Binding SelectedColorIndex}"
                 IsEnabled="{Binding IsEnabled}"
                 Width="150" Height="21"
-                FontSize="11"
+               
                 Canvas.Left="395" Canvas.Top="12" />
 
       <!-- ========== LEFT COLUMN: Game List ========== -->
@@ -41,7 +41,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -63,7 +63,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11"
+                        
                          TextWrapping="Wrap" />
             </DataTemplate>
           </ListBox.ItemTemplate>
@@ -76,7 +76,7 @@
                Watermark="Type here to chat..."
                IsEnabled="{Binding IsEnabled}"
                Width="630" Height="23"
-               FontSize="11"
+              
                Canvas.Left="300" Canvas.Top="693" />
 
       <!-- ========== RIGHT COLUMN: Player List ========== -->
@@ -95,7 +95,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -110,7 +110,7 @@
               IsEnabled="{Binding IsEnabled}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="12" Canvas.Top="693" />
 
       <!-- Join Game Button -->
@@ -120,7 +120,7 @@
               IsEnabled="{Binding IsEnabled}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="157" Canvas.Top="693" />
 
       <!-- Main Menu Button -->
@@ -129,7 +129,7 @@
               Command="{Binding ExitLobbyCommand}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="1075" Canvas.Top="693" />
 
   </Canvas>

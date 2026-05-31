@@ -11,9 +11,9 @@
       <StackPanel Orientation="Horizontal" Spacing="4"
                   Canvas.Left="12" Canvas.Top="12">
         <Button x:Name="tabPrivateMessages" Content="Private Messages"
-                Width="133" Height="23" FontWeight="Bold" FontSize="11" />
+                Width="133" Height="23" FontWeight="Bold" />
         <Button x:Name="tabRecentPlayers" Content="Recent Players"
-                Width="133" Height="23" FontWeight="Bold" FontSize="11" />
+                Width="133" Height="23" FontWeight="Bold" />
       </StackPanel>
 
       <!-- ========== PRIVATE MESSAGES TAB ========== -->
@@ -23,7 +23,7 @@
                  Text="{Binding PlayersLabelText}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="12" Canvas.Top="42" />
 
       <!-- Player List (left column) -->
@@ -40,7 +40,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -60,7 +60,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11"
+                        
                          TextWrapping="Wrap" />
             </DataTemplate>
           </ListBox.ItemTemplate>
@@ -73,7 +73,7 @@
                Watermark="Type your message..."
                IsEnabled="{Binding IsMessageInputEnabled}"
                Width="464" Height="23"
-               FontSize="11"
+              
                Canvas.Left="222" Canvas.Top="407" />
 
       <!-- Send Button -->
@@ -83,7 +83,7 @@
               IsEnabled="{Binding IsMessageInputEnabled}"
               Width="92" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="694" Canvas.Top="407" />
 
       <!-- ========== RECENT PLAYERS TAB ========== -->
@@ -100,7 +100,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -112,7 +112,7 @@
               Command="{Binding CloseCommand}"
               Width="92" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="694" Canvas.Top="465" />
 
     <!-- ========== NOTIFICATION OVERLAY ========== -->

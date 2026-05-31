@@ -15,12 +15,12 @@
                  Text="Online:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="300" Canvas.Top="14" />
       <TextBlock x:Name="lblOnlineCount"
                  Text="{Binding OnlinePlayerCountText}"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="360" Canvas.Top="14" />
 
       <!-- Color Label + Dropdown -->
@@ -28,13 +28,13 @@
                  Text="YOUR COLOR:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="450" Canvas.Top="14" />
       <ComboBox x:Name="ddColor"
                 ItemsSource="{Binding ColorOptions}"
                 SelectedIndex="{Binding SelectedColorIndex}"
                 Width="150" Height="21"
-                FontSize="11"
+               
                 Canvas.Left="545" Canvas.Top="12" />
 
       <!-- Current Channel Label + Dropdown -->
@@ -42,14 +42,14 @@
                  Text="CURRENT CHANNEL:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="720" Canvas.Top="14" />
       <ComboBox x:Name="ddCurrentChannel"
                 ItemsSource="{Binding ChannelOptions}"
                 SelectedIndex="{Binding SelectedChannelIndex}"
                 IsEnabled="{Binding IsChannelDropdownEnabled}"
                 Width="200" Height="21"
-                FontSize="11"
+               
                 Canvas.Left="870" Canvas.Top="12" />
 
       <!-- ========== LEFT COLUMN: Game List ========== -->
@@ -60,7 +60,7 @@
                Watermark="Filter by name, map, game mode, player..."
                IsEnabled="{Binding IsGameSearchEnabled}"
                Width="216" Height="21"
-               FontSize="11"
+              
                Canvas.Left="12" Canvas.Top="12" />
 
       <!-- Sort Button -->
@@ -68,7 +68,7 @@
               Content="&#x2195;"
               Command="{Binding CycleSortDirectionCommand}"
               Width="21" Height="21"
-              FontSize="11"
+             
               Canvas.Left="238" Canvas.Top="12" />
 
       <!-- Game Filter Button -->
@@ -76,7 +76,7 @@
               Content="&#x2699;"
               Command="{Binding ToggleGameFiltersCommand}"
               Width="21" Height="21"
-              FontSize="11"
+             
               Canvas.Left="269" Canvas.Top="12" />
 
       <!-- Game List -->
@@ -93,7 +93,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -114,7 +114,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11"
+                        
                          TextWrapping="Wrap" />
             </DataTemplate>
           </ListBox.ItemTemplate>
@@ -128,7 +128,7 @@
                IsEnabled="{Binding IsChatInputEnabled}"
                MaxLength="200"
                Width="630" Height="23"
-               FontSize="11"
+              
                Canvas.Left="300" Canvas.Top="693" />
 
       <!-- ========== RIGHT COLUMN: Player List ========== -->
@@ -146,7 +146,7 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -161,7 +161,7 @@
               IsEnabled="{Binding IsNewGameButtonEnabled}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="12" Canvas.Top="693" />
 
       <!-- Join Game Button -->
@@ -171,7 +171,7 @@
               IsEnabled="{Binding IsJoinGameButtonEnabled}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="157" Canvas.Top="693" />
 
       <!-- Private Messages Button -->
@@ -180,7 +180,7 @@
               Command="{Binding OpenPrivateMessagesCommand}"
               Width="50" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="870" Canvas.Top="693" />
 
       <!-- Logout Button -->
@@ -189,7 +189,7 @@
               Command="{Binding LogoutCommand}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="1075" Canvas.Top="693" />
 
     <!-- ========== LOGIN WINDOW OVERLAY ========== -->
@@ -265,7 +265,7 @@
           <Button Content="OK"
                   HorizontalAlignment="Center"
                   Width="100" Height="23"
-                  FontSize="11" FontWeight="Bold"
+                  FontWeight="Bold"
                   Click="OnDismissMessage" />
         </StackPanel>
       </Border>
@@ -295,11 +295,11 @@
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
               <Button Content="Yes"
                       Width="100" Height="23"
-                      FontSize="11" FontWeight="Bold"
+                      FontWeight="Bold"
                       Click="OnYesNoDialogYes" />
               <Button Content="No"
                       Width="100" Height="23"
-                      FontSize="11" FontWeight="Bold"
+                      FontWeight="Bold"
                       Click="OnYesNoDialogNo" />
             </StackPanel>
           </StackPanel>
@@ -333,11 +333,11 @@
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
               <Button Content="Accept"
                       Width="100" Height="23"
-                      FontSize="11" FontWeight="Bold"
+                      FontWeight="Bold"
                       Command="{Binding AcceptGameInviteCommand}" />
               <Button Content="Decline"
                       Width="100" Height="23"
-                      FontSize="11" FontWeight="Bold"
+                      FontWeight="Bold"
                       Command="{Binding DismissGameInviteCommand}" />
             </StackPanel>
           </StackPanel>

@@ -119,11 +119,11 @@
         <Button Content="Accept"
                 Command="{Binding AcceptUpdateCommand}"
                 Padding="6,2"
-                FontSize="11" />
+                />
         <Button Content="Decline"
                 Command="{Binding DeclineUpdateCommand}"
                 Padding="6,2"
-                FontSize="11" />
+                />
       </StackPanel>
     </Border>
 

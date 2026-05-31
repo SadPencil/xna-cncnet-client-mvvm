@@ -12,7 +12,7 @@
                  Text="GAME MODE:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="12" Canvas.Top="13" />
 
       <ComboBox x:Name="ddGameMode"
@@ -20,7 +20,7 @@
                 SelectedIndex="{Binding SelectedGameModeFilterIndex}"
                 IsVisible="{Binding IsMapListVisible}"
                 Width="180" Height="21"
-                FontSize="11"
+               
                 Canvas.Left="420" Canvas.Top="12" />
 
       <Button x:Name="btnSortAlpha"
@@ -29,7 +29,7 @@
               IsVisible="{Binding IsMapSortButtonVisible}"
               IsEnabled="{Binding IsMapSortButtonEnabled}"
               Width="21" Height="21"
-              FontSize="11"
+             
               Canvas.Left="395" Canvas.Top="12" />
 
       <TextBox x:Name="tbMapSearch"
@@ -37,7 +37,7 @@
                Watermark="Filter by name, map, game mode..."
                IsVisible="{Binding IsMapListVisible}"
                Width="383" Height="21"
-               FontSize="11"
+              
                Canvas.Left="12" Canvas.Top="42" />
 
       <Border x:Name="lbMapList"
@@ -54,7 +54,7 @@
             <DataTemplate x:DataType="vmc:IMapListItem">
               <TextBlock Text="{Binding MapName}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -95,19 +95,19 @@
       <TextBlock x:Name="lblMapAuthor"
                  Text="{Binding MapAuthor}"
                  Foreground="{DynamicResource XnaSubtleTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="700" Canvas.Top="270" />
 
       <TextBlock x:Name="lblGameMode"
                  Text="{Binding GameModeName}"
                  Foreground="{DynamicResource XnaAltBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="437" Canvas.Top="588" />
 
       <TextBlock x:Name="lblMapSize"
                  Text="{Binding MapSize}"
                  Foreground="{DynamicResource XnaSubtleTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="700" Canvas.Top="588" />
 
       <!-- ========== Player Options Panel ========== -->
@@ -184,7 +184,7 @@
                             IsChecked="{Binding IsChecked, Mode=TwoWay}"
                             IsEnabled="{Binding IsEnabled}"
                             Foreground="{DynamicResource XnaTextBrush}"
-                            FontSize="11" Margin="0,2" />
+                            Margin="0,2" />
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -214,7 +214,7 @@
                  Background="Transparent">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="x:String">
-              <TextBlock Text="{Binding .}" Foreground="{DynamicResource XnaTextBrush}" FontSize="11" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding .}" Foreground="{DynamicResource XnaTextBrush}" TextWrapping="Wrap" />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -224,7 +224,7 @@
                Text="{Binding DraftMessage}"
                Watermark="Type a message..."
                Width="415" Height="23"
-               FontSize="11"
+              
                Canvas.Left="12" Canvas.Top="683" />
 
       <!-- ========== Action Buttons ========== -->
@@ -234,7 +234,7 @@
               Command="{Binding LaunchGameCommand}"
               IsEnabled="{Binding CanLaunchGame}"
               Width="133" Height="23"
-              FontWeight="Bold" FontSize="11"
+              FontWeight="Bold"
               Canvas.Left="437" Canvas.Top="693" />
 
       <Button x:Name="btnLockGame"
@@ -242,14 +242,14 @@
               Command="{Binding LockGameCommand}"
               IsVisible="{Binding IsLockGameButtonVisible}"
               Width="133" Height="23"
-              FontWeight="Bold" FontSize="11"
+              FontWeight="Bold"
               Canvas.Left="580" Canvas.Top="693" />
 
       <Button x:Name="btnLeaveGame"
               Content="Leave"
               Command="{Binding LeaveGameCommand}"
               Width="133" Height="23"
-              FontWeight="Bold" FontSize="11"
+              FontWeight="Bold"
               Canvas.Left="1075" Canvas.Top="693" />
 
       <!-- Local Address -->

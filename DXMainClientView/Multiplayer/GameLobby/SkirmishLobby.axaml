@@ -14,7 +14,7 @@
                  Text="GAME MODE:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="12" Canvas.Top="13" />
 
       <!-- Game Mode Dropdown -->
@@ -22,7 +22,7 @@
                 ItemsSource="{Binding GameModeFilterOptions}"
                 SelectedIndex="{Binding SelectedGameModeFilterIndex}"
                 Width="180" Height="21"
-                FontSize="11"
+               
                 Canvas.Left="420" Canvas.Top="12" />
 
       <!-- Sort Button -->
@@ -32,7 +32,7 @@
               IsVisible="{Binding IsMapSortButtonVisible}"
               IsEnabled="{Binding IsMapSortButtonEnabled}"
               Width="21" Height="21"
-              FontSize="11"
+             
               Canvas.Left="395" Canvas.Top="12" />
 
       <!-- Map Search Box -->
@@ -40,7 +40,7 @@
                Text="{Binding MapSearchText}"
                Watermark="Filter by name, map, game mode..."
                Width="383" Height="21"
-               FontSize="11"
+              
                Canvas.Left="12" Canvas.Top="42" />
 
       <!-- Map List -->
@@ -58,7 +58,7 @@
             <DataTemplate x:DataType="vmc:IMapListItem">
               <TextBlock Text="{Binding MapName}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                         FontSize="11" />
+                         />
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -105,21 +105,21 @@
       <TextBlock x:Name="lblMapAuthor"
                  Text="{Binding MapAuthor}"
                  Foreground="{DynamicResource XnaSubtleTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="700" Canvas.Top="270" />
 
       <!-- Game Mode Label (below preview) -->
       <TextBlock x:Name="lblGameMode"
                  Text="{Binding GameModeName}"
                  Foreground="{DynamicResource XnaAltBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="437" Canvas.Top="588" />
 
       <!-- Map Size Label (right-aligned below preview) -->
       <TextBlock x:Name="lblMapSize"
                  Text="{Binding MapSize}"
                  Foreground="{DynamicResource XnaSubtleTextBrush}"
-                 FontSize="11"
+                
                  Canvas.Left="700" Canvas.Top="588" />
 
       <!-- ========== TOP RIGHT: Player Options Panel ========== -->
@@ -205,7 +205,7 @@
                             IsChecked="{Binding IsChecked, Mode=TwoWay}"
                             IsEnabled="{Binding IsEnabled}"
                             Foreground="{DynamicResource XnaTextBrush}"
-                            FontSize="11"
+                           
                             Margin="0,2" />
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
@@ -241,7 +241,7 @@
               IsEnabled="{Binding CanLaunchGame}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="12" Canvas.Top="693" />
 
       <!-- Leave Game Button -->
@@ -250,7 +250,7 @@
               Command="{Binding LeaveGameCommand}"
               Width="133" Height="23"
               FontWeight="Bold"
-              FontSize="11"
+             
               Canvas.Left="1075" Canvas.Top="693" />
 
       <!-- ========== SKIRMISH-SPECIFIC BUTTONS ========== -->

@@ -42,17 +42,17 @@
           <ComboBox x:Name="ddIngameResolution"
                     ItemsSource="{Binding IngameResolutionOptions}"
                     SelectedIndex="{Binding SelectedIngameResolutionIndex}"
-                    Width="200" Height="21" FontSize="11" />
+                    Width="200" Height="21" />
           <TextBlock Text="Detail Level:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <ComboBox x:Name="ddDetailLevel"
                     ItemsSource="{Binding DetailLevelOptions}"
                     SelectedIndex="{Binding SelectedDetailLevelIndex}"
-                    Width="200" Height="21" FontSize="11" />
+                    Width="200" Height="21" />
           <TextBlock Text="Renderer:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <ComboBox x:Name="ddRenderer"
                     ItemsSource="{Binding RendererOptions}"
                     SelectedIndex="{Binding SelectedRendererIndex}"
-                    Width="200" Height="21" FontSize="11" />
+                    Width="200" Height="21" />
           <CheckBox x:Name="chkWindowedMode" Content="Windowed Mode"
                     IsChecked="{Binding IsWindowedModeEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
@@ -67,7 +67,7 @@
           <ComboBox x:Name="ddClientResolution"
                     ItemsSource="{Binding ClientResolutionOptions}"
                     SelectedIndex="{Binding SelectedClientResolutionIndex}"
-                    Width="200" Height="21" FontSize="11" />
+                    Width="200" Height="21" />
           <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
                     IsChecked="{Binding IsBorderlessClientEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
@@ -78,28 +78,28 @@
           <ComboBox x:Name="ddClientTheme"
                     ItemsSource="{Binding ThemeOptions}"
                     SelectedIndex="{Binding SelectedThemeIndex}"
-                    Width="200" Height="21" FontSize="11" />
+                    Width="200" Height="21" />
           <TextBlock Text="Language:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <ComboBox x:Name="ddTranslation"
                     ItemsSource="{Binding TranslationOptions}"
                     SelectedIndex="{Binding SelectedTranslationIndex}"
-                    Width="200" Height="21" FontSize="11" />
+                    Width="200" Height="21" />
           <!-- Compatibility fix buttons (visible only when available) -->
           <Button x:Name="btnGameCompatibilityFix"
                   Content="Install Game Compatibility Fix"
                   Command="{Binding InstallGameCompatibilityFixCommand}"
                   IsVisible="{Binding IsGameCompatFixAvailable}"
-                  Width="250" Height="23" FontSize="11" Margin="0,4,0,0" />
+                  Width="250" Height="23" Margin="0,4,0,0" />
           <Button x:Name="btnMapEditorCompatibilityFix"
                   Content="Install Map Editor Compatibility Fix"
                   Command="{Binding InstallMapEditorCompatibilityFixCommand}"
                   IsVisible="{Binding IsFinalSunCompatFixAvailable}"
-                  Width="250" Height="23" FontSize="11" />
+                  Width="250" Height="23" />
           <!-- Restart required notice -->
           <TextBlock Text="A restart is required for some changes to take effect."
                      IsVisible="{Binding IsRestartRequired}"
                      Foreground="{DynamicResource XnaAltBrush}"
-                     FontSize="11" Margin="0,4,0,0" />
+                     Margin="0,4,0,0" />
         </StackPanel>
       </ScrollViewer>
     </Border>
@@ -211,14 +211,14 @@
           <TextBlock Text="Player Name:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,0" />
           <TextBox x:Name="tbPlayerName"
                    Text="{Binding PlayerName}"
-                   Width="200" Height="23" FontSize="11"
+                   Width="200" Height="23"
                    MaxLength="16"
                    HorizontalAlignment="Left" />
           <Button x:Name="btnConfigureHotkeys"
                   Content="Configure Hotkeys"
                   Command="{Binding OpenHotkeyConfigurationCommand}"
                   IsVisible="{Binding ShowHotkeyConfiguration}"
-                  Width="150" Height="23" FontSize="11"
+                  Width="150" Height="23"
                   Margin="0,4,0,0" />
         </StackPanel>
       </ScrollViewer>
@@ -279,7 +279,7 @@
                 <CheckBox Content="{Binding UIName}"
                           IsChecked="{Binding IsFollowed}"
                           Foreground="{DynamicResource XnaTextBrush}"
-                          FontSize="11" Margin="0,1" />
+                          Margin="0,1" />
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
@@ -300,7 +300,7 @@
         <TextBlock Text="Update Server Priority"
                    FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
         <TextBlock Text="Drag servers to change priority. The client will try servers from top to bottom."
-                   Foreground="{DynamicResource XnaSubtleTextBrush}" FontSize="11" TextWrapping="Wrap" />
+                   Foreground="{DynamicResource XnaSubtleTextBrush}" TextWrapping="Wrap" />
         <Border Background="#C8000000"
                 BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                 BorderThickness="1"
@@ -309,7 +309,7 @@
                    ItemsSource="{Binding UpdateServerNames}"
                    SelectedIndex="{Binding SelectedUpdateServerIndex}"
                    Background="Transparent"
-                   FontSize="11">
+                  >
             <ListBox.ItemTemplate>
               <DataTemplate x:DataType="x:String">
                 <TextBlock Text="{Binding .}" Foreground="{DynamicResource XnaTextBrush}" />
@@ -320,10 +320,10 @@
         <StackPanel Orientation="Horizontal" Spacing="8">
           <Button x:Name="btnMoveUp" Content="Move Up"
                   Command="{Binding MoveServerUpCommand}"
-                  Width="133" Height="23" FontSize="11" />
+                  Width="133" Height="23" />
           <Button x:Name="btnMoveDown" Content="Move Down"
                   Command="{Binding MoveServerDownCommand}"
-                  Width="133" Height="23" FontSize="11" />
+                  Width="133" Height="23" />
         </StackPanel>
         <CheckBox x:Name="chkAutoCheck" Content="Check for updates automatically"
                   IsChecked="{Binding CheckForUpdatesAutomatically}"
@@ -331,7 +331,7 @@
         <Button x:Name="btnForceUpdate" Content="Force Update"
                 Command="{Binding ForceUpdateCommand}"
                 IsEnabled="{Binding IsForceUpdateEnabled}"
-                Width="133" Height="23" FontSize="11" Margin="0,8,0,0" />
+                Width="133" Height="23" Margin="0,8,0,0" />
         <!-- Confirmation overlay within panel -->
         <Border IsVisible="{Binding IsConfirmationVisible}"
                 Background="{DynamicResource XnaPanelBackgroundBrush}"
@@ -363,7 +363,7 @@
           <TextBlock Text="Optional Components"
                      FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <TextBlock Text="Install or update optional game components below."
-                     Foreground="{DynamicResource XnaSubtleTextBrush}" FontSize="11" TextWrapping="Wrap" />
+                     Foreground="{DynamicResource XnaSubtleTextBrush}" TextWrapping="Wrap" />
           <!-- Component list with action buttons -->
           <Border Background="#C8000000"
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
@@ -373,7 +373,7 @@
                      ItemsSource="{Binding ComponentNames}"
                      SelectedIndex="{Binding SelectedComponentIndex}"
                      Background="Transparent"
-                     FontSize="11">
+                    >
               <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
                   <TextBlock Text="{Binding .}" Foreground="{DynamicResource XnaTextBrush}" />
@@ -384,17 +384,17 @@
           <StackPanel Orientation="Horizontal" Spacing="8">
             <Button x:Name="btnInstallComponent" Content="Install"
                     Command="{Binding InstallSelectedComponentCommand}"
-                    Width="100" Height="23" FontSize="11" />
+                    Width="100" Height="23" />
             <Button x:Name="btnUpdateComponent" Content="Update"
                     Command="{Binding UpdateSelectedComponentCommand}"
-                    Width="100" Height="23" FontSize="11" />
+                    Width="100" Height="23" />
             <Button x:Name="btnUninstallComponent" Content="Uninstall"
                     Command="{Binding UninstallSelectedComponentCommand}"
-                    Width="100" Height="23" FontSize="11" />
+                    Width="100" Height="23" />
             <Button x:Name="btnCancelDownloads" Content="Cancel"
                     Command="{Binding CancelDownloadsCommand}"
                     IsVisible="{Binding IsBusy}"
-                    Width="100" Height="23" FontSize="11" />
+                    Width="100" Height="23" />
           </StackPanel>
         </StackPanel>
         <!-- Confirmation overlay within panel -->
