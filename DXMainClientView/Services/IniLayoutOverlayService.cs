@@ -97,6 +97,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Apply deferred properties (FillWidth, FillHeight, DistanceFrom*)
         ApplyDeferredProperties(control, iniFile);
 
+        // Auto-load standard {width}pxbtn.png / {width}pxbtn_c.png textures for
+        // buttons that weren't given a custom IdleTexture via INI.  This matches
+        // XNAClientButton.Initialize() which loads these textures based on Width.
+        ApplyStandardButtonTextures(control);
+
         Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
     }
 
@@ -722,6 +727,105 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         string hoverName = $"{name}_c{ext}";
         string hoverPath = string.IsNullOrEmpty(dir) ? hoverName : Path.Combine(dir, hoverName);
         return FindTextureFileStatic(hoverPath);
+    }
+
+    /// <summary>
+    /// Standard button widths that have corresponding {width}pxbtn.png textures.
+    /// Matches XNAClientButton which loads textures based on Width.
+    /// </summary>
+    private static readonly HashSet<int> StandardButtonWidths = new()
+    {
+        75, 92, 97, 110, 121, 133, 142, 147, 160
+    };
+
+    /// <summary>
+    /// Walks all descendant Button controls and auto-loads standard {width}pxbtn.png
+    /// textures for buttons that weren't given a custom Background via INI IdleTexture.
+    /// Matches XNAClientButton.Initialize() behavior.
+    /// </summary>
+    private static void ApplyStandardButtonTextures(Control root)
+    {
+        ApplyStandardButtonTexturesRecursive(root);
+    }
+
+    private static void ApplyStandardButtonTexturesRecursive(Control parent)
+    {
+        IEnumerable<Control> children = GetChildren(parent);
+        foreach (var child in children)
+        {
+            if (child is Button button
+                && button.Background == null
+                && !double.IsNaN(button.Width)
+                && StandardButtonWidths.Contains((int)button.Width))
+            {
+                int w = (int)button.Width;
+                string idlePath = $"{w}pxbtn.png";
+                string hoverPath = $"{w}pxbtn_c.png";
+
+                string? idleFile = FindTextureFileStatic(idlePath);
+                if (idleFile != null)
+                {
+                    var idleBitmap = new Bitmap(idleFile);
+                    button.Background = new ImageBrush
+                    {
+                        Source = idleBitmap,
+                        Stretch = Stretch.Fill,
+                        TileMode = TileMode.None
+                    };
+
+                    // Auto-height from texture if not explicitly set
+                    if (double.IsNaN(button.Height) || button.Height == 0)
+                        button.Height = idleBitmap.PixelSize.Height;
+
+                    // Set up hover texture
+                    string? hoverFile = FindTextureFileStatic(hoverPath);
+                    if (hoverFile != null)
+                    {
+                        var hoverBitmap = new Bitmap(hoverFile);
+                        var hoverBrush = new ImageBrush
+                        {
+                            Source = hoverBitmap,
+                            Stretch = Stretch.Fill,
+                            TileMode = TileMode.None
+                        };
+                        var idleBrush = button.Background;
+                        button.PointerEntered += (_, _) => button.Background = hoverBrush;
+                        button.PointerExited += (_, _) => button.Background = idleBrush;
+                    }
+
+                    // Text color change on hover (matching XNA TextColorIdle → TextColorHover)
+                    var idleForeground = button.Foreground;
+                    var hoverColor = ParseColorFromConfig("ButtonHoverColor")
+                        ?? Color.Parse("#FCFCFC");
+                    var hoverForeground = new SolidColorBrush(hoverColor);
+                    button.PointerEntered += (_, _) => button.Foreground = hoverForeground;
+                    button.PointerExited += (_, _) =>
+                    {
+                        if (idleForeground != null)
+                            button.Foreground = idleForeground;
+                    };
+                }
+            }
+
+            ApplyStandardButtonTexturesRecursive(child);
+        }
+    }
+
+    private static Color? ParseColorFromConfig(string key)
+    {
+        try
+        {
+            string themePath = FindThemeIniFile("DTACnCNetClient");
+            if (themePath != null)
+            {
+                var ini = new CCIniFile(themePath);
+                string? value = ini.GetStringValue("General", key, null);
+                if (value != null)
+                    return ParseColor(value);
+            }
+        }
+        catch { }
+        return null;
     }
 
     private static void ApplyButtonTexture(Control control, string texturePath, bool isHover)
