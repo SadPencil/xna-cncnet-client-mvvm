@@ -28,11 +28,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     /// Font configuration for FontIndex values. Maps FontIndex to (FontSize, FontWeight).
     /// XNAUI FontIndex 0 = default font, FontIndex 1 = bold font.
     /// Unknown FontIndex falls back to index 0.
+    /// Sizes match the AXAML button FontSize values (11pt for standard buttons).
     /// </summary>
     private static readonly Dictionary<int, (double size, FontWeight weight)> FontIndexConfig = new()
     {
-        [0] = (12, FontWeight.Normal),
-        [1] = (12, FontWeight.Bold),
+        [0] = (11, FontWeight.Normal),
+        [1] = (11, FontWeight.Bold),
     };
 
     /// <summary>
