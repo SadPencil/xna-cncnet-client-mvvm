@@ -53,6 +53,8 @@ public partial class MainMenu : UserControl
         if (vm == null || !vm.AreButtonsEnabled)
             return;
 
+        // TODO: If the current panel is not the main menu, we don't want to trigger these shortcuts.
+
         switch (e.Key)
         {
             case Key.C:
