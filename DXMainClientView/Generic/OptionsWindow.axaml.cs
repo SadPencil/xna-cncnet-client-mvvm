@@ -1,4 +1,5 @@
 using DXMainClientMvvmContract.Generic;
+using DXMainClientMvvmContract.Generic.OptionPanels;
 
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -26,6 +27,36 @@ public partial class OptionsWindow : UserControl, IOptionsWindowView
         // Apply INI layout overrides (OptionsWindow.ini if it exists)
         var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "OptionsWindow");
+
+        // Wire up child panel DataContexts from DI
+        SetupPanelDataContexts();
+    }
+
+    private void SetupPanelDataContexts()
+    {
+        var displayVM = ViewConstants.ServiceProvider.GetService<IDisplayOptionsPanelViewModel>();
+        if (displayVM != null && displayPanel != null)
+            displayPanel.DataContext = displayVM;
+
+        var audioVM = ViewConstants.ServiceProvider.GetService<IAudioOptionsPanelViewModel>();
+        if (audioVM != null && audioPanel != null)
+            audioPanel.DataContext = audioVM;
+
+        var gameVM = ViewConstants.ServiceProvider.GetService<IGameOptionsPanelViewModel>();
+        if (gameVM != null && gamePanel != null)
+            gamePanel.DataContext = gameVM;
+
+        var cncnetVM = ViewConstants.ServiceProvider.GetService<ICnCNetOptionsPanelViewModel>();
+        if (cncnetVM != null && cncnetPanel != null)
+            cncnetPanel.DataContext = cncnetVM;
+
+        var updaterVM = ViewConstants.ServiceProvider.GetService<IUpdaterOptionsPanelViewModel>();
+        if (updaterVM != null && updaterPanel != null)
+            updaterPanel.DataContext = updaterVM;
+
+        var componentsVM = ViewConstants.ServiceProvider.GetService<IComponentsPanelViewModel>();
+        if (componentsVM != null && componentsPanel != null)
+            componentsPanel.DataContext = componentsVM;
     }
 
     private void ApplyDefaultBackground(string texturePath)

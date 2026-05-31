@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vmc="using:DXMainClientMvvmContract.Generic"
+             xmlns:vmcOpt="using:DXMainClientMvvmContract.Generic.OptionPanels"
              x:Class="DXMainClientView.Generic.OptionsWindow"
              x:DataType="vmc:IOptionsWindowViewModel"
              IsVisible="{Binding IsVisible}"
@@ -19,7 +20,8 @@
       <Button x:Name="tabCnCNet" Content="CnCNet" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectCnCNetPanelCommand}" />
       <Button x:Name="tabUpdater" Content="Updater" Width="92" Height="23" FontWeight="Bold"
-              Command="{Binding SelectUpdaterPanelCommand}" />
+              Command="{Binding SelectUpdaterPanelCommand}"
+              IsVisible="{Binding IsUpdaterPanelVisible}" />
       <Button x:Name="tabComponents" Content="Components" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectComponentsPanelCommand}"
               IsVisible="{Binding IsComponentsPanelVisible}" />
@@ -34,23 +36,70 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <ScrollViewer>
-        <StackPanel Margin="12" Spacing="8">
+        <StackPanel x:Name="displayPanel" Margin="12" Spacing="6"
+                    x:DataType="vmcOpt:IDisplayOptionsPanelViewModel">
           <TextBlock Text="In-game Resolution:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddIngameResolution" Width="200" />
+          <ComboBox x:Name="ddIngameResolution"
+                    ItemsSource="{Binding IngameResolutionOptions}"
+                    SelectedIndex="{Binding SelectedIngameResolutionIndex}"
+                    Width="200" Height="21" FontSize="11" />
           <TextBlock Text="Detail Level:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddDetailLevel" Width="200" />
+          <ComboBox x:Name="ddDetailLevel"
+                    ItemsSource="{Binding DetailLevelOptions}"
+                    SelectedIndex="{Binding SelectedDetailLevelIndex}"
+                    Width="200" Height="21" FontSize="11" />
           <TextBlock Text="Renderer:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddRenderer" Width="200" />
-          <CheckBox x:Name="chkWindowedMode" Content="Windowed Mode" Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkBorderlessWindowedMode" Content="Borderless Windowed Mode" Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,0" />
+          <ComboBox x:Name="ddRenderer"
+                    ItemsSource="{Binding RendererOptions}"
+                    SelectedIndex="{Binding SelectedRendererIndex}"
+                    Width="200" Height="21" FontSize="11" />
+          <CheckBox x:Name="chkWindowedMode" Content="Windowed Mode"
+                    IsChecked="{Binding IsWindowedModeEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkBorderlessWindowedMode" Content="Borderless Windowed Mode"
+                    IsChecked="{Binding IsBorderlessWindowedModeEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,0" />
+          <CheckBox x:Name="chkBackBufferInVRAM" Content="Back Buffer in Video Memory"
+                    IsChecked="{Binding IsBackBufferStoredInVideoMemory}"
+                    Foreground="{DynamicResource XnaTextBrush}"
+                    ToolTip.Tip="If set, the game's back buffer will be stored in VRAM instead of system RAM. May improve performance on some systems but can cause issues on others." />
           <TextBlock Text="Client Resolution:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddClientResolution" Width="200" />
-          <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client" Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkIntegerScaledClient" Content="Integer Scaled Client" Foreground="{DynamicResource XnaTextBrush}" />
+          <ComboBox x:Name="ddClientResolution"
+                    ItemsSource="{Binding ClientResolutionOptions}"
+                    SelectedIndex="{Binding SelectedClientResolutionIndex}"
+                    Width="200" Height="21" FontSize="11" />
+          <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
+                    IsChecked="{Binding IsBorderlessClientEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkIntegerScaledClient" Content="Integer Scaled Client"
+                    IsChecked="{Binding IsIntegerScaledClientEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
           <TextBlock Text="Client Theme:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddClientTheme" Width="200" />
+          <ComboBox x:Name="ddClientTheme"
+                    ItemsSource="{Binding ThemeOptions}"
+                    SelectedIndex="{Binding SelectedThemeIndex}"
+                    Width="200" Height="21" FontSize="11" />
           <TextBlock Text="Language:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddTranslation" Width="200" />
+          <ComboBox x:Name="ddTranslation"
+                    ItemsSource="{Binding TranslationOptions}"
+                    SelectedIndex="{Binding SelectedTranslationIndex}"
+                    Width="200" Height="21" FontSize="11" />
+          <!-- Compatibility fix buttons (visible only when available) -->
+          <Button x:Name="btnGameCompatibilityFix"
+                  Content="Install Game Compatibility Fix"
+                  Command="{Binding InstallGameCompatibilityFixCommand}"
+                  IsVisible="{Binding IsGameCompatFixAvailable}"
+                  Width="250" Height="23" FontSize="11" Margin="0,4,0,0" />
+          <Button x:Name="btnMapEditorCompatibilityFix"
+                  Content="Install Map Editor Compatibility Fix"
+                  Command="{Binding InstallMapEditorCompatibilityFixCommand}"
+                  IsVisible="{Binding IsFinalSunCompatFixAvailable}"
+                  Width="250" Height="23" FontSize="11" />
+          <!-- Restart required notice -->
+          <TextBlock Text="A restart is required for some changes to take effect."
+                     IsVisible="{Binding IsRestartRequired}"
+                     Foreground="{DynamicResource XnaAltBrush}"
+                     FontSize="11" Margin="0,4,0,0" />
         </StackPanel>
       </ScrollViewer>
     </Border>
@@ -64,16 +113,59 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <ScrollViewer>
-        <StackPanel Margin="12" Spacing="8">
+        <StackPanel x:Name="audioPanel" Margin="12" Spacing="6"
+                    x:DataType="vmcOpt:IAudioOptionsPanelViewModel">
           <TextBlock Text="Music Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <Slider x:Name="trbMusicVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+          <Grid ColumnDefinitions="*,Auto">
+            <Slider x:Name="trbMusicVolume" Minimum="0" Maximum="10"
+                    Value="{Binding ScoreVolume}"
+                    TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Grid.Column="1" Text="{Binding ScoreVolume}"
+                       Foreground="{DynamicResource XnaTextBrush}"
+                       VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
+          </Grid>
           <TextBlock Text="Sound Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <Slider x:Name="trbSoundVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+          <Grid ColumnDefinitions="*,Auto">
+            <Slider x:Name="trbSoundVolume" Minimum="0" Maximum="10"
+                    Value="{Binding SoundVolume}"
+                    TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Grid.Column="1" Text="{Binding SoundVolume}"
+                       Foreground="{DynamicResource XnaTextBrush}"
+                       VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
+          </Grid>
           <TextBlock Text="Voice Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <Slider x:Name="trbVoiceVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+          <Grid ColumnDefinitions="*,Auto">
+            <Slider x:Name="trbVoiceVolume" Minimum="0" Maximum="10"
+                    Value="{Binding VoiceVolume}"
+                    TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Grid.Column="1" Text="{Binding VoiceVolume}"
+                       Foreground="{DynamicResource XnaTextBrush}"
+                       VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
+          </Grid>
           <TextBlock Text="Client Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <Slider x:Name="trbClientVolume" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
-          <CheckBox x:Name="chkShuffleMusic" Content="Shuffle Music" Foreground="{DynamicResource XnaTextBrush}" />
+          <Grid ColumnDefinitions="*,Auto">
+            <Slider x:Name="trbClientVolume" Minimum="0" Maximum="10"
+                    Value="{Binding ClientVolume}"
+                    TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Grid.Column="1" Text="{Binding ClientVolume}"
+                       Foreground="{DynamicResource XnaTextBrush}"
+                       VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
+          </Grid>
+          <CheckBox x:Name="chkShuffleMusic" Content="Shuffle Music"
+                    IsChecked="{Binding IsScoreShuffleEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" Margin="0,4,0,0" />
+          <CheckBox x:Name="chkMainMenuMusic" Content="Main Menu Music"
+                    IsChecked="{Binding IsMainMenuMusicEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkStopMusicOnMenu" Content="Don't Stop Music on Menu"
+                    IsChecked="{Binding IsStopMusicOnMenuDisabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkGameLobbyMessageSound" Content="Play Sound on Game Lobby Messages"
+                    IsChecked="{Binding IsGameLobbyMessageSoundEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkHostedGameSound" Content="Play Sound When Game is Hosted"
+                    IsChecked="{Binding IsHostedGameSoundEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
         </StackPanel>
       </ScrollViewer>
     </Border>
@@ -87,9 +179,47 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <ScrollViewer>
-        <StackPanel Margin="12" Spacing="8">
-          <TextBlock Text="Game Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
-          <TextBlock Text="(Game option controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+        <StackPanel x:Name="gamePanel" Margin="12" Spacing="6"
+                    x:DataType="vmcOpt:IGameOptionsPanelViewModel">
+          <TextBlock Text="Scroll Rate:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+          <Grid ColumnDefinitions="*,Auto">
+            <Slider x:Name="trbScrollRate" Minimum="0" Maximum="6"
+                    Value="{Binding ScrollRate}"
+                    TickFrequency="1" IsSnapToTickEnabled="True" />
+            <TextBlock Grid.Column="1" Text="{Binding ScrollRate}"
+                       Foreground="{DynamicResource XnaTextBrush}"
+                       VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
+          </Grid>
+          <CheckBox x:Name="chkScrollCoasting" Content="Scroll Coasting"
+                    IsChecked="{Binding IsScrollCoastingEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" Margin="0,4,0,0" />
+          <CheckBox x:Name="chkTargetLines" Content="Target Lines"
+                    IsChecked="{Binding AreTargetLinesEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkTooltips" Content="Tooltips"
+                    IsChecked="{Binding AreTooltipsEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkShowHiddenObjects" Content="Show Hidden Objects"
+                    IsChecked="{Binding AreHiddenObjectsVisible}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkBlackChatBackground" Content="Black Chat Background"
+                    IsChecked="{Binding IsBlackChatBackgroundEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkAltToUndeploy" Content="Alt+Click to Undeploy"
+                    IsChecked="{Binding IsUndeployWithAltEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="Player Name:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,0" />
+          <TextBox x:Name="tbPlayerName"
+                   Text="{Binding PlayerName}"
+                   Width="200" Height="23" FontSize="11"
+                   MaxLength="16"
+                   HorizontalAlignment="Left" />
+          <Button x:Name="btnConfigureHotkeys"
+                  Content="Configure Hotkeys"
+                  Command="{Binding OpenHotkeyConfigurationCommand}"
+                  IsVisible="{Binding ShowHotkeyConfiguration}"
+                  Width="150" Height="23" FontSize="11"
+                  Margin="0,4,0,0" />
         </StackPanel>
       </ScrollViewer>
     </Border>
@@ -103,9 +233,56 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <ScrollViewer>
-        <StackPanel Margin="12" Spacing="8">
-          <TextBlock Text="CnCNet Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
-          <TextBlock Text="(CnCNet option controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+        <StackPanel x:Name="cncnetPanel" Margin="12" Spacing="4"
+                    x:DataType="vmcOpt:ICnCNetOptionsPanelViewModel">
+          <CheckBox x:Name="chkPingUnofficialTunnels" Content="Ping Unofficial CnCNet Tunnels"
+                    IsChecked="{Binding PingUnofficialTunnels}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkWriteInstallPathToRegistry" Content="Write Game Installation Path to Windows Registry"
+                    IsChecked="{Binding WriteInstallationPathToRegistry}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkDisableMainMenuHotkeys" Content="Disable Hotkeys in Main Menu Lobby"
+                    IsChecked="{Binding DisableMainMenuHotkeys}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkNotifyOnUserListChange" Content="Show Notification on User List Change"
+                    IsChecked="{Binding NotifyOnUserListChanges}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkDisablePrivateMessagePopup" Content="Disable Private Message Popup Notifications"
+                    IsChecked="{Binding DisablePrivateMessagePopups}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkSkipLoginWindow" Content="Skip Login Dialog"
+                    IsChecked="{Binding SkipLoginDialog}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkPersistentMode" Content="Stay Connected Outside CnCNet Lobby"
+                    IsChecked="{Binding PersistentMode}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkConnectOnStartup" Content="Connect to CnCNet on Client Startup"
+                    IsChecked="{Binding AutoConnectOnStartup}"
+                    IsEnabled="{Binding IsAutoConnectOnStartupAllowed}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkDiscordIntegration" Content="Show Game Info on Discord Status"
+                    IsChecked="{Binding IsDiscordIntegrationEnabled}"
+                    IsEnabled="{Binding !IsDiscordIntegrationGloballyDisabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkSteamIntegration" Content="Publish Game to Steam Friends"
+                    IsChecked="{Binding IsSteamIntegrationEnabled}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <CheckBox x:Name="chkAllowGameInvitesFromFriendsOnly" Content="Only Allow Game Invites from Friends"
+                    IsChecked="{Binding AllowGameInvitesOnlyFromFriends}"
+                    Foreground="{DynamicResource XnaTextBrush}" />
+          <!-- Game follow list -->
+          <TextBlock Text="Follow Games:" FontWeight="Bold"
+                     Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,4" />
+          <ItemsControl ItemsSource="{Binding GameListItems}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vmcOpt:IGameListItemData">
+                <CheckBox Content="{Binding UIName}"
+                          IsChecked="{Binding IsFollowed}"
+                          Foreground="{DynamicResource XnaTextBrush}"
+                          FontSize="11" Margin="0,1" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
         </StackPanel>
       </ScrollViewer>
     </Border>
@@ -118,12 +295,58 @@
             IsVisible="{Binding IsUpdaterPanelVisibleInner}"
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
-      <ScrollViewer>
-        <StackPanel Margin="12" Spacing="8">
-          <TextBlock Text="Updater Options" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
-          <TextBlock Text="(Updater option controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+      <StackPanel x:Name="updaterPanel" Margin="12" Spacing="6"
+                  x:DataType="vmcOpt:IUpdaterOptionsPanelViewModel">
+        <TextBlock Text="Update Server Priority"
+                   FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+        <TextBlock Text="Drag servers to change priority. The client will try servers from top to bottom."
+                   Foreground="{DynamicResource XnaSubtleTextBrush}" FontSize="11" TextWrapping="Wrap" />
+        <Border Background="#C8000000"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1"
+                Height="120">
+          <ListBox x:Name="lbUpdateServerList"
+                   ItemsSource="{Binding UpdateServerNames}"
+                   SelectedIndex="{Binding SelectedUpdateServerIndex}"
+                   Background="Transparent"
+                   FontSize="11">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="x:String">
+                <TextBlock Text="{Binding .}" Foreground="{DynamicResource XnaTextBrush}" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button x:Name="btnMoveUp" Content="Move Up"
+                  Command="{Binding MoveServerUpCommand}"
+                  Width="133" Height="23" FontSize="11" />
+          <Button x:Name="btnMoveDown" Content="Move Down"
+                  Command="{Binding MoveServerDownCommand}"
+                  Width="133" Height="23" FontSize="11" />
         </StackPanel>
-      </ScrollViewer>
+        <CheckBox x:Name="chkAutoCheck" Content="Check for updates automatically"
+                  IsChecked="{Binding CheckForUpdatesAutomatically}"
+                  Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,0" />
+        <Button x:Name="btnForceUpdate" Content="Force Update"
+                Command="{Binding ForceUpdateCommand}"
+                IsEnabled="{Binding IsForceUpdateEnabled}"
+                Width="133" Height="23" FontSize="11" Margin="0,8,0,0" />
+        <!-- Confirmation overlay within panel -->
+        <Border IsVisible="{Binding IsConfirmationVisible}"
+                Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1" Padding="12" Margin="0,8,0,0">
+          <StackPanel Spacing="8">
+            <TextBlock Text="{Binding ConfirmationMessage}" TextWrapping="Wrap"
+                       Foreground="{DynamicResource XnaAltBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+              <Button Content="Yes" Command="{Binding ConfirmYesCommand}" Width="75" Height="23" />
+              <Button Content="No" Command="{Binding ConfirmNoCommand}" Width="75" Height="23" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </StackPanel>
     </Border>
 
     <!-- Components Panel -->
@@ -134,12 +357,83 @@
             IsVisible="{Binding IsComponentsPanelVisibleInner}"
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
-      <ScrollViewer>
-        <StackPanel Margin="12" Spacing="8">
-          <TextBlock Text="Components" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="14" />
-          <TextBlock Text="(Component install/update controls will be added here)" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+      <Panel x:Name="componentsPanel"
+             x:DataType="vmcOpt:IComponentsPanelViewModel">
+        <StackPanel Margin="12" Spacing="6">
+          <TextBlock Text="Optional Components"
+                     FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="Install or update optional game components below."
+                     Foreground="{DynamicResource XnaSubtleTextBrush}" FontSize="11" TextWrapping="Wrap" />
+          <!-- Component list with action buttons -->
+          <Border Background="#C8000000"
+                  BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                  BorderThickness="1"
+                  Height="200">
+            <ListBox x:Name="lbComponents"
+                     ItemsSource="{Binding ComponentNames}"
+                     SelectedIndex="{Binding SelectedComponentIndex}"
+                     Background="Transparent"
+                     FontSize="11">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <TextBlock Text="{Binding .}" Foreground="{DynamicResource XnaTextBrush}" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Border>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button x:Name="btnInstallComponent" Content="Install"
+                    Command="{Binding InstallSelectedComponentCommand}"
+                    Width="100" Height="23" FontSize="11" />
+            <Button x:Name="btnUpdateComponent" Content="Update"
+                    Command="{Binding UpdateSelectedComponentCommand}"
+                    Width="100" Height="23" FontSize="11" />
+            <Button x:Name="btnUninstallComponent" Content="Uninstall"
+                    Command="{Binding UninstallSelectedComponentCommand}"
+                    Width="100" Height="23" FontSize="11" />
+            <Button x:Name="btnCancelDownloads" Content="Cancel"
+                    Command="{Binding CancelDownloadsCommand}"
+                    IsVisible="{Binding IsBusy}"
+                    Width="100" Height="23" FontSize="11" />
+          </StackPanel>
         </StackPanel>
-      </ScrollViewer>
+        <!-- Confirmation overlay within panel -->
+        <Border IsVisible="{Binding IsConfirmationVisible}"
+                Background="#80000000"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                  BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                  BorderThickness="1" Padding="16" Width="350"
+                  HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Spacing="12">
+              <TextBlock Text="{Binding ConfirmationMessage}" TextWrapping="Wrap"
+                         Foreground="{DynamicResource XnaAltBrush}" />
+              <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                <Button Content="Yes" Command="{Binding ConfirmYesCommand}" Width="75" Height="23" />
+                <Button Content="No" Command="{Binding ConfirmNoCommand}" Width="75" Height="23" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+        </Border>
+        <!-- Message box within panel -->
+        <Border IsVisible="{Binding IsMessageBoxVisible}"
+                Background="#80000000"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                  BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                  BorderThickness="1" Padding="16" Width="350"
+                  HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Spacing="12">
+              <TextBlock Text="{Binding MessageBoxTitle}" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}" />
+              <TextBlock Text="{Binding MessageBoxMessage}" TextWrapping="Wrap"
+                         Foreground="{DynamicResource XnaAltBrush}" />
+              <Button Content="OK" Command="{Binding DismissMessageBoxCommand}"
+                      HorizontalAlignment="Right" Width="75" Height="23" />
+            </StackPanel>
+          </Border>
+        </Border>
+      </Panel>
     </Border>
 
     <!-- Save button (bottom-left) -->
