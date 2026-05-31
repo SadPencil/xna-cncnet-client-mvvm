@@ -100,11 +100,11 @@
     <TextBlock x:Name="lblCnCNetStatus"
                Text="TS Players on CnCNet"
                Foreground="#2DE4FF"
-               Canvas.Left="1099" Canvas.Top="70" />
+               Canvas.Left="12" Canvas.Top="9" />
     <TextBlock x:Name="lblCnCNetPlayerCount"
                Text="{Binding CnCNetPlayerCountText}"
                Foreground="#2DE4FF"
-               Canvas.Left="990" Canvas.Top="70" />
+               Canvas.Left="180" Canvas.Top="9" />
     <Button x:Name="lblVersion"
             Content="{Binding VersionText}"
             Command="{Binding OpenVersionCommand}"
@@ -115,12 +115,44 @@
             Foreground="#2DE4FF"
             FontSize="12"
             Cursor="Hand"
-            Canvas.Left="990" Canvas.Top="91" />
+            Canvas.Left="12" Canvas.Top="28" />
     <TextBlock x:Name="lblUpdateStatus"
                Text="{Binding UpdateStatusText}"
                Foreground="#2DE4FF"
                IsEnabled="{Binding IsUpdateStatusEnabled}"
-               Canvas.Left="990" Canvas.Top="112" />
+               Canvas.Left="12" Canvas.Top="47" />
+
+    <!-- Extra INI-configurable decorative elements -->
+    <TextBlock x:Name="lblVersionLabel"
+               Text=""
+               Foreground="{DynamicResource XnaSubtleTextBrush}"
+               Canvas.Left="0" Canvas.Top="0"
+               IsVisible="False" />
+    <TextBlock x:Name="lblPoweredBy"
+               Text=""
+               Foreground="{DynamicResource XnaSubtleTextBrush}"
+               Canvas.Left="0" Canvas.Top="0"
+               IsVisible="False" />
+    <Button x:Name="btnQuickmatch"
+            Content=""
+            Background="Transparent" BorderThickness="0"
+            Canvas.Left="0" Canvas.Top="0"
+            IsVisible="False" />
+    <Button x:Name="btnCnCNetLogo"
+            Content=""
+            Background="Transparent" BorderThickness="0"
+            Canvas.Left="0" Canvas.Top="0"
+            IsVisible="False" />
+    <Button x:Name="btnPhobos"
+            Content=""
+            Background="Transparent" BorderThickness="0"
+            Canvas.Left="0" Canvas.Top="0"
+            IsVisible="False" />
+    <Button x:Name="btnAres"
+            Content=""
+            Background="Transparent" BorderThickness="0"
+            Canvas.Left="0" Canvas.Top="0"
+            IsVisible="False" />
 
     <!-- ========== Update Notification Banner ========== -->
     <Border x:Name="updateNotification"
