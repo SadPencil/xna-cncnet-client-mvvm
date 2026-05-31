@@ -41,9 +41,10 @@
       <Setter Property="FontSize" Value="12" />
     </Style>
 
-    <!-- ComboBoxItem: override template to use XnaFocusBrush for hover/selected -->
+    <!-- ComboBoxItem: override template to use INI theme colors -->
     <Style Selector="ComboBoxItem">
       <Setter Property="FontSize" Value="12" />
+      <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
       <Setter Property="Template">
         <ControlTemplate>
           <Border Background="{TemplateBinding Background}"
