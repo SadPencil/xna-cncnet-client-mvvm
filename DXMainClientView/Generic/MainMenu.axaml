@@ -9,7 +9,7 @@
              xmlns:controls="using:DXMainClientView.Controls"
              x:Class="DXMainClientView.Generic.MainMenu"
              x:DataType="vmc:IMainMenuViewModel"
-             Width="800" Height="600"
+             Width="1280" Height="720"
              Background="Transparent">
   <Canvas x:Name="MainCanvas">
 
@@ -131,7 +131,7 @@
     <Border x:Name="messageBoxOverlay"
             IsVisible="{Binding IsMessageBoxVisible}"
             Background="#80000000"
-            Width="800" Height="600"
+            Width="1280" Height="720"
             Canvas.Left="0" Canvas.Top="0">
       <Panel>
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
@@ -161,7 +161,7 @@
     <Border x:Name="yesNoDialogOverlay"
             IsVisible="{Binding IsYesNoDialogVisible}"
             Background="#80000000"
-            Width="800" Height="600"
+            Width="1280" Height="720"
             Canvas.Left="0" Canvas.Top="0">
       <Panel>
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
@@ -195,7 +195,7 @@
 
     <!-- Campaign Selector (centered with darkening) -->
     <controls:DarkeningPanel x:Name="campaignOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <campaign:CampaignSelector x:Name="campaignSelector" />
@@ -204,7 +204,7 @@
 
     <!-- Options Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="optionsOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <local:OptionsWindow x:Name="optionsWindow" />
@@ -213,7 +213,7 @@
 
     <!-- Extras Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="extrasOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <local:ExtrasWindow x:Name="extrasWindow" />
@@ -222,7 +222,7 @@
 
     <!-- Statistics Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="statisticsOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <local:StatisticsWindow x:Name="statisticsWindow" />
@@ -231,7 +231,7 @@
 
     <!-- Game Loading Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="gameLoadingOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <local:GameLoadingWindow x:Name="gameLoadingWindow" />
@@ -242,7 +242,7 @@
 
     <!-- Skirmish Lobby (centered with darkening) -->
     <controls:DarkeningPanel x:Name="skirmishOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <gamelobby:SkirmishLobby x:Name="skirmishLobby" />
@@ -251,7 +251,7 @@
 
     <!-- CnCNet Lobby (centered with darkening) -->
     <controls:DarkeningPanel x:Name="cncNetOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <cncnet:CnCNetLobby x:Name="cncNetLobby" />
@@ -260,7 +260,7 @@
 
     <!-- LAN Lobby (centered with darkening) -->
     <controls:DarkeningPanel x:Name="lanOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <mp:LANLobby x:Name="lanLobby" />
@@ -269,7 +269,7 @@
 
     <!-- Private Messaging Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="pmOverlay"
-                             Width="800" Height="600"
+                             Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <cncnet:PrivateMessagingWindow x:Name="privateMessagingWindow" />
