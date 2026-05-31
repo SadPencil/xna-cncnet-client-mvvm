@@ -103,6 +103,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // XNAClientButton.Initialize() which loads these textures based on Width.
         ApplyStandardButtonTextures(control);
 
+        // Apply theme colors from DTACnCNetClient.ini as DynamicResource brushes.
+        // AXAML files can reference these via {DynamicResource XnaTextBrush}, etc.
+        ApplyThemeColors(control);
+
         Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
     }
 
@@ -731,8 +735,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     }
 
     /// <summary>
-    /// Walks all descendant Button controls and auto-loads standard {width}pxbtn.png
-    /// textures for text buttons that weren't given a custom Background via INI IdleTexture.
+    /// Walks all descendant controls and auto-loads standard textures:
+    /// - Buttons: {width}pxbtn.png / {width}pxbtn_c.png (XNAClientButton)
+    /// - CheckBoxes: checkBoxClear.png / checkBoxChecked.png (XNAClientCheckBox)
     /// MainWindow uses Viewbox(Stretch=Uniform) so Avalonia Width == XNAUI logical Width.
     /// </summary>
     private static void ApplyStandardButtonTextures(Control root)
@@ -745,7 +750,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         IEnumerable<Control> children = GetChildren(parent);
         foreach (var child in children)
         {
-            if (child is Button button
+            // Skip CheckBox - it has its own textures (checkBoxClear/Checked.png)
+            if (child is CheckBox checkBox)
+            {
+                ApplyCheckBoxTextures(checkBox);
+            }
+            else if (child is Button button
                 && button.Content != null
                 && button.Background is not ImageBrush)
             {
@@ -804,6 +814,34 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
+    /// <summary>
+    /// Applies checkbox textures matching XNAClientCheckBox behavior:
+    /// checkBoxClear.png (unchecked) and checkBoxChecked.png (checked).
+    /// Text color: IdleColor=UILabelColor, HighlightColor=AltUIColor on hover.
+    /// </summary>
+    private static void ApplyCheckBoxTextures(CheckBox checkBox)
+    {
+        string? clearFile = FindTextureFileStatic("checkBoxClear.png");
+        string? checkedFile = FindTextureFileStatic("checkBoxChecked.png");
+
+        if (clearFile == null)
+            return;
+
+        var clearBitmap = new Bitmap(clearFile);
+        var checkedBitmap = checkedFile != null ? new Bitmap(checkedFile) : clearBitmap;
+
+        // Set checkbox size from texture
+        checkBox.MinWidth = clearBitmap.PixelSize.Width;
+        checkBox.MinHeight = clearBitmap.PixelSize.Height;
+
+        // Text color: IdleColor (UILabelColor) → HighlightColor (AltUIColor) on hover
+        var idleColor = ParseColorFromConfig("UILabelColor") ?? Color.Parse("#C4C4C4");
+        var highlightColor = ParseColorFromConfig("AltUIColor") ?? Color.Parse("#FFFFFF");
+        checkBox.Foreground = new SolidColorBrush(idleColor);
+        checkBox.PointerEntered += (_, _) => checkBox.Foreground = new SolidColorBrush(highlightColor);
+        checkBox.PointerExited += (_, _) => checkBox.Foreground = new SolidColorBrush(idleColor);
+    }
+
     private static Color? ParseColorFromConfig(string key)
     {
         try
@@ -819,6 +857,49 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
         catch { }
         return null;
+    }
+
+    /// <summary>
+    /// Reads theme colors from DTACnCNetClient.ini and sets them as resources
+    /// on the control's resource dictionary. AXAML files can reference these via
+    /// {DynamicResource XnaTextBrush}, {DynamicResource XnaAltBrush}, etc.
+    /// Matches UISettings color mapping in GameClass.cs.
+    /// </summary>
+    private static void ApplyThemeColors(Control control)
+    {
+        var resources = control.Resources;
+
+        // UILabelColor → default text color (XnaTextBrush)
+        var textColor = ParseColorFromConfig("UILabelColor") ?? Color.Parse("#C4C4C4");
+        resources["XnaTextBrush"] = new SolidColorBrush(textColor);
+
+        // AltUIColor → interactive elements, button text (XnaAltBrush)
+        var altColor = ParseColorFromConfig("AltUIColor") ?? Color.Parse("#FFFFFF");
+        resources["XnaAltBrush"] = new SolidColorBrush(altColor);
+
+        // ButtonHoverColor → button text on hover (XnaButtonHoverBrush)
+        var buttonHoverColor = ParseColorFromConfig("ButtonHoverColor") ?? Color.Parse("#FCFCFC");
+        resources["XnaButtonHoverBrush"] = new SolidColorBrush(buttonHoverColor);
+
+        // AltUIBackgroundColor → panel/control backgrounds (XnaPanelBackgroundBrush)
+        var bgColor = ParseColorFromConfig("AltUIBackgroundColor") ?? Color.Parse("#000000");
+        resources["XnaPanelBackgroundBrush"] = new SolidColorBrush(bgColor);
+
+        // PanelBorderColor → panel borders (XnaPanelBorderBrush)
+        var borderColor = ParseColorFromConfig("PanelBorderColor") ?? Color.Parse("#C4C4C4");
+        resources["XnaPanelBorderBrush"] = new SolidColorBrush(borderColor);
+
+        // ListBoxFocusColor → list selection highlight (XnaFocusBrush)
+        var focusColor = ParseColorFromConfig("ListBoxFocusColor") ?? Color.Parse("#404040");
+        resources["XnaFocusBrush"] = new SolidColorBrush(focusColor);
+
+        // DisabledButtonColor → disabled items (XnaDisabledBrush)
+        var disabledColor = ParseColorFromConfig("DisabledButtonColor") ?? Color.Parse("#808080");
+        resources["XnaDisabledBrush"] = new SolidColorBrush(disabledColor);
+
+        // Subtle/hint text color (XnaSubtleTextBrush)
+        var hintColor = ParseColorFromConfig("HintTextColor") ?? Color.Parse("#808080");
+        resources["XnaSubtleTextBrush"] = new SolidColorBrush(hintColor);
     }
 
     private static void ApplyButtonTexture(Control control, string texturePath, bool isHover)
