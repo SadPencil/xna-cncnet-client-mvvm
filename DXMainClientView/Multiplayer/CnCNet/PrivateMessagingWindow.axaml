@@ -5,8 +5,7 @@
              x:DataType="vmc:IPrivateMessagingWindowViewModel"
              IsVisible="{Binding IsWindowVisible}"
              Width="800" Height="500">
-  <Panel>
-    <Canvas>
+  <Canvas>
 
       <!-- ========== TAB BUTTONS ========== -->
       <StackPanel Orientation="Horizontal" Spacing="4"
@@ -116,18 +115,17 @@
               FontSize="11"
               Canvas.Left="694" Canvas.Top="465" />
 
-    </Canvas>
-
     <!-- ========== NOTIFICATION OVERLAY ========== -->
     <Border IsVisible="{Binding IsNotificationVisible}"
             Background="#80000000"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-      <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
-              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-              BorderThickness="1"
-              Padding="16"
-              Width="350"
+            Canvas.Left="0" Canvas.Top="0"
+            Width="800" Height="500">
+      <Panel>
+        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1"
+                Padding="16"
+                Width="350"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
         <StackPanel Spacing="12">
@@ -144,6 +142,7 @@
           </StackPanel>
         </StackPanel>
       </Border>
+      </Panel>
     </Border>
-  </Panel>
+  </Canvas>
 </UserControl>
