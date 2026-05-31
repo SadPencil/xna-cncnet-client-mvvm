@@ -19,88 +19,75 @@
             Command="{Binding StartCampaignCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             Width="160" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="490" Canvas.Top="261" />
+            FontWeight="Bold" />
     <Button x:Name="btnLoadGame"
             Content="Load Mission"
             Command="{Binding LoadGameCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             Width="160" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="490" Canvas.Top="315" />
+            FontWeight="Bold" />
     <Button x:Name="btnCnCNet"
             Content="Play Online"
             Command="{Binding JoinCnCNetCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             Width="160" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="490" Canvas.Top="369" />
+            FontWeight="Bold" />
     <Button x:Name="btnLan"
             Content="LAN"
             Command="{Binding HostLANGameCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             Width="160" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="490" Canvas.Top="477" />
+            FontWeight="Bold" />
     <Button x:Name="btnSkirmish"
             Content="Skirmish"
             Command="{Binding StartSkirmishCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             Width="160" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="490" Canvas.Top="531" />
+            FontWeight="Bold" />
     <Button x:Name="btnExtras"
             Content="Extras"
             Command="{Binding OpenExtrasCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             IsVisible="False"
             Width="160" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="490" Canvas.Top="531" />
+            FontWeight="Bold" />
     <Button x:Name="btnOptions"
             Content="Options"
             Command="{Binding OpenOptionsCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             Width="160" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="490" Canvas.Top="585" />
+            FontWeight="Bold" />
     <Button x:Name="btnExit"
             Content="Exit Game"
             Command="{Binding ExitCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
             Width="133" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="145" Canvas.Top="635" />
+            FontWeight="Bold" />
     <Button x:Name="btnStatistics"
             Content="Statistics"
             Command="{Binding OpenStatisticsCommand}"
             IsVisible="{Binding IsStatisticsButtonVisible}"
             Width="92" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="415" Canvas.Top="668" />
+            FontWeight="Bold" />
     <Button x:Name="btnCredits"
             Content="Credits"
             Command="{Binding OpenCreditsCommand}"
             Width="92" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="565" Canvas.Top="668" />
+            FontWeight="Bold" />
     <Button x:Name="btnMapEditor"
             Content="Map Editor"
             Command="{Binding OpenMapEditorCommand}"
             IsVisible="{Binding IsMapEditorButtonVisible}"
             Width="92" Height="23"
-            FontWeight="Bold"
-            Canvas.Left="715" Canvas.Top="668" />
+            FontWeight="Bold" />
 
-    <!-- ========== Labels (positions from MainMenu.ini) ========== -->
+    <!-- ========== Labels (positions from MainMenu.ini, INI overlay applies) ========== -->
     <TextBlock x:Name="lblCnCNetStatus"
-               Text="TS Players on CnCNet"
-               Foreground="#2DE4FF"
-               Canvas.Left="12" Canvas.Top="9" />
+               Text="Players Online:"
+               Foreground="#2DE4FF" />
     <TextBlock x:Name="lblCnCNetPlayerCount"
                Text="{Binding CnCNetPlayerCountText}"
-               Foreground="#2DE4FF"
-               Canvas.Left="180" Canvas.Top="9" />
+               Foreground="#2DE4FF" />
     <Button x:Name="lblVersion"
             Content="{Binding VersionText}"
             Command="{Binding OpenVersionCommand}"
@@ -110,13 +97,11 @@
             Padding="0"
             Foreground="#2DE4FF"
             FontSize="12"
-            Cursor="Hand"
-            Canvas.Left="12" Canvas.Top="28" />
+            Cursor="Hand" />
     <TextBlock x:Name="lblUpdateStatus"
                Text="{Binding UpdateStatusText}"
                Foreground="#2DE4FF"
-               IsEnabled="{Binding IsUpdateStatusEnabled}"
-               Canvas.Left="12" Canvas.Top="47" />
+               IsEnabled="{Binding IsUpdateStatusEnabled}" />
 
     <!-- Extra INI-configurable decorative elements -->
     <TextBlock x:Name="lblVersionLabel"
