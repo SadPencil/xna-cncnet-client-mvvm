@@ -74,8 +74,8 @@
                    MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
                    PlacementTarget="{TemplateBinding}">
-              <Border Background="{TemplateBinding Background}"
-                      BorderBrush="{TemplateBinding BorderBrush}"
+              <Border Background="#000F08"
+                      BorderBrush="#4AB6DE"
                       BorderThickness="1">
                 <ScrollViewer>
                   <ItemsPresenter Name="PART_ItemsPresenter" />
