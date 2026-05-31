@@ -6,50 +6,99 @@
              Height="39"
              ClipToBounds="False">
   <Panel Background="{DynamicResource XnaPanelBackgroundBrush}">
-    <!-- Left: Main button -->
+    <!-- Bottom border line (matching original PanelBorderColor) -->
+    <Border BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+            BorderThickness="0,0,0,1"
+            VerticalAlignment="Bottom" />
+
+    <!-- Left: Main button (original: 160px width at position 12,9) -->
     <Button x:Name="btnMainButton"
             Content="{Binding MainButtonText}"
             Command="{Binding SwitchToPrimaryCommand}"
             IsEnabled="{Binding AreSwitchButtonsClickable}"
             HorizontalAlignment="Left"
-            Margin="4,4,0,4"
-            Width="100" />
+            VerticalAlignment="Center"
+            Margin="12,0,0,0"
+            Width="160" Height="23"
+            FontSize="11" />
 
-    <!-- Center: CnCNet Lobby and Private Messages buttons -->
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+    <!-- Center-Left: CnCNet Lobby and Private Messages buttons (original positions: 184,9 and 356,9) -->
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
+                Margin="184,0,0,0" Spacing="12">
       <Button x:Name="btnCnCNetLobby"
-              Content="CnCNet (F3)"
+              Content="CnCNet"
               Command="{Binding SwitchToSecondaryCommand}"
               IsEnabled="{Binding AreSwitchButtonsClickable}"
-              Width="110" />
-      <Button x:Name="btnPrivateMessages"
-              Content="Messages (F4)"
-              Command="{Binding SwitchToTertiaryCommand}"
-              IsEnabled="{Binding AreSwitchButtonsClickable}"
-              Width="110" />
+              Width="160" Height="23"
+              FontSize="11" />
+      <Panel>
+        <Button x:Name="btnPrivateMessages"
+                Content="Messages"
+                Command="{Binding SwitchToTertiaryCommand}"
+                IsEnabled="{Binding AreSwitchButtonsClickable}"
+                Width="160" Height="23"
+                FontSize="11" />
+        <!-- Unread message count badge -->
+        <Border x:Name="unreadBadge"
+                IsVisible="False"
+                Background="#FF4444"
+                CornerRadius="8"
+                MinWidth="16" Height="16"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,-4,-4,0"
+                Padding="3,0">
+          <TextBlock x:Name="lblUnreadCount"
+                     Text="0"
+                     Foreground="White"
+                     FontSize="9"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center" />
+        </Border>
+      </Panel>
     </StackPanel>
 
-    <!-- Right: Options, Logout, Connection status, Player count -->
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="8" Margin="0,0,8,0">
+    <!-- Right: Time, Date, Connection status, Player count, Options, Logout -->
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="12" Margin="0,0,12,0">
+      <!-- Connection status -->
       <TextBlock x:Name="lblConnectionStatus"
                  Text="{Binding ConnectionStatusText}"
                  VerticalAlignment="Center"
+                 FontSize="11"
                  Foreground="{DynamicResource XnaSubtleTextBrush}" />
-      <TextBlock x:Name="lblPlayerCount"
-                 Text="{Binding PlayerCountText}"
-                 IsVisible="{Binding IsPlayerCountVisible}"
+      <!-- Player count label and value -->
+      <StackPanel Orientation="Horizontal" Spacing="4"
+                  IsVisible="{Binding IsPlayerCountVisible}">
+        <TextBlock x:Name="lblPlayerCountLabel"
+                   Text="{Binding PlayerCountLabel}"
+                   VerticalAlignment="Center"
+                   FontSize="11"
+                   Foreground="{DynamicResource XnaSubtleTextBrush}" />
+        <TextBlock x:Name="lblPlayerCount"
+                   Text="{Binding PlayerCountText}"
+                   VerticalAlignment="Center"
+                   FontSize="11"
+                   Foreground="{DynamicResource XnaTextBrush}" />
+      </StackPanel>
+      <!-- Time display (view-local, updated by code-behind) -->
+      <TextBlock x:Name="lblTime"
                  VerticalAlignment="Center"
+                 FontSize="11"
                  Foreground="{DynamicResource XnaSubtleTextBrush}" />
+      <!-- Options button -->
       <Button x:Name="btnOptions"
-              Content="Options (F12)"
+              Content="Options"
               Command="{Binding OpenOptionsCommand}"
               IsEnabled="{Binding IsOptionsButtonClickable}"
-              Width="80" />
+              Width="110" Height="23"
+              FontSize="11" />
+      <!-- Logout button -->
       <Button x:Name="btnLogout"
               Content="Logout"
               Command="{Binding LogoutCommand}"
               IsEnabled="{Binding IsLogoutButtonClickable}"
-              Width="60" />
+              Width="75" Height="23"
+              FontSize="11" />
     </StackPanel>
   </Panel>
 </UserControl>

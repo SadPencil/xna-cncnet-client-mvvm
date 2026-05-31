@@ -30,6 +30,8 @@ public partial class MainMenu : UserControl
         InitializeComponent();
         Loaded += OnLoaded;
         PointerMoved += OnPointerMoved;
+        KeyDown += OnKeyDown;
+        Focusable = true;
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -40,6 +42,60 @@ public partial class MainMenu : UserControl
         // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini)
         var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "MainMenu");
+
+        // Ensure we can receive keyboard input
+        Focus();
+    }
+
+    private void OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        var vm = ViewModel;
+        if (vm == null || !vm.AreButtonsEnabled)
+            return;
+
+        switch (e.Key)
+        {
+            case Key.C:
+                vm.StartCampaignCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.L:
+                vm.LoadGameCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.S:
+                vm.StartSkirmishCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.M:
+                vm.JoinCnCNetCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.N:
+                vm.HostLANGameCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.O:
+                vm.OpenOptionsCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.E:
+                vm.OpenMapEditorCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.T:
+                vm.OpenStatisticsCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.R:
+                vm.OpenCreditsCommand.Execute(null);
+                e.Handled = true;
+                break;
+            case Key.X:
+                vm.OpenExtrasCommand.Execute(null);
+                e.Handled = true;
+                break;
+        }
     }
 
     private void ApplyDefaultBackground(string texturePath)
