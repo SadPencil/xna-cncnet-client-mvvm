@@ -218,6 +218,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyProperties(Control control, IniSection section, CCIniFile iniFile, string controlName)
     {
+        string? idleTexturePath = null;
+
         foreach (var kvp in section.Keys)
         {
             string key = kvp.Key;
@@ -232,6 +234,26 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 continue;
 
             ApplySingleProperty(control, key, value, controlName);
+
+            // Track IdleTexture path for hover auto-derivation
+            if (key == "IdleTexture")
+                idleTexturePath = value;
+        }
+
+        // Auto-derive HoverTexture for buttons that have IdleTexture but no
+        // HoverTexture in the INI section.  Matches original XNA behavior where
+        // MainMenu.cs explicitly sets HoverTexture for ALL buttons using the
+        // {name}_c.png convention.
+        if (control is Button button
+            && idleTexturePath != null
+            && !section.Keys.Exists(kvp => kvp.Key == "HoverTexture"))
+        {
+            string hoverPath = DeriveHoverTexturePath(idleTexturePath);
+            if (hoverPath != null)
+            {
+                Logger.Log($"INI Layout: Auto-derived HoverTexture '{hoverPath}' for '{controlName}'");
+                ApplyButtonTexture(control, hoverPath, isHover: true);
+            }
         }
     }
 
@@ -685,6 +707,21 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             return basePathDirect;
 
         return null;
+    }
+
+    /// <summary>
+    /// Derives the hover texture path from an idle texture path using the
+    /// {name}_c.{ext} convention (e.g. "MainMenu/campaign.png" → "MainMenu/campaign_c.png").
+    /// Returns null if the derived path does not exist on disk.
+    /// </summary>
+    private static string? DeriveHoverTexturePath(string idleTexturePath)
+    {
+        string dir = Path.GetDirectoryName(idleTexturePath) ?? string.Empty;
+        string name = Path.GetFileNameWithoutExtension(idleTexturePath);
+        string ext = Path.GetExtension(idleTexturePath);
+        string hoverName = $"{name}_c{ext}";
+        string hoverPath = string.IsNullOrEmpty(dir) ? hoverName : Path.Combine(dir, hoverName);
+        return FindTextureFileStatic(hoverPath);
     }
 
     private static void ApplyButtonTexture(Control control, string texturePath, bool isHover)

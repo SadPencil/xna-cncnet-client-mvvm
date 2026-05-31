@@ -4,5 +4,29 @@
              RequestedThemeVariant="Dark">
   <Application.Styles>
     <FluentTheme />
+
+    <!--
+      Override Button template: use a minimal template without FluentTheme hover styling.
+      This game client uses image-based buttons (IdleTexture/HoverTexture from INI).
+      The FluentTheme's :pointerover visual state overrides custom Background (ImageBrush),
+      causing buttons to "disappear" on hover. Our INI overlay handles hover via
+      PointerEntered/PointerExited handlers instead.
+    -->
+    <Style Selector="Button">
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              Margin="{TemplateBinding Padding}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
   </Application.Styles>
 </Application>
