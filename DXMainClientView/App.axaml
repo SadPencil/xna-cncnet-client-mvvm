@@ -39,6 +39,23 @@
     <Style Selector="ComboBox">
       <Setter Property="FontSize" Value="12" />
     </Style>
+
+    <!-- ComboBox dropdown popup: match XNAUI BackColor/BorderColor -->
+    <Style Selector="ComboBox /template/ Border#PopupBorder">
+      <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
+    </Style>
+
+    <!-- ComboBoxItem: match XNAUI FocusColor for hover/selected -->
+    <Style Selector="ComboBoxItem">
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="ComboBoxItem:pointerover /template/ Border#PART_LayoutRoot">
+      <Setter Property="Background" Value="{DynamicResource XnaFocusBrush}" />
+    </Style>
+    <Style Selector="ComboBoxItem:selected /template/ Border#PART_LayoutRoot">
+      <Setter Property="Background" Value="{DynamicResource XnaFocusBrush}" />
+    </Style>
     <Style Selector="TextBox">
       <Setter Property="FontSize" Value="12" />
     </Style>
