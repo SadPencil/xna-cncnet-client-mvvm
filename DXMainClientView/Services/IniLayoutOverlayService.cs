@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -731,8 +732,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     /// <summary>
     /// Walks all descendant Button controls and auto-loads standard {width}pxbtn.png
-    /// textures for buttons that weren't given a custom Background via INI IdleTexture.
-    /// Matches XNAClientButton.Initialize() behavior.
+    /// textures for text buttons that weren't given a custom Background via INI IdleTexture.
+    /// MainWindow uses Viewbox(Stretch=Uniform) so Avalonia Width == XNAUI logical Width.
     /// </summary>
     private static void ApplyStandardButtonTextures(Control root)
     {
@@ -748,9 +749,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 && button.Content != null
                 && button.Background is not ImageBrush)
             {
-                // Determine width: try explicit Width first, then fall back to 133
+                // Match AXAML Width to XNAUI standard button widths
+                int[] standardWidths = { 75, 92, 97, 110, 121, 133, 142, 147, 160 };
+
                 int w = !double.IsNaN(button.Width) && button.Width > 0
-                    ? (int)button.Width
+                    ? standardWidths.OrderBy(sw => Math.Abs(sw - (int)button.Width)).First()
                     : 133;
 
                 string idlePath = $"{w}pxbtn.png";
