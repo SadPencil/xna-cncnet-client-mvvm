@@ -13,73 +13,40 @@
              Background="Transparent">
   <Canvas x:Name="MainCanvas">
 
-    <!-- ========== Menu buttons (positions from MainMenu.ini, INI overlay applies textures) ========== -->
+    <!-- ========== Menu buttons (INI overlay applies all visual properties) ========== -->
     <Button x:Name="btnNewCampaign"
-            Content="Campaign"
             Command="{Binding StartCampaignCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}"
-            Width="160" Height="23"
-            FontWeight="Bold" />
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnLoadGame"
-            Content="Load Mission"
             Command="{Binding LoadGameCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}"
-            Width="160" Height="23"
-            FontWeight="Bold" />
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnCnCNet"
-            Content="Play Online"
             Command="{Binding JoinCnCNetCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}"
-            Width="160" Height="23"
-            FontWeight="Bold" />
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnLan"
-            Content="LAN"
             Command="{Binding HostLANGameCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}"
-            Width="160" Height="23"
-            FontWeight="Bold" />
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnSkirmish"
-            Content="Skirmish"
             Command="{Binding StartSkirmishCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}"
-            Width="160" Height="23"
-            FontWeight="Bold" />
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnExtras"
-            Content="Extras"
             Command="{Binding OpenExtrasCommand}"
             IsEnabled="{Binding AreButtonsEnabled}"
-            IsVisible="False"
-            Width="160" Height="23"
-            FontWeight="Bold" />
+            IsVisible="False" />
     <Button x:Name="btnOptions"
-            Content="Options"
             Command="{Binding OpenOptionsCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}"
-            Width="160" Height="23"
-            FontWeight="Bold" />
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnExit"
-            Content="Exit Game"
             Command="{Binding ExitCommand}"
-            IsEnabled="{Binding AreButtonsEnabled}"
-            Width="133" Height="23"
-            FontWeight="Bold" />
+            IsEnabled="{Binding AreButtonsEnabled}" />
     <Button x:Name="btnStatistics"
-            Content="Statistics"
             Command="{Binding OpenStatisticsCommand}"
-            IsVisible="{Binding IsStatisticsButtonVisible}"
-            Width="92" Height="23"
-            FontWeight="Bold" />
+            IsVisible="{Binding IsStatisticsButtonVisible}" />
     <Button x:Name="btnCredits"
-            Content="Credits"
-            Command="{Binding OpenCreditsCommand}"
-            Width="92" Height="23"
-            FontWeight="Bold" />
+            Command="{Binding OpenCreditsCommand}" />
     <Button x:Name="btnMapEditor"
-            Content="Map Editor"
             Command="{Binding OpenMapEditorCommand}"
-            IsVisible="{Binding IsMapEditorButtonVisible}"
-            Width="92" Height="23"
-            FontWeight="Bold" />
+            IsVisible="{Binding IsMapEditorButtonVisible}" />
 
     <!-- ========== Labels (positions from MainMenu.ini, INI overlay applies) ========== -->
     <TextBlock x:Name="lblCnCNetStatus"
@@ -311,7 +278,7 @@
 
     <!-- TopBar (last in Canvas = top z-order, always above DarkeningPanels) -->
     <local:TopBar x:Name="topBar"
-                  Width="1280"
+                  Width="800"
                   Canvas.Left="0" Canvas.Top="0" />
 
   </Canvas>
