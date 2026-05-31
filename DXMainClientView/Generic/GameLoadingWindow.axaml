@@ -12,7 +12,7 @@
              SelectedIndex="{Binding SelectedSavedGameIndex}"
              Canvas.Left="13" Canvas.Top="13"
              Width="574" Height="317"
-             Background="#00000080" />
+             Background="{DynamicResource XnaPanelBackgroundBrush}" />
 
     <!-- Load button -->
     <Button Content="Load"

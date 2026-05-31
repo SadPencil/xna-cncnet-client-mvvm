@@ -5,7 +5,7 @@
              x:DataType="vmc:IGameInProgressWindowViewModel"
              IsVisible="{Binding IsGameInProgress}">
   <!-- Semi-transparent overlay covering the entire window -->
-  <Panel Background="#00000080">
+  <Panel Background="{DynamicResource XnaPanelBackgroundBrush}">
     <!-- Centered small window -->
     <Border Name="InnerWindow"
             Background="{DynamicResource XnaPanelBackgroundBrush}"
