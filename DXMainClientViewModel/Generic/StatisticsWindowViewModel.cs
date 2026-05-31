@@ -143,6 +143,12 @@ namespace DXMainClientViewModel.Generic
         }
 
         [RelayCommand]
+        private void CancelClear()
+        {
+            ShowClearConfirmation = false;
+        }
+
+        [RelayCommand]
         private void Return()
         {
             IsVisible = false;

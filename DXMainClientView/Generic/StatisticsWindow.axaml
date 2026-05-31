@@ -198,7 +198,7 @@
                        Foreground="{DynamicResource XnaAltBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
               <Button Content="Yes" Command="{Binding ConfirmClearCommand}" Width="75" Height="23" />
-              <Button Content="No" Command="{Binding ReturnCommand}" Width="75" Height="23" />
+              <Button Content="No" Command="{Binding CancelClearCommand}" Width="75" Height="23" />
             </StackPanel>
           </StackPanel>
         </Border>
