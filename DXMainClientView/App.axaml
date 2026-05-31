@@ -3,7 +3,7 @@
              x:Class="DXMainClientView.App"
              RequestedThemeVariant="Dark">
   <Application.Styles>
-    <FluentTheme />
+    <SimpleTheme />
 
     <!-- Global default font size: 12 (matching XNAUI default) -->
     <Style Selector="TextBlock">
