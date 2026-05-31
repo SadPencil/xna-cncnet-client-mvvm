@@ -108,6 +108,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // AXAML files can reference these via {DynamicResource XnaTextBrush}, etc.
         ApplyThemeColors(control);
 
+        // Apply INI theme colors to ComboBox and TextBox controls.
+        // Matches XNADropDown/XNATextBox drawing with BackColor, BorderColor, TextColor.
+        ApplyInputControlStyles(control);
+
         Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
     }
 
@@ -965,6 +969,65 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Subtle/hint text color (XnaSubtleTextBrush)
         var hintColor = ParseColorFromConfig("HintTextColor") ?? Color.Parse("#808080");
         resources["XnaSubtleTextBrush"] = new SolidColorBrush(hintColor);
+    }
+
+    /// <summary>
+    /// Applies INI theme colors to ComboBox and TextBox controls, matching
+    /// XNADropDown/XNATextBox drawing behavior.
+    /// </summary>
+    private static void ApplyInputControlStyles(Control root)
+    {
+        ApplyInputControlStylesRecursive(root);
+    }
+
+    private static void ApplyInputControlStylesRecursive(Control parent)
+    {
+        IEnumerable<Control> children = GetChildren(parent);
+        foreach (var child in children)
+        {
+            if (child is ComboBox comboBox)
+            {
+                ApplyComboBoxStyle(comboBox);
+            }
+            else if (child is TextBox textBox)
+            {
+                ApplyTextBoxStyle(textBox);
+            }
+
+            ApplyInputControlStylesRecursive(child);
+        }
+    }
+
+    /// <summary>
+    /// Styles a ComboBox to match XNADropDown: BackColor, BorderColor, TextColor from INI.
+    /// XNADropDown uses: BackColor=AltUIBackgroundColor, BorderColor=PanelBorderColor,
+    /// TextColor=AltUIColor, FocusColor=ListBoxFocusColor.
+    /// </summary>
+    private static void ApplyComboBoxStyle(ComboBox comboBox)
+    {
+        var bgColor = ParseColorFromConfig("AltUIBackgroundColor") ?? Color.Parse("#000000");
+        var borderColor = ParseColorFromConfig("PanelBorderColor") ?? Color.Parse("#C4C4C4");
+        var textColor = ParseColorFromConfig("AltUIColor") ?? Color.Parse("#FFFFFF");
+
+        comboBox.Background = new SolidColorBrush(bgColor);
+        comboBox.BorderBrush = new SolidColorBrush(borderColor);
+        comboBox.Foreground = new SolidColorBrush(textColor);
+    }
+
+    /// <summary>
+    /// Styles a TextBox to match XNATextBox: BackColor, BorderColor, TextColor from INI.
+    /// XNATextBox uses: BackColor=AltUIBackgroundColor, IdleBorderColor=PanelBorderColor,
+    /// ActiveBorderColor=AltUIColor, TextColor=AltUIColor.
+    /// </summary>
+    private static void ApplyTextBoxStyle(TextBox textBox)
+    {
+        var bgColor = ParseColorFromConfig("AltUIBackgroundColor") ?? Color.Parse("#000000");
+        var borderColor = ParseColorFromConfig("PanelBorderColor") ?? Color.Parse("#C4C4C4");
+        var textColor = ParseColorFromConfig("AltUIColor") ?? Color.Parse("#FFFFFF");
+
+        textBox.Background = new SolidColorBrush(bgColor);
+        textBox.BorderBrush = new SolidColorBrush(borderColor);
+        textBox.Foreground = new SolidColorBrush(textColor);
     }
 
     private static void ApplyButtonTexture(Control control, string texturePath, bool isHover)
