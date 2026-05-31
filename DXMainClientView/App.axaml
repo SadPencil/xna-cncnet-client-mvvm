@@ -54,19 +54,19 @@
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{TemplateBinding CornerRadius}">
-              <Grid ColumnDefinitions="*,Auto">
-                <ContentPresenter Grid.Column="0"
-                                  Name="ContentPresenter"
+              <DockPanel LastChildFill="True">
+                <Image DockPanel.Dock="Right"
+                       Name="DropDownGlyph"
+                       Source="{DynamicResource XnaComboBoxArrow}"
+                       Width="20"
+                       Stretch="Uniform"
+                       VerticalAlignment="Stretch" />
+                <ContentPresenter Name="ContentPresenter"
                                   Content="{TemplateBinding SelectionBoxItem}"
                                   HorizontalAlignment="Stretch"
                                   VerticalAlignment="Center"
                                   Margin="4,0" />
-                <Image Grid.Column="1"
-                       Name="DropDownGlyph"
-                       Source="{DynamicResource XnaComboBoxArrow}"
-                       Width="20"
-                       Stretch="Uniform" />
-              </Grid>
+              </DockPanel>
             </Border>
             <Popup Name="PART_Popup"
                    IsLightDismissEnabled="True"
@@ -126,6 +126,11 @@
     <!-- ScrollBar thumb: use XNAUI thumb texture -->
     <Style Selector="ScrollBar /template/ Thumb">
       <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
+    </Style>
+
+    <!-- Slider/Trackbar: use XNAUI trackbarButton.png texture -->
+    <Style Selector="Slider">
+      <Setter Property="Foreground" Value="{DynamicResource XnaPanelBorderBrush}" />
     </Style>
   </Application.Styles>
 </Application>

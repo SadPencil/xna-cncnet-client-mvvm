@@ -1042,6 +1042,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // ComboBox arrow textures (XNADropDown)
         LoadTextureResource(resources, "XnaComboBoxArrow", "comboBoxArrow.png");
         LoadTextureResource(resources, "XnaComboBoxArrowOpen", "openedComboBoxArrow.png");
+
+        // Trackbar/Slider button texture (XNATrackbar)
+        LoadTextureResource(resources, "XnaTrackbarButton", "trackbarButton.png");
     }
 
     private static void LoadTextureResource(IResourceDictionary resources, string key, string texturePath)
