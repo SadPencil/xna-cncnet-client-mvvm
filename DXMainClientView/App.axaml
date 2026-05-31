@@ -47,15 +47,14 @@
       <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
       <Setter Property="Template">
         <ControlTemplate>
-          <Border Background="{TemplateBinding Background}"
+          <Border Name="Bd"
+                  Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
                   Padding="{TemplateBinding Padding}">
-            <ContentPresenter Background="Transparent"
-                              Content="{TemplateBinding Content}"
-                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+            <TextBlock Text="{TemplateBinding Content}"
+                       Background="Transparent"
+                       VerticalAlignment="Center" />
           </Border>
         </ControlTemplate>
       </Setter>
