@@ -190,12 +190,17 @@ public partial class MainMenu : UserControl
     }
 
     /// <summary>
-    /// Binds a darkening overlay Border's visibility to a child view's IsVisible.
-    /// Pure View-layer logic: creates a one-way binding from child.IsVisible to overlay.IsVisible.
+    /// Binds a DarkeningPanel's visibility to a child view's IsVisible.
+    /// Pure View-layer logic: observes one control's property, reflects to another.
     /// </summary>
-    private static void WireOverlayVisibility(Control child, Border overlay)
+    private static void WireOverlayVisibility(Control child, Controls.DarkeningPanel overlay)
     {
-        overlay[!IsVisibleProperty] = child[!IsVisibleProperty];
+        child.PropertyChanged += (s, e) =>
+        {
+            if (e.Property == IsVisibleProperty)
+                overlay.IsPanelVisible = child.IsVisible;
+        };
+        overlay.IsPanelVisible = child.IsVisible;
     }
 
     public void SetSkirmishLobbyViewModel(ISkirmishLobbyViewModel vm)

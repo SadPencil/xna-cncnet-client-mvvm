@@ -249,49 +249,41 @@
     <!-- Campaign Selector (full-screen, no darkening needed) -->
     <campaign:CampaignSelector x:Name="campaignSelector" />
 
-    <!-- Options Window (centered with darkening overlay) -->
-    <Border x:Name="optionsOverlay"
-            IsVisible="False"
-            Background="#80000000"
-            Width="1280" Height="720"
-            Canvas.Left="0" Canvas.Top="0">
-      <local:OptionsWindow x:Name="optionsWindow"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-    </Border>
+    <!-- Options Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="optionsOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:OptionsWindow x:Name="optionsWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
 
-    <!-- Extras Window (centered with darkening overlay) -->
-    <Border x:Name="extrasOverlay"
-            IsVisible="False"
-            Background="#80000000"
-            Width="1280" Height="720"
-            Canvas.Left="0" Canvas.Top="0">
-      <local:ExtrasWindow x:Name="extrasWindow"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center" />
-    </Border>
+    <!-- Extras Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="extrasOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:ExtrasWindow x:Name="extrasWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
 
-    <!-- Statistics Window (centered with darkening overlay) -->
-    <Border x:Name="statisticsOverlay"
-            IsVisible="False"
-            Background="#80000000"
-            Width="1280" Height="720"
-            Canvas.Left="0" Canvas.Top="0">
-      <local:StatisticsWindow x:Name="statisticsWindow"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center" />
-    </Border>
+    <!-- Statistics Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="statisticsOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:StatisticsWindow x:Name="statisticsWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
 
-    <!-- Game Loading Window (centered with darkening overlay) -->
-    <Border x:Name="gameLoadingOverlay"
-            IsVisible="False"
-            Background="#80000000"
-            Width="1280" Height="720"
-            Canvas.Left="0" Canvas.Top="0">
-      <local:GameLoadingWindow x:Name="gameLoadingWindow"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-    </Border>
+    <!-- Game Loading Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="gameLoadingOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:GameLoadingWindow x:Name="gameLoadingWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
 
     <!-- ========== Lobby Views (full-screen, no darkening) ========== -->
     <gamelobby:SkirmishLobby x:Name="skirmishLobby" />
