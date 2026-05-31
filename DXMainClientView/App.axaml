@@ -40,12 +40,51 @@
     <Style Selector="ComboBox">
       <Setter Property="FontSize" Value="12" />
       <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
-    </Style>
-    <Style Selector="ComboBox:focus">
-      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
-    </Style>
-    <Style Selector="ComboBox:pointerover">
-      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
+      <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource XnaAltBrush}" />
+      <!-- Minimal template: no FluentTheme visual states to override colors -->
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Panel>
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}">
+              <Grid ColumnDefinitions="*,Auto">
+                <ContentPresenter Grid.Column="0"
+                                  Name="ContentPresenter"
+                                  Content="{TemplateBinding SelectionBoxItem}"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Center"
+                                  Margin="4,0" />
+                <Border Grid.Column="1"
+                        Name="DropDownGlyph"
+                        Background="{TemplateBinding BorderBrush}"
+                        Width="20">
+                  <Path Data="M0,0 L4,4 L8,0"
+                        Stroke="White" StrokeThickness="1.5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
+              </Grid>
+            </Border>
+            <Popup Name="PART_Popup"
+                   IsLightDismissEnabled="True"
+                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                   PlacementTarget="{TemplateBinding}">
+              <Border Background="{TemplateBinding Background}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="1">
+                <ScrollViewer>
+                  <ItemsPresenter Name="PART_ItemsPresenter" />
+                </ScrollViewer>
+              </Border>
+            </Popup>
+          </Panel>
+        </ControlTemplate>
+      </Setter>
     </Style>
 
     <!-- ComboBoxItem: override template to use INI theme colors -->
