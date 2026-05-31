@@ -39,50 +39,6 @@
     </Style>
     <Style Selector="ComboBox">
       <Setter Property="FontSize" Value="12" />
-      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
-      <Setter Property="BorderThickness" Value="1" />
-      <!--
-        Override ComboBox template to match XNAUI dropdown style.
-        XNADropDown draws: BackColor fill, BorderColor border, dropdown arrow.
-      -->
-      <Setter Property="Template">
-        <ControlTemplate>
-          <Panel>
-            <Border Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}">
-              <Grid ColumnDefinitions="*,Auto">
-                <ContentPresenter Grid.Column="0"
-                                  Content="{TemplateBinding SelectionBoxItem}"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Center"
-                                  Margin="4,0" />
-                <Border Grid.Column="1"
-                        Background="{TemplateBinding BorderBrush}"
-                        Width="20">
-                  <Path Data="M0,0 L4,4 L8,0"
-                        Stroke="White" StrokeThickness="1.5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center" />
-                </Border>
-              </Grid>
-            </Border>
-            <Popup Name="PART_Popup"
-                   IsLightDismissEnabled="True"
-                   IsOpen="{TemplateBinding IsDropDownOpen}"
-                   PlacementTarget="{TemplateBinding}">
-              <Border Background="{TemplateBinding Background}"
-                      BorderBrush="{TemplateBinding BorderBrush}"
-                      BorderThickness="1">
-                <ScrollViewer>
-                  <ItemsPresenter Name="PART_ItemsPresenter" />
-                </ScrollViewer>
-              </Border>
-            </Popup>
-          </Panel>
-        </ControlTemplate>
-      </Setter>
     </Style>
 
     <!-- ComboBoxItem: override template to use INI theme colors -->
