@@ -134,10 +134,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Matches XNADropDown/XNATextBox drawing with BackColor, BorderColor, TextColor.
         ApplyInputControlStyles(control);
 
-        // Apply scrollbar textures (sbBackground.png, sbUpArrow.png, etc.)
-        // matching XNAScrollBar drawing with themed scrollbar images.
-        ApplyScrollBarTextures(control);
-
         Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
     }
 
@@ -1093,40 +1089,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         textBox.Background = new SolidColorBrush(bgColor);
         textBox.BorderBrush = new SolidColorBrush(borderColor);
         textBox.Foreground = new SolidColorBrush(textColor);
-    }
-
-    /// <summary>
-    /// Applies scrollbar textures to all ScrollBar controls, matching XNAScrollBar drawing.
-    /// Textures: sbBackground.png, sbUpArrow.png, sbDownArrow.png,
-    /// sbMiddle.png, sbThumbTop.png, sbThumbBottom.png.
-    /// </summary>
-    private static void ApplyScrollBarTextures(Control root)
-    {
-        ApplyScrollBarTexturesRecursive(root);
-    }
-
-    private static void ApplyScrollBarTexturesRecursive(Control parent)
-    {
-        IEnumerable<Control> children = GetChildren(parent);
-        foreach (var child in children)
-        {
-            if (child is ScrollBar scrollBar)
-            {
-                ApplyScrollBarStyle(scrollBar);
-            }
-            ApplyScrollBarTexturesRecursive(child);
-        }
-    }
-
-    private static void ApplyScrollBarStyle(ScrollBar scrollBar)
-    {
-        // Load scrollbar background texture
-        string? bgFile = FindTextureFileStatic("sbBackground.png");
-        if (bgFile == null)
-            return;
-
-        var bgBrush = new ImageBrush { Source = new Bitmap(bgFile), Stretch = Stretch.Fill };
-        scrollBar.Background = bgBrush;
     }
 
     private static void ApplyButtonTexture(Control control, string texturePath, bool isHover)
