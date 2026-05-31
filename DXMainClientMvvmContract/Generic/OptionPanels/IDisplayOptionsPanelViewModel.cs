@@ -21,6 +21,7 @@ public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
     int SelectedTranslationIndex { get; set; }
     bool IsWindowedModeEnabled { get; set; }
     bool IsBorderlessWindowedModeEnabled { get; set; }
+    bool IsBorderlessWindowedModeCheckboxEnabled { get; }
     bool IsBackBufferStoredInVideoMemory { get; set; }
     bool IsBorderlessClientEnabled { get; set; }
     bool IsIntegerScaledClientEnabled { get; set; }
