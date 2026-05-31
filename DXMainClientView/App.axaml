@@ -41,9 +41,22 @@
       <Setter Property="FontSize" Value="12" />
     </Style>
 
-    <!-- ComboBoxItem: match XNAUI FocusColor for hover/selected -->
+    <!-- ComboBoxItem: override template to use XnaFocusBrush for hover/selected -->
     <Style Selector="ComboBoxItem">
       <Setter Property="FontSize" Value="12" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  Padding="{TemplateBinding Padding}">
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
     </Style>
     <Style Selector="ComboBoxItem:pointerover">
       <Setter Property="Background" Value="{DynamicResource XnaFocusBrush}" />
