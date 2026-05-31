@@ -64,7 +64,7 @@ namespace DXMainClientViewModel.Generic
         private SwitchType lastSwitchType;
 
         [ObservableProperty]
-        private string mainButtonText = "Main Menu (F2)".L10N("Client:Main:MainMenuF2");
+        private string mainButtonText = "Main Menu".L10N("Client:Main:MainMenu");
 
         [ObservableProperty]
         private bool isExpanded;
