@@ -228,7 +228,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     if (section != null)
                         ApplyProperties(control, section, iniFile, control.Name);
                 }
-                ApplyToDescendantsRecursive(child as Control ?? parent, iniFile);
+                // Stop recursing into UserControls - they have their own INI overlay
+                if (child is not UserControl)
+                    ApplyToDescendantsRecursive(child as Control ?? parent, iniFile);
             }
         }
         else if (parent is ContentControl contentControl && contentControl.Content is Control contentChild)
@@ -239,7 +241,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 if (section != null)
                     ApplyProperties(contentChild, section, iniFile, contentChild.Name);
             }
-            ApplyToDescendantsRecursive(contentChild, iniFile);
+            // Stop recursing into UserControls - they have their own INI overlay
+            if (contentChild is not UserControl)
+                ApplyToDescendantsRecursive(contentChild, iniFile);
         }
         else if (parent is Decorator decorator && decorator.Child is Control decoratorChild)
         {
@@ -249,7 +253,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 if (section != null)
                     ApplyProperties(decoratorChild, section, iniFile, decoratorChild.Name);
             }
-            ApplyToDescendantsRecursive(decoratorChild, iniFile);
+            // Stop recursing into UserControls - they have their own INI overlay
+            if (decoratorChild is not UserControl)
+                ApplyToDescendantsRecursive(decoratorChild, iniFile);
         }
     }
 
