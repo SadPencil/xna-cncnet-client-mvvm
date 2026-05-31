@@ -121,5 +121,15 @@
     <Style Selector="CheckBox">
       <Setter Property="FontSize" Value="12" />
     </Style>
+
+    <!-- ScrollBar: use XNAUI scrollbar textures -->
+    <Style Selector="ScrollBar">
+      <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
+    </Style>
+
+    <!-- ScrollBar thumb: use XNAUI thumb texture -->
+    <Style Selector="ScrollBar /template/ Thumb">
+      <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
+    </Style>
   </Application.Styles>
 </Application>

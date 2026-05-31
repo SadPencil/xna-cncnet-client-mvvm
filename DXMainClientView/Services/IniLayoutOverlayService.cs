@@ -1030,6 +1030,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Subtle/hint text color (XnaSubtleTextBrush)
         var hintColor = ParseColorFromConfig("HintTextColor") ?? Color.Parse("#808080");
         resources["XnaSubtleTextBrush"] = new SolidColorBrush(hintColor);
+
+        // Scrollbar textures (XNAScrollBar)
+        LoadTextureResource(resources, "XnaScrollBarBackground", "sbBackground.png");
+        LoadTextureResource(resources, "XnaScrollBarUpArrow", "sbUpArrow.png");
+        LoadTextureResource(resources, "XnaScrollBarDownArrow", "sbDownArrow.png");
+        LoadTextureResource(resources, "XnaScrollBarThumbTop", "sbThumbTop.png");
+        LoadTextureResource(resources, "XnaScrollBarThumbMiddle", "sbMiddle.png");
+        LoadTextureResource(resources, "XnaScrollBarThumbBottom", "sbThumbBottom.png");
+
+        // ComboBox arrow textures (XNADropDown)
+        LoadTextureResource(resources, "XnaComboBoxArrow", "comboBoxArrow.png");
+        LoadTextureResource(resources, "XnaComboBoxArrowOpen", "openedComboBoxArrow.png");
+    }
+
+    private static void LoadTextureResource(IResourceDictionary resources, string key, string texturePath)
+    {
+        string? file = FindTextureFileStatic(texturePath);
+        if (file != null)
+            resources[key] = new Bitmap(file);
     }
 
     /// <summary>
