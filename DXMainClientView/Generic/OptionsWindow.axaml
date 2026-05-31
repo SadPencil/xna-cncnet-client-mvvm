@@ -36,71 +36,108 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <ScrollViewer>
-        <StackPanel x:Name="displayPanel" Margin="12" Spacing="6"
-                    x:DataType="vmcOpt:IDisplayOptionsPanelViewModel">
-          <TextBlock Text="In-game Resolution:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddIngameResolution"
-                    ItemsSource="{Binding IngameResolutionOptions}"
-                    SelectedIndex="{Binding SelectedIngameResolutionIndex}"
-                    Width="200" Height="21" />
-          <TextBlock Text="Detail Level:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddDetailLevel"
-                    ItemsSource="{Binding DetailLevelOptions}"
-                    SelectedIndex="{Binding SelectedDetailLevelIndex}"
-                    Width="200" Height="21" />
-          <TextBlock Text="Renderer:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddRenderer"
-                    ItemsSource="{Binding RendererOptions}"
-                    SelectedIndex="{Binding SelectedRendererIndex}"
-                    Width="200" Height="21" />
-          <CheckBox x:Name="chkWindowedMode" Content="Windowed Mode"
-                    IsChecked="{Binding IsWindowedModeEnabled}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkBorderlessWindowedMode" Content="Borderless Windowed Mode"
-                    IsChecked="{Binding IsBorderlessWindowedModeEnabled}"
-                    Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,0" />
-          <CheckBox x:Name="chkBackBufferInVRAM" Content="Back Buffer in Video Memory"
-                    IsChecked="{Binding IsBackBufferStoredInVideoMemory}"
-                    Foreground="{DynamicResource XnaTextBrush}"
-                    ToolTip.Tip="If set, the game's back buffer will be stored in VRAM instead of system RAM. May improve performance on some systems but can cause issues on others." />
-          <TextBlock Text="Client Resolution:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddClientResolution"
-                    ItemsSource="{Binding ClientResolutionOptions}"
-                    SelectedIndex="{Binding SelectedClientResolutionIndex}"
-                    Width="200" Height="21" />
-          <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
-                    IsChecked="{Binding IsBorderlessClientEnabled}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkIntegerScaledClient" Content="Integer Scaled Client"
-                    IsChecked="{Binding IsIntegerScaledClientEnabled}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <TextBlock Text="Client Theme:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddClientTheme"
-                    ItemsSource="{Binding ThemeOptions}"
-                    SelectedIndex="{Binding SelectedThemeIndex}"
-                    Width="200" Height="21" />
-          <TextBlock Text="Language:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <ComboBox x:Name="ddTranslation"
-                    ItemsSource="{Binding TranslationOptions}"
-                    SelectedIndex="{Binding SelectedTranslationIndex}"
-                    Width="200" Height="21" />
-          <!-- Compatibility fix buttons (visible only when available) -->
-          <Button x:Name="btnGameCompatibilityFix"
-                  Content="Install Game Compatibility Fix"
-                  Command="{Binding InstallGameCompatibilityFixCommand}"
-                  IsVisible="{Binding IsGameCompatFixAvailable}"
-                  Width="250" Height="23" Margin="0,4,0,0" />
-          <Button x:Name="btnMapEditorCompatibilityFix"
-                  Content="Install Map Editor Compatibility Fix"
-                  Command="{Binding InstallMapEditorCompatibilityFixCommand}"
-                  IsVisible="{Binding IsFinalSunCompatFixAvailable}"
-                  Width="250" Height="23" />
-          <!-- Restart required notice -->
-          <TextBlock Text="A restart is required for some changes to take effect."
-                     IsVisible="{Binding IsRestartRequired}"
-                     Foreground="{DynamicResource XnaAltBrush}"
-                     Margin="0,4,0,0" />
-        </StackPanel>
+        <Grid x:Name="displayPanel" Margin="12" ColumnDefinitions="*,*"
+              x:DataType="vmcOpt:IDisplayOptionsPanelViewModel">
+          <!-- Left Column: In-game settings -->
+          <StackPanel Grid.Column="0" Spacing="6" Margin="0,0,12,0">
+            <!-- In-game Resolution (label + dropdown on same line) -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="In-game Resolution:" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         VerticalAlignment="Center" />
+              <ComboBox x:Name="ddIngameResolution"
+                        ItemsSource="{Binding IngameResolutionOptions}"
+                        SelectedIndex="{Binding SelectedIngameResolutionIndex}"
+                        Width="120" Height="21" />
+            </StackPanel>
+            <!-- Detail Level -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="Detail Level:" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         VerticalAlignment="Center" />
+              <ComboBox x:Name="ddDetailLevel"
+                        ItemsSource="{Binding DetailLevelOptions}"
+                        SelectedIndex="{Binding SelectedDetailLevelIndex}"
+                        Width="120" Height="21" />
+            </StackPanel>
+            <!-- Renderer -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="Renderer:" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         VerticalAlignment="Center" />
+              <ComboBox x:Name="ddRenderer"
+                        ItemsSource="{Binding RendererOptions}"
+                        SelectedIndex="{Binding SelectedRendererIndex}"
+                        Width="120" Height="21" />
+            </StackPanel>
+            <CheckBox x:Name="chkWindowedMode" Content="Windowed Mode"
+                      IsChecked="{Binding IsWindowedModeEnabled}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkBorderlessWindowedMode" Content="Borderless Windowed Mode"
+                      IsChecked="{Binding IsBorderlessWindowedModeEnabled}"
+                      Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,0" />
+            <CheckBox x:Name="chkBackBufferInVRAM" Content="Back Buffer in Video Memory"
+                      IsChecked="{Binding IsBackBufferStoredInVideoMemory}"
+                      Foreground="{DynamicResource XnaTextBrush}"
+                      ToolTip.Tip="If set, the game's back buffer will be stored in VRAM instead of system RAM. May improve performance on some systems but can cause issues on others." />
+          </StackPanel>
+
+          <!-- Right Column: Client settings -->
+          <StackPanel Grid.Column="1" Spacing="6" Margin="12,0,0,0">
+            <!-- Client Resolution (label + dropdown on same line) -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="Client Resolution:" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         VerticalAlignment="Center" />
+              <ComboBox x:Name="ddClientResolution"
+                        ItemsSource="{Binding ClientResolutionOptions}"
+                        SelectedIndex="{Binding SelectedClientResolutionIndex}"
+                        Width="120" Height="21" />
+            </StackPanel>
+            <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
+                      IsChecked="{Binding IsBorderlessClientEnabled}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkIntegerScaledClient" Content="Integer Scaled Client"
+                      IsChecked="{Binding IsIntegerScaledClientEnabled}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <!-- Client Theme -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="Client Theme:" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         VerticalAlignment="Center" />
+              <ComboBox x:Name="ddClientTheme"
+                        ItemsSource="{Binding ThemeOptions}"
+                        SelectedIndex="{Binding SelectedThemeIndex}"
+                        Width="120" Height="21" />
+            </StackPanel>
+            <!-- Language -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="Language:" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         VerticalAlignment="Center" />
+              <ComboBox x:Name="ddTranslation"
+                        ItemsSource="{Binding TranslationOptions}"
+                        SelectedIndex="{Binding SelectedTranslationIndex}"
+                        Width="120" Height="21" />
+            </StackPanel>
+            <!-- Compatibility fix buttons -->
+            <Button x:Name="btnGameCompatibilityFix"
+                    Content="Install Game Compatibility Fix"
+                    Command="{Binding InstallGameCompatibilityFixCommand}"
+                    IsVisible="{Binding IsGameCompatFixAvailable}"
+                    Width="250" Height="23" Margin="0,4,0,0" />
+            <Button x:Name="btnMapEditorCompatibilityFix"
+                    Content="Install Map Editor Compatibility Fix"
+                    Command="{Binding InstallMapEditorCompatibilityFixCommand}"
+                    IsVisible="{Binding IsFinalSunCompatFixAvailable}"
+                    Width="250" Height="23" />
+            <!-- Restart required notice -->
+            <TextBlock Text="A restart is required for some changes to take effect."
+                       IsVisible="{Binding IsRestartRequired}"
+                       Foreground="{DynamicResource XnaAltBrush}"
+                       Margin="0,4,0,0" />
+          </StackPanel>
+        </Grid>
       </ScrollViewer>
     </Border>
 
