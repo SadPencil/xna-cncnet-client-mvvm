@@ -983,14 +983,22 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     /// <summary>
     /// Reads theme colors from DTACnCNetClient.ini and sets them as resources
-    /// on the control's resource dictionary. AXAML files can reference these via
-    /// {DynamicResource XnaTextBrush}, {DynamicResource XnaAltBrush}, etc.
+    /// on both the control's resource dictionary and Application.Current.Resources.
+    /// AXAML files can reference these via {DynamicResource XnaTextBrush}, etc.
     /// Matches UISettings color mapping in GameClass.cs.
     /// </summary>
     private static void ApplyThemeColors(Control control)
     {
-        var resources = control.Resources;
+        // Set on control's resources (for local references)
+        SetThemeColorsOnDictionary(control.Resources);
 
+        // Also set on Application resources (for App.axaml styles)
+        if (Application.Current != null)
+            SetThemeColorsOnDictionary(Application.Current.Resources);
+    }
+
+    private static void SetThemeColorsOnDictionary(IResourceDictionary resources)
+    {
         // UILabelColor → default text color (XnaTextBrush)
         var textColor = ParseColorFromConfig("UILabelColor") ?? Color.Parse("#C4C4C4");
         resources["XnaTextBrush"] = new SolidColorBrush(textColor);
