@@ -269,59 +269,83 @@
             IsVisible="{Binding IsCnCNetPanelVisible}"
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
-      <ScrollViewer>
-        <StackPanel x:Name="cncnetPanel" Margin="12" Spacing="4"
-                    x:DataType="vmcOpt:ICnCNetOptionsPanelViewModel">
-          <CheckBox x:Name="chkPingUnofficialTunnels" Content="Ping Unofficial CnCNet Tunnels"
-                    IsChecked="{Binding PingUnofficialTunnels}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkWriteInstallPathToRegistry" Content="Write Game Installation Path to Windows Registry"
-                    IsChecked="{Binding WriteInstallationPathToRegistry}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkDisableMainMenuHotkeys" Content="Disable Hotkeys in Main Menu Lobby"
-                    IsChecked="{Binding DisableMainMenuHotkeys}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkNotifyOnUserListChange" Content="Show Notification on User List Change"
-                    IsChecked="{Binding NotifyOnUserListChanges}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkDisablePrivateMessagePopup" Content="Disable Private Message Popup Notifications"
-                    IsChecked="{Binding DisablePrivateMessagePopups}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkSkipLoginWindow" Content="Skip Login Dialog"
-                    IsChecked="{Binding SkipLoginDialog}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkPersistentMode" Content="Stay Connected Outside CnCNet Lobby"
-                    IsChecked="{Binding PersistentMode}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkConnectOnStartup" Content="Connect to CnCNet on Client Startup"
-                    IsChecked="{Binding AutoConnectOnStartup}"
-                    IsEnabled="{Binding IsAutoConnectOnStartupAllowed}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkDiscordIntegration" Content="Show Game Info on Discord Status"
-                    IsChecked="{Binding IsDiscordIntegrationEnabled}"
-                    IsEnabled="{Binding !IsDiscordIntegrationGloballyDisabled}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkSteamIntegration" Content="Publish Game to Steam Friends"
-                    IsChecked="{Binding IsSteamIntegrationEnabled}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkAllowGameInvitesFromFriendsOnly" Content="Only Allow Game Invites from Friends"
-                    IsChecked="{Binding AllowGameInvitesOnlyFromFriends}"
-                    Foreground="{DynamicResource XnaTextBrush}" />
-          <!-- Game follow list -->
-          <TextBlock Text="Follow Games:" FontWeight="Bold"
-                     Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,4" />
-          <ItemsControl ItemsSource="{Binding GameListItems}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate x:DataType="vmcOpt:IGameListItemData">
-                <CheckBox Content="{Binding UIName}"
-                          IsChecked="{Binding IsFollowed}"
-                          Foreground="{DynamicResource XnaTextBrush}"
-                          Margin="0,1" />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </StackPanel>
-      </ScrollViewer>
+      <Grid RowDefinitions="*,Auto">
+        <Grid x:Name="cncnetPanel" Margin="12" ColumnDefinitions="*,*"
+              x:DataType="vmcOpt:ICnCNetOptionsPanelViewModel">
+          <!-- Left Column -->
+          <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,12,0">
+            <CheckBox x:Name="chkPingUnofficialTunnels" Content="Ping Unofficial CnCNet Tunnels"
+                      IsChecked="{Binding PingUnofficialTunnels}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkWriteInstallPathToRegistry" Content="Write Game Installation Path to Windows Registry"
+                      IsChecked="{Binding WriteInstallationPathToRegistry}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkDisableMainMenuHotkeys" Content="Disable Hotkeys in Main Menu Lobby"
+                      IsChecked="{Binding DisableMainMenuHotkeys}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkNotifyOnUserListChange" Content="Show Notification on User List Change"
+                      IsChecked="{Binding NotifyOnUserListChanges}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkDisablePrivateMessagePopup" Content="Disable Private Message Popup Notifications"
+                      IsChecked="{Binding DisablePrivateMessagePopups}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <!-- Allow Private Messages From -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+              <TextBlock Text="Allow PMs From:" FontWeight="Bold"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         VerticalAlignment="Center" />
+              <ComboBox x:Name="ddAllowPrivateMessagesFrom"
+                        SelectedIndex="{Binding SelectedAllowPrivateMessagesFromIndex}"
+                        Width="110" Height="21" />
+            </StackPanel>
+          </StackPanel>
+
+          <!-- Right Column -->
+          <StackPanel Grid.Column="1" Spacing="4" Margin="12,0,0,0">
+            <CheckBox x:Name="chkSkipLoginWindow" Content="Skip Login Dialog"
+                      IsChecked="{Binding SkipLoginDialog}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkPersistentMode" Content="Stay Connected Outside CnCNet Lobby"
+                      IsChecked="{Binding PersistentMode}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkConnectOnStartup" Content="Connect to CnCNet on Client Startup"
+                      IsChecked="{Binding AutoConnectOnStartup}"
+                      IsEnabled="{Binding IsAutoConnectOnStartupAllowed}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkDiscordIntegration" Content="Show Game Info on Discord Status"
+                      IsChecked="{Binding IsDiscordIntegrationEnabled}"
+                      IsEnabled="{Binding !IsDiscordIntegrationGloballyDisabled}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkAllowGameInvitesFromFriendsOnly" Content="Only Allow Game Invites from Friends"
+                      IsChecked="{Binding AllowGameInvitesOnlyFromFriends}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkSteamIntegration" Content="Publish Game to Steam Friends"
+                      IsChecked="{Binding IsSteamIntegrationEnabled}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+          </StackPanel>
+        </Grid>
+
+        <!-- Game follow list at bottom -->
+        <Border Grid.Row="1" Margin="12,0,12,12"
+                Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1">
+          <StackPanel Margin="8">
+            <TextBlock Text="Follow Games:" FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}" Margin="0,0,0,4" />
+            <ItemsControl ItemsSource="{Binding GameListItems}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vmcOpt:IGameListItemData">
+                  <CheckBox Content="{Binding UIName}"
+                            IsChecked="{Binding IsFollowed}"
+                            Foreground="{DynamicResource XnaTextBrush}"
+                            Margin="0,1" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </Grid>
     </Border>
 
     <!-- Updater Options Panel -->
