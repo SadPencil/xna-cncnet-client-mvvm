@@ -56,13 +56,17 @@
                     BorderThickness="{TemplateBinding BorderThickness}"
                     Padding="0">
               <DockPanel LastChildFill="True" Margin="0">
-                <Image DockPanel.Dock="Right"
-                       Name="DropDownGlyph"
-                       Source="{DynamicResource XnaComboBoxArrow}"
-                       Width="20"
-                       Stretch="Uniform"
-                       VerticalAlignment="Stretch"
-                       Margin="0" />
+                <Border DockPanel.Dock="Right"
+                        Width="20"
+                        Background="Transparent"
+                        Margin="0">
+                  <Image Name="DropDownGlyph"
+                         Source="{DynamicResource XnaComboBoxArrow}"
+                         Stretch="Uniform"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Center"
+                         Margin="0" />
+                </Border>
                 <ContentPresenter Name="ContentPresenter"
                                   Content="{TemplateBinding SelectionBoxItem}"
                                   HorizontalAlignment="Stretch"
