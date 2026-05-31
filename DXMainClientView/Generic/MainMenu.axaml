@@ -251,7 +251,6 @@
 
     <!-- Options Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="optionsOverlay"
-                             IsPanelVisible="{Binding IsOptionsOverlayVisible}"
                              Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
@@ -261,7 +260,6 @@
 
     <!-- Extras Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="extrasOverlay"
-                             IsPanelVisible="{Binding IsExtrasOverlayVisible}"
                              Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
@@ -271,7 +269,6 @@
 
     <!-- Statistics Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="statisticsOverlay"
-                             IsPanelVisible="{Binding IsStatisticsOverlayVisible}"
                              Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
@@ -281,7 +278,6 @@
 
     <!-- Game Loading Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="gameLoadingOverlay"
-                             IsPanelVisible="{Binding IsGameLoadingOverlayVisible}"
                              Width="1280" Height="720"
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>

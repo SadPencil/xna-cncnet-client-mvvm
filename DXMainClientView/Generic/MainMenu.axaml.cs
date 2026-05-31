@@ -168,21 +168,39 @@ public partial class MainMenu : UserControl
     public void SetOptionsWindowViewModel(IOptionsWindowViewModel vm)
     {
         optionsWindow.ViewModel = vm;
+        WireOverlayVisibility(optionsWindow, optionsOverlay);
     }
 
     public void SetExtrasWindowViewModel(IExtrasWindowViewModel vm)
     {
         extrasWindow.ViewModel = vm;
+        WireOverlayVisibility(extrasWindow, extrasOverlay);
     }
 
     public void SetStatisticsWindowViewModel(IStatisticsWindowViewModel vm)
     {
         statisticsWindow.ViewModel = vm;
+        WireOverlayVisibility(statisticsWindow, statisticsOverlay);
     }
 
     public void SetGameLoadingWindowViewModel(IGameLoadingWindowViewModel vm)
     {
         gameLoadingWindow.ViewModel = vm;
+        WireOverlayVisibility(gameLoadingWindow, gameLoadingOverlay);
+    }
+
+    /// <summary>
+    /// Binds a DarkeningPanel's visibility to a child view's IsVisible.
+    /// Pure View-layer logic: observes one control's property, reflects to another.
+    /// </summary>
+    private static void WireOverlayVisibility(Control child, Controls.DarkeningPanel overlay)
+    {
+        child.PropertyChanged += (s, e) =>
+        {
+            if (e.Property == IsVisibleProperty)
+                overlay.IsPanelVisible = child.IsVisible;
+        };
+        overlay.IsPanelVisible = child.IsVisible;
     }
 
     public void SetSkirmishLobbyViewModel(ISkirmishLobbyViewModel vm)

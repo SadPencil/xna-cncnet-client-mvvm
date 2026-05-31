@@ -119,18 +119,6 @@ namespace DXMainClientViewModel.Generic
         [ObservableProperty]
         private MainMenuPanel activePanel = MainMenuPanel.PRIMARY;
 
-        [ObservableProperty]
-        private bool isOptionsOverlayVisible;
-
-        [ObservableProperty]
-        private bool isExtrasOverlayVisible;
-
-        [ObservableProperty]
-        private bool isStatisticsOverlayVisible;
-
-        [ObservableProperty]
-        private bool isGameLoadingOverlayVisible;
-
         /// <summary>
         /// Domain event: fired when skirmish lobby is exited. Parent subscribes.
         /// </summary>
@@ -194,28 +182,6 @@ namespace DXMainClientViewModel.Generic
 
             // Subscribe to options window closed to trigger custom component dialog
             optionsWindowViewModel.PropertyChanged += OnOptionsWindowPropertyChanged;
-
-            // Subscribe to child ViewModel visibility changes for overlay darkening
-            optionsWindowViewModel.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(OptionsWindowViewModel.IsVisible))
-                    IsOptionsOverlayVisible = optionsWindowViewModel.IsVisible;
-            };
-            extrasWindowViewModel.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(ExtrasWindowViewModel.IsVisible))
-                    IsExtrasOverlayVisible = extrasWindowViewModel.IsVisible;
-            };
-            statisticsWindowViewModel.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(StatisticsWindowViewModel.IsVisible))
-                    IsStatisticsOverlayVisible = statisticsWindowViewModel.IsVisible;
-            };
-            gameLoadingWindowViewModel.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(GameLoadingWindowViewModel.IsVisible))
-                    IsGameLoadingOverlayVisible = gameLoadingWindowViewModel.IsVisible;
-            };
 
             ShowVersionInfo = !ClientConfiguration.Instance.ModMode;
 

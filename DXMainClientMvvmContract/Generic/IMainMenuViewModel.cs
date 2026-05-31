@@ -31,12 +31,6 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     MainMenuPanel ActivePanel { get; }
     bool IsLanMode { get; }
 
-    // Child window overlay visibility
-    bool IsOptionsOverlayVisible { get; }
-    bool IsExtrasOverlayVisible { get; }
-    bool IsStatisticsOverlayVisible { get; }
-    bool IsGameLoadingOverlayVisible { get; }
-
     IRelayCommand StartCampaignCommand { get; }
     IRelayCommand ContinueCampaignCommand { get; }
     IRelayCommand LoadGameCommand { get; }
