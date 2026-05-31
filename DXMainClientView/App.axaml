@@ -51,29 +51,26 @@
       <Setter Property="Template">
         <ControlTemplate>
           <Panel>
+            <!-- Border with right edge removed to make room for arrow -->
             <Border Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    Padding="0">
-              <DockPanel LastChildFill="True" Margin="0">
-                <Border DockPanel.Dock="Right"
-                        Width="20"
-                        Background="Transparent"
-                        Margin="0">
-                  <Image Name="DropDownGlyph"
-                         Source="{DynamicResource XnaComboBoxArrow}"
-                         Stretch="Uniform"
-                         HorizontalAlignment="Right"
-                         VerticalAlignment="Center"
-                         Margin="0" />
-                </Border>
-                <ContentPresenter Name="ContentPresenter"
-                                  Content="{TemplateBinding SelectionBoxItem}"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Center"
-                                  Margin="4,0" />
-              </DockPanel>
+                    BorderThickness="1,1,0,1"
+                    Padding="0"
+                    Margin="0">
+              <ContentPresenter Name="ContentPresenter"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Margin="4,0" />
             </Border>
+            <!-- Arrow button at the right edge -->
+            <Image Name="DropDownGlyph"
+                   Source="{DynamicResource XnaComboBoxArrow}"
+                   Width="20"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Stretch"
+                   Margin="0" />
             <Popup Name="PART_Popup"
                    IsLightDismissEnabled="True"
                    IsOpen="{TemplateBinding IsDropDownOpen}"
