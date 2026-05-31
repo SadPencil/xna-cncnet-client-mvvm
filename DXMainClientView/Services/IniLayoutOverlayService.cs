@@ -28,12 +28,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     /// Font configuration for FontIndex values. Maps FontIndex to (FontSize, FontWeight).
     /// XNAUI FontIndex 0 = default font, FontIndex 1 = bold font.
     /// Unknown FontIndex falls back to index 0.
-    /// Sizes match the AXAML button FontSize values (11pt for standard buttons).
     /// </summary>
     private static readonly Dictionary<int, (double size, FontWeight weight)> FontIndexConfig = new()
     {
-        [0] = (11, FontWeight.Normal),
-        [1] = (11, FontWeight.Bold),
+        [0] = (12, FontWeight.Normal),
+        [1] = (12, FontWeight.Bold),
     };
 
     /// <summary>
@@ -833,6 +832,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                         TileMode = TileMode.None
                     };
                     button.Background = idleBrush;
+
+                    // Apply FontIndex 1 (bold) by default for standard buttons,
+                    // matching XNAClientButton which sets FontIndex = 1 in constructor.
+                    var (fontSize, fontWeight) = GetFontConfig(1);
+                    button.FontSize = fontSize;
+                    button.FontWeight = fontWeight;
 
                     // Set up hover texture
                     string? hoverFile = FindTextureFileStatic(hoverPath);
