@@ -12,7 +12,7 @@
     <Style Selector="Button">
       <Setter Property="FontSize" Value="12" />
       <Setter Property="VerticalContentAlignment" Value="Center" />
-      <Setter Property="Padding" Value="0" />
+      <Setter Property="Padding" Value="4,0" />
       <Setter Property="BorderThickness" Value="0" />
       <!--
         Override Button template: use a minimal template without FluentTheme hover styling.
