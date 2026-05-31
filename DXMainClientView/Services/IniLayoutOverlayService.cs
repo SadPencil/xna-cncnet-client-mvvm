@@ -24,6 +24,28 @@ namespace DXMainClientView.Services;
 /// </summary>
 public class IniLayoutOverlayService : IIniLayoutOverlayService
 {
+    /// <summary>
+    /// Font configuration for FontIndex values. Maps FontIndex to (FontSize, FontWeight).
+    /// XNAUI FontIndex 0 = default font, FontIndex 1 = bold font.
+    /// Unknown FontIndex falls back to index 0.
+    /// </summary>
+    private static readonly Dictionary<int, (double size, FontWeight weight)> FontIndexConfig = new()
+    {
+        [0] = (12, FontWeight.Normal),
+        [1] = (12, FontWeight.Bold),
+    };
+
+    /// <summary>
+    /// Gets the font size and weight for a given FontIndex.
+    /// Falls back to FontIndex 0 for unknown indices.
+    /// </summary>
+    private static (double size, FontWeight weight) GetFontConfig(int fontIndex)
+    {
+        if (FontIndexConfig.TryGetValue(fontIndex, out var config))
+            return config;
+        return FontIndexConfig[0]; // fallback
+    }
+
     public void ApplyLayout(Control control, string sectionName)
     {
         string iniPath = FindIniFile(sectionName);
@@ -382,10 +404,35 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 break;
 
             case "FontIndex":
-                if (control is TextBlock tbFont && int.TryParse(value, out int fontIdx) && fontIdx == 1)
-                    tbFont.FontWeight = FontWeight.Bold;
-                else if (control is Button btnFont && int.TryParse(value, out int bFontIdx) && bFontIdx == 1)
-                    btnFont.FontWeight = FontWeight.Bold;
+                if (int.TryParse(value, out int fontIdx))
+                {
+                    var (fontSize, fontWeight) = GetFontConfig(fontIdx);
+                    if (control is TextBlock tbFont)
+                    {
+                        tbFont.FontSize = fontSize;
+                        tbFont.FontWeight = fontWeight;
+                    }
+                    else if (control is Button btnFont)
+                    {
+                        btnFont.FontSize = fontSize;
+                        btnFont.FontWeight = fontWeight;
+                    }
+                    else if (control is ComboBox cbFont)
+                    {
+                        cbFont.FontSize = fontSize;
+                        cbFont.FontWeight = fontWeight;
+                    }
+                    else if (control is TextBox txtFont)
+                    {
+                        txtFont.FontSize = fontSize;
+                        txtFont.FontWeight = fontWeight;
+                    }
+                    else if (control is CheckBox chkFont)
+                    {
+                        chkFont.FontSize = fontSize;
+                        chkFont.FontWeight = fontWeight;
+                    }
+                }
                 break;
 
             case "ToolTip":
