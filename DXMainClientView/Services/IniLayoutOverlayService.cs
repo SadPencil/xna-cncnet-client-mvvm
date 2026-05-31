@@ -730,15 +730,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     }
 
     /// <summary>
-    /// Standard button widths that have corresponding {width}pxbtn.png textures.
-    /// Matches XNAClientButton which loads textures based on Width.
-    /// </summary>
-    private static readonly HashSet<int> StandardButtonWidths = new()
-    {
-        75, 92, 97, 110, 121, 133, 142, 147, 160
-    };
-
-    /// <summary>
     /// Walks all descendant Button controls and auto-loads standard {width}pxbtn.png
     /// textures for buttons that weren't given a custom Background via INI IdleTexture.
     /// Matches XNAClientButton.Initialize() behavior.
@@ -754,11 +745,14 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         foreach (var child in children)
         {
             if (child is Button button
-                && button.Background == null
-                && !double.IsNaN(button.Width)
-                && StandardButtonWidths.Contains((int)button.Width))
+                && button.Content != null
+                && button.Background is not ImageBrush)
             {
-                int w = (int)button.Width;
+                // Determine width: try explicit Width first, then fall back to 133
+                int w = !double.IsNaN(button.Width) && button.Width > 0
+                    ? (int)button.Width
+                    : 133;
+
                 string idlePath = $"{w}pxbtn.png";
                 string hoverPath = $"{w}pxbtn_c.png";
 
@@ -766,16 +760,13 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 if (idleFile != null)
                 {
                     var idleBitmap = new Bitmap(idleFile);
-                    button.Background = new ImageBrush
+                    var idleBrush = new ImageBrush
                     {
                         Source = idleBitmap,
                         Stretch = Stretch.Fill,
                         TileMode = TileMode.None
                     };
-
-                    // Auto-height from texture if not explicitly set
-                    if (double.IsNaN(button.Height) || button.Height == 0)
-                        button.Height = idleBitmap.PixelSize.Height;
+                    button.Background = idleBrush;
 
                     // Set up hover texture
                     string? hoverFile = FindTextureFileStatic(hoverPath);
@@ -788,7 +779,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                             Stretch = Stretch.Fill,
                             TileMode = TileMode.None
                         };
-                        var idleBrush = button.Background;
                         button.PointerEntered += (_, _) => button.Background = hoverBrush;
                         button.PointerExited += (_, _) => button.Background = idleBrush;
                     }
