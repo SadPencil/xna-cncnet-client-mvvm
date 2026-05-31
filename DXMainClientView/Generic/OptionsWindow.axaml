@@ -338,7 +338,7 @@
               <ItemsControl ItemsSource="{Binding GameListItems}">
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Vertical" />
+                    <WrapPanel Orientation="Horizontal" />
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -346,7 +346,7 @@
                     <CheckBox Content="{Binding UIName}"
                               IsChecked="{Binding IsFollowed}"
                               Foreground="{DynamicResource XnaTextBrush}"
-                              Width="170" Margin="0,1" />
+                              Margin="0,1" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
