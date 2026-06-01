@@ -1,3 +1,4 @@
+using DXMainClientMvvmContract;
 using DXMainClientMvvmContract.Multiplayer;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
+using DXMainClientViewModel.Online;
 
 using Rampastring.Tools;
 using DXMainClientMvvmContract.ViewServices;
@@ -226,13 +228,15 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
             if (pInfo == null)
             {
+                var mc = sgPlayer.ColorIndex > -1 ? MPColors[sgPlayer.ColorIndex] : null;
                 displayInfo.Add(new PlayerDisplayInfo(sgPlayer.Name, false, false,
-                    sgPlayer.ColorIndex > -1 ? System.Drawing.Color.FromArgb(MPColors[sgPlayer.ColorIndex].R, MPColors[sgPlayer.ColorIndex].G, MPColors[sgPlayer.ColorIndex].B) : System.Drawing.Color.White));
+                    mc != null ? new Rgb24Color((byte)mc.R, (byte)mc.G, (byte)mc.B) : new Rgb24Color(255, 255, 255)));
             }
             else
             {
+                var mc = sgPlayer.ColorIndex > -1 ? MPColors[sgPlayer.ColorIndex] : null;
                 displayInfo.Add(new PlayerDisplayInfo(sgPlayer.Name, true, pInfo.Ready,
-                    sgPlayer.ColorIndex > -1 ? System.Drawing.Color.FromArgb(MPColors[sgPlayer.ColorIndex].R, MPColors[sgPlayer.ColorIndex].G, MPColors[sgPlayer.ColorIndex].B) : System.Drawing.Color.White));
+                    mc != null ? new Rgb24Color((byte)mc.R, (byte)mc.G, (byte)mc.B) : new Rgb24Color(255, 255, 255)));
             }
         }
         _playerDisplayInfo.Clear(); foreach (var info in displayInfo) _playerDisplayInfo.Add(info);
@@ -430,9 +434,9 @@ public class PlayerDisplayInfo : IPlayerDisplayInfo
     public string Name { get; }
     public bool IsPresent { get; }
     public bool IsReady { get; }
-    public System.Drawing.Color Color { get; }
+    public IRgb24Color Color { get; }
 
-    public PlayerDisplayInfo(string name, bool isPresent, bool isReady, System.Drawing.Color color)
+    public PlayerDisplayInfo(string name, bool isPresent, bool isReady, IRgb24Color color)
     {
         Name = name;
         IsPresent = isPresent;

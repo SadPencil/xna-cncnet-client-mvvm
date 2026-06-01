@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace DXMainClientMvvmContract.Multiplayer;
 
 /// <summary>
@@ -10,6 +8,6 @@ public interface IPlayerDisplayInfo
     string Name { get; }
     bool IsPresent { get; }
     bool IsReady { get; }
-    Color Color { get; }
+    IRgb24Color Color { get; }
     string DisplayName { get; }
 }

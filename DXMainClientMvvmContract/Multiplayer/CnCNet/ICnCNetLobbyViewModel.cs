@@ -25,19 +25,19 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     bool IsChannelDropdownEnabled { get; }
     bool IsGameSearchEnabled { get; }
     bool IsConnected { get; }
-    bool IsVisible { get; set; }
+    bool IsVisible { get; }
     IReadOnlyList<string> ColorOptions { get; }
     IReadOnlyList<string> ChannelOptions { get; }
 
     // View-reactive state
-    string? PendingMessage { get; set; }
-    IPendingYesNoDialogData? PendingYesNoDialog { get; set; }
-    bool IsUpdateCheckNeeded { get; set; }
-    bool IsLoginWindowVisible { get; set; }
+    string? PendingMessage { get; }
+    IPendingYesNoDialogData? PendingYesNoDialog { get; }
+    bool IsUpdateCheckNeeded { get; }
+    bool IsLoginWindowVisible { get; }
     ICnCNetLoginWindowViewModel LoginWindowViewModel { get; }
-    bool IsGameCreationPanelVisible { get; set; }
-    IPendingGameInviteData? PendingGameInvite { get; set; }
-    string? SoundToPlay { get; set; }
+    bool IsGameCreationPanelVisible { get; }
+    IPendingGameInviteData? PendingGameInvite { get; }
+    string? SoundToPlay { get; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }
@@ -51,4 +51,5 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand DismissGameInviteCommand { get; }
     IRelayCommand AcceptUpdateCommand { get; }
     IRelayCommand DenyUpdateCommand { get; }
+    IRelayCommand DismissMessageCommand { get; }
 }

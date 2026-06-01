@@ -558,7 +558,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     /// Called by the View when the hovered index in the map list changes.
     /// Updates the tooltip text for the map list.
     /// </summary>
-    public void SetHoveredMapIndex(int hoveredIndex)
+    [RelayCommand]
+    private void SetHoveredMapIndex(int hoveredIndex)
     {
         if (hoveredIndex < 0 || hoveredIndex >= MapListItems.Count)
         {

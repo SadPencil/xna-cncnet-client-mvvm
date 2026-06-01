@@ -503,6 +503,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         updateDenied = true;
     }
 
+    [RelayCommand]
+    private void DismissMessage()
+    {
+        PendingMessage = null;
+    }
+
     /// <summary>
     /// Called when a game lobby is left.
     /// </summary>

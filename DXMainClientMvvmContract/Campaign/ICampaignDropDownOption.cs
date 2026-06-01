@@ -1,5 +1,3 @@
-using Rampastring.Tools;
-
 namespace DXMainClientMvvmContract.Campaign;
 
 /// <summary>

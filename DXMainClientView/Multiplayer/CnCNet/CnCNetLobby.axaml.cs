@@ -81,7 +81,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void OnDismissMessage(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (ViewModel != null) ViewModel.PendingMessage = null;
+        ViewModel?.DismissMessageCommand.Execute(null);
     }
 
     void ISwitchableView.Show() => IsVisible = true;
