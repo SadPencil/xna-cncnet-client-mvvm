@@ -624,6 +624,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             double x = Canvas.GetLeft(control);
             if (double.IsNaN(x)) x = 0; // fallback if Location X was not set
             control.Width = parentWidth - x - fillWidth.Value;
+            control.InvalidateMeasure();
         }
 
         // Apply FillHeight (sets height to fill from Y to bottom edge minus value)
@@ -635,6 +636,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             Logger.Log($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
 
             control.Height = newHeight;
+            control.InvalidateMeasure();
         }
     }
 
