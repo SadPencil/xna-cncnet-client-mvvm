@@ -664,7 +664,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 Child = new Panel()
             },
             "XNALabel" => new TextBlock { Name = name },
-            "XNAButton" or "XNAClientButton" => new Button { Name = name },
+            "XNAButton" or "XNAClientButton" or "XNALinkButton" => new Button { Name = name },
             "XNACheckBox" or "XNAClientCheckBox" => new CheckBox { Name = name },
             "XNADropDown" or "XNAClientDropDown" => new ComboBox { Name = name },
             "XNATextBox" or "XNASuggestionTextBox" => new TextBox { Name = name },
