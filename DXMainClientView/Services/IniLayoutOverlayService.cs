@@ -833,13 +833,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         ["MapPreviewBox"] = "stretched",
         // LANLobby.cs
         ["LANLobby"] = "stretched",
-        // GenericWindow.ini ExtraControls - bars that tile to fill height
-        ["leftbar"] = "tiled",
-        ["rightbar"] = "tiled",
-        ["glow_t"] = "stretched",
-        ["glow_b"] = "stretched",
-        ["glow_l"] = "stretched",
-        ["glow_r"] = "stretched",
     };
 
     /// <summary>
