@@ -194,6 +194,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     public virtual void Initialize()
     {
         MPColors = MultiplayerColor.LoadColors();
+        mapPreviewBox.SetMPColors(MPColors);
 
         GameOptionsIni = new IniFile(SafePath.CombineFilePath(
             ProgramConstants.GetBaseResourcePath(), ClientConfiguration.GAME_OPTIONS));
@@ -711,6 +712,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         _ = UpdateLaunchGameButtonStatus();
         SetMapLabels();
         mapPreviewBox.SetGameModeMap(gameModeMap);
+        mapPreviewBox.SetPlayers(Players, AIPlayers);
+        mapPreviewBox.UpdateStartingLocationIndicators();
 
         if (GameMode == null || Map == null)
         {
@@ -1013,6 +1016,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         // Update PlayerNames for compatibility
         PlayerNames = Players.Select(p => p.Name).ToList();
+
+        mapPreviewBox.UpdateStartingLocationIndicators();
 
         PlayerUpdatingInProgress = false;
     }

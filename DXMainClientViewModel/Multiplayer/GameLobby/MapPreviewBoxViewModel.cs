@@ -1,3 +1,4 @@
+using DXMainClientMvvmContract;
 using DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 using System;
@@ -12,6 +13,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DXMainClientViewModel.Domain.Multiplayer;
+using DXMainClientViewModel.Online;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 
@@ -29,6 +31,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     private GameModeMap? gameModeMap;
     private List<PlayerInfo>? players;
     private List<PlayerInfo>? aiPlayers;
+    private List<MultiplayerColor>? mpColors;
 
     // --- Observable state ---
 
@@ -69,6 +72,9 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
 
     private readonly ObservableCollection<string> _startingLocationSummaries = new();
     public IReadOnlyList<string> StartingLocationSummaries => _startingLocationSummaries;
+
+    private readonly ObservableCollection<StartingLocationIndicatorData> _startingLocationIndicators = new();
+    public IReadOnlyList<IStartingLocationIndicatorData> StartingLocationIndicators => _startingLocationIndicators;
 
     private readonly Action? onFavoriteToggled;
     private readonly Action? onStartingLocationApplied;
@@ -225,6 +231,14 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     }
 
     /// <summary>
+    /// Sets the multiplayer color definitions for indicator tinting.
+    /// </summary>
+    public void SetMPColors(List<MultiplayerColor> colors)
+    {
+        mpColors = colors;
+    }
+
+    /// <summary>
     /// Updates starting location summaries based on player info.
     /// </summary>
     public void UpdateStartingLocationSummaries(List<PlayerInfo> players, List<PlayerInfo> aiPlayers)
@@ -296,5 +310,122 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             MapPreviewImageBytes = null;
         }
     }
+
+    private const int MAX_STARTING_LOCATIONS = 8;
+    private const int PREVIEW_WIDTH = 400;
+    private const int PREVIEW_HEIGHT = 300;
+
+    /// <summary>
+    /// Updates starting location indicators based on current map and player data.
+    /// Matches the old MapPreviewBox.UpdateMap() + UpdateStartingLocationTexts() logic.
+    /// </summary>
+    public void UpdateStartingLocationIndicators()
+    {
+        _startingLocationIndicators.Clear();
+
+        if (gameModeMap == null || MapPreviewImageBytes == null)
+            return;
+
+        // Get preview image dimensions from the loaded image
+        int previewW, previewH;
+        try
+        {
+            using var ms = new MemoryStream(MapPreviewImageBytes);
+            using var img = SixLabors.ImageSharp.Image.Load(ms);
+            previewW = img.Width;
+            previewH = img.Height;
+        }
+        catch
+        {
+            return;
+        }
+
+        // Compute scale ratio and texture position (matching old MapPreviewBox.UpdateMap)
+        double xRatio = (PREVIEW_WIDTH - 2) / (double)previewW;
+        double yRatio = (PREVIEW_HEIGHT - 2) / (double)previewH;
+
+        double ratio;
+        int texturePositionX = 1;
+        int texturePositionY = 1;
+
+        if (xRatio > yRatio)
+        {
+            ratio = yRatio;
+            texturePositionY = 1;
+            int textureWidth = (int)(previewW * ratio);
+            texturePositionX = (PREVIEW_WIDTH - 2 - textureWidth) / 2;
+        }
+        else
+        {
+            ratio = xRatio;
+            texturePositionX = 1;
+            int textureHeight = (int)(previewH * ratio);
+            texturePositionY = (PREVIEW_HEIGHT - 2 - textureHeight) / 2;
+        }
+
+        // Get starting location coordinates in preview space
+        var previewSize = new MapPreviewPoint(previewW, previewH);
+        List<MapPreviewPoint> startingLocations = gameModeMap.Map.GetStartingLocationPreviewCoords(previewSize);
+
+        // Build assigned-players lookup
+        var assignedPlayers = new Dictionary<int, List<IIndicatorPlayerInfo>>();
+        var allPlayers = (players ?? new List<PlayerInfo>()).Concat(aiPlayers ?? new List<PlayerInfo>());
+        foreach (var pInfo in allPlayers)
+        {
+            if (pInfo.StartingLocation <= 0 || pInfo.StartingLocation > MAX_STARTING_LOCATIONS)
+                continue;
+
+            if (!assignedPlayers.ContainsKey(pInfo.StartingLocation))
+                assignedPlayers[pInfo.StartingLocation] = new List<IIndicatorPlayerInfo>();
+
+            var mc = mpColors != null && pInfo.ColorId >= 0 && pInfo.ColorId < mpColors.Count
+                ? mpColors[pInfo.ColorId]
+                : null;
+            var color = mc?.Color ?? new Rgb24Color(255, 255, 255);
+
+            assignedPlayers[pInfo.StartingLocation].Add(new IndicatorPlayerInfo(
+                pInfo.Name, pInfo.TeamId, color));
+        }
+
+        // Create indicator data for each starting location
+        for (int i = 0; i < MAX_STARTING_LOCATIONS; i++)
+        {
+            int waypoint = i + 1;
+            bool showLocation = i < startingLocations.Count
+                && gameModeMap.AllowedStartingLocations.Contains(waypoint);
+
+            if (!showLocation)
+                continue;
+
+            double x = texturePositionX + startingLocations[i].X * ratio;
+            double y = texturePositionY + startingLocations[i].Y * ratio;
+
+            assignedPlayers.TryGetValue(waypoint, out var playerList);
+            bool isOccupied = playerList != null && playerList.Count > 0;
+
+            // Tint color: use first player's color if occupied, white if empty
+            IRgb24Color tintColor = isOccupied
+                ? playerList![0].Color
+                : new Rgb24Color(255, 255, 255);
+
+            _startingLocationIndicators.Add(new StartingLocationIndicatorData(
+                waypoint, x, y, true, isOccupied, tintColor,
+                playerList ?? new List<IIndicatorPlayerInfo>()));
+        }
+    }
 }
+
+internal record StartingLocationIndicatorData(
+    int WaypointNumber,
+    double X,
+    double Y,
+    bool IsVisible,
+    bool IsOccupied,
+    IRgb24Color TintColor,
+    IReadOnlyList<IIndicatorPlayerInfo> Players) : IStartingLocationIndicatorData;
+
+internal record IndicatorPlayerInfo(
+    string Name,
+    int TeamId,
+    IRgb24Color Color) : IIndicatorPlayerInfo;
 

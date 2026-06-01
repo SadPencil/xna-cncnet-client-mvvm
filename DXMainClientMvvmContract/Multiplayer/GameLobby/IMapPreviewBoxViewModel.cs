@@ -22,6 +22,7 @@ public interface IMapPreviewBoxViewModel : INotifyPropertyChanged
 
     // Observable collections
     IReadOnlyList<string> StartingLocationSummaries { get; }
+    IReadOnlyList<IStartingLocationIndicatorData> StartingLocationIndicators { get; }
 
     // Commands
     IRelayCommand SelectStartingLocationCommand { get; }
