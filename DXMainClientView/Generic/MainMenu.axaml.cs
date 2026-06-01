@@ -57,7 +57,6 @@ public partial class MainMenu : UserControl
 
         // TODO: If the current panel is not the main menu, we don't want to trigger these shortcuts.
         // For now, I just disable all shortcuts.
-        e.Handled = true;
         return;
 
         //switch (e.Key)
