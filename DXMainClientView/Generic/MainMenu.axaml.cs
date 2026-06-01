@@ -46,6 +46,14 @@ public partial class MainMenu : UserControl
         // TEST: Create a border with ImageBrush to verify stretching
         AddImageBrushTest();
 
+        // DIAGNOSTIC: Override INI leftbar background to solid red to check height
+        var iniLeftbar = this.FindControl<Avalonia.Controls.Border>("leftbar");
+        if (iniLeftbar != null)
+        {
+            System.Diagnostics.Debug.WriteLine($"INI leftbar BEFORE override: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Bounds={iniLeftbar.Bounds}");
+            iniLeftbar.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Red);
+        }
+
         // Ensure we can receive keyboard input
         Focus();
     }
