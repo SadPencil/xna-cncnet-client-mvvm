@@ -577,6 +577,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         var extraSection = iniFile.GetSection("ExtraControls");
         if (extraSection != null)
         {
+            int insertIndex = 0;
             foreach (var kvp in extraSection.Keys)
             {
                 string[] parts = kvp.Value.Split(':');
@@ -598,7 +599,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     if (section != null)
                         ApplyProperties(control, section, iniFile, controlName);
 
-                    hostPanel.Children.Add(control);
+                    // Insert at beginning so ExtraControls are below DarkeningPanels
+                    hostPanel.Children.Insert(insertIndex, control);
+                    insertIndex++;
                 }
             }
         }
