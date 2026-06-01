@@ -80,7 +80,7 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
 
         iniSettings.SaveSettings();
 
-        IsWindowVisible = false;
+        IsVisible = false;
         onConnectRequested?.Invoke();
 
         await Task.CompletedTask;
@@ -89,7 +89,7 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
     [RelayCommand]
     private void Cancel()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
         onCancelled?.Invoke();
     }
 

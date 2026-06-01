@@ -176,11 +176,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             onConnectRequested: () =>
             {
                 IsLoginWindowVisible = false;
+                LoginWindowViewModel.IsVisible = false;
                 connectionManager.Connect();
             },
             onCancelled: () =>
             {
                 IsLoginWindowVisible = false;
+                LoginWindowViewModel.IsVisible = false;
             });
 
         localGameID = ClientConfiguration.Instance.LocalGame;
@@ -262,6 +264,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (!connectionManager.IsConnected && !connectionManager.IsAttemptingConnection)
         {
             IsLoginWindowVisible = true;
+            LoginWindowViewModel.IsVisible = true;
             LoginWindowViewModel.LoadSettings();
         }
 

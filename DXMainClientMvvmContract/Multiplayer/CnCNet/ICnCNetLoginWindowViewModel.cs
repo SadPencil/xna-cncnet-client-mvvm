@@ -8,7 +8,7 @@ public interface ICnCNetLoginWindowViewModel : INotifyPropertyChanged
 {
     string UserName { get; set; }
     bool RememberPassword { get; set; }
-    bool IsWindowVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IAsyncRelayCommand ConnectCommand { get; }
     IRelayCommand CancelCommand { get; }
