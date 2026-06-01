@@ -22,6 +22,7 @@ using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
 using DXMainClientViewModel.Domain.Multiplayer.LAN;
 using DXMainClientViewModel.LAN;
 using DXMainClientViewModel.Multiplayer.GameLobby;
+using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Services;
 
 using Rampastring.Tools;
@@ -136,21 +137,21 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
         chatColors = new LANColor[]
         {
-            new LANColor("Gray".L10N("Client:Main:ColorGray"), 128, 128, 128),
-            new LANColor("Metallic".L10N("Client:Main:ColorLightGrayMetallic"), 211, 211, 211),
-            new LANColor("Green".L10N("Client:Main:ColorGreen"), 34, 139, 34),
-            new LANColor("Lime Green".L10N("Client:Main:ColorLimeGreen"), 50, 205, 50),
-            new LANColor("Green Yellow".L10N("Client:Main:ColorGreenYellow"), 173, 255, 47),
-            new LANColor("Goldenrod".L10N("Client:Main:ColorGoldenrod"), 255, 193, 37),
-            new LANColor("Yellow".L10N("Client:Main:ColorYellow"), 255, 255, 0),
-            new LANColor("Orange".L10N("Client:Main:ColorOrange"), 255, 165, 0),
-            new LANColor("Red".L10N("Client:Main:ColorRed"), 255, 0, 0),
-            new LANColor("Pink".L10N("Client:Main:ColorPink"), 255, 20, 147),
-            new LANColor("Purple".L10N("Client:Main:ColorPurple"), 147, 112, 219),
-            new LANColor("Sky Blue".L10N("Client:Main:ColorSkyBlue"), 135, 206, 235),
-            new LANColor("Blue".L10N("Client:Main:ColorBlue"), 65, 105, 225),
-            new LANColor("Brown".L10N("Client:Main:ColorBrown"), 139, 69, 19),
-            new LANColor("Teal".L10N("Client:Main:ColorTeal"), 0, 128, 128)
+            new LANColor("Gray".L10N("Client:Main:ColorGray"), new Rgb24Color(128, 128, 128)),
+            new LANColor("Metallic".L10N("Client:Main:ColorLightGrayMetallic"), new Rgb24Color(211, 211, 211)),
+            new LANColor("Green".L10N("Client:Main:ColorGreen"), new Rgb24Color(34, 139, 34)),
+            new LANColor("Lime Green".L10N("Client:Main:ColorLimeGreen"), new Rgb24Color(50, 205, 50)),
+            new LANColor("Green Yellow".L10N("Client:Main:ColorGreenYellow"), new Rgb24Color(173, 255, 47)),
+            new LANColor("Goldenrod".L10N("Client:Main:ColorGoldenrod"), new Rgb24Color(255, 193, 37)),
+            new LANColor("Yellow".L10N("Client:Main:ColorYellow"), new Rgb24Color(255, 255, 0)),
+            new LANColor("Orange".L10N("Client:Main:ColorOrange"), new Rgb24Color(255, 165, 0)),
+            new LANColor("Red".L10N("Client:Main:ColorRed"), new Rgb24Color(255, 0, 0)),
+            new LANColor("Pink".L10N("Client:Main:ColorPink"), new Rgb24Color(255, 20, 147)),
+            new LANColor("Purple".L10N("Client:Main:ColorPurple"), new Rgb24Color(147, 112, 219)),
+            new LANColor("Sky Blue".L10N("Client:Main:ColorSkyBlue"), new Rgb24Color(135, 206, 235)),
+            new LANColor("Blue".L10N("Client:Main:ColorBlue"), new Rgb24Color(65, 105, 225)),
+            new LANColor("Brown".L10N("Client:Main:ColorBrown"), new Rgb24Color(139, 69, 19)),
+            new LANColor("Teal".L10N("Client:Main:ColorTeal"), new Rgb24Color(0, 128, 128))
         };
 
         foreach (LANColor color in chatColors)
