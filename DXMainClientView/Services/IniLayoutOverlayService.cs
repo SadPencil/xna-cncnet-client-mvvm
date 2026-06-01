@@ -777,6 +777,58 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
+    /// <summary>
+    /// Hardcoded draw modes from XNA code (PanelBackgroundDrawMode assignments).
+    /// Key: control name, Value: draw mode string.
+    /// </summary>
+    private static readonly Dictionary<string, string> HardcodedDrawModes = new()
+    {
+        // CampaignSelector.cs
+        ["lbCampaignList"] = "stretched",
+        ["tbMissionDescription"] = "stretched",
+        ["pnlMissionPreview"] = "stretched",
+        // CheaterWindow.cs
+        ["imagePanel"] = "stretched",
+        // GameInProgressWindow.cs
+        ["GameInProgressWindow"] = "stretched",
+        // GameLoadingWindow.cs
+        ["lbSaveGameList"] = "stretched",
+        // UpdaterOptionsPanel.cs
+        ["lbUpdateServerList"] = "stretched",
+        // StatisticsWindow.cs
+        ["lbGameList"] = "stretched",
+        ["lbGameStatistics"] = "stretched",
+        // TopBar.cs
+        ["TopBar"] = "stretched",
+        // ChoiceNotificationBox.cs
+        ["ChoiceNotificationBox"] = "stretched",
+        // CnCNetLobby.cs
+        ["CnCNetLobby"] = "stretched",
+        // LoadOrSaveGameOptionPresetWindow.cs
+        ["LoadOrSaveGameOptionPresetWindow"] = "stretched",
+        // MapSharingConfirmationPanel.cs
+        ["MapSharingConfirmationPanel"] = "tiled",
+        // PrivateMessageNotificationBox.cs
+        ["PrivateMessageNotificationBox"] = "stretched",
+        // PrivateMessagingWindow.cs
+        ["lbUserList"] = "stretched",
+        ["lbMessages"] = "stretched",
+        // TunnelListBox.cs
+        ["TunnelListBox"] = "stretched",
+        // TunnelSelectionWindow.cs
+        ["TunnelSelectionWindow"] = "stretched",
+        // GameInformationPanel.cs
+        ["GameInformationPanel"] = "stretched",
+        // GameLoadingLobbyBase.cs
+        ["panelPlayers"] = "stretched",
+        // CoopBriefingBox.cs
+        ["CoopBriefingBox"] = "stretched",
+        // MapPreviewBox.cs
+        ["MapPreviewBox"] = "stretched",
+        // LANLobby.cs
+        ["LANLobby"] = "stretched",
+    };
+
     private static void ApplyBackgroundTexture(Control control, string texturePath)
     {
         try
@@ -792,13 +844,21 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             Logger.Log($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
             var bitmap = new Bitmap(fullPath);
 
+            // Determine stretch mode from hardcoded mapping or default to Fill
+            string drawMode = HardcodedDrawModes.TryGetValue(control.Name, out var mode) ? mode : "stretched";
+            Stretch stretch = drawMode switch
+            {
+                "stretched" => Stretch.Fill,
+                "centered" => Stretch.UniformToFill,
+                _ => Stretch.Fill
+            };
+            TileMode tileMode = drawMode == "tiled" ? TileMode.FlipXY : TileMode.None;
+
             var brush = new ImageBrush
             {
                 Source = bitmap,
-                // Default: UniformToFill (maintain ratio, crop excess, no letterbox)
-                // Can be overridden by DrawMode INI property
-                Stretch = Stretch.UniformToFill,
-                TileMode = TileMode.None
+                Stretch = stretch,
+                TileMode = tileMode
             };
 
             if (control is Window window)
@@ -1264,18 +1324,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         if (brush != null)
         {
-            brush.Stretch = drawMode?.ToLower() switch
+            switch (drawMode?.ToLower())
             {
-                // XNAUI STRETCHED: draw texture to fill control (may distort)
-                "stretched" => Stretch.Fill,
-                // XNAUI CENTERED: center texture, crop if larger (maintain ratio)
-                "centered" => Stretch.UniformToFill,
-                "tiled" => Stretch.None,
-                _ => Stretch.UniformToFill
-            };
-
-            if (drawMode?.ToLower() == "tiled")
-                brush.TileMode = TileMode.FlipXY;
+                case "stretched":
+                    // XNAUI STRETCHED: draw texture to fill control (may distort)
+                    brush.Stretch = Stretch.Fill;
+                    break;
+                case "centered":
+                    // XNAUI CENTERED: center texture, crop if larger, no scaling
+                    brush.Stretch = Stretch.UniformToFill;
+                    break;
+                case "tiled":
+                    // XNAUI TILED: tile texture to fill control
+                    brush.Stretch = Stretch.None;
+                    brush.TileMode = TileMode.FlipXY;
+                    break;
+                default:
+                    brush.Stretch = Stretch.Fill;
+                    break;
+            }
         }
     }
 
