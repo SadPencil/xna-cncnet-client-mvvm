@@ -673,14 +673,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     private static void StretchBitmapToFill(Control control)
     {
         if (control is not Border border)
+        {
+            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': not a Border, is {control.GetType().Name}");
             return;
+        }
         if (border.Background is not ImageBrush brush)
+        {
+            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': Background is {border.Background?.GetType().Name ?? "null"}");
             return;
+        }
         if (brush.Source is not Bitmap sourceBitmap)
+        {
+            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': Source is {brush.Source?.GetType().Name ?? "null"}");
             return;
+        }
 
         int targetWidth = (int)Math.Max(1, border.Width);
         int targetHeight = (int)Math.Max(1, border.Height);
+
+        Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': bitmap={sourceBitmap.PixelSize.Width}x{sourceBitmap.PixelSize.Height}, target={targetWidth}x{targetHeight}");
 
         // Skip if the bitmap is already at the target size
         if (sourceBitmap.PixelSize.Width == targetWidth && sourceBitmap.PixelSize.Height == targetHeight)
@@ -694,6 +705,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 ctx.DrawImage(sourceBitmap, new Rect(0, 0, targetWidth, targetHeight));
             }
             brush.Source = target;
+            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': SUCCESS, new bitmap={target.PixelSize.Width}x{target.PixelSize.Height}");
         }
         catch (Exception ex)
         {
