@@ -689,9 +689,19 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         return controlType switch
         {
             // Panels
-            "XNAExtraPanel" or "XNAPanel" or "XNAControl"
-            or "PlayerExtraOptionsPanel"
-            or "MapPreviewBox" => new Border
+            "XNAExtraPanel" or "XNAPanel" or "XNAControl" => new Border
+            {
+                Name = name,
+                Child = new Panel()
+            },
+            // TODO: PlayerExtraOptionsPanel - needs custom template with player slot controls
+            "PlayerExtraOptionsPanel" => new Border
+            {
+                Name = name,
+                Child = new Panel()
+            },
+            // TODO: MapPreviewBox - needs custom control for map preview rendering
+            "MapPreviewBox" => new Border
             {
                 Name = name,
                 Child = new Panel()
@@ -701,17 +711,28 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             // Buttons
             "XNAButton" or "XNAClientButton" or "XNALinkButton"
             or "GameLaunchButton" => new Button { Name = name },
-            // Checkboxes
-            "XNACheckBox" or "XNAClientCheckBox"
-            or "SettingCheckBox" or "FileSettingCheckBox"
-            or "CampaignCheckBox" or "GameLobbyCheckBox" => new CheckBox { Name = name },
-            // Dropdowns
-            "XNADropDown" or "XNAClientDropDown"
-            or "SettingDropDown" or "FileSettingDropDown" => new ComboBox { Name = name },
+            // Checkboxes - basic types
+            "XNACheckBox" or "XNAClientCheckBox" => new CheckBox { Name = name },
+            // TODO: SettingCheckBox - reads/writes INI settings directly (needs IIniSettingsService)
+            // Has special attributes: SettingSection, SettingKey, ValueWhenChecked, ValueWhenUnchecked
+            "SettingCheckBox" => new CheckBox { Name = name },
+            // TODO: FileSettingCheckBox - reads/writes specific file settings (needs file path support)
+            "FileSettingCheckBox" => new CheckBox { Name = name },
+            // TODO: CampaignCheckBox - campaign-specific checkbox with mission data binding
+            "CampaignCheckBox" => new CheckBox { Name = name },
+            // TODO: GameLobbyCheckBox - game lobby checkbox with game option binding
+            "GameLobbyCheckBox" => new CheckBox { Name = name },
+            // Dropdowns - basic types
+            "XNADropDown" or "XNAClientDropDown" => new ComboBox { Name = name },
+            // TODO: SettingDropDown - reads/writes INI settings for selected index
+            "SettingDropDown" => new ComboBox { Name = name },
+            // TODO: FileSettingDropDown - reads/writes file settings for selected index
+            "FileSettingDropDown" => new ComboBox { Name = name },
             // Text inputs
             "XNATextBox" or "XNASuggestionTextBox" => new TextBox { Name = name },
-            // List boxes
-            "XNAMultiColumnListBox" or "XNAListBox" => new ListBox { Name = name },
+            // TODO: XNAMultiColumnListBox - needs custom multi-column list control
+            "XNAMultiColumnListBox" => new ListBox { Name = name },
+            "XNAListBox" => new ListBox { Name = name },
             _ => null
         };
     }
