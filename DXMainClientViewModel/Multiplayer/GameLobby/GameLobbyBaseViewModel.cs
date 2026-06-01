@@ -234,9 +234,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     // --- Player slot initialization ---
 
-    private static IReadOnlyList<string> CreateNameOptionsWithFirstName(string firstName)
+    private static IReadOnlyList<string> CreateNameOptionsWithFirstPlayerName(string firstPlayerName)
     {
-        var nameOptions = new List<string> { firstName };
+        var nameOptions = new List<string> { firstPlayerName };
         nameOptions.AddRange(ProgramConstants.AI_PLAYER_NAMES);
         return nameOptions;
     }
@@ -894,7 +894,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             var slot = slots[pId];
 
             slot.PlayerName = pInfo.Name;
-            slot.NameOptions = CreateNameOptionsWithFirstName(pInfo.Name);
+            slot.NameOptions = CreateNameOptionsWithFirstPlayerName(pInfo.Name);
             slot.SelectedNameIndex = 0;
             slot.IsNameDropdownEnabled = false;
 
@@ -941,7 +941,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             aiInfo.Index = index;
             var slot = slots[index];
 
-            slot.NameOptions = CreateNameOptionsWithFirstName("-");
+            slot.NameOptions = CreateNameOptionsWithFirstPlayerName("-");
             slot.SelectedNameIndex = 1 + aiInfo.AILevel;
             slot.IsNameDropdownEnabled = allowOptionsChange;
 

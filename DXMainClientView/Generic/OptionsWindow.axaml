@@ -326,6 +326,7 @@
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" />
             <ComboBox x:Name="ddAllowPrivateMessagesFrom"
+                      ItemsSource="{Binding AllowPrivateMessagesFromOptions}"
                       SelectedIndex="{Binding SelectedAllowPrivateMessagesFromIndex}"
                       Width="110" Height="21" />
           </StackPanel>

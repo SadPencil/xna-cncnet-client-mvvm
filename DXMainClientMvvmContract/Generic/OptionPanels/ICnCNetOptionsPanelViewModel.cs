@@ -13,6 +13,8 @@ public interface ICnCNetOptionsPanelViewModel : INotifyPropertyChanged
     bool NotifyOnUserListChanges { get; set; }
     bool DisablePrivateMessagePopups { get; set; }
     int AllowPrivateMessagesMode { get; set; }
+    IReadOnlyList<string> AllowPrivateMessagesFromOptions { get; }
+    int SelectedAllowPrivateMessagesFromIndex { get; set; }
     bool SkipLoginDialog { get; set; }
     bool PersistentMode { get; set; }
     bool AutoConnectOnStartup { get; set; }

@@ -25,6 +25,10 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
     private readonly UserINISettings iniSettings;
     private readonly GameCollection gameCollection;
 
+    // AllowPrivateMessagesFrom dropdown: index -> enum value mapping
+    // Order matches original XNA: All(1), CurrentChannel(4), Friends(2), None(3)
+    private static readonly int[] PmModeByIndex = { 1, 4, 2, 3 };
+
     // --- Observable state ---
 
     [ObservableProperty]
@@ -44,6 +48,17 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
 
     [ObservableProperty]
     private int _allowPrivateMessagesMode;
+
+    [ObservableProperty]
+    private int _selectedAllowPrivateMessagesFromIndex;
+
+    public IReadOnlyList<string> AllowPrivateMessagesFromOptions { get; } = new[]
+    {
+        "All".L10N("Client:DTAConfig:PMAll"),
+        "Current channel".L10N("Client:DTAConfig:PMCurrentChannel"),
+        "Friends".L10N("Client:DTAConfig:PMFriends"),
+        "None".L10N("Client:DTAConfig:PMNone"),
+    };
 
     [ObservableProperty]
     private bool _skipLoginDialog;
@@ -103,6 +118,7 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
         DisablePrivateMessagePopups = iniSettings.DisablePrivateMessagePopups;
         DisableMainMenuHotkeys = iniSettings.DisableMainMenuHotkeys;
         AllowPrivateMessagesMode = iniSettings.AllowPrivateMessagesFromState;
+        SelectedAllowPrivateMessagesFromIndex = EnumToIndex(AllowPrivateMessagesMode);
         AutoConnectOnStartup = iniSettings.AutomaticCnCNetLogin;
         SkipLoginDialog = iniSettings.SkipConnectDialog;
         PersistentMode = iniSettings.PersistentMode;
@@ -138,7 +154,7 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
         iniSettings.NotifyOnUserListChange.Value = NotifyOnUserListChanges;
         iniSettings.DisablePrivateMessagePopups.Value = DisablePrivateMessagePopups;
         iniSettings.DisableMainMenuHotkeys.Value = DisableMainMenuHotkeys;
-        iniSettings.AllowPrivateMessagesFromState.Value = AllowPrivateMessagesMode;
+        iniSettings.AllowPrivateMessagesFromState.Value = PmModeByIndex[SelectedAllowPrivateMessagesFromIndex];
         iniSettings.AutomaticCnCNetLogin.Value = AutoConnectOnStartup;
         iniSettings.SkipConnectDialog.Value = SkipLoginDialog;
         iniSettings.PersistentMode.Value = PersistentMode;
@@ -186,6 +202,18 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
         IsAutoConnectOnStartupAllowed = SkipLoginDialog && PersistentMode;
         if (!IsAutoConnectOnStartupAllowed)
             AutoConnectOnStartup = false;
+    }
+
+    partial void OnSelectedAllowPrivateMessagesFromIndexChanged(int value)
+    {
+        if (value >= 0 && value < PmModeByIndex.Length)
+            AllowPrivateMessagesMode = PmModeByIndex[value];
+    }
+
+    private int EnumToIndex(int enumValue)
+    {
+        int idx = Array.IndexOf(PmModeByIndex, enumValue);
+        return idx >= 0 ? idx : 0; // Default to "All" if not found
     }
 }
 
