@@ -713,20 +713,21 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             or "GameLaunchButton" => new Button { Name = name },
             // Checkboxes - basic types
             "XNACheckBox" or "XNAClientCheckBox" => new CheckBox { Name = name },
-            // TODO: SettingCheckBox - reads/writes INI settings directly (needs IIniSettingsService)
+            // TODO: SettingCheckBox - needs ViewModel with IIniSettingsService for INI read/write
             // Has special attributes: SettingSection, SettingKey, ValueWhenChecked, ValueWhenUnchecked
+            // View cannot handle this alone - requires ViewModel property binding
             "SettingCheckBox" => new CheckBox { Name = name },
-            // TODO: FileSettingCheckBox - reads/writes specific file settings (needs file path support)
+            // TODO: FileSettingCheckBox - needs ViewModel for file-based settings read/write
             "FileSettingCheckBox" => new CheckBox { Name = name },
-            // TODO: CampaignCheckBox - campaign-specific checkbox with mission data binding
+            // TODO: CampaignCheckBox - needs ViewModel with campaign mission data binding
             "CampaignCheckBox" => new CheckBox { Name = name },
-            // TODO: GameLobbyCheckBox - game lobby checkbox with game option binding
+            // TODO: GameLobbyCheckBox - needs ViewModel with game option binding
             "GameLobbyCheckBox" => new CheckBox { Name = name },
             // Dropdowns - basic types
             "XNADropDown" or "XNAClientDropDown" => new ComboBox { Name = name },
-            // TODO: SettingDropDown - reads/writes INI settings for selected index
+            // TODO: SettingDropDown - needs ViewModel with IIniSettingsService for INI read/write
             "SettingDropDown" => new ComboBox { Name = name },
-            // TODO: FileSettingDropDown - reads/writes file settings for selected index
+            // TODO: FileSettingDropDown - needs ViewModel for file-based settings read/write
             "FileSettingDropDown" => new ComboBox { Name = name },
             // Text inputs
             "XNATextBox" or "XNASuggestionTextBox" => new TextBox { Name = name },
