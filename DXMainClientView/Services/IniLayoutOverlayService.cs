@@ -677,8 +677,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 string controlName = parts[0];
                 string controlType = parts[1];
 
-                // Skip if control already exists (from AXAML)
-                if (FindControlByName(root, controlName) != null)
+                // Skip if control already exists (from AXAML or parent view).
+                // Search from the Window level to avoid duplicate chrome bars
+                // when child views (CampaignSelector, SkirmishLobby, etc.) also
+                // merge GenericWindow.ini and create ExtraControls.
+                var searchRoot = FindWindowAncestor(root) ?? root;
+                if (FindControlByName(searchRoot, controlName) != null)
                     continue;
 
                 var control = CreateControl(controlType, controlName);
@@ -721,7 +725,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 string controlName = parts[0];
                 string controlType = parts[1];
 
-                if (FindControlByName(root, controlName) != null)
+                if (FindControlByName(FindWindowAncestor(root) ?? root, controlName) != null)
                     continue;
 
                 var control = CreateControl(controlType, controlName);
@@ -777,6 +781,23 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             double y = double.IsNaN(Canvas.GetTop(control)) ? 0 : Canvas.GetTop(control);
             control.Height = parentHeight - y - fillHeight.Value;
         }
+    }
+
+    /// <summary>
+    /// Walks up the visual tree to find the containing Window.
+    /// Used to search for existing controls at the Window level,
+    /// preventing duplicate ExtraControls across views.
+    /// </summary>
+    private static Window? FindWindowAncestor(Control control)
+    {
+        var current = control as Control;
+        while (current != null)
+        {
+            if (current is Window window)
+                return window;
+            current = current.Parent as Control;
+        }
+        return null;
     }
 
     private static Panel FindFirstPanel(Control control)
