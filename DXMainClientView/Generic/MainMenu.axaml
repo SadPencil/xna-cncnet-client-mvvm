@@ -13,6 +13,12 @@
              Background="Transparent">
   <Canvas x:Name="MainCanvas">
 
+    <!-- TEST: Verify Border with Image child renders at correct height -->
+    <Border x:Name="testBorder" Width="24" Height="696"
+            Canvas.Left="50" Canvas.Top="12" Background="Red" />
+    <Border x:Name="testBorder2" Width="50" Height="696"
+            Canvas.Left="80" Canvas.Top="12" Background="Blue" />
+
     <!-- ========== Menu buttons (INI overlay applies all visual properties) ========== -->
     <Button x:Name="btnNewCampaign"
             Command="{Binding StartCampaignCommand}"
