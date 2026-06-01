@@ -478,14 +478,14 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 ToolTip.SetTip(control, value.Replace("@", "\n"));
                 break;
 
-            // Deferred properties - store for later processing
+            // These properties need parent dimensions - apply immediately
             case "FillWidth":
             case "FillHeight":
             case "DistanceFromRightBorder":
             case "DistanceFromBottomBorder":
             case "DistanceFromLeftBorder":
             case "DistanceFromTopBorder":
-                // These are handled in ApplyDeferredProperties
+                // Stored and applied after all properties are processed
                 break;
 
             // Skip properties we don't handle yet
@@ -946,16 +946,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (control is Window window)
                 window.Background = brush;
             else if (control is Border border)
-            {
                 border.Background = brush;
-                // Auto-size from texture only if no FillHeight/FillWidth will be applied later
-                if (double.IsNaN(border.Width) && double.IsNaN(border.Height)
-                    && !WillApplyFill(control))
-                {
-                    border.Width = bitmap.PixelSize.Width;
-                    border.Height = bitmap.PixelSize.Height;
-                }
-            }
             else if (control is Panel panel)
                 panel.Background = brush;
             else if (control is Button button)
@@ -969,19 +960,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         {
             Logger.Log($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
         }
-    }
-
-    /// <summary>
-    /// Checks if the control will have FillWidth or FillHeight applied later.
-    /// Used to skip auto-sizing from texture dimensions.
-    /// </summary>
-    private static bool WillApplyFill(Control control)
-    {
-        // Walk up to find the INI file and check if this control has FillWidth/FillHeight
-        // This is a heuristic - we check if the control name suggests it needs filling
-        // (bars, glows, etc. typically use FillHeight)
-        string name = control.Name?.ToLower() ?? "";
-        return name.Contains("bar") || name.Contains("glow");
     }
 
     public string FindTextureFile(string texturePath) => FindTextureFileStatic(texturePath);
