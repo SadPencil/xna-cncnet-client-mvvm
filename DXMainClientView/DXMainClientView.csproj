@@ -18,7 +18,4 @@
     <ProjectReference Include="..\DXMainClientMvvmContract\DXMainClientMvvmContract.csproj" />
     <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Styles\" />
-  </ItemGroup>
 </Project>
