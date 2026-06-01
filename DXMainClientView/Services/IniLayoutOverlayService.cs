@@ -795,7 +795,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             var brush = new ImageBrush
             {
                 Source = bitmap,
-                Stretch = Stretch.Fill,
+                // Default: UniformToFill (maintain ratio, crop excess, no letterbox)
+                // Can be overridden by DrawMode INI property
+                Stretch = Stretch.UniformToFill,
                 TileMode = TileMode.None
             };
 
@@ -1264,10 +1266,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         {
             brush.Stretch = drawMode?.ToLower() switch
             {
-                "stretched" => Stretch.Fill,
+                // UniformToFill: maintain ratio, crop excess (no letterbox)
+                "stretched" => Stretch.UniformToFill,
                 "centered" => Stretch.None,
                 "tiled" => Stretch.None,
-                _ => Stretch.Fill
+                _ => Stretch.UniformToFill
             };
 
             if (drawMode?.ToLower() == "tiled")
