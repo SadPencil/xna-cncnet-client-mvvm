@@ -69,7 +69,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     private bool _isBorderlessWindowedModeEnabled;
 
     [ObservableProperty]
-    private bool _isBorderlessWindowedModeAllowed = true;
+    private bool _isBorderlessWindowedModeAllowed;
 
     [ObservableProperty]
     private bool _isBackBufferStoredInVideoMemory;

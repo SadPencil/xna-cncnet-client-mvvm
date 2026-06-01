@@ -45,7 +45,7 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
     private bool _isStopMusicOnMenuDisabled;
 
     [ObservableProperty]
-    private bool _isStopMusicOnMenuAllowed = true;
+    private bool _isStopMusicOnMenuAllowed;
 
     [ObservableProperty]
     private bool _isGameLobbyMessageSoundEnabled;
