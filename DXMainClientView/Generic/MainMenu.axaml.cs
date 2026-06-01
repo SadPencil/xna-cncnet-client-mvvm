@@ -61,7 +61,12 @@ public partial class MainMenu : UserControl
             if (iniLeftbar != null)
             {
                 Rampastring.Tools.Logger.Log($"INI leftbar AFTER layout: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Bounds={iniLeftbar.Bounds}");
-                iniLeftbar.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Red);
+                // Test 1: change width to verify we're modifying the correct control
+                iniLeftbar.Width = 100;
+                // Test 2: force visual refresh
+                iniLeftbar.InvalidateMeasure();
+                iniLeftbar.InvalidateArrange();
+                iniLeftbar.InvalidateVisual();
             }
         }, Avalonia.Threading.DispatcherPriority.Loaded);
 
