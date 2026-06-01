@@ -669,6 +669,10 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         if (GameModeFilterOptions.Count > 0)
         {
             SelectedGameModeFilterIndex = GetDefaultGameModeMapFilterIndex();
+            // Force change notification by resetting to -1 first.
+            // CommunityToolkit.Mvvm only fires OnSelectedMapIndexChanged
+            // when the value actually changes, unlike XNA's SelectedIndexChanged.
+            SelectedMapIndex = -1;
             SelectedMapIndex = 0;
         }
     }
