@@ -9,5 +9,4 @@ public interface IPendingYesNoDialogData
 {
     string Title { get; }
     string Text { get; }
-    Action<bool> Callback { get; }
 }

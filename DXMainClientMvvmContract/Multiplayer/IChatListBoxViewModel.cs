@@ -16,6 +16,7 @@ public interface IChatListBoxViewModel : INotifyPropertyChanged
 
     IRelayCommand SendMessageCommand { get; }
     IRelayCommand ClearMessagesCommand { get; }
+    // TODO: investigate whether OpenLinkCommand is properly implemented in view model. The view model should call the Url service to open it. Besides, I don't remember IRelayCommand having a generic version.
     IRelayCommand<string> OpenLinkCommand { get; }
     IRelayCommand ConfirmOpenUrlCommand { get; }
     IRelayCommand CancelOpenUrlCommand { get; }
