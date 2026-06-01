@@ -24,9 +24,9 @@ public readonly record struct Rgb24Color(byte R, byte G, byte B) : IRgb24Color
         if (parts.Length < 3)
             throw new FormatException($"Color string '{colorString}' is not in 'R,G,B' format.");
 
-        byte r = (byte)Math.Min(255, int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture));
-        byte g = (byte)Math.Min(255, int.Parse(parts[1].Trim(), CultureInfo.InvariantCulture));
-        byte b = (byte)Math.Min(255, int.Parse(parts[2].Trim(), CultureInfo.InvariantCulture));
+        byte r = byte.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
+        byte g = byte.Parse(parts[1].Trim(), CultureInfo.InvariantCulture);
+        byte b = byte.Parse(parts[2].Trim(), CultureInfo.InvariantCulture);
         return new Rgb24Color(r, g, b);
     }
 }
