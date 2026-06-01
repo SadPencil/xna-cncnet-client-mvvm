@@ -99,12 +99,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             }
         }
 
-        // Debug: dump all section names after merging
-        {
-            var allSections = iniFile.GetSections();
-            Logger.Log($"INI Layout: Total sections after merge: {allSections.Count}");
-            Logger.Log($"INI Layout: All sections: [{string.Join(", ", allSections)}]");
-        }
 
         // Apply root-level properties. Only inherit [GenericWindow] defaults
         // if the main section explicitly references it via $BaseSection.
@@ -214,16 +208,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (tgtSection == null)
             {
                 // Section doesn't exist in target - use SetStringValue to create it
-                if (sectionName is "leftbar" or "rightbar")
-                    Logger.Log($"INI Layout: MergeMissingKeys: adding [{sectionName}] srcKeys=[{string.Join(",", srcSection.Keys.Select(k => k.Key))}]");
                 foreach (var kvp in srcSection.Keys)
                     target.SetStringValue(sectionName, kvp.Key, kvp.Value);
-                // Verify the section was created correctly
-                if (sectionName is "leftbar" or "rightbar")
-                {
-                    var verifySection = target.GetSection(sectionName);
-                    Logger.Log($"INI Layout: MergeMissingKeys: after add [{sectionName}] tgtKeys=[{string.Join(",", verifySection.Keys.Select(k => k.Key))}]");
-                }
                 continue;
             }
 
@@ -551,25 +537,20 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             return section;
 
         // GetSection returned null. Check if the section actually exists.
+        // This works around the _lastSectionIndex cache bug in IniFile.GetSection
+        // that can skip sections appended by MergeMissingKeys.
         var names = iniFile.GetSections();
-        bool exists = names.Contains(name);
-        Logger.Log($"INI Layout: GetSection('{name}') returned null. exists={exists}, totalSections={names.Count}");
-
-        if (exists)
+        if (names.Contains(name))
         {
             // Reset _lastSectionIndex by calling GetSection with a non-existent name.
-            // GetSection sets _lastSectionIndex=0 when FindIndex returns -1.
             iniFile.GetSection("__reset_index__");
-            section = iniFile.GetSection(name);
-            Logger.Log($"INI Layout: After reset, GetSection('{name}') = {(section != null ? "FOUND" : "STILL NULL")}");
-            return section;
+            return iniFile.GetSection(name);
         }
         return null;
     }
 
     private static void ApplyDeferredToControl(Control control, IniSection section, Control parent)
     {
-        Logger.Log($"INI Layout: ApplyDeferredToControl('{control.Name}'): section=[{section.SectionName}], keys={section.Keys.Count}, keyNames=[{string.Join(",", section.Keys.Select(k => k.Key))}]");
         double? fillWidth = null;
         double? fillHeight = null;
         double? distRight = null;
@@ -643,7 +624,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             double x = Canvas.GetLeft(control);
             if (double.IsNaN(x)) x = 0; // fallback if Location X was not set
             control.Width = parentWidth - x - fillWidth.Value;
-            StretchBitmapToFill(control);
         }
 
         // Apply FillHeight (sets height to fill from Y to bottom edge minus value)
@@ -655,61 +635,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             Logger.Log($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
 
             control.Height = newHeight;
-
-            // After FillHeight changes the control's size, re-stretch the bitmap.
-            // Avalonia's ImageBrush with Stretch.Fill does NOT actually stretch
-            // the image to fill the control — it renders at natural DPI size.
-            // Fix: create a pre-stretched bitmap at the exact target dimensions.
-            StretchBitmapToFill(control);
-        }
-    }
-
-    /// <summary>
-    /// After FillHeight/FillWidth changes a control's size, re-stretch the bitmap.
-    /// Avalonia's ImageBrush with Stretch.Fill renders at the bitmap's natural DPI
-    /// size instead of stretching to fill the control. This method creates a
-    /// pre-stretched bitmap at the exact target dimensions using RenderTargetBitmap.
-    /// </summary>
-    private static void StretchBitmapToFill(Control control)
-    {
-        if (control is not Border border)
-        {
-            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': not a Border, is {control.GetType().Name}");
-            return;
-        }
-        if (border.Background is not ImageBrush brush)
-        {
-            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': Background is {border.Background?.GetType().Name ?? "null"}");
-            return;
-        }
-        if (brush.Source is not Bitmap sourceBitmap)
-        {
-            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': Source is {brush.Source?.GetType().Name ?? "null"}");
-            return;
-        }
-
-        int targetWidth = (int)Math.Max(1, border.Width);
-        int targetHeight = (int)Math.Max(1, border.Height);
-
-        Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': bitmap={sourceBitmap.PixelSize.Width}x{sourceBitmap.PixelSize.Height}, target={targetWidth}x{targetHeight}");
-
-        // Skip if the bitmap is already at the target size
-        if (sourceBitmap.PixelSize.Width == targetWidth && sourceBitmap.PixelSize.Height == targetHeight)
-            return;
-
-        try
-        {
-            var target = new RenderTargetBitmap(new PixelSize(targetWidth, targetHeight), new Vector(96, 96));
-            using (var ctx = target.CreateDrawingContext())
-            {
-                ctx.DrawImage(sourceBitmap, new Rect(0, 0, targetWidth, targetHeight));
-            }
-            brush.Source = target;
-            Logger.Log($"INI Layout: StretchBitmapToFill '{control.Name}': SUCCESS, new bitmap={target.PixelSize.Width}x{target.PixelSize.Height}");
-        }
-        catch (Exception ex)
-        {
-            Logger.Log($"INI Layout: StretchBitmapToFill failed for '{control.Name}': {ex.Message}");
         }
     }
 

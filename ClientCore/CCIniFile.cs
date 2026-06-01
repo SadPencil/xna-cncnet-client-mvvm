@@ -1,6 +1,5 @@
 ﻿using Rampastring.Tools;
 using System.IO;
-using System.Linq;
 
 namespace ClientCore
 {
@@ -8,11 +7,6 @@ namespace ClientCore
     {
         public CCIniFile(string path) : base(path)
         {
-            // Debug: log [leftbar] keys before $BaseSection expansion
-            var leftbarBefore = Sections.FirstOrDefault(s => s.SectionName == "leftbar");
-            if (leftbarBefore != null)
-                Logger.Log($"CCIniFile({Path.GetFileName(path)}): [leftbar] BEFORE expansion: [{string.Join(",", leftbarBefore.Keys.Select(k => k.Key))}]");
-
             foreach (IniSection section in Sections)
             {
                 string baseSectionName = section.GetStringValue("$BaseSection", null);
@@ -27,8 +21,6 @@ namespace ClientCore
                     continue;
                 }
 
-                Logger.Log($"CCIniFile({Path.GetFileName(path)}): Expanding [{section.SectionName}] $BaseSection={baseSectionName}, adding {baseSection.Keys.Count(k => !section.KeyExists(k.Key))} keys");
-
                 int addedKeyCount = 0;
 
                 foreach (var kvp in baseSection.Keys)
@@ -40,11 +32,6 @@ namespace ClientCore
                     }
                 }
             }
-
-            // Debug: log [leftbar] keys after $BaseSection expansion
-            var leftbarAfter = Sections.FirstOrDefault(s => s.SectionName == "leftbar");
-            if (leftbarAfter != null)
-                Logger.Log($"CCIniFile({Path.GetFileName(path)}): [leftbar] AFTER expansion: [{string.Join(",", leftbarAfter.Keys.Select(k => k.Key))}]");
         }
 
         protected override void ApplyBaseIni()
