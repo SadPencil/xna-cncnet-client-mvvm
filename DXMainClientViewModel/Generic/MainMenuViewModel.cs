@@ -201,6 +201,7 @@ namespace DXMainClientViewModel.Generic
             // Note: StatisticsWindow must be initialized before any lobbies that extend GameLobbyBase,
             // because StatisticsManager is accessed when initializing GameLobbyBase (map rank display).
             statisticsWindowViewModel.Initialize();
+
             skirmishLobbyViewModel.Initialize();
             lanLobbyViewModel.Initialize();
             cncNetLobbyViewModel.Initialize();
