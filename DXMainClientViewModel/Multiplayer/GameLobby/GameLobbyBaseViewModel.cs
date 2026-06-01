@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -872,7 +873,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         bool allowOptionsChange = AllowPlayerOptionsChange();
         var extraOpts = playerExtraOptions;
 
+        if (Players.Count > MAX_PLAYER_COUNT)
+            throw new Exception($"Player count exceeds maximum of {MAX_PLAYER_COUNT}. How could this happen?");
+
+        Debug.Assert(PlayerSlots.Count >= Players.Count + AIPlayers.Count, "PlayerSlots count should not be less than total player count");
+
         // Human players
+
         for (int pId = 0; pId < Players.Count; pId++)
         {
             PlayerInfo pInfo = Players[pId];
