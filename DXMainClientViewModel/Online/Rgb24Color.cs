@@ -13,7 +13,7 @@ public readonly record struct Rgb24Color(byte R, byte G, byte B) : IRgb24Color
     public static readonly Rgb24Color Gray = new(128, 128, 128);
 
     /// <summary>
-    /// Parses a color string in "R,G,B" or "R,G,B,A" format.
+    /// Parses a color string in "R,G,B" or "R,G,B,A" format, dropping the alpha component if present. Each component should be an integer between 0 and 255.
     /// </summary>
     public static Rgb24Color FromString(string colorString)
     {
