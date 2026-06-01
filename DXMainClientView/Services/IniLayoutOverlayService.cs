@@ -207,17 +207,23 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (tgtSection == null)
             {
                 // Section doesn't exist in target - use SetStringValue to create it
+                if (sectionName is "leftbar" or "rightbar" or "ExtraControls")
+                    Logger.Log($"INI Layout: MergeMissingKeys: adding new section [{sectionName}] with {srcSection.Keys.Count} keys");
                 foreach (var kvp in srcSection.Keys)
                     target.SetStringValue(sectionName, kvp.Key, kvp.Value);
                 continue;
             }
 
+            int addedKeys = 0;
             foreach (var kvp in srcSection.Keys)
             {
                 if (tgtSection.KeyExists(kvp.Key))
                     continue;
                 tgtSection.SetStringValue(kvp.Key, kvp.Value);
+                addedKeys++;
             }
+            if (sectionName is "leftbar" or "rightbar" or "ExtraControls" && addedKeys > 0)
+                Logger.Log($"INI Layout: MergeMissingKeys: merged {addedKeys} keys into existing [{sectionName}]");
         }
     }
 
@@ -511,6 +517,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 var section = iniFile.GetSection(child.Name);
                 if (section != null)
                     ApplyDeferredToControl(child, section, parent);
+                else if (child.Name is "leftbar" or "rightbar" or "glow_l" or "glow_r")
+                    Logger.Log($"INI Layout: DEFERRED SKIP '{child.Name}' - section not found in INI");
             }
             ApplyDeferredRecursive(child, iniFile);
         }
