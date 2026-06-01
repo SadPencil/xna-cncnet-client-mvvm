@@ -227,16 +227,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 continue;
             }
 
-            int addedKeys = 0;
             foreach (var kvp in srcSection.Keys)
             {
                 if (tgtSection.KeyExists(kvp.Key))
                     continue;
                 tgtSection.SetStringValue(kvp.Key, kvp.Value);
-                addedKeys++;
             }
-            if (sectionName is "leftbar" or "rightbar" or "ExtraControls" && addedKeys > 0)
-                Logger.Log($"INI Layout: MergeMissingKeys: merged {addedKeys} keys into existing [{sectionName}]");
         }
     }
 
@@ -824,12 +820,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Map XNAUI types to Avalonia controls
         return controlType switch
         {
-            // Panels - no Child needed for decorative ExtraControls.
-            // A Panel child interferes with Border's DesiredSize calculation,
-            // causing FillHeight to not render correctly.
+            // Panels
             "XNAExtraPanel" or "XNAPanel" or "XNAControl" => new Border
             {
                 Name = name,
+                Child = new Panel()
             },
             // TODO: PlayerExtraOptionsPanel - needs custom template with player slot controls
             "PlayerExtraOptionsPanel" => new Border
@@ -974,14 +969,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     {
         return drawMode?.ToLower() switch
         {
-            // In Avalonia, ImageBrush with TileMode.None renders the image at its
-            // natural size — Stretch only affects how the image fits within each tile.
-            // We must use TileMode.FlipXY for "stretched" and "centered" so the brush
-            // actually scales the image to fill the control area.
-            "stretched" => (Stretch.Fill, TileMode.FlipXY),
-            "centered" => (Stretch.UniformToFill, TileMode.FlipXY),
+            "stretched" => (Stretch.Fill, TileMode.None),
+            "centered" => (Stretch.UniformToFill, TileMode.None),
             "tiled" => (Stretch.None, TileMode.FlipXY),
-            _ => (Stretch.Fill, TileMode.FlipXY)
+            _ => (Stretch.Fill, TileMode.None)
         };
     }
 
@@ -1008,18 +999,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (!string.IsNullOrEmpty(control.Name)
             && HardcodedDrawModes.TryGetValue(control.Name, out var drawMode))
         {
-            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
-
-            // Check for Image child (ExtraControls pattern)
-            if (control is Border border && border.Child is Image img)
-            {
-                img.Stretch = stretch;
-                return;
-            }
-
             var brush = GetImageBrush(control);
             if (brush != null)
             {
+                var (stretch, tileMode) = GetDrawModeSettings(drawMode);
                 brush.Stretch = stretch;
                 brush.TileMode = tileMode;
             }
@@ -1088,21 +1071,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 window.Background = brush;
             else if (control is Border border)
             {
-                // For tiled mode, use ImageBrush on Background (tiling works with ImageBrush).
-                // For stretched/centered, use an Image child — Avalonia's ImageBrush doesn't
-                // re-render when the control size changes (e.g. FillHeight), but Image does.
-                if (drawMode?.ToLower() == "tiled")
-                {
-                    border.Background = brush;
-                }
-                else
-                {
-                    border.Child = new Image
-                    {
-                        Source = bitmap,
-                        Stretch = stretch,
-                    };
-                }
+                border.Background = brush;
                 // Auto-size from texture if no explicit size set
                 if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
                 {
@@ -1548,35 +1517,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyDrawMode(Control control, string drawMode)
     {
-        var (stretch, tileMode) = GetDrawModeSettings(drawMode);
-
-        // Check for Image child (ExtraControls pattern)
-        if (control is Border border)
-        {
-            if (border.Child is Image img)
-            {
-                if (drawMode?.ToLower() == "tiled" && img.Source is Bitmap bmp)
-                {
-                    // Switch from Image child to ImageBrush for tiled mode
-                    border.Child = null;
-                    border.Background = new ImageBrush
-                    {
-                        Source = bmp,
-                        Stretch = stretch,
-                        TileMode = tileMode,
-                    };
-                }
-                else
-                {
-                    img.Stretch = stretch;
-                }
-                return;
-            }
-        }
-
         var brush = GetImageBrush(control);
         if (brush != null)
         {
+            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
             brush.Stretch = stretch;
             brush.TileMode = tileMode;
         }
