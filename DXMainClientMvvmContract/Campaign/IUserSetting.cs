@@ -1,8 +1,7 @@
 namespace DXMainClientMvvmContract.Campaign;
 
 /// <summary>
-/// Abstracts a user-configurable setting that can be saved/loaded and reset to default.
-/// The View creates these from INI and registers them with the ViewModel.
+/// TODO: remove this interface and re-think the MVVM pattern here
 /// </summary>
 public interface IUserSetting
 {
