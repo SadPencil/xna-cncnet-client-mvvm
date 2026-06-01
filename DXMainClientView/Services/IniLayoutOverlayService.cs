@@ -652,6 +652,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (double.IsNaN(y)) y = 0; // fallback if Location Y was not set
             double newHeight = parentHeight - y - fillHeight.Value;
             Logger.Log($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
+
+            // Debug: watch for height changes after FillHeight is applied
+            if (control.Name is "leftbar" or "rightbar")
+            {
+                double capturedHeight = newHeight;
+                control.PropertyChanged += (_, e) =>
+                {
+                    if (e.Property.Name == "Height")
+                    {
+                        Logger.Log($"INI Layout: HEIGHT CHANGED '{control.Name}': was={capturedHeight}, now={control.Height}, Bounds={control.Bounds.Width}x{control.Bounds.Height}");
+                        capturedHeight = control.Height;
+                    }
+                    if (e.Property.Name == "Bounds")
+                    {
+                        Logger.Log($"INI Layout: BOUNDS CHANGED '{control.Name}': {control.Bounds.Width}x{control.Bounds.Height}");
+                    }
+                };
+            }
+
             control.Height = newHeight;
         }
     }
