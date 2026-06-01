@@ -133,6 +133,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Apply deferred properties (FillWidth, FillHeight, DistanceFrom*)
         ApplyDeferredProperties(control, iniFile);
 
+        // Debug: dump final state of chrome bar controls
+        DumpControlState(control, "leftbar");
+        DumpControlState(control, "rightbar");
+
         // Auto-load standard {width}pxbtn.png / {width}pxbtn_c.png textures for
         // buttons that weren't given a custom IdleTexture via INI.  This matches
         // XNAClientButton.Initialize() which loads these textures based on Width.
@@ -147,6 +151,19 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         ApplyInputControlStyles(control);
 
         Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
+    }
+
+    private static void DumpControlState(Control root, string name)
+    {
+        var control = FindControlByName(root, name);
+        if (control is Border border)
+        {
+            Logger.Log($"INI Layout: FINAL '{name}': Width={border.Width}, Height={border.Height}, " +
+                $"Child={border.Child?.GetType().Name ?? "null"}, " +
+                $"Background={border.Background?.GetType().Name ?? "null"}, " +
+                $"Bounds={border.Bounds.Width}x{border.Bounds.Height}, " +
+                $"Canvas.Left={Canvas.GetLeft(border)}, Canvas.Top={Canvas.GetTop(border)}");
+        }
     }
 
     private static string FindIniFile(string windowName)
@@ -674,6 +691,15 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
                     // Apply hardcoded draw mode (INI DrawMode can override)
                     ApplyHardcodedDrawMode(control);
+
+                    // Debug: dump state of chrome bar controls after creation
+                    if (controlName is "leftbar" or "rightbar" && control is Border dbgBorder)
+                    {
+                        Logger.Log($"INI Layout: CREATED '{controlName}': Width={dbgBorder.Width}, Height={dbgBorder.Height}, " +
+                            $"Child={dbgBorder.Child?.GetType().Name ?? "null"}, " +
+                            $"Background={dbgBorder.Background?.GetType().Name ?? "null"}, " +
+                            $"Canvas.Left={Canvas.GetLeft(dbgBorder)}, Canvas.Top={Canvas.GetTop(dbgBorder)}");
+                    }
 
                     // Insert at beginning so ExtraControls are below DarkeningPanels
                     hostPanel.Children.Insert(insertIndex, control);
