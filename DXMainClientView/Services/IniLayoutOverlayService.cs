@@ -523,10 +523,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             {
                 // GetSection has a _lastSectionIndex optimization that can skip
                 // sections appended at the end by MergeMissingKeys. To work around
-                // this, we search the section list directly.
+                // this, we use FindSectionDirect which detects and resets the cache.
                 var section = FindSectionDirect(iniFile, child.Name);
                 if (section != null)
+                {
                     ApplyDeferredToControl(child, section, parent);
+                }
             }
             ApplyDeferredRecursive(child, iniFile);
         }
@@ -538,29 +540,23 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     /// </summary>
     private static IniSection? FindSectionDirect(IniFile iniFile, string name)
     {
-        // Use GetSections() to verify the section exists, then use GetSection.
-        // GetSection's fallback (FindIndex from 0) should find it, but the
-        // _lastSectionIndex forward scan may have already returned it.
-        // If GetSection returns null despite the section existing, we have a bug.
         var section = iniFile.GetSection(name);
         if (section != null)
             return section;
 
-        // Fallback: get all section names and check if it exists
+        // GetSection returned null. Check if the section actually exists.
         var names = iniFile.GetSections();
-        if (names.Contains(name))
+        bool exists = names.Contains(name);
+        Logger.Log($"INI Layout: GetSection('{name}') returned null. exists={exists}, totalSections={names.Count}");
+
+        if (exists)
         {
-            Logger.Log($"INI Layout: BUG GetSection('{name}') returned null but section exists! Section count={names.Count}");
-            // Try a workaround: call GetSection with a non-existent name to
-            // reset _lastSectionIndex, then retry
+            // Reset _lastSectionIndex by calling GetSection with a non-existent name.
+            // GetSection sets _lastSectionIndex=0 when FindIndex returns -1.
             iniFile.GetSection("__reset_index__");
             section = iniFile.GetSection(name);
-            if (section != null)
-            {
-                Logger.Log($"INI Layout: Workaround succeeded - found section '{name}' after index reset");
-                return section;
-            }
-            Logger.Log($"INI Layout: Workaround FAILED - section '{name}' still not found after index reset");
+            Logger.Log($"INI Layout: After reset, GetSection('{name}') = {(section != null ? "FOUND" : "STILL NULL")}");
+            return section;
         }
         return null;
     }
