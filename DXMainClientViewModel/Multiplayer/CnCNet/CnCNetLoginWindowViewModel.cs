@@ -79,14 +79,12 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
 
         iniSettings.SaveSettings();
 
-        IsVisible = false;
         onConnectRequested?.Invoke();
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        IsVisible = false;
         onCancelled?.Invoke();
     }
 

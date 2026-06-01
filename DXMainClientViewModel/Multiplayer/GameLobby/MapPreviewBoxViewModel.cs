@@ -360,7 +360,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             ratio = xRatio;
             texturePositionX = 1;
             int textureHeight = (int)(previewH * ratio);
-            texturePositionY = (PREVIEW_HEIGHT - 2 - textureHeight) / 2;
+            texturePositionY = (PREVIEW_HEIGHT - 2 - textureHeight) / 2 + 1;
         }
 
         // Get starting location coordinates in preview space
@@ -378,8 +378,9 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             if (!assignedPlayers.ContainsKey(pInfo.StartingLocation))
                 assignedPlayers[pInfo.StartingLocation] = new List<IIndicatorPlayerInfo>();
 
-            var mc = mpColors != null && pInfo.ColorId >= 0 && pInfo.ColorId < mpColors.Count
-                ? mpColors[pInfo.ColorId]
+            // ColorId is 1-based (0 = no color, 1 = mpColors[0])
+            var mc = mpColors != null && pInfo.ColorId > 0 && pInfo.ColorId <= mpColors.Count
+                ? mpColors[pInfo.ColorId - 1]
                 : null;
             var color = mc?.Color ?? new Rgb24Color(255, 255, 255);
 

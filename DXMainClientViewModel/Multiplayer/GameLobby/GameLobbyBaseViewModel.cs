@@ -583,6 +583,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         // Rebuild the filter from the options
         RefreshGameModeFilterFromIndex(value);
         MapSearchText = string.Empty;
+        // Reset selected map before ListMaps so ListMaps doesn't try to
+        // match the old GameModeMap (which may not exist in the new list).
+        SelectedMapIndex = -1;
         ListMaps();
 
         if (SelectedMapIndex == -1)
@@ -670,10 +673,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         if (GameModeFilterOptions.Count > 0)
         {
             SelectedGameModeFilterIndex = GetDefaultGameModeMapFilterIndex();
-            // Force change notification by resetting to -1 first.
-            // CommunityToolkit.Mvvm only fires OnSelectedMapIndexChanged
-            // when the value actually changes, unlike XNA's SelectedIndexChanged.
-            SelectedMapIndex = -1;
             SelectedMapIndex = 0;
         }
     }
