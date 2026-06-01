@@ -1,6 +1,8 @@
 using System;
 using System.Globalization;
 
+using DXMainClientViewModel.Online;
+
 namespace DXMainClientViewModel
 {
     /// <summary>
@@ -9,26 +11,26 @@ namespace DXMainClientViewModel
     public static class ColorHelper
     {
         /// <summary>
-        /// Parses a color string in "R,G,B" or "R,G,B,A" format and returns R, G, B values.
+        /// Parses a color string in "R,G,B" or "R,G,B,A" format and returns an Rgb24Color.
         /// </summary>
-        public static void GetRgbFromString(string colorString, out int r, out int g, out int b)
+        public static Rgb24Color GetRgbFromString(string colorString)
         {
             if (string.IsNullOrWhiteSpace(colorString))
             {
-                r = 255; g = 255; b = 255;
-                return;
+                return new Rgb24Color(255, 255, 255);
             }
 
             string[] parts = colorString.Split(',');
             if (parts.Length >= 3)
             {
-                r = Math.Min(255, int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture));
-                g = Math.Min(255, int.Parse(parts[1].Trim(), CultureInfo.InvariantCulture));
-                b = Math.Min(255, int.Parse(parts[2].Trim(), CultureInfo.InvariantCulture));
+                byte r = (byte)Math.Min(255, int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture));
+                byte g = (byte)Math.Min(255, int.Parse(parts[1].Trim(), CultureInfo.InvariantCulture));
+                byte b = (byte)Math.Min(255, int.Parse(parts[2].Trim(), CultureInfo.InvariantCulture));
+                return new Rgb24Color(r, g, b);
             }
             else
             {
-                r = 255; g = 255; b = 255;
+                return new Rgb24Color(255, 255, 255);
             }
         }
     }

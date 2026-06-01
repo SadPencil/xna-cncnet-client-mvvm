@@ -395,7 +395,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         gameChannel.UserAdded += GameChannel_UserAdded;
         connectionManager.SendCustomMessage(new QueuedMessage("JOIN " + channelName + " " + password,
             QueuedMessageType.INSTANT_MESSAGE, 0));
-        connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255,
+        connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255),
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
         IsGameCreationPanelVisible = false;
@@ -420,7 +420,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         gameLoadingChannel.UserAdded += GameLoadingChannel_UserAdded;
         connectionManager.SendCustomMessage(new QueuedMessage("JOIN " + channelName + " " + password,
             QueuedMessageType.INSTANT_MESSAGE, 0));
-        connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255,
+        connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255),
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
         IsGameCreationPanelVisible = false;
@@ -876,7 +876,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         string? error = GetJoinGameErrorByIndex(gameIndex);
         if (!string.IsNullOrEmpty(error))
         {
-            connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255, error));
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), error));
             return false;
         }
 
@@ -888,7 +888,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         string? error = GetJoinGameError(hg);
         if (!string.IsNullOrEmpty(error))
         {
-            messageView?.AddMessage(new ChatMessage(255, 255, 255, error));
+            messageView?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), error));
             return false;
         }
 
@@ -896,7 +896,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             return false;
 
         if (hg.GameVersion != ProgramConstants.GAME_VERSION)
-            messageView?.AddMessage(new ChatMessage(255, 255, 0, "The game host is on a different game version than you. Version incompatibilities may cause issues.".L10N("Client:Main:JoinGameVersionMismatch")));
+            messageView?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 0), "The game host is on a different game version than you. Version incompatibilities may cause issues.".L10N("Client:Main:JoinGameVersionMismatch")));
 
         if (hg.Passworded)
         {
@@ -927,7 +927,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void JoinGameInternal(HostedCnCNetGame hg, string password)
     {
-        connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255,
+        connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255),
             string.Format("Attempting to join game {0} ...".L10N("Client:Main:AttemptJoin"), hg.RoomName)));
         isJoiningGame = true;
         gameOfLastJoinAttempt = hg;
@@ -958,7 +958,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void GameChannel_TargetChangeTooFast(object sender, MessageEventArgs e)
     {
-        connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255, e.Message));
+        connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), e.Message));
         ClearGameJoinAttempt((Channel)sender);
     }
 
@@ -972,13 +972,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (game != null)
         {
-            connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255, string.Format("The game {0} is locked!".L10N("Client:Main:GameLockedWithName"), game.RoomName)));
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), string.Format("The game {0} is locked!".L10N("Client:Main:GameLockedWithName"), game.RoomName)));
             game.Locked = true;
             SortAndRefreshHostedGames();
         }
         else
         {
-            connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255, "The selected game is locked!".L10N("Client:Main:GameLocked")));
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), "The selected game is locked!".L10N("Client:Main:GameLocked")));
         }
 
         ClearGameJoinAttempt((Channel)sender);
@@ -986,7 +986,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void GameChannel_InvalidPasswordEntered_NewGame(object sender, EventArgs e)
     {
-        connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255, "Incorrect password!".L10N("Client:Main:PasswordWrong")));
+        connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), "Incorrect password!".L10N("Client:Main:PasswordWrong")));
         ClearGameJoinAttempt((Channel)sender);
     }
 
@@ -1103,7 +1103,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 #if DEVELOPMENT_BUILD
             clientVersion = $"{GitVersionInformation.CommitDate} {GitVersionInformation.BranchName}@{GitVersionInformation.ShortSha}";
 #endif
-            connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255,
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255),
                 string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion)));
 
             {
@@ -1112,7 +1112,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 #if DEVELOPMENT_BUILD
                 if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
                 {
-                    connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 0, 0, developBuildWarningMessage));
+                    connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 0, 0), developBuildWarningMessage));
                 }
 #endif
             }
@@ -1160,7 +1160,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             var game = hostedGames.Find(g => g.ChannelName == e.ChannelName);
             if (game != null)
             {
-                connectionManager.MainChannel?.AddMessage(new ChatMessage(255, 255, 255, string.Format(
+                connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), string.Format(
                     "Cannot join game {0}, you've been banned by the game host!".L10N("Client:Main:PlayerBannedByHost"), game.RoomName)));
                 isJoiningGame = false;
                 if (gameOfLastJoinAttempt != null)
@@ -1174,7 +1174,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             else
             {
                 var chatChannel = connectionManager.FindChannel(e.ChannelName);
-                chatChannel?.AddMessage(new ChatMessage(255, 255, 255, string.Format(
+                chatChannel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), string.Format(
                     "Cannot join chat channel {0}, you're banned!".L10N("Client:Main:PlayerBannedByChannel"), chatChannel?.UIName)));
             }
         }));
@@ -1363,7 +1363,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
                 uiThreadMarshaller.AddCallback(new Action(() =>
                 {
-                    connectionManager.MainChannel?.AddMessage(new ChatMessage(128, 128, 128, message));
+                    connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(128, 128, 128), message));
                 }));
             }
             return;
@@ -1449,7 +1449,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                         "You can ignore this prompt if there are games listed later. Otherwise, it might indicate a network problem to CnCNet HTTP service.").L10N("Client:Main:NoTunnels");
                     uiThreadMarshaller.AddCallback(new Action(() =>
                     {
-                        connectionManager.MainChannel?.AddMessage(new ChatMessage(128, 128, 128, message));
+                        connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(128, 128, 128), message));
                     }));
                 }
                 return;
@@ -1466,7 +1466,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                         "You can ignore this prompt if there are games listed later. Otherwise, please contact support at {0}.").L10N("Client:Main:NoTunnelForGames"), ClientConfiguration.Instance.LongSupportURL);
                     uiThreadMarshaller.AddCallback(new Action(() =>
                     {
-                        connectionManager.MainChannel?.AddMessage(new ChatMessage(128, 128, 128, message));
+                        connectionManager.MainChannel?.AddMessage(new ChatMessage(new Rgb24Color(128, 128, 128), message));
                     }));
                 }
                 return;

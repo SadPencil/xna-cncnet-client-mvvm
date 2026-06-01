@@ -107,9 +107,9 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
         AddMessage(new ChatMessage(message));
     }
 
-    public void AddMessage(string sender, string message, int r, int g, int b)
+    public void AddMessage(string sender, string message, Rgb24Color color)
     {
-        AddMessage(new ChatMessage(sender, r, g, b, DateTime.Now, message));
+        AddMessage(new ChatMessage(sender, color, DateTime.Now, message));
     }
 
     public void AddMessage(ChatMessage message)

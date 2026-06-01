@@ -263,7 +263,7 @@ namespace DXMainClientViewModel.Online
 
         public void SendChatMessage(string message, IRCColor color)
         {
-            AddMessage(new ChatMessage(ProgramConstants.PLAYERNAME, color.R, color.G, color.B, DateTime.Now, message));
+            AddMessage(new ChatMessage(ProgramConstants.PLAYERNAME, new Rgb24Color(color.R, color.G, color.B), DateTime.Now, message));
 
             string colorString = ((char)03).ToString() + color.IrcColorId.ToString("D2");
 

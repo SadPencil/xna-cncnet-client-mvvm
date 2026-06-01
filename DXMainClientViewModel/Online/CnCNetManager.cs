@@ -53,13 +53,12 @@ namespace DXMainClientViewModel.Online
 
             this.marshaller = marshaller;
 
-            ColorHelper.GetRgbFromString(ClientConfiguration.Instance.DefaultChatColor,
-                out cDefaultChatColorR, out cDefaultChatColorG, out cDefaultChatColorB);
+            cDefaultChatColor = ColorHelper.GetRgbFromString(ClientConfiguration.Instance.DefaultChatColor);
 
             ircChatColors = new IRCColor[]
             {
-                new IRCColor("Default color".L10N("Client:Main:ColorDefault"), false, cDefaultChatColorR, cDefaultChatColorG, cDefaultChatColorB, 0),
-                new IRCColor("Default color #2".L10N("Client:Main:ColorDefault2"), false, cDefaultChatColorR, cDefaultChatColorG, cDefaultChatColorB, 1),
+                new IRCColor("Default color".L10N("Client:Main:ColorDefault"), false, cDefaultChatColor.R, cDefaultChatColor.G, cDefaultChatColor.B, 0),
+                new IRCColor("Default color #2".L10N("Client:Main:ColorDefault2"), false, cDefaultChatColor.R, cDefaultChatColor.G, cDefaultChatColor.B, 1),
                 new IRCColor("Light Blue".L10N("Client:Main:ColorLightBlue"), true, 173, 216, 230, 2),
                 new IRCColor("Green".L10N("Client:Main:ColorGreen"), true, 34, 139, 34, 3),
                 new IRCColor("Dark Red".L10N("Client:Main:ColorDarkRed"), true, 180, 0, 0, 4),
@@ -107,9 +106,7 @@ namespace DXMainClientViewModel.Online
         private GameCollection gameCollection;
         private readonly CnCNetUserData cncNetUserData;
 
-        private int cDefaultChatColorR;
-        private int cDefaultChatColorG;
-        private int cDefaultChatColorB;
+        private Rgb24Color cDefaultChatColor;
         private IRCColor[] ircChatColors;
 
         private IUIThreadMarshaller marshaller;
@@ -335,7 +332,7 @@ namespace DXMainClientViewModel.Online
             if (channel == null)
                 return;
 
-            int foreColorR, foreColorG, foreColorB;
+            Rgb24Color foreColor;
 
             // Handle ACTION
             if (message.Contains("ACTION"))
@@ -354,7 +351,7 @@ namespace DXMainClientViewModel.Online
                         "new " + gameCollection.GetFullGameNameFromIndex(i) + " game");
                 }
 
-                foreColorR = 255; foreColorG = 255; foreColorB = 255;
+                foreColor = new Rgb24Color(255, 255, 255);
             }
             else
             {
@@ -363,9 +360,7 @@ namespace DXMainClientViewModel.Online
                 {
                     if (message.Length < 3)
                     {
-                        foreColorR = cDefaultChatColorR;
-                        foreColorG = cDefaultChatColorG;
-                        foreColorB = cDefaultChatColorB;
+                        foreColor = cDefaultChatColor;
                     }
                     else
                     {
@@ -375,23 +370,17 @@ namespace DXMainClientViewModel.Online
                         // Try to parse message color info; if fails, use default color
                         if (colorIndex < ircChatColors.Length && colorIndex > -1)
                         {
-                            foreColorR = ircChatColors[colorIndex].R;
-                            foreColorG = ircChatColors[colorIndex].G;
-                            foreColorB = ircChatColors[colorIndex].B;
+                            foreColor = new Rgb24Color(ircChatColors[colorIndex].R, ircChatColors[colorIndex].G, ircChatColors[colorIndex].B);
                         }
                         else
                         {
-                            foreColorR = cDefaultChatColorR;
-                            foreColorG = cDefaultChatColorG;
-                            foreColorB = cDefaultChatColorB;
+                            foreColor = cDefaultChatColor;
                         }
                     }
                 }
                 else
                 {
-                    foreColorR = cDefaultChatColorR;
-                    foreColorG = cDefaultChatColorG;
-                    foreColorB = cDefaultChatColorB;
+                    foreColor = cDefaultChatColor;
                 }
             }
 
@@ -401,7 +390,7 @@ namespace DXMainClientViewModel.Online
             ChannelUser user = channel.Users.Find(senderName);
             bool senderIsAdmin = user != null && user.IsAdmin;
 
-            channel.AddMessage(new ChatMessage(senderName, ident, senderIsAdmin, foreColorR, foreColorG, foreColorB, DateTime.Now, message.Replace('\r', ' ')));
+            channel.AddMessage(new ChatMessage(senderName, ident, senderIsAdmin, foreColor, DateTime.Now, message.Replace('\r', ' ')));
         }
 
         public void OnCTCPParsed(string channelName, string userName, string message)
@@ -440,7 +429,7 @@ namespace DXMainClientViewModel.Online
         {
             ConnectAttemptFailed?.Invoke(this, EventArgs.Empty);
 
-            MainChannel.AddMessage(new ChatMessage(255, 0, 0, "Connecting to CnCNet failed!".L10N("Client:Main:ConnectToCncNetFailed")));
+            MainChannel.AddMessage(new ChatMessage(new Rgb24Color(255, 0, 0), "Connecting to CnCNet failed!".L10N("Client:Main:ConnectToCncNetFailed")));
         }
 
         public void OnConnected()
@@ -483,7 +472,7 @@ namespace DXMainClientViewModel.Online
 
             UserList.Clear();
 
-            MainChannel.AddMessage(new ChatMessage(255, 0, 0, "Connection to CnCNet has been lost.".L10N("Client:Main:ConnectToCncNetHasLost")));
+            MainChannel.AddMessage(new ChatMessage(new Rgb24Color(255, 0, 0), "Connection to CnCNet has been lost.".L10N("Client:Main:ConnectToCncNetHasLost")));
             connected = false;
         }
 
@@ -539,7 +528,7 @@ namespace DXMainClientViewModel.Online
 
         public void OnErrorReceived(string errorMessage)
         {
-            MainChannel.AddMessage(new ChatMessage(255, 0, 0, errorMessage));
+            MainChannel.AddMessage(new ChatMessage(new Rgb24Color(255, 0, 0), errorMessage));
         }
 
         public void OnGenericServerMessageReceived(string message)
@@ -923,7 +912,7 @@ namespace DXMainClientViewModel.Online
 
                 if (lastNonUnderscoreIndex == -1)
                 {
-                    MainChannel.AddMessage(new ChatMessage(255, 255, 255,
+                    MainChannel.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255),
                         "Your nickname is invalid or already in use. Please change your nickname in the login screen.".L10N("Client:Main:PickAnotherNickName")));
                     UserINISettings.Instance.SkipConnectDialog.Value = false;
                     Disconnect();
@@ -937,7 +926,7 @@ namespace DXMainClientViewModel.Online
             foreach (char c in charList)
                 sb.Append(c);
 
-            MainChannel.AddMessage(new ChatMessage(255, 255, 255,
+            MainChannel.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255),
                 string.Format("Your name is already in use. Retrying with {0}...".L10N("Client:Main:NameInUseRetry"), sb.ToString())));
 
             ProgramConstants.PLAYERNAME = sb.ToString();
