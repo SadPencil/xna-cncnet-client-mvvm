@@ -273,8 +273,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     private static void ApplyProperties(Control control, IniSection section, CCIniFile iniFile, string controlName)
     {
         string? idleTexturePath = null;
-        int? fillWidth = null;
-        int? fillHeight = null;
 
         foreach (var kvp in section.Keys)
         {
@@ -294,17 +292,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             // Track IdleTexture path for hover auto-derivation
             if (key == "IdleTexture")
                 idleTexturePath = value;
-
-            // Track FillWidth/FillHeight for immediate application after loop
-            if (key == "FillWidth" && int.TryParse(value, out int fw))
-                fillWidth = fw;
-            if (key == "FillHeight" && int.TryParse(value, out int fh))
-                fillHeight = fh;
         }
-
-        // Apply FillWidth/FillHeight immediately (after BackgroundTexture auto-size)
-        if (fillWidth.HasValue || fillHeight.HasValue)
-            ApplyFillProperties(control, fillWidth, fillHeight);
 
         // Auto-derive HoverTexture for buttons that have IdleTexture but no
         // HoverTexture in the INI section.  Matches original XNA behavior where
@@ -320,33 +308,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 Logger.Log($"INI Layout: Auto-derived HoverTexture '{hoverPath}' for '{controlName}'");
                 ApplyButtonTexture(control, hoverPath, isHover: true);
             }
-        }
-    }
-
-    /// <summary>
-    /// Applies FillWidth/FillHeight immediately after all properties are processed.
-    /// This ensures BackgroundTexture auto-size happens first, then Fill overrides.
-    /// </summary>
-    private static void ApplyFillProperties(Control control, int? fillWidth, int? fillHeight)
-    {
-        // Find parent dimensions
-        Control parent = control.Parent as Control;
-        if (parent == null)
-            return;
-
-        double parentWidth = GetEffectiveWidth(parent);
-        double parentHeight = GetEffectiveHeight(parent);
-
-        if (fillWidth.HasValue && parentWidth > 0)
-        {
-            double x = Canvas.GetLeft(control);
-            control.Width = parentWidth - x - fillWidth.Value;
-        }
-
-        if (fillHeight.HasValue && parentHeight > 0)
-        {
-            double y = Canvas.GetTop(control);
-            control.Height = parentHeight - y - fillHeight.Value;
         }
     }
 
@@ -985,15 +946,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (control is Window window)
                 window.Background = brush;
             else if (control is Border border)
-            {
                 border.Background = brush;
-                // Auto-size from texture (XNAExtraPanel behavior)
-                if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
-                {
-                    border.Width = bitmap.PixelSize.Width;
-                    border.Height = bitmap.PixelSize.Height;
-                }
-            }
             else if (control is Panel panel)
                 panel.Background = brush;
             else if (control is Button button)
