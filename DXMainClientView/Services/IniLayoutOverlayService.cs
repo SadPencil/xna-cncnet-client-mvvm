@@ -689,8 +689,16 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 // when child views (CampaignSelector, SkirmishLobby, etc.) also
                 // merge GenericWindow.ini and create ExtraControls.
                 var searchRoot = FindWindowAncestor(root) ?? root;
-                if (FindControlByName(searchRoot, controlName) != null)
+                var existing = FindControlByName(searchRoot, controlName);
+                if (existing != null)
+                {
+                    Logger.Log($"INI Layout: CreateExtraControls: skipping '{controlName}' (already exists in {searchRoot.GetType().Name})");
                     continue;
+                }
+                else
+                {
+                    Logger.Log($"INI Layout: CreateExtraControls: creating '{controlName}' for {root.GetType().Name}");
+                }
 
                 var control = CreateControl(controlType, controlName);
                 if (control != null)
