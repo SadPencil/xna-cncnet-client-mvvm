@@ -47,11 +47,15 @@ public partial class MainMenu : UserControl
         AddImageBrushTest();
 
         // DIAGNOSTIC: Override INI leftbar background to solid red to check height
-        var iniLeftbar = this.FindControl<Avalonia.Controls.Border>("leftbar");
+        var iniLeftbar = MainCanvas.FindControl<Avalonia.Controls.Border>("leftbar");
         if (iniLeftbar != null)
         {
-            System.Diagnostics.Debug.WriteLine($"INI leftbar BEFORE override: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Bounds={iniLeftbar.Bounds}");
             iniLeftbar.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Red);
+            System.Diagnostics.Debug.WriteLine($"INI leftbar: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Background={iniLeftbar.Background?.GetType().Name}");
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("INI leftbar: NOT FOUND in MainCanvas");
         }
 
         // Ensure we can receive keyboard input
