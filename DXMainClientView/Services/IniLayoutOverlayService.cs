@@ -120,7 +120,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (mainSection != null)
             ApplyProperties(control, mainSection, iniFile, sectionName);
 
-        // Apply properties to all named child controls
+        // Apply hardcoded draw modes from XNA code first (even if INI has no section)
+        ApplyHardcodedDrawModes(control);
+
+        // Apply properties to all named child controls (INI DrawMode can override)
         ApplyToDescendants(control, iniFile);
 
         // Create ExtraControls
@@ -829,6 +832,67 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         ["LANLobby"] = "stretched",
     };
 
+    /// <summary>
+    /// Gets the Stretch and TileMode for a draw mode string.
+    /// Shared by ApplyBackgroundTexture and ApplyHardcodedDrawModes.
+    /// </summary>
+    private static (Stretch stretch, TileMode tileMode) GetDrawModeSettings(string drawMode)
+    {
+        return drawMode?.ToLower() switch
+        {
+            "stretched" => (Stretch.Fill, TileMode.None),
+            "centered" => (Stretch.UniformToFill, TileMode.None),
+            "tiled" => (Stretch.None, TileMode.FlipXY),
+            _ => (Stretch.Fill, TileMode.None)
+        };
+    }
+
+    /// <summary>
+    /// Gets the ImageBrush from a control's Background.
+    /// </summary>
+    private static ImageBrush? GetImageBrush(Control control)
+    {
+        if (control is Border border && border.Background is ImageBrush borderBrush)
+            return borderBrush;
+        if (control is Panel panel && panel.Background is ImageBrush panelBrush)
+            return panelBrush;
+        if (control is TemplatedControl templated && templated.Background is ImageBrush templatedBrush)
+            return templatedBrush;
+        return null;
+    }
+
+    /// <summary>
+    /// Applies hardcoded draw modes to controls that have Background set.
+    /// Called before INI properties are applied, so INI DrawMode can override.
+    /// </summary>
+    private static void ApplyHardcodedDrawModes(Control root)
+    {
+        ApplyHardcodedDrawModesRecursive(root);
+    }
+
+    private static void ApplyHardcodedDrawModesRecursive(Control parent)
+    {
+        foreach (var child in GetChildren(parent))
+        {
+            if (child is Control control)
+            {
+                if (!string.IsNullOrEmpty(control.Name)
+                    && HardcodedDrawModes.TryGetValue(control.Name, out var drawMode))
+                {
+                    var brush = GetImageBrush(control);
+                    if (brush != null)
+                    {
+                        var (stretch, tileMode) = GetDrawModeSettings(drawMode);
+                        brush.Stretch = stretch;
+                        brush.TileMode = tileMode;
+                    }
+                }
+
+                ApplyHardcodedDrawModesRecursive(control);
+            }
+        }
+    }
+
     private static void ApplyBackgroundTexture(Control control, string texturePath)
     {
         try
@@ -846,13 +910,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
             // Determine stretch mode from hardcoded mapping or default to Fill
             string drawMode = HardcodedDrawModes.TryGetValue(control.Name, out var mode) ? mode : "stretched";
-            Stretch stretch = drawMode switch
-            {
-                "stretched" => Stretch.Fill,
-                "centered" => Stretch.UniformToFill,
-                _ => Stretch.Fill
-            };
-            TileMode tileMode = drawMode == "tiled" ? TileMode.FlipXY : TileMode.None;
+            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
 
             var brush = new ImageBrush
             {
@@ -1311,38 +1369,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyDrawMode(Control control, string drawMode)
     {
-        ImageBrush brush = null;
-
-        if (control is Window window && window.Background is ImageBrush windowBrush)
-            brush = windowBrush;
-        else if (control is Border border && border.Background is ImageBrush borderBrush)
-            brush = borderBrush;
-        else if (control is Panel panel && panel.Background is ImageBrush panelBrush)
-            brush = panelBrush;
-        else if (control is TemplatedControl templated && templated.Background is ImageBrush templatedBrush)
-            brush = templatedBrush;
-
+        var brush = GetImageBrush(control);
         if (brush != null)
         {
-            switch (drawMode?.ToLower())
-            {
-                case "stretched":
-                    // XNAUI STRETCHED: draw texture to fill control (may distort)
-                    brush.Stretch = Stretch.Fill;
-                    break;
-                case "centered":
-                    // XNAUI CENTERED: center texture, crop if larger, no scaling
-                    brush.Stretch = Stretch.UniformToFill;
-                    break;
-                case "tiled":
-                    // XNAUI TILED: tile texture to fill control
-                    brush.Stretch = Stretch.None;
-                    brush.TileMode = TileMode.FlipXY;
-                    break;
-                default:
-                    brush.Stretch = Stretch.Fill;
-                    break;
-            }
+            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
+            brush.Stretch = stretch;
+            brush.TileMode = tileMode;
         }
     }
 
