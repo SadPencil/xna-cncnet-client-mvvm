@@ -78,15 +78,7 @@ Actually, this renaming was necessary — the source generator creates a propert
 
 **Rule:** If you must rename something, add a comment explaining why. Don't silently rename.
 
-## Pitfall 8: Not Handling the `userSettings` Collection Correctly
-
-**Wrong:** Leaving `userSettings` as a private field that the ViewModel populates itself.
-
-**Right:** The original populates it via `Children.OfType<IUserSetting>()` — meaning the View creates the UI controls that implement `IUserSetting`, and the ViewModel collects them. In MVVM, the View registers its `IUserSetting` objects with the ViewModel's public `UserSettings` list after creation.
-
-**Rule:** When the original code discovers objects at runtime (via `Children.OfType<T>()`, reflection, etc.), the ViewModel exposes a collection that the View populates. The ViewModel doesn't know how the objects were created.
-
-## Pitfall 9: Forgetting the `Return` Command Body
+## Pitfall 8: Forgetting the `Return` Command Body
 
 **Wrong:** Leaving the `Return` command completely empty and not thinking about what it means.
 
@@ -94,7 +86,7 @@ Actually, this renaming was necessary — the source generator creates a propert
 
 **Rule:** Empty command bodies are acceptable only when the action is purely a View concern (navigation, animation, sound effect). Document why it's empty.
 
-## Pitfall 10: Not Checking for Missing Logic After "Completing" the Migration
+## Pitfall 9: Not Checking for Missing Logic After "Completing" the Migration
 
 **Wrong:** Declaring migration complete without line-by-line verification.
 
