@@ -120,7 +120,21 @@
     <Style Selector="CheckBox">
       <Setter Property="FontSize" Value="12" />
     </Style>
+
+    <!-- Visually gray out disabled controls -->
+    <Style Selector="Button:disabled">
+      <Setter Property="Opacity" Value="0.5" />
+    </Style>
     <Style Selector="CheckBox:disabled">
+      <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    <Style Selector="ComboBox:disabled">
+      <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    <Style Selector="TextBox:disabled">
+      <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    <Style Selector="Slider:disabled">
       <Setter Property="Opacity" Value="0.5" />
     </Style>
 
