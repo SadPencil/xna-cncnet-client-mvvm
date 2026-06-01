@@ -198,6 +198,9 @@ namespace DXMainClientViewModel.Generic
             cncNetLobbyViewModel.SetPrivateMessagingWindow(privateMessagingWindowViewModel);
 
             // Initialize child ViewModels (one-time setup)
+            // Note: StatisticsManager must be initialized before any lobbies that extend GameLobbyBase,
+            // because StatisticsManager is accessed when initializing GameLobbyBase (map rank display).
+            ClientCore.Statistics.StatisticsManager.Instance.ReadStatistics(ClientCore.ProgramConstants.GamePath);
             skirmishLobbyViewModel.Initialize();
             lanLobbyViewModel.Initialize();
             cncNetLobbyViewModel.Initialize();
