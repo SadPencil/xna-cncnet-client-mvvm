@@ -99,6 +99,13 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             }
         }
 
+        // Debug: dump all section names after merging
+        {
+            var allSections = iniFile.GetSections();
+            Logger.Log($"INI Layout: Total sections after merge: {allSections.Count}");
+            Logger.Log($"INI Layout: All sections: [{string.Join(", ", allSections)}]");
+        }
+
         // Apply root-level properties. Only inherit [GenericWindow] defaults
         // if the main section explicitly references it via $BaseSection.
         // This matches the original XNA behavior where only INItializableWindow
@@ -514,6 +521,14 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         {
             if (!string.IsNullOrEmpty(child.Name))
             {
+                // Debug: check section lookup for chrome bar controls
+                if (child.Name is "leftbar" or "rightbar")
+                {
+                    var sections = iniFile.GetSections();
+                    bool exists = sections.Contains(child.Name);
+                    Logger.Log($"INI Layout: DEFERRED '{child.Name}': exists={exists}, sections={sections.Count}, first10=[{string.Join(",", sections.Take(10))}]");
+                }
+
                 var section = iniFile.GetSection(child.Name);
                 if (section != null)
                     ApplyDeferredToControl(child, section, parent);
@@ -597,6 +612,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (fillWidth.HasValue && parentWidth > 0)
         {
             double x = Canvas.GetLeft(control);
+            if (double.IsNaN(x)) x = 0; // fallback if Location X was not set
             control.Width = parentWidth - x - fillWidth.Value;
         }
 
@@ -604,6 +620,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (fillHeight.HasValue && parentHeight > 0)
         {
             double y = Canvas.GetTop(control);
+            if (double.IsNaN(y)) y = 0; // fallback if Location Y was not set
             double newHeight = parentHeight - y - fillHeight.Value;
             Logger.Log($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
             control.Height = newHeight;

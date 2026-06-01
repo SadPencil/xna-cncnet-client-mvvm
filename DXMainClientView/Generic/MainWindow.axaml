@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterScreen"
         CanResize="True"
         Background="#000000">
-  <Viewbox Stretch="Uniform">
+  <Viewbox Stretch="Uniform" ClipToBounds="False">
     <Grid>
       <ContentControl x:Name="MainContent" />
       <views:PrivacyNotification />
