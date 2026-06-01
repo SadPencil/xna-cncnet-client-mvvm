@@ -807,6 +807,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         foreach (var child in GetChildren(control))
         {
+            // Don't recurse into child UserControls — each view should use
+            // its own local Canvas, not the MainMenu's Canvas.
+            if (child is UserControl)
+                continue;
+
             var found = FindFirstPanel(child);
             if (found != null)
                 return found;
