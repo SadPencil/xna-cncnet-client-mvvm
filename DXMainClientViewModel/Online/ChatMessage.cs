@@ -32,7 +32,7 @@ namespace DXMainClientViewModel.Online
         /// <param name="g">Green component of the message color.</param>
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(string senderName, Rgb24Color color, string message) : this(senderName, color, DateTime.Now, message) { }
+        public ChatMessage(string senderName, IRgb24Color color, string message) : this(senderName, color, DateTime.Now, message) { }
 
         /// <summary>
         /// Creates a new ChatMessage instance.
@@ -45,7 +45,7 @@ namespace DXMainClientViewModel.Online
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="dateTime">The date and time of the message.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(string senderName, string ident, bool senderIsAdmin, Rgb24Color color, DateTime dateTime, string message) : this(senderName, color, dateTime, message)
+        public ChatMessage(string senderName, string ident, bool senderIsAdmin, IRgb24Color color, DateTime dateTime, string message) : this(senderName, color, dateTime, message)
         {
             SenderIdent = ident;
             SenderIsAdmin = senderIsAdmin;
@@ -59,7 +59,7 @@ namespace DXMainClientViewModel.Online
         /// <param name="g">Green component of the message color.</param>
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(Rgb24Color color, string message) : this(null, color, DateTime.Now, message) { }
+        public ChatMessage(IRgb24Color color, string message) : this(senderName: string.Empty, color, DateTime.Now, message) { }
 
         /// <summary>
         /// Creates a chat message that has no sender and has the date and time set to the

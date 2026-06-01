@@ -107,7 +107,7 @@ namespace DXMainClientViewModel.Online
         private GameCollection gameCollection;
         private readonly CnCNetUserData cncNetUserData;
 
-        private Rgb24Color cDefaultChatColor;
+        private IRgb24Color cDefaultChatColor;
         private IRCColor[] ircChatColors;
 
         private IUIThreadMarshaller marshaller;

@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 
 using DXMainClientViewModel.Online;
 using DXMainClientMvvmContract.ViewServices;
+using DXMainClientMvvmContract;
 
 namespace DXMainClientViewModel.Multiplayer;
 
@@ -107,7 +108,7 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
         AddMessage(new ChatMessage(message));
     }
 
-    public void AddMessage(string sender, string message, Rgb24Color color)
+    public void AddMessage(string sender, string message, IRgb24Color color)
     {
         AddMessage(new ChatMessage(sender, color, DateTime.Now, message));
     }
