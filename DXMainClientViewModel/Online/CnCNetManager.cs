@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DXMainClientMvvmContract.ViewServices;
+using DXMainClientMvvmContract;
 
 namespace DXMainClientViewModel.Online
 {
@@ -332,7 +333,7 @@ namespace DXMainClientViewModel.Online
             if (channel == null)
                 return;
 
-            Rgb24Color foreColor;
+            IRgb24Color foreColor;
 
             // Handle ACTION
             if (message.Contains("ACTION"))
@@ -370,7 +371,7 @@ namespace DXMainClientViewModel.Online
                         // Try to parse message color info; if fails, use default color
                         if (colorIndex < ircChatColors.Length && colorIndex > -1)
                         {
-                            foreColor = new Rgb24Color(ircChatColors[colorIndex].R, ircChatColors[colorIndex].G, ircChatColors[colorIndex].B);
+                            foreColor = ircChatColors[colorIndex];
                         }
                         else
                         {

@@ -16,7 +16,7 @@ namespace DXMainClientViewModel.Online
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="dateTime">The date and time of the message.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(string senderName, Rgb24Color color, DateTime dateTime, string message)
+        public ChatMessage(string senderName, IRgb24Color color, DateTime dateTime, string message)
         {
             SenderName = senderName;
             Color = color;
@@ -70,8 +70,7 @@ namespace DXMainClientViewModel.Online
 
         public string SenderName { get; private set; }
         public string SenderIdent { get; private set; }
-        public Rgb24Color Color { get; private set; }
-        IRgb24Color IChatMessage.Color => Color;
+        public IRgb24Color Color { get; private set; }
 
         public DateTime DateTime { get; private set; }
         public string Message { get; private set; }
