@@ -632,6 +632,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     if (section != null)
                         ApplyProperties(control, section, iniFile, controlName);
 
+                    // Apply hardcoded draw mode (INI DrawMode can override)
+                    ApplyHardcodedDrawMode(control);
+
                     // Insert at beginning so ExtraControls are below DarkeningPanels
                     hostPanel.Children.Insert(insertIndex, control);
                     insertIndex++;
@@ -830,6 +833,13 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         ["MapPreviewBox"] = "stretched",
         // LANLobby.cs
         ["LANLobby"] = "stretched",
+        // GenericWindow.ini ExtraControls - bars that tile to fill height
+        ["leftbar"] = "tiled",
+        ["rightbar"] = "tiled",
+        ["glow_t"] = "stretched",
+        ["glow_b"] = "stretched",
+        ["glow_l"] = "stretched",
+        ["glow_r"] = "stretched",
     };
 
     /// <summary>
@@ -859,6 +869,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (control is TemplatedControl templated && templated.Background is ImageBrush templatedBrush)
             return templatedBrush;
         return null;
+    }
+
+    /// <summary>
+    /// Applies hardcoded draw mode to a single control if it has a mapping.
+    /// Used for ExtraControls created after the initial hardcoded pass.
+    /// </summary>
+    private static void ApplyHardcodedDrawMode(Control control)
+    {
+        if (!string.IsNullOrEmpty(control.Name)
+            && HardcodedDrawModes.TryGetValue(control.Name, out var drawMode))
+        {
+            var brush = GetImageBrush(control);
+            if (brush != null)
+            {
+                var (stretch, tileMode) = GetDrawModeSettings(drawMode);
+                brush.Stretch = stretch;
+                brush.TileMode = tileMode;
+            }
+        }
     }
 
     /// <summary>
