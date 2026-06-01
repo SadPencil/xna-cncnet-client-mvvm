@@ -692,14 +692,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     // Apply hardcoded draw mode (INI DrawMode can override)
                     ApplyHardcodedDrawMode(control);
 
-                    // Debug: dump state of chrome bar controls after creation
-                    if (controlName is "leftbar" or "rightbar" && control is Border dbgBorder)
-                    {
-                        Logger.Log($"INI Layout: CREATED '{controlName}': Width={dbgBorder.Width}, Height={dbgBorder.Height}, " +
-                            $"Child={dbgBorder.Child?.GetType().Name ?? "null"}, " +
-                            $"Background={dbgBorder.Background?.GetType().Name ?? "null"}, " +
-                            $"Canvas.Left={Canvas.GetLeft(dbgBorder)}, Canvas.Top={Canvas.GetTop(dbgBorder)}");
-                    }
+                    // Apply FillHeight/FillWidth inline (like XNA's ParseControlINIAttribute).
+                    // Must happen BEFORE adding to canvas so the control has the correct
+                    // size at creation time — same as AXAML-defined test borders.
+                    if (section != null)
+                        ApplyFillPropertiesInline(control, section, hostPanel);
 
                     // Insert at beginning so ExtraControls are below DarkeningPanels
                     hostPanel.Children.Insert(insertIndex, control);
@@ -737,6 +734,48 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     hostPanel.Children.Add(control);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Applies FillHeight/FillWidth from the INI section immediately (inline),
+    /// matching XNA's ParseControlINIAttribute behavior where these properties
+    /// are processed in order alongside BackgroundTexture. This ensures the
+    /// control has the correct size at creation time.
+    /// </summary>
+    private static void ApplyFillPropertiesInline(Control control, IniSection section, Control parent)
+    {
+        double? fillWidth = null;
+        double? fillHeight = null;
+
+        foreach (var kvp in section.Keys)
+        {
+            switch (kvp.Key)
+            {
+                case "FillWidth":
+                    if (int.TryParse(kvp.Value, out int fw))
+                        fillWidth = fw;
+                    break;
+                case "FillHeight":
+                    if (int.TryParse(kvp.Value, out int fh))
+                        fillHeight = fh;
+                    break;
+            }
+        }
+
+        double parentWidth = GetEffectiveWidth(parent);
+        double parentHeight = GetEffectiveHeight(parent);
+
+        if (fillWidth.HasValue && parentWidth > 0)
+        {
+            double x = double.IsNaN(Canvas.GetLeft(control)) ? 0 : Canvas.GetLeft(control);
+            control.Width = parentWidth - x - fillWidth.Value;
+        }
+
+        if (fillHeight.HasValue && parentHeight > 0)
+        {
+            double y = double.IsNaN(Canvas.GetTop(control)) ? 0 : Canvas.GetTop(control);
+            control.Height = parentHeight - y - fillHeight.Value;
         }
     }
 
