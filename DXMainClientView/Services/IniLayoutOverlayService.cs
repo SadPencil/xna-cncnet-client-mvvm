@@ -563,6 +563,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyDeferredToControl(Control control, IniSection section, Control parent)
     {
+        Logger.Log($"INI Layout: ApplyDeferredToControl('{control.Name}'): section=[{section.SectionName}], keys={section.Keys.Count}");
         double? fillWidth = null;
         double? fillHeight = null;
         double? distRight = null;
