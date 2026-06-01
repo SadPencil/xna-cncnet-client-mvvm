@@ -663,6 +663,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (hostPanel == null)
             return;
 
+        bool isTopLevel = !IsNestedInsideAnotherUserControl(root);
+        Logger.Log($"INI Layout: CreateExtraControls: root={root.GetType().Name}, isTopLevel={isTopLevel}, hostPanel={hostPanel.GetType().Name}");
+
         // Handle [ExtraControls] section (legacy format: 0=controlName:ControlType)
         // Only the top-level view should create these chrome bars. Child views
         // (CampaignSelector, SkirmishLobby, etc.) should skip this section
@@ -714,7 +717,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
 
         // Handle [$ExtraControls] section (new format: $CCXX=controlName:ControlType)
-        var extraSection2 = iniFile.GetSection("$ExtraControls");
+        // Also skip for child views — only the top-level view creates chrome bars.
+        var extraSection2 = isTopLevelView ? iniFile.GetSection("$ExtraControls") : null;
         if (extraSection2 != null)
         {
             foreach (var kvp in extraSection2.Keys)
