@@ -47,6 +47,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly ILANMessageDeduplicatorService messageDeduplicator;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private readonly IApplicationLifecycleService applicationLifecycleService;
+    private readonly IGameProcessService gameProcessService;
     private readonly GameCollection gameCollection;
     private readonly MapLoader mapLoader;
     private readonly DiscordHandler discordHandler;
@@ -112,6 +113,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         ILANMessageDeduplicatorService messageDeduplicator,
         IUIThreadMarshaller uiThreadMarshaller,
         IApplicationLifecycleService applicationLifecycleService,
+        IGameProcessService gameProcessService,
         GameCollection gameCollection,
         MapLoader mapLoader,
         DiscordHandler discordHandler,
@@ -122,6 +124,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         this.messageDeduplicator = messageDeduplicator;
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.applicationLifecycleService = applicationLifecycleService;
+        this.gameProcessService = gameProcessService;
         this.gameCollection = gameCollection;
         this.mapLoader = mapLoader;
         this.discordHandler = discordHandler;
@@ -314,7 +317,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         lanGameLobby = new LANGameLobbyViewModel(
             mapLoader,
             discordHandler,
-            null, // IGameProcessService - not available in ViewModel context
+            gameProcessService,
             uiThreadMarshaller,
             applicationLifecycleService,
             random,
@@ -322,7 +325,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
         lanGameLoadingLobby = new LANGameLoadingLobbyViewModel(
             discordHandler,
-            null, // IGameProcessService - not available in ViewModel context
+            gameProcessService,
             uiThreadMarshaller,
             applicationLifecycleService,
             chatColors);

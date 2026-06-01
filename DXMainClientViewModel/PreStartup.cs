@@ -414,6 +414,7 @@ public static class PreStartup
             sp.GetRequiredService<ILANMessageDeduplicatorService>(),
             sp.GetRequiredService<IUIThreadMarshaller>(),
             sp.GetRequiredService<IApplicationLifecycleService>(),
+            sp.GetRequiredService<IGameProcessService>(),
             sp.GetRequiredService<GameCollection>(),
             sp.GetRequiredService<MapLoader>(),
             sp.GetRequiredService<DiscordHandler>(),
