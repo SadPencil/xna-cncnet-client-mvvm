@@ -43,89 +43,11 @@ public partial class MainMenu : UserControl
         var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "MainMenu");
 
-        // TEST: Create a border with ImageBrush to verify stretching
-        AddImageBrushTest();
-
-        // DIAGNOSTIC: Override INI leftbar background AFTER layout
-        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-        {
-            Avalonia.Controls.Border? iniLeftbar = null;
-            foreach (var child in MainCanvas.Children)
-            {
-                if (child is Avalonia.Controls.Border b && b.Name == "leftbar")
-                {
-                    iniLeftbar = b;
-                    break;
-                }
-            }
-            if (iniLeftbar != null)
-            {
-                Rampastring.Tools.Logger.Log($"INI leftbar AFTER layout: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Bounds={iniLeftbar.Bounds}");
-                // Test 1: change width to verify we're modifying the correct control
-                iniLeftbar.Width = 100;
-                // Test 2: force visual refresh
-                iniLeftbar.InvalidateMeasure();
-                iniLeftbar.InvalidateArrange();
-                iniLeftbar.InvalidateVisual();
-            }
-        }, Avalonia.Threading.DispatcherPriority.Loaded);
 
         // Ensure we can receive keyboard input
         Focus();
     }
 
-    private void AddImageBrushTest()
-    {
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
-        if (iniOverlay == null) return;
-        var texturePath = iniOverlay.FindTextureFile("leftbar.png");
-        if (texturePath == null) return;
-
-        var bitmap = new Avalonia.Media.Imaging.Bitmap(texturePath);
-        var brush = new Avalonia.Media.ImageBrush
-        {
-            Source = bitmap,
-            Stretch = Avalonia.Media.Stretch.Fill,
-            TileMode = Avalonia.Media.TileMode.FlipXY,
-        };
-
-        // Test 1: Border with ImageBrush Background (same as INI code)
-        var testBrush = new Border
-        {
-            Name = "testImageBrush",
-            Width = 24,
-            Height = 696,
-            Background = brush,
-        };
-        Avalonia.Controls.Canvas.SetLeft(testBrush, 110);
-        Avalonia.Controls.Canvas.SetTop(testBrush, 12);
-        MainCanvas.Children.Add(testBrush);
-
-        // Test 2: Border with solid color (already exists as testBorder)
-        // Test 3: Border with pre-stretched bitmap
-        var stretched = new Avalonia.Media.Imaging.RenderTargetBitmap(
-            new Avalonia.PixelSize(24, 696),
-            new Avalonia.Vector(96, 96));
-        using (var ctx = stretched.CreateDrawingContext())
-        {
-            ctx.DrawImage(bitmap, new Avalonia.Rect(0, 0, 24, 696));
-        }
-        var testStretched = new Border
-        {
-            Name = "testStretched",
-            Width = 24,
-            Height = 696,
-            Background = new Avalonia.Media.ImageBrush
-            {
-                Source = stretched,
-                Stretch = Avalonia.Media.Stretch.Fill,
-                TileMode = Avalonia.Media.TileMode.FlipXY,
-            },
-        };
-        Avalonia.Controls.Canvas.SetLeft(testStretched, 140);
-        Avalonia.Controls.Canvas.SetTop(testStretched, 12);
-        MainCanvas.Children.Add(testStretched);
-    }
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
