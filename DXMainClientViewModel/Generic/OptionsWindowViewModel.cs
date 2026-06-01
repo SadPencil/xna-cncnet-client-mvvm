@@ -345,9 +345,6 @@ namespace DXMainClientViewModel.Generic
 
         private void SaveSettings()
         {
-            if (RefreshOptionPanels())
-                return;
-
             bool restartRequired = false;
 
             try
