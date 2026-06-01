@@ -214,10 +214,16 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (tgtSection == null)
             {
                 // Section doesn't exist in target - use SetStringValue to create it
-                if (sectionName is "leftbar" or "rightbar" or "ExtraControls")
-                    Logger.Log($"INI Layout: MergeMissingKeys: adding new section [{sectionName}] with {srcSection.Keys.Count} keys");
+                if (sectionName is "leftbar" or "rightbar")
+                    Logger.Log($"INI Layout: MergeMissingKeys: adding [{sectionName}] srcKeys=[{string.Join(",", srcSection.Keys.Select(k => k.Key))}]");
                 foreach (var kvp in srcSection.Keys)
                     target.SetStringValue(sectionName, kvp.Key, kvp.Value);
+                // Verify the section was created correctly
+                if (sectionName is "leftbar" or "rightbar")
+                {
+                    var verifySection = target.GetSection(sectionName);
+                    Logger.Log($"INI Layout: MergeMissingKeys: after add [{sectionName}] tgtKeys=[{string.Join(",", verifySection.Keys.Select(k => k.Key))}]");
+                }
                 continue;
             }
 
