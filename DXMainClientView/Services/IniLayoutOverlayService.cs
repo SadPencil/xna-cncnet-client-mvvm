@@ -28,6 +28,19 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 {
     private static IUrlService? _urlService;
 
+    /// <summary>
+    /// Views that correspond to XNA's INItializableWindow (GameLobbyBase hierarchy).
+    /// These use [$ExtraControls] instead of [ExtraControls].
+    /// All other views use [ExtraControls] (XNAWindow hierarchy).
+    /// </summary>
+    private static readonly HashSet<string> _iniInitializableWindowViews = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "SkirmishLobby",
+        "CnCNetGameLobby",
+        "LANGameLobby",
+        "CampaignTagSelector",
+    };
+
     public IniLayoutOverlayService(IUrlService urlService)
     {
         _urlService = urlService;
@@ -128,14 +141,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         ApplyToDescendants(control, iniFile);
 
         // Create ExtraControls
-        CreateExtraControls(control, iniFile);
+        CreateExtraControls(control, iniFile, sectionName);
 
         // Apply deferred properties (FillWidth, FillHeight, DistanceFrom*)
         ApplyDeferredProperties(control, iniFile);
-
-        // Debug: dump final state of chrome bar controls
-        DumpControlState(control, "leftbar");
-        DumpControlState(control, "rightbar");
 
         // Auto-load standard {width}pxbtn.png / {width}pxbtn_c.png textures for
         // buttons that weren't given a custom IdleTexture via INI.  This matches
@@ -153,18 +162,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
     }
 
-    private static void DumpControlState(Control root, string name)
-    {
-        var control = FindControlByName(root, name);
-        if (control is Border border)
-        {
-            Logger.Log($"INI Layout: FINAL '{name}': Width={border.Width}, Height={border.Height}, " +
-                $"Child={border.Child?.GetType().Name ?? "null"}, " +
-                $"Background={border.Background?.GetType().Name ?? "null"}, " +
-                $"Bounds={border.Bounds.Width}x{border.Bounds.Height}, " +
-                $"Canvas.Left={Canvas.GetLeft(border)}, Canvas.Top={Canvas.GetTop(border)}");
-        }
-    }
 
     private static string FindIniFile(string windowName)
     {
@@ -657,21 +654,20 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void CreateExtraControls(Control root, CCIniFile iniFile)
+    private static void CreateExtraControls(Control root, CCIniFile iniFile, string sectionName)
     {
         var hostPanel = FindFirstPanel(root);
         if (hostPanel == null)
             return;
 
-        bool isTopLevel = !IsNestedInsideAnotherUserControl(root);
-        Logger.Log($"INI Layout: CreateExtraControls: root={root.GetType().Name}, isTopLevel={isTopLevel}, hostPanel={hostPanel.GetType().Name}");
+        // Whitelist: views that are INItializableWindow subclasses (GameLobbyBase hierarchy)
+        // use [$ExtraControls]. All other views (XNAWindow subclasses) use [ExtraControls].
+        // This matches the original XNA behavior where XNAWindow.ParseExtraControls reads
+        // [ExtraControls] and INItializableWindow.ParseExtraControls reads [$ExtraControls].
+        var usesDollarExtraControls = _iniInitializableWindowViews.Contains(sectionName);
 
         // Handle [ExtraControls] section (legacy format: 0=controlName:ControlType)
-        // Only the top-level view should create these chrome bars. Child views
-        // (CampaignSelector, SkirmishLobby, etc.) should skip this section
-        // because they merge GenericWindow.ini which adds duplicate entries.
-        bool isTopLevelView = !IsNestedInsideAnotherUserControl(root);
-        var extraSection = isTopLevelView ? iniFile.GetSection("ExtraControls") : null;
+        var extraSection = usesDollarExtraControls ? null : iniFile.GetSection("ExtraControls");
         if (extraSection != null)
         {
             int insertIndex = 0;
@@ -689,15 +685,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 // when child views (CampaignSelector, SkirmishLobby, etc.) also
                 // merge GenericWindow.ini and create ExtraControls.
                 var searchRoot = FindWindowAncestor(root) ?? root;
-                var existing = FindControlByName(searchRoot, controlName);
-                if (existing != null)
-                {
-                    Logger.Log($"INI Layout: CreateExtraControls: skipping '{controlName}' (already exists in {searchRoot.GetType().Name})");
+                if (FindControlByName(searchRoot, controlName) != null)
                     continue;
-                }
-                // Also check from root directly
-                var existingFromRoot = FindControlByName(root, controlName);
-                Logger.Log($"INI Layout: CreateExtraControls: creating '{controlName}' for {root.GetType().Name} (searchRoot={searchRoot.GetType().Name}, foundInRoot={existingFromRoot != null})");
 
                 var control = CreateControl(controlType, controlName);
                 if (control != null)
@@ -724,8 +713,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
 
         // Handle [$ExtraControls] section (new format: $CCXX=controlName:ControlType)
-        // Also skip for child views — only the top-level view creates chrome bars.
-        var extraSection2 = isTopLevelView ? iniFile.GetSection("$ExtraControls") : null;
+        // Only for INItializableWindow views (SkirmishLobby, CnCNetGameLobby, etc.)
+        var extraSection2 = usesDollarExtraControls ? iniFile.GetSection("$ExtraControls") : null;
         if (extraSection2 != null)
         {
             foreach (var kvp in extraSection2.Keys)
@@ -815,25 +804,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         return null;
     }
 
-    /// <summary>
-    /// Returns true if the control is nested inside another UserControl.
-    /// Used to detect child views (CampaignSelector, SkirmishLobby, etc.)
-    /// that should NOT create [ExtraControls] chrome bars.
-    /// </summary>
-    private static bool IsNestedInsideAnotherUserControl(Control control)
-    {
-        var current = control.Parent as Control;
-        while (current != null)
-        {
-            if (current is UserControl && current != control)
-                return true;
-            if (current is Window)
-                return false;
-            current = current.Parent as Control;
-        }
-        return false;
-    }
-
     private static Panel FindFirstPanel(Control control)
     {
         if (control is Panel panel)
@@ -841,11 +811,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         foreach (var child in GetChildren(control))
         {
-            // Don't recurse into child UserControls — each view should use
-            // its own local Canvas, not the MainMenu's Canvas.
-            if (child is UserControl)
-                continue;
-
             var found = FindFirstPanel(child);
             if (found != null)
                 return found;
@@ -1097,23 +1062,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     {
         try
         {
-            // DIAGNOSTIC: skip texture for leftbar, use red background and shift right
-            if (control.Name == "leftbar")
-            {
-                Logger.Log($"INI Layout: DIAGNOSTIC skipping texture for 'leftbar', using red background, shifting right");
-                if (control is Border border)
-                {
-                    border.Background = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));
-                    Canvas.SetLeft(border, 200); // shift right into visible area
-                    if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
-                    {
-                        border.Width = 24;
-                        border.Height = 266;
-                    }
-                }
-                return;
-            }
-
             // Search for the texture in resource paths
             string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
