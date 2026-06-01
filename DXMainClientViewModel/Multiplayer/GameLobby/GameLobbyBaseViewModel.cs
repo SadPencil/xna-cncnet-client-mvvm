@@ -868,7 +868,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         PlayerUpdatingInProgress = true;
 
-        IReadOnlyList<PlayerSlotObservable> slots = PlayerSlots.ToList().AsReadOnly();
+        var slots = PlayerSlots;
         bool allowOptionsChange = AllowPlayerOptionsChange();
         var extraOpts = playerExtraOptions;
 
@@ -1016,7 +1016,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         ClearReadyStatuses();
 
-        var slots = (IReadOnlyList<PlayerSlotObservable>)PlayerSlots;
+        var slots = PlayerSlots;
 
         var oldSideId = Players.Find(p => p.Name == ProgramConstants.PLAYERNAME)?.SideId;
 
@@ -1079,7 +1079,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         int defaultSide = 0;
         int allowedSideCount = disallowedSideArray.Count(b => !b);
 
-        var slots = (IReadOnlyList<PlayerSlotObservable>)PlayerSlots;
+        var slots = PlayerSlots;
 
         if (allowedSideCount == 1)
         {
