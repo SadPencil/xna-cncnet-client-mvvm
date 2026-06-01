@@ -70,38 +70,6 @@
                Foreground="#2DE4FF"
                IsEnabled="{Binding IsUpdateStatusEnabled}" />
 
-    <!-- Extra INI-configurable decorative elements -->
-    <TextBlock x:Name="lblVersionLabel"
-               Text=""
-               Foreground="{DynamicResource XnaSubtleTextBrush}"
-               Canvas.Left="0" Canvas.Top="0"
-               IsVisible="False" />
-    <TextBlock x:Name="lblPoweredBy"
-               Text=""
-               Foreground="{DynamicResource XnaSubtleTextBrush}"
-               Canvas.Left="0" Canvas.Top="0"
-               IsVisible="False" />
-    <Button x:Name="btnQuickmatch"
-            Content=""
-            Background="Transparent" BorderThickness="0"
-            Canvas.Left="0" Canvas.Top="0"
-            IsVisible="False" />
-    <Button x:Name="btnCnCNetLogo"
-            Content=""
-            Background="Transparent" BorderThickness="0"
-            Canvas.Left="0" Canvas.Top="0"
-            IsVisible="False" />
-    <Button x:Name="btnPhobos"
-            Content=""
-            Background="Transparent" BorderThickness="0"
-            Canvas.Left="0" Canvas.Top="0"
-            IsVisible="False" />
-    <Button x:Name="btnAres"
-            Content=""
-            Background="Transparent" BorderThickness="0"
-            Canvas.Left="0" Canvas.Top="0"
-            IsVisible="False" />
-
     <!-- ========== Update Notification Banner ========== -->
     <Border x:Name="updateNotification"
             IsVisible="{Binding IsUpdateNotificationVisible}"
