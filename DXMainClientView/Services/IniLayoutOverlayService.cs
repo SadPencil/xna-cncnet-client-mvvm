@@ -273,6 +273,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     private static void ApplyProperties(Control control, IniSection section, CCIniFile iniFile, string controlName)
     {
         string? idleTexturePath = null;
+        int? fillWidth = null;
+        int? fillHeight = null;
 
         foreach (var kvp in section.Keys)
         {
@@ -287,16 +289,22 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (key.StartsWith("$CC"))
                 continue;
 
-            // Skip FillWidth/FillHeight - applied separately after control has parent
-            if (key == "FillWidth" || key == "FillHeight")
-                continue;
-
             ApplySingleProperty(control, key, value, controlName);
 
             // Track IdleTexture path for hover auto-derivation
             if (key == "IdleTexture")
                 idleTexturePath = value;
+
+            // Track FillWidth/FillHeight for immediate application after loop
+            if (key == "FillWidth" && int.TryParse(value, out int fw))
+                fillWidth = fw;
+            if (key == "FillHeight" && int.TryParse(value, out int fh))
+                fillHeight = fh;
         }
+
+        // Apply FillWidth/FillHeight immediately (after BackgroundTexture auto-size)
+        if (fillWidth.HasValue || fillHeight.HasValue)
+            ApplyFillProperties(control, fillWidth, fillHeight);
 
         // Auto-derive HoverTexture for buttons that have IdleTexture but no
         // HoverTexture in the INI section.  Matches original XNA behavior where
@@ -316,24 +324,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     }
 
     /// <summary>
-    /// Applies FillWidth/FillHeight from INI section after control has a parent.
+    /// Applies FillWidth/FillHeight immediately after all properties are processed.
+    /// This ensures BackgroundTexture auto-size happens first, then Fill overrides.
     /// </summary>
-    private static void ApplyFillFromSection(Control control, IniSection section)
+    private static void ApplyFillProperties(Control control, int? fillWidth, int? fillHeight)
     {
-        int? fillWidth = null;
-        int? fillHeight = null;
-
-        foreach (var kvp in section.Keys)
-        {
-            if (kvp.Key == "FillWidth" && int.TryParse(kvp.Value, out int fw))
-                fillWidth = fw;
-            if (kvp.Key == "FillHeight" && int.TryParse(kvp.Value, out int fh))
-                fillHeight = fh;
-        }
-
-        if (!fillWidth.HasValue && !fillHeight.HasValue)
-            return;
-
+        // Find parent dimensions
         Control parent = control.Parent as Control;
         if (parent == null)
             return;
@@ -672,7 +668,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 var control = CreateControl(controlType, controlName);
                 if (control != null)
                 {
-                    // Apply INI properties (but FillHeight/FillWidth need parent)
+                    // Apply INI properties
                     var section = iniFile.GetSection(controlName);
                     if (section != null)
                         ApplyProperties(control, section, iniFile, controlName);
@@ -683,10 +679,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     // Insert at beginning so ExtraControls are below DarkeningPanels
                     hostPanel.Children.Insert(insertIndex, control);
                     insertIndex++;
-
-                    // Apply FillHeight/FillWidth AFTER adding to parent (needs parent dimensions)
-                    if (section != null)
-                        ApplyFillFromSection(control, section);
                 }
             }
         }
