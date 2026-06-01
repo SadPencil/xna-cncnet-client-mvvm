@@ -736,7 +736,15 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             if (control is Window window)
                 window.Background = brush;
             else if (control is Border border)
+            {
                 border.Background = brush;
+                // Auto-size from texture if no explicit size set
+                if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
+                {
+                    border.Width = bitmap.PixelSize.Width;
+                    border.Height = bitmap.PixelSize.Height;
+                }
+            }
             else if (control is Panel panel)
                 panel.Background = brush;
             else if (control is Button button)
