@@ -1024,6 +1024,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 window.Background = brush;
             else if (control is Border border)
             {
+                Logger.Log($"INI Layout: Bitmap '{texturePath}': PixelSize={bitmap.PixelSize.Width}x{bitmap.PixelSize.Height}, DPI={bitmap.Dpi.X}x{bitmap.Dpi.Y}");
+
                 // For tiled mode, use ImageBrush on Background (tiling works with ImageBrush).
                 // For stretched/centered, use an Image child — Avalonia's ImageBrush with
                 // TileMode.FlipXY does NOT actually stretch the image to fill the control,
