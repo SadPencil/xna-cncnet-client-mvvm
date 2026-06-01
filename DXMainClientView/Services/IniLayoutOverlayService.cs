@@ -948,8 +948,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             else if (control is Border border)
             {
                 border.Background = brush;
-                // Auto-size from texture if no explicit size set
-                if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
+                // Auto-size from texture only if no FillHeight/FillWidth will be applied later
+                if (double.IsNaN(border.Width) && double.IsNaN(border.Height)
+                    && !WillApplyFill(control))
                 {
                     border.Width = bitmap.PixelSize.Width;
                     border.Height = bitmap.PixelSize.Height;
@@ -968,6 +969,19 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         {
             Logger.Log($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Checks if the control will have FillWidth or FillHeight applied later.
+    /// Used to skip auto-sizing from texture dimensions.
+    /// </summary>
+    private static bool WillApplyFill(Control control)
+    {
+        // Walk up to find the INI file and check if this control has FillWidth/FillHeight
+        // This is a heuristic - we check if the control name suggests it needs filling
+        // (bars, glows, etc. typically use FillHeight)
+        string name = control.Name?.ToLower() ?? "";
+        return name.Contains("bar") || name.Contains("glow");
     }
 
     public string FindTextureFile(string texturePath) => FindTextureFileStatic(texturePath);
