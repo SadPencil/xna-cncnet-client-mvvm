@@ -664,7 +664,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             return;
 
         // Handle [ExtraControls] section (legacy format: 0=controlName:ControlType)
-        var extraSection = iniFile.GetSection("ExtraControls");
+        // Only the top-level view should create these chrome bars. Child views
+        // (CampaignSelector, SkirmishLobby, etc.) should skip this section
+        // because they merge GenericWindow.ini which adds duplicate entries.
+        bool isTopLevelView = !IsNestedInsideAnotherUserControl(root);
+        var extraSection = isTopLevelView ? iniFile.GetSection("ExtraControls") : null;
         if (extraSection != null)
         {
             int insertIndex = 0;
@@ -798,6 +802,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             current = current.Parent as Control;
         }
         return null;
+    }
+
+    /// <summary>
+    /// Returns true if the control is nested inside another UserControl.
+    /// Used to detect child views (CampaignSelector, SkirmishLobby, etc.)
+    /// that should NOT create [ExtraControls] chrome bars.
+    /// </summary>
+    private static bool IsNestedInsideAnotherUserControl(Control control)
+    {
+        var current = control.Parent as Control;
+        while (current != null)
+        {
+            if (current is UserControl && current != control)
+                return true;
+            if (current is Window)
+                return false;
+            current = current.Parent as Control;
+        }
+        return false;
     }
 
     private static Panel FindFirstPanel(Control control)
