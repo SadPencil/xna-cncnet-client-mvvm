@@ -14,6 +14,8 @@ using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DXMainClientViewModel.Online;
+using DXMainClientMvvmContract;
 
 namespace DXMainClientViewModel.Generic
 {
@@ -186,9 +188,7 @@ namespace DXMainClientViewModel.Generic
                     Side = ps.Side,
                     Team = ps.Team,
                     SideName = ps.Side > 0 && ps.Side <= sides.Length ? sides[ps.Side - 1].UIName : "Unknown",
-                    ColorR = ps.Color >= 0 && ps.Color < mpColors.Count ? mpColors[ps.Color].R : 255,
-                    ColorG = ps.Color >= 0 && ps.Color < mpColors.Count ? mpColors[ps.Color].G : 255,
-                    ColorB = ps.Color >= 0 && ps.Color < mpColors.Count ? mpColors[ps.Color].B : 255,
+                    Color = ps.Color >= 0 && ps.Color < mpColors.Count ? mpColors[ps.Color].Color : Rgb24Color.White,
                     SawCompletion = ms.SawCompletion
                 };
 
@@ -600,9 +600,7 @@ namespace DXMainClientViewModel.Generic
         public int Side { get; set; }
         public int Team { get; set; }
         public string SideName { get; set; }
-        public int ColorR { get; set; }
-        public int ColorG { get; set; }
-        public int ColorB { get; set; }
+        public IRgb24Color Color { get; set; }
         public bool SawCompletion { get; set; }
     }
 

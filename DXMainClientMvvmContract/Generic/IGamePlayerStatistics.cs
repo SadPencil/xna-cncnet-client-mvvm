@@ -16,8 +16,6 @@ public interface IGamePlayerStatistics
     int Side { get; }
     int Team { get; }
     string SideName { get; }
-    int ColorR { get; }
-    int ColorG { get; }
-    int ColorB { get; }
+    IRgb24Color Color { get; }
     bool SawCompletion { get; }
 }

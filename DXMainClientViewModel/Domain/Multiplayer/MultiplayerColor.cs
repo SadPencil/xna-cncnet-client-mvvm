@@ -1,6 +1,10 @@
 using ClientCore;
 using ClientCore.Extensions;
 
+using DXMainClientMvvmContract;
+
+using DXMainClientViewModel.Online;
+
 using Rampastring.Tools;
 
 using System;
@@ -15,9 +19,7 @@ namespace DXMainClientViewModel.Domain.Multiplayer
     {
         public int GameColorIndex { get; private set; }
         public string Name { get; private set; }
-        public int R { get; private set; }
-        public int G { get; private set; }
-        public int B { get; private set; }
+        public IRgb24Color Color { get; private set; }
 
         private static List<MultiplayerColor> colorList;
 
@@ -32,9 +34,7 @@ namespace DXMainClientViewModel.Domain.Multiplayer
             return new MultiplayerColor()
             {
                 Name = name,
-                R = Math.Min(255, Int32.Parse(data[0])),
-                G = Math.Min(255, Int32.Parse(data[1])),
-                B = Math.Min(255, Int32.Parse(data[2])),
+                Color = new Rgb24Color(byte.Parse(data[0]), byte.Parse(data[1]), byte.Parse(data[2])),
                 GameColorIndex = Int32.Parse(data[3])
             };
         }

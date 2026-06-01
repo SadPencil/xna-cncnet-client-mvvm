@@ -228,15 +228,13 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
             if (pInfo == null)
             {
-                var mc = sgPlayer.ColorIndex > -1 ? MPColors[sgPlayer.ColorIndex] : null;
-                displayInfo.Add(new PlayerDisplayInfo(sgPlayer.Name, false, false,
-                    mc != null ? new Rgb24Color((byte)mc.R, (byte)mc.G, (byte)mc.B) : new Rgb24Color(255, 255, 255)));
+                MultiplayerColor? mc = sgPlayer.ColorIndex > -1 ? MPColors[sgPlayer.ColorIndex] : null;
+                displayInfo.Add(new PlayerDisplayInfo(sgPlayer.Name, false, false, mc?.Color ?? Rgb24Color.White));
             }
             else
             {
-                var mc = sgPlayer.ColorIndex > -1 ? MPColors[sgPlayer.ColorIndex] : null;
-                displayInfo.Add(new PlayerDisplayInfo(sgPlayer.Name, true, pInfo.Ready,
-                    mc != null ? new Rgb24Color((byte)mc.R, (byte)mc.G, (byte)mc.B) : new Rgb24Color(255, 255, 255)));
+                MultiplayerColor? mc = sgPlayer.ColorIndex > -1 ? MPColors[sgPlayer.ColorIndex] : null;
+                displayInfo.Add(new PlayerDisplayInfo(sgPlayer.Name, true, pInfo.Ready, mc?.Color ?? Rgb24Color.White));
             }
         }
         _playerDisplayInfo.Clear(); foreach (var info in displayInfo) _playerDisplayInfo.Add(info);
