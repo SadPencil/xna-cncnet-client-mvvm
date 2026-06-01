@@ -653,25 +653,19 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             double newHeight = parentHeight - y - fillHeight.Value;
             Logger.Log($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
 
-            // Debug: watch for height changes after FillHeight is applied
+            control.Height = newHeight;
+
+            // Debug: log final state after FillHeight
             if (control.Name is "leftbar" or "rightbar")
             {
-                double capturedHeight = newHeight;
-                control.PropertyChanged += (_, e) =>
+                Logger.Log($"INI Layout: AFTER FillHeight '{control.Name}': Width={control.Width}, Height={control.Height}, Background={control.GetType().Name}");
+                if (control is Border b)
                 {
-                    if (e.Property.Name == "Height")
-                    {
-                        Logger.Log($"INI Layout: HEIGHT CHANGED '{control.Name}': was={capturedHeight}, now={control.Height}, Bounds={control.Bounds.Width}x{control.Bounds.Height}");
-                        capturedHeight = control.Height;
-                    }
-                    if (e.Property.Name == "Bounds")
-                    {
-                        Logger.Log($"INI Layout: BOUNDS CHANGED '{control.Name}': {control.Bounds.Width}x{control.Bounds.Height}");
-                    }
-                };
+                    Logger.Log($"INI Layout: Border.Background type={b.Background?.GetType().Name}, Child={b.Child?.GetType().Name}");
+                    if (b.Background is ImageBrush ib)
+                        Logger.Log($"INI Layout: ImageBrush Stretch={ib.Stretch}, TileMode={ib.TileMode}, Source={ib.Source?.GetType().Name}");
+                }
             }
-
-            control.Height = newHeight;
         }
     }
 
@@ -1024,22 +1018,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 window.Background = brush;
             else if (control is Border border)
             {
-                // Use Image child with Stretch.Fill for non-tiled modes.
-                // ImageBrush does not reliably stretch in Avalonia.
-                if (drawMode?.ToLower() == "tiled")
-                {
-                    border.Background = brush;
-                }
-                else
-                {
-                    var img = new Image
-                    {
-                        Source = bitmap,
-                        Stretch = stretch,
-                    };
-                    border.Child = img;
-                    Logger.Log($"INI Layout: Image child for '{control.Name}': stretch={stretch}, bitmap={bitmap.PixelSize.Width}x{bitmap.PixelSize.Height}");
-                }
+                border.Background = brush;
                 // Auto-size from texture if no explicit size set
                 if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
                 {
