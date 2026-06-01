@@ -13,6 +13,8 @@ using Avalonia.Media.Imaging;
 
 using ClientCore;
 
+using DXMainClientMvvmContract.ViewServices;
+
 using Rampastring.Tools;
 
 namespace DXMainClientView.Services;
@@ -24,6 +26,12 @@ namespace DXMainClientView.Services;
 /// </summary>
 public class IniLayoutOverlayService : IIniLayoutOverlayService
 {
+    private static IUrlService? _urlService;
+
+    public IniLayoutOverlayService(IUrlService urlService)
+    {
+        _urlService = urlService;
+    }
     /// <summary>
     /// Font configuration for FontIndex values. Maps FontIndex to (FontSize, FontWeight).
     /// XNAUI FontIndex 0 = default font, FontIndex 1 = bold font.
@@ -354,6 +362,28 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 control.IsEnabled = ParseBool(value);
                 break;
 
+            case "URL":
+                // XNALinkButton: open URL/executable on click via IUrlService
+                if (control is Button urlButton)
+                {
+                    string url = value;
+                    urlButton.Click += (_, _) =>
+                    {
+                        try
+                        {
+                            if (_urlService != null)
+                                _urlService.OpenUrl(url);
+                            else
+                                Logger.Log($"INI Layout: IUrlService not available, cannot open '{url}'");
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Log($"INI Layout: Failed to open URL '{url}': {ex.Message}");
+                        }
+                    };
+                }
+                break;
+
             case "DrawBorders":
                 if (control is Border border)
                     border.BorderThickness = ParseBool(value) ? new Thickness(1) : new Thickness(0);
@@ -658,16 +688,30 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Map XNAUI types to Avalonia controls
         return controlType switch
         {
-            "XNAExtraPanel" or "XNAPanel" or "XNAControl" => new Border
+            // Panels
+            "XNAExtraPanel" or "XNAPanel" or "XNAControl"
+            or "PlayerExtraOptionsPanel"
+            or "MapPreviewBox" => new Border
             {
                 Name = name,
                 Child = new Panel()
             },
+            // Labels
             "XNALabel" => new TextBlock { Name = name },
-            "XNAButton" or "XNAClientButton" or "XNALinkButton" => new Button { Name = name },
-            "XNACheckBox" or "XNAClientCheckBox" => new CheckBox { Name = name },
-            "XNADropDown" or "XNAClientDropDown" => new ComboBox { Name = name },
+            // Buttons
+            "XNAButton" or "XNAClientButton" or "XNALinkButton"
+            or "GameLaunchButton" => new Button { Name = name },
+            // Checkboxes
+            "XNACheckBox" or "XNAClientCheckBox"
+            or "SettingCheckBox" or "FileSettingCheckBox"
+            or "CampaignCheckBox" or "GameLobbyCheckBox" => new CheckBox { Name = name },
+            // Dropdowns
+            "XNADropDown" or "XNAClientDropDown"
+            or "SettingDropDown" or "FileSettingDropDown" => new ComboBox { Name = name },
+            // Text inputs
             "XNATextBox" or "XNASuggestionTextBox" => new TextBox { Name = name },
+            // List boxes
+            "XNAMultiColumnListBox" or "XNAListBox" => new ListBox { Name = name },
             _ => null
         };
     }
