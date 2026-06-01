@@ -521,22 +521,48 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         {
             if (!string.IsNullOrEmpty(child.Name))
             {
-                // Debug: check section lookup for chrome bar controls
-                if (child.Name is "leftbar" or "rightbar")
-                {
-                    var sections = iniFile.GetSections();
-                    bool exists = sections.Contains(child.Name);
-                    Logger.Log($"INI Layout: DEFERRED '{child.Name}': exists={exists}, sections={sections.Count}, first10=[{string.Join(",", sections.Take(10))}]");
-                }
-
-                var section = iniFile.GetSection(child.Name);
+                // GetSection has a _lastSectionIndex optimization that can skip
+                // sections appended at the end by MergeMissingKeys. To work around
+                // this, we search the section list directly.
+                var section = FindSectionDirect(iniFile, child.Name);
                 if (section != null)
                     ApplyDeferredToControl(child, section, parent);
-                else if (child.Name is "leftbar" or "rightbar" or "glow_l" or "glow_r")
-                    Logger.Log($"INI Layout: DEFERRED SKIP '{child.Name}' - section not found in INI");
             }
             ApplyDeferredRecursive(child, iniFile);
         }
+    }
+
+    /// <summary>
+    /// Finds an INI section by direct search, bypassing the _lastSectionIndex
+    /// cache that can skip sections appended by MergeMissingKeys.
+    /// </summary>
+    private static IniSection? FindSectionDirect(IniFile iniFile, string name)
+    {
+        // Use GetSections() to verify the section exists, then use GetSection.
+        // GetSection's fallback (FindIndex from 0) should find it, but the
+        // _lastSectionIndex forward scan may have already returned it.
+        // If GetSection returns null despite the section existing, we have a bug.
+        var section = iniFile.GetSection(name);
+        if (section != null)
+            return section;
+
+        // Fallback: get all section names and check if it exists
+        var names = iniFile.GetSections();
+        if (names.Contains(name))
+        {
+            Logger.Log($"INI Layout: BUG GetSection('{name}') returned null but section exists! Section count={names.Count}");
+            // Try a workaround: call GetSection with a non-existent name to
+            // reset _lastSectionIndex, then retry
+            iniFile.GetSection("__reset_index__");
+            section = iniFile.GetSection(name);
+            if (section != null)
+            {
+                Logger.Log($"INI Layout: Workaround succeeded - found section '{name}' after index reset");
+                return section;
+            }
+            Logger.Log($"INI Layout: Workaround FAILED - section '{name}' still not found after index reset");
+        }
+        return null;
     }
 
     private static void ApplyDeferredToControl(Control control, IniSection section, Control parent)
