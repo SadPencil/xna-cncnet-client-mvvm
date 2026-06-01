@@ -11,5 +11,4 @@ public interface ICampaignCheckBoxOption
 {
     string Name { get; }
     bool Checked { get; set; }
-    bool ResetToDefaultOnGameExit { get; }
 }
