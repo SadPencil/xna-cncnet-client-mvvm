@@ -1,5 +1,3 @@
-using DXMainClientMvvmContract.Domain.Multiplayer;
-using DXMainClientMvvmContract.Multiplayer.GameLobby;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,13 +7,17 @@ using ClientCore;
 using ClientCore.Enums;
 using ClientCore.Extensions;
 using ClientCore.Statistics;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
+using DXMainClientMvvmContract.Multiplayer.GameLobby;
+using DXMainClientMvvmContract.ViewServices;
+
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
+
 using Rampastring.Tools;
-using DXMainClientMvvmContract.ViewServices;
-using System.Diagnostics;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
@@ -105,14 +107,14 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     private bool _isMapSortButtonEnabled = true;
 
-    [ObservableProperty]
-    private IReadOnlyList<IPlayerSlotObservable> _playerSlots = Array.Empty<IPlayerSlotObservable>();
+    IReadOnlyList<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => PlayerSlots.Cast<IPlayerSlotObservable>().ToList().AsReadOnly();
+    protected IReadOnlyList<PlayerSlotObservable> PlayerSlots { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.PlayerSlots)); } } = [];
 
-    [ObservableProperty]
-    private IReadOnlyList<IGameOptionCheckBox> _checkBoxes = Array.Empty<IGameOptionCheckBox>();
+    IReadOnlyList<IGameOptionCheckBox> IGameLobbyViewModel.CheckBoxes => CheckBoxes.Cast<IGameOptionCheckBox>().ToList().AsReadOnly();
+    protected IReadOnlyList<GameOptionCheckBox> CheckBoxes { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.CheckBoxes)); } } = [];
 
-    [ObservableProperty]
-    private IReadOnlyList<IGameOptionDropDown> _dropDowns = Array.Empty<IGameOptionDropDown>();
+    IReadOnlyList<IGameOptionDropDown> IGameLobbyViewModel.DropDowns => DropDowns.Cast<IGameOptionDropDown>().ToList().AsReadOnly();
+    protected IReadOnlyList<GameOptionDropDown> DropDowns { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.DropDowns)); } } = [];
 
     [ObservableProperty]
     private int _launchButtonRank;
@@ -866,7 +868,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         PlayerUpdatingInProgress = true;
 
-        var slots = (IReadOnlyList<PlayerSlotObservable>)PlayerSlots;
+        IReadOnlyList<PlayerSlotObservable> slots = PlayerSlots.ToList().AsReadOnly();
         bool allowOptionsChange = AllowPlayerOptionsChange();
         var extraOpts = playerExtraOptions;
 
