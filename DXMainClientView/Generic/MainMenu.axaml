@@ -176,15 +176,6 @@
       </controls:DarkeningPanel.ChildContent>
     </controls:DarkeningPanel>
 
-    <!-- Options Window (centered with darkening) -->
-    <controls:DarkeningPanel x:Name="optionsOverlay"
-                             Width="1280" Height="720"
-                             Canvas.Left="0" Canvas.Top="0">
-      <controls:DarkeningPanel.ChildContent>
-        <local:OptionsWindow x:Name="optionsWindow" />
-      </controls:DarkeningPanel.ChildContent>
-    </controls:DarkeningPanel>
-
     <!-- Extras Window (centered with darkening) -->
     <controls:DarkeningPanel x:Name="extrasOverlay"
                              Width="1280" Height="720"
@@ -247,6 +238,15 @@
                              Canvas.Left="0" Canvas.Top="0">
       <controls:DarkeningPanel.ChildContent>
         <cncnet:PrivateMessagingWindow x:Name="privateMessagingWindow" />
+      </controls:DarkeningPanel.ChildContent>
+    </controls:DarkeningPanel>
+
+    <!-- Options Window (centered with darkening) -->
+    <controls:DarkeningPanel x:Name="optionsOverlay"
+                             Width="1280" Height="720"
+                             Canvas.Left="0" Canvas.Top="0">
+      <controls:DarkeningPanel.ChildContent>
+        <local:OptionsWindow x:Name="optionsWindow" />
       </controls:DarkeningPanel.ChildContent>
     </controls:DarkeningPanel>
 
