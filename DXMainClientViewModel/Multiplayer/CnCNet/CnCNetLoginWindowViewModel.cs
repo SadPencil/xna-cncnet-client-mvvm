@@ -42,7 +42,7 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
     private bool _isAutoConnectAllowed;
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    private bool _isVisible;
 
     private readonly Action? onConnectRequested;
     private readonly Action? onCancelled;
