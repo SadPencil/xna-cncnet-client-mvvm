@@ -1004,10 +1004,18 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (!string.IsNullOrEmpty(control.Name)
             && HardcodedDrawModes.TryGetValue(control.Name, out var drawMode))
         {
+            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
+
+            // Check for Image child (ExtraControls pattern)
+            if (control is Border border && border.Child is Image img)
+            {
+                img.Stretch = stretch;
+                return;
+            }
+
             var brush = GetImageBrush(control);
             if (brush != null)
             {
-                var (stretch, tileMode) = GetDrawModeSettings(drawMode);
                 brush.Stretch = stretch;
                 brush.TileMode = tileMode;
             }
@@ -1076,7 +1084,21 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 window.Background = brush;
             else if (control is Border border)
             {
-                border.Background = brush;
+                // For tiled mode, use ImageBrush on Background (tiling works with ImageBrush).
+                // For stretched/centered, use an Image child — Avalonia's ImageBrush doesn't
+                // re-render when the control size changes (e.g. FillHeight), but Image does.
+                if (drawMode?.ToLower() == "tiled")
+                {
+                    border.Background = brush;
+                }
+                else
+                {
+                    border.Child = new Image
+                    {
+                        Source = bitmap,
+                        Stretch = stretch,
+                    };
+                }
                 // Auto-size from texture if no explicit size set
                 if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
                 {
@@ -1522,10 +1544,35 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyDrawMode(Control control, string drawMode)
     {
+        var (stretch, tileMode) = GetDrawModeSettings(drawMode);
+
+        // Check for Image child (ExtraControls pattern)
+        if (control is Border border)
+        {
+            if (border.Child is Image img)
+            {
+                if (drawMode?.ToLower() == "tiled" && img.Source is Bitmap bmp)
+                {
+                    // Switch from Image child to ImageBrush for tiled mode
+                    border.Child = null;
+                    border.Background = new ImageBrush
+                    {
+                        Source = bmp,
+                        Stretch = stretch,
+                        TileMode = tileMode,
+                    };
+                }
+                else
+                {
+                    img.Stretch = stretch;
+                }
+                return;
+            }
+        }
+
         var brush = GetImageBrush(control);
         if (brush != null)
         {
-            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
             brush.Stretch = stretch;
             brush.TileMode = tileMode;
         }
