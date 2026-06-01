@@ -734,11 +734,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Map XNAUI types to Avalonia controls
         return controlType switch
         {
-            // Panels
+            // Panels - no Child needed for decorative ExtraControls.
+            // A Panel child interferes with Border's DesiredSize calculation,
+            // causing FillHeight to not render correctly.
             "XNAExtraPanel" or "XNAPanel" or "XNAControl" => new Border
             {
                 Name = name,
-                Child = new Panel()
             },
             // TODO: PlayerExtraOptionsPanel - needs custom template with player slot controls
             "PlayerExtraOptionsPanel" => new Border
