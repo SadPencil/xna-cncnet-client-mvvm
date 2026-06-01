@@ -1,8 +1,13 @@
 <Application xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:DXMainClientView.Converters;assembly=DXMainClientView"
     x:Class="DXMainClientView.App"
     RequestedThemeVariant="Dark">
-    <Application.Styles>
+  <Application.Resources>
+    <converters:ObjectToStringConverter x:Key="ObjectToStringConverter"/>
+  </Application.Resources>
+
+  <Application.Styles>
         <SimpleTheme />
 
         <!-- Global default font size: 12 (matching XNAUI default) -->
