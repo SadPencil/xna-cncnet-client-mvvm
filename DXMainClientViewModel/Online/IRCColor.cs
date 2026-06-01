@@ -3,7 +3,7 @@ namespace DXMainClientViewModel.Online
 {
     public class IRCColor : IIRCColor
     {
-        public IRCColor(string name, bool selectable, int r, int g, int b, int ircColorId)
+        public IRCColor(string name, bool selectable, byte r, byte g, byte b, int ircColorId)
         {
             Name = name;
             Selectable = selectable;
@@ -15,9 +15,9 @@ namespace DXMainClientViewModel.Online
 
         public string Name { get; private set; }
         public bool Selectable { get; private set; }
-        public int R { get; private set; }
-        public int G { get; private set; }
-        public int B { get; private set; }
+        public byte R { get; private set; }
+        public byte G { get; private set; }
+        public byte B { get; private set; }
         public int IrcColorId { get; private set; }
     }
 }

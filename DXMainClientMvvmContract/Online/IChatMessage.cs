@@ -9,9 +9,7 @@ public interface IChatMessage
 {
     string SenderName { get; }
     string SenderIdent { get; }
-    int R { get; }
-    int G { get; }
-    int B { get; }
+    IRgb24Color Color { get; }
     DateTime DateTime { get; }
     string Message { get; }
     bool SenderIsAdmin { get; }

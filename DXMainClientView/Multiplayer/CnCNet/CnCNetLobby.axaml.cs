@@ -9,6 +9,8 @@ using DXMainClientView.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using System.Diagnostics;
+
 namespace DXMainClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
@@ -67,14 +69,14 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void OnYesNoDialogYes(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ViewModel?.PendingYesNoDialog?.Callback?.Invoke(true);
-        if (ViewModel != null) ViewModel.PendingYesNoDialog = null;
+        // TODO: implement it in an MVVM way
+        Debugger.Break();
     }
 
     private void OnYesNoDialogNo(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ViewModel?.PendingYesNoDialog?.Callback?.Invoke(false);
-        if (ViewModel != null) ViewModel.PendingYesNoDialog = null;
+        // TODO: implement it in an MVVM way
+        Debugger.Break();
     }
 
     private void OnDismissMessage(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

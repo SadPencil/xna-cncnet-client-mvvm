@@ -1,3 +1,4 @@
+using DXMainClientMvvmContract;
 using DXMainClientMvvmContract.Online;
 
 using System;
@@ -15,12 +16,10 @@ namespace DXMainClientViewModel.Online
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="dateTime">The date and time of the message.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(string senderName, int r, int g, int b, DateTime dateTime, string message)
+        public ChatMessage(string senderName, Rgb24Color color, DateTime dateTime, string message)
         {
             SenderName = senderName;
-            R = r;
-            G = g;
-            B = b;
+            Color = color;
             DateTime = dateTime;
             Message = message;
         }
@@ -33,7 +32,7 @@ namespace DXMainClientViewModel.Online
         /// <param name="g">Green component of the message color.</param>
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(string senderName, int r, int g, int b, string message) : this(senderName, r, g, b, DateTime.Now, message) { }
+        public ChatMessage(string senderName, Rgb24Color color, string message) : this(senderName, color, DateTime.Now, message) { }
 
         /// <summary>
         /// Creates a new ChatMessage instance.
@@ -46,7 +45,7 @@ namespace DXMainClientViewModel.Online
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="dateTime">The date and time of the message.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(string senderName, string ident, bool senderIsAdmin, int r, int g, int b, DateTime dateTime, string message) : this(senderName, r, g, b, dateTime, message)
+        public ChatMessage(string senderName, string ident, bool senderIsAdmin, Rgb24Color color, DateTime dateTime, string message) : this(senderName, color, dateTime, message)
         {
             SenderIdent = ident;
             SenderIsAdmin = senderIsAdmin;
@@ -60,20 +59,20 @@ namespace DXMainClientViewModel.Online
         /// <param name="g">Green component of the message color.</param>
         /// <param name="b">Blue component of the message color.</param>
         /// <param name="message">The message.</param>
-        public ChatMessage(int r, int g, int b, string message) : this(null, r, g, b, DateTime.Now, message) { }
+        public ChatMessage(Rgb24Color color, string message) : this(null, color, DateTime.Now, message) { }
 
         /// <summary>
         /// Creates a chat message that has no sender and has the date and time set to the
         /// current system date and time.
         /// </summary>
         /// <param name="message">The message.</param>
-        public ChatMessage(string message) : this(255, 255, 255, message) { }
+        public ChatMessage(string message) : this(new Rgb24Color(255, 255, 255), message) { }
 
         public string SenderName { get; private set; }
         public string SenderIdent { get; private set; }
-        public int R { get; private set; }
-        public int G { get; private set; }
-        public int B { get; private set; }
+        public Rgb24Color Color { get; private set; }
+        IRgb24Color IChatMessage.Color => Color;
+
         public DateTime DateTime { get; private set; }
         public string Message { get; private set; }
         public bool SenderIsAdmin { get; private set; }
