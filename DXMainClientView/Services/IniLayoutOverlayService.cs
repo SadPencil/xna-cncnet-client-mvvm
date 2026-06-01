@@ -845,10 +845,14 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     {
         return drawMode?.ToLower() switch
         {
-            "stretched" => (Stretch.Fill, TileMode.None),
-            "centered" => (Stretch.UniformToFill, TileMode.None),
+            // In Avalonia, ImageBrush with TileMode.None renders the image at its
+            // natural size — Stretch only affects how the image fits within each tile.
+            // We must use TileMode.FlipXY for "stretched" and "centered" so the brush
+            // actually scales the image to fill the control area.
+            "stretched" => (Stretch.Fill, TileMode.FlipXY),
+            "centered" => (Stretch.UniformToFill, TileMode.FlipXY),
             "tiled" => (Stretch.None, TileMode.FlipXY),
-            _ => (Stretch.Fill, TileMode.None)
+            _ => (Stretch.Fill, TileMode.FlipXY)
         };
     }
 
@@ -875,10 +879,24 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (!string.IsNullOrEmpty(control.Name)
             && HardcodedDrawModes.TryGetValue(control.Name, out var drawMode))
         {
+            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
+
+            // Check for Image child (ExtraControls pattern)
+            if (control is Border border && border.Child is Panel panel)
+            {
+                foreach (var child in panel.Children)
+                {
+                    if (child is Image img)
+                    {
+                        img.Stretch = stretch;
+                        return;
+                    }
+                }
+            }
+
             var brush = GetImageBrush(control);
             if (brush != null)
             {
-                var (stretch, tileMode) = GetDrawModeSettings(drawMode);
                 brush.Stretch = stretch;
                 brush.TileMode = tileMode;
             }
@@ -947,7 +965,22 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 window.Background = brush;
             else if (control is Border border)
             {
-                border.Background = brush;
+                // For XNAExtraPanel-style controls (Border with empty Panel child),
+                // use an Image child instead of ImageBrush on Background.
+                // Avalonia's ImageBrush with TileMode.None renders at natural size;
+                // an Image control with Stretch.Fill reliably fills the parent.
+                if (border.Child is Panel panel && panel.Children.Count == 0)
+                {
+                    panel.Children.Add(new Image
+                    {
+                        Source = bitmap,
+                        Stretch = stretch,
+                    });
+                }
+                else
+                {
+                    border.Background = brush;
+                }
                 // Auto-size from texture if no explicit size set
                 if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
                 {
@@ -1393,10 +1426,38 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyDrawMode(Control control, string drawMode)
     {
+        var (stretch, tileMode) = GetDrawModeSettings(drawMode);
+
+        // Check if the control is a Border with an Image child (ExtraControls pattern)
+        if (control is Border border && border.Child is Panel panel)
+        {
+            foreach (var child in panel.Children)
+            {
+                if (child is Image img)
+                {
+                    // For tiled mode, switch from Image child to ImageBrush
+                    if (drawMode?.ToLower() == "tiled" && img.Source is Bitmap bmp)
+                    {
+                        panel.Children.Remove(img);
+                        border.Background = new ImageBrush
+                        {
+                            Source = bmp,
+                            Stretch = stretch,
+                            TileMode = tileMode
+                        };
+                    }
+                    else
+                    {
+                        img.Stretch = stretch;
+                    }
+                    return;
+                }
+            }
+        }
+
         var brush = GetImageBrush(control);
         if (brush != null)
         {
-            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
             brush.Stretch = stretch;
             brush.TileMode = tileMode;
         }
