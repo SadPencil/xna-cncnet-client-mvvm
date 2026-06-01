@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.IO;
+
 using DXMainClientMvvmContract.Multiplayer.GameLobby;
 
 using Avalonia.Controls;
@@ -12,6 +15,8 @@ namespace DXMainClientView.Multiplayer.GameLobby;
 
 public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 {
+    private IMapPreviewBoxViewModel? currentMapPreview;
+
     public SkirmishLobby()
     {
         InitializeComponent();
@@ -45,13 +50,54 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
     public IGameLobbyViewModel? ViewModel
     {
         get => DataContext as IGameLobbyViewModel;
-        set => DataContext = value;
+        set
+        {
+            if (currentMapPreview != null)
+                currentMapPreview.PropertyChanged -= OnMapPreviewPropertyChanged;
+
+            DataContext = value;
+
+            if (value?.MapPreviewBox != null)
+            {
+                currentMapPreview = value.MapPreviewBox;
+                currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
+                UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
+            }
+        }
     }
 
     ISkirmishLobbyViewModel? ISkirmishLobbyView.ViewModel
     {
         get => DataContext as ISkirmishLobbyViewModel;
-        set => DataContext = value;
+        set => ((ISkirmishLobbyView)this).ViewModel = value;
+    }
+
+    private void OnMapPreviewPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IMapPreviewBoxViewModel.MapPreviewImageBytes)
+            && sender is IMapPreviewBoxViewModel preview)
+        {
+            UpdateMapPreviewImage(preview.MapPreviewImageBytes);
+        }
+    }
+
+    private void UpdateMapPreviewImage(byte[]? imageBytes)
+    {
+        if (imageBytes == null || imageBytes.Length == 0)
+        {
+            mapPreviewImage.Source = null;
+            return;
+        }
+
+        try
+        {
+            using var ms = new MemoryStream(imageBytes);
+            mapPreviewImage.Source = new Bitmap(ms);
+        }
+        catch
+        {
+            mapPreviewImage.Source = null;
+        }
     }
 
     void ISwitchableView.Show() => IsVisible = true;

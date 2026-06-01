@@ -3,6 +3,7 @@ using DXMainClientMvvmContract.Multiplayer.GameLobby;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 using ClientCore;
@@ -11,6 +12,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using DXMainClientViewModel.Domain.Multiplayer;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
@@ -22,6 +25,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// </summary>
 public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxViewModel
 {
+    private readonly MapLoader mapLoader;
     private GameModeMap? gameModeMap;
     private List<PlayerInfo>? players;
     private List<PlayerInfo>? aiPlayers;
@@ -58,6 +62,9 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     [ObservableProperty]
     private bool _enableStartLocationSelection = true;
 
+    [ObservableProperty]
+    private byte[]? _mapPreviewImageBytes;
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _startingLocationSummaries = new();
@@ -69,8 +76,9 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
 
     // --- Constructor ---
 
-    public MapPreviewBoxViewModel(Action? onFavoriteToggled = null, Action? onStartingLocationApplied = null, Action<int>? onLocalStartingLocationSelected = null)
+    public MapPreviewBoxViewModel(MapLoader mapLoader, Action? onFavoriteToggled = null, Action? onStartingLocationApplied = null, Action<int>? onLocalStartingLocationSelected = null)
     {
+        this.mapLoader = mapLoader;
         this.onFavoriteToggled = onFavoriteToggled;
         this.onStartingLocationApplied = onStartingLocationApplied;
         this.onLocalStartingLocationSelected = onLocalStartingLocationSelected;
@@ -244,6 +252,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             MapAuthorName = string.Empty;
             MapSizeText = string.Empty;
             IsFavorite = false;
+            MapPreviewImageBytes = null;
             return;
         }
 
@@ -257,6 +266,35 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             gameModeMap.Map.SHA1,
             gameModeMap.Map.UntranslatedName,
             gameModeMap.GameMode.Name);
+
+        UpdateMapPreviewImage();
+    }
+
+    private void UpdateMapPreviewImage()
+    {
+        try
+        {
+            if (gameModeMap == null)
+            {
+                MapPreviewImageBytes = null;
+                return;
+            }
+
+            using var lease = mapLoader.GetCachedPreviewImageFromMap(gameModeMap.Map, syncLoadOnCacheMiss: true);
+            if (lease?.Value == null)
+            {
+                MapPreviewImageBytes = null;
+                return;
+            }
+
+            using var ms = new MemoryStream();
+            lease.Value.Save(ms, new PngEncoder());
+            MapPreviewImageBytes = ms.ToArray();
+        }
+        catch
+        {
+            MapPreviewImageBytes = null;
+        }
     }
 }
 

@@ -12,6 +12,7 @@ public interface IMapPreviewBoxViewModel : INotifyPropertyChanged
     string SelectedGameModeName { get; }
     string MapAuthorName { get; }
     string MapSizeText { get; }
+    byte[]? MapPreviewImageBytes { get; }
     int SelectedStartingLocationIndex { get; set; }
     int SelectedPlayerIndex { get; set; }
     bool IsFavorite { get; }

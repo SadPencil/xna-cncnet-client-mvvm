@@ -13,6 +13,7 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     string GameModeName { get; }
     string MapSize { get; }
     string GameName { get; }
+    IMapPreviewBoxViewModel MapPreviewBox { get; }
 
     // --- Player summary (for compatibility) ---
     IReadOnlyList<string> PlayerNames { get; }

@@ -170,6 +170,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     // --- Constructor ---
 
+    private readonly MapPreviewBoxViewModel mapPreviewBox;
+    IMapPreviewBoxViewModel IGameLobbyViewModel.MapPreviewBox => mapPreviewBox;
+
     protected GameLobbyBaseViewModel(
         MapLoader mapLoader,
         DiscordHandler discordHandler,
@@ -182,6 +185,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GameProcessService = gameProcessService;
         UIThreadMarshaller = uiThreadMarshaller;
         this.random = random;
+
+        mapPreviewBox = new MapPreviewBoxViewModel(mapLoader);
     }
 
     // --- Lifecycle ---
@@ -700,6 +705,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GameModeMap = gameModeMap;
         _ = UpdateLaunchGameButtonStatus();
         SetMapLabels();
+        mapPreviewBox.SetGameModeMap(gameModeMap);
 
         if (GameMode == null || Map == null)
         {

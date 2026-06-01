@@ -85,12 +85,7 @@
               BorderThickness="1"
               Width="400" Height="300"
               Canvas.Left="437" Canvas.Top="285">
-        <Panel>
-          <TextBlock Text="[Map Preview]"
-                     Foreground="{DynamicResource XnaSubtleTextBrush}"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center" />
-        </Panel>
+        <Image x:Name="mapPreviewImage" Stretch="Uniform" />
       </Border>
 
       <!-- Map Name Label (centered above preview) -->
