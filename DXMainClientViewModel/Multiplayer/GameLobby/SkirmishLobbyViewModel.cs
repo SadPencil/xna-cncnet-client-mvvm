@@ -169,7 +169,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
     protected override void LeaveGame()
     {
-        Exited?.Invoke(this, EventArgs.Empty);
+        IsVisible = false;
         ResetDiscordPresence();
     }
 

@@ -369,6 +369,32 @@ public static class PreStartup
         services.AddSingleton<ISkirmishLobbyViewModel>(sp =>
             sp.GetRequiredService<SkirmishLobbyViewModel>());
 
+        // GameHostInactiveCheckerService
+        services.AddSingleton<IGameHostInactiveCheckerService, GameHostInactiveCheckerService>();
+
+        // CnCNetGameLobbyViewModel
+        services.AddSingleton<CnCNetGameLobbyViewModel>(sp => new CnCNetGameLobbyViewModel(
+            sp.GetRequiredService<MapLoader>(),
+            sp.GetRequiredService<DiscordHandler>(),
+            sp.GetRequiredService<IGameProcessService>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<Random>(),
+            sp.GetRequiredService<CnCNetManager>(),
+            sp.GetRequiredService<TunnelHandler>(),
+            sp.GetRequiredService<GameCollection>(),
+            sp.GetRequiredService<CnCNetUserData>(),
+            sp.GetRequiredService<IGameHostInactiveCheckerService>()));
+
+        // CnCNetGameLoadingLobbyViewModel
+        services.AddSingleton<CnCNetGameLoadingLobbyViewModel>(sp => new CnCNetGameLoadingLobbyViewModel(
+            sp.GetRequiredService<DiscordHandler>(),
+            sp.GetRequiredService<IGameProcessService>(),
+            sp.GetRequiredService<IUIThreadMarshaller>(),
+            sp.GetRequiredService<CnCNetManager>(),
+            sp.GetRequiredService<CnCNetUserData>(),
+            sp.GetRequiredService<TunnelHandler>(),
+            sp.GetRequiredService<GameCollection>()));
+
         // CnCNetLobbyViewModel
         services.AddSingleton<CnCNetLobbyViewModel>(sp => new CnCNetLobbyViewModel(
             sp.GetRequiredService<CnCNetManager>(),
@@ -422,10 +448,12 @@ public static class PreStartup
             sp.GetRequiredService<StatisticsWindowViewModel>(),
             sp.GetRequiredService<UpdateWindowViewModel>(),
             sp.GetRequiredService<CnCNetUserData>(),
-            sp.GetRequiredService<ISkirmishLobbyViewModel>(),
-            sp.GetRequiredService<ICnCNetLobbyViewModel>(),
-            sp.GetRequiredService<ILANLobbyViewModel>(),
-            sp.GetRequiredService<IPrivateMessagingWindowViewModel>()));
+            sp.GetRequiredService<SkirmishLobbyViewModel>(),
+            sp.GetRequiredService<CnCNetLobbyViewModel>(),
+            sp.GetRequiredService<LANLobbyViewModel>(),
+            sp.GetRequiredService<PrivateMessagingWindowViewModel>(),
+            sp.GetRequiredService<CnCNetGameLobbyViewModel>(),
+            sp.GetRequiredService<CnCNetGameLoadingLobbyViewModel>()));
         services.AddSingleton<IMainMenuViewModel>(sp =>
             sp.GetRequiredService<MainMenuViewModel>());
 

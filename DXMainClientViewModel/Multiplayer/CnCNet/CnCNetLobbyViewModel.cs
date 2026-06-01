@@ -306,6 +306,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         {
             connectionManager.Disconnect();
         }
+
+        // Navigate back to main menu
+        IsVisible = false;
     }
 
     [RelayCommand]

@@ -273,7 +273,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         broadcastManager.Shutdown();
         StopUpdateTimer();
         IsEnabled = false;
-        Exited?.Invoke(this, EventArgs.Empty);
+        IsVisible = false;
     }
 
     [RelayCommand]

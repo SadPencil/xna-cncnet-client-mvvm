@@ -12,6 +12,9 @@ using ClientCore.I18N;
 using DXMainClientViewModel.Campaign;
 using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer.CnCNet;
+using DXMainClientViewModel.Multiplayer;
+using DXMainClientViewModel.Multiplayer.CnCNet;
+using DXMainClientViewModel.Multiplayer.GameLobby;
 using DXMainClientViewModel.Online;
 using DXMainClientViewModel.Services;
 using Rampastring.Tools;
@@ -49,10 +52,10 @@ namespace DXMainClientViewModel.Generic
         private readonly StatisticsWindowViewModel statisticsWindowViewModel;
         private readonly UpdateWindowViewModel updateWindowViewModel;
         private readonly CnCNetUserData cncNetUserData;
-        private readonly ISkirmishLobbyViewModel skirmishLobbyViewModel;
-        private readonly ICnCNetLobbyViewModel cncNetLobbyViewModel;
-        private readonly ILANLobbyViewModel lanLobbyViewModel;
-        private readonly IPrivateMessagingWindowViewModel privateMessagingWindowViewModel;
+        private readonly SkirmishLobbyViewModel skirmishLobbyViewModel;
+        private readonly CnCNetLobbyViewModel cncNetLobbyViewModel;
+        private readonly LANLobbyViewModel lanLobbyViewModel;
+        private readonly PrivateMessagingWindowViewModel privateMessagingWindowViewModel;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -150,10 +153,12 @@ namespace DXMainClientViewModel.Generic
             StatisticsWindowViewModel statisticsWindowViewModel,
             UpdateWindowViewModel updateWindowViewModel,
             CnCNetUserData cncNetUserData,
-            ISkirmishLobbyViewModel skirmishLobbyViewModel,
-            ICnCNetLobbyViewModel cncNetLobbyViewModel,
-            ILANLobbyViewModel lanLobbyViewModel,
-            IPrivateMessagingWindowViewModel privateMessagingWindowViewModel)
+            SkirmishLobbyViewModel skirmishLobbyViewModel,
+            CnCNetLobbyViewModel cncNetLobbyViewModel,
+            LANLobbyViewModel lanLobbyViewModel,
+            PrivateMessagingWindowViewModel privateMessagingWindowViewModel,
+            CnCNetGameLobbyViewModel cncNetGameLobbyViewModel,
+            CnCNetGameLoadingLobbyViewModel cncNetGameLoadingLobbyViewModel)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -182,6 +187,20 @@ namespace DXMainClientViewModel.Generic
 
             // Subscribe to options window closed to trigger custom component dialog
             optionsWindowViewModel.PropertyChanged += OnOptionsWindowPropertyChanged;
+
+            // Subscribe to child lobby visibility changes for exit detection
+            skirmishLobbyViewModel.PropertyChanged += OnSkirmishLobbyPropertyChanged;
+            lanLobbyViewModel.PropertyChanged += OnLanLobbyPropertyChanged;
+            cncNetLobbyViewModel.PropertyChanged += OnCnCNetLobbyPropertyChanged;
+
+            // Wire CnCNetLobbyViewModel child references
+            cncNetLobbyViewModel.SetGameLobbies(cncNetGameLobbyViewModel, cncNetGameLoadingLobbyViewModel);
+            cncNetLobbyViewModel.SetPrivateMessagingWindow(privateMessagingWindowViewModel);
+
+            // Initialize child ViewModels (one-time setup)
+            skirmishLobbyViewModel.Initialize();
+            lanLobbyViewModel.Initialize();
+            cncNetLobbyViewModel.Initialize();
 
             ShowVersionInfo = !ClientConfiguration.Instance.ModMode;
 
@@ -288,6 +307,7 @@ namespace DXMainClientViewModel.Generic
             if (UserINISettings.Instance.StopMusicOnMenu)
                 musicPlayer.Stop();
 
+            skirmishLobbyViewModel.Open();
             skirmishLobbyViewModel.IsVisible = true;
         }
 
@@ -296,7 +316,7 @@ namespace DXMainClientViewModel.Generic
         {
             ActivePanel = MainMenuPanel.SECONDARY;
             topBarViewModel.IsExpanded = true;
-            cncNetLobbyViewModel.IsVisible = true;
+            cncNetLobbyViewModel.SwitchOn();
         }
 
         [RelayCommand]
@@ -309,6 +329,7 @@ namespace DXMainClientViewModel.Generic
                 connectionManager.Disconnect();
 
             IsLanMode = true;
+            lanLobbyViewModel.Open();
             lanLobbyViewModel.IsVisible = true;
         }
 
@@ -536,6 +557,32 @@ namespace DXMainClientViewModel.Generic
             if (e.PropertyName == nameof(OptionsWindowViewModel.IsVisible) && !optionsWindowViewModel.IsVisible)
             {
                 OnOptionsWindowClosed();
+            }
+        }
+
+        private void OnSkirmishLobbyPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SkirmishLobbyViewModel.IsVisible) && !skirmishLobbyViewModel.IsVisible)
+            {
+                OnSkirmishLobbyExited();
+            }
+        }
+
+        private void OnLanLobbyPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(LANLobbyViewModel.IsVisible) && !lanLobbyViewModel.IsVisible)
+            {
+                OnLanLobbyExited();
+            }
+        }
+
+        private void OnCnCNetLobbyPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CnCNetLobbyViewModel.IsVisible) && !cncNetLobbyViewModel.IsVisible)
+            {
+                cncNetLobbyViewModel.SwitchOff();
+                topBarViewModel.IsExpanded = false;
+                ActivePanel = MainMenuPanel.PRIMARY;
             }
         }
 
