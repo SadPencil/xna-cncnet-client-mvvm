@@ -1,156 +1,157 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="DXMainClientView.App"
-             RequestedThemeVariant="Dark">
-  <Application.Styles>
-    <SimpleTheme />
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="DXMainClientView.App"
+    RequestedThemeVariant="Dark">
+    <Application.Styles>
+        <SimpleTheme />
 
-    <!-- Global default font size: 12 (matching XNAUI default) -->
-    <!-- Text shadow: matching XNAUI DrawStringWithShadow at offset (1,1) -->
-    <Style Selector="TextBlock">
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Effect">
-        <DropShadowEffect BlurRadius="0" OffsetX="1" OffsetY="1" Color="Black" Opacity="1" />
-      </Setter>
-    </Style>
-    <Style Selector="Button">
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="HorizontalContentAlignment" Value="Center" />
-      <Setter Property="VerticalContentAlignment" Value="Center" />
-      <Setter Property="Padding" Value="0" />
-      <Setter Property="BorderThickness" Value="0" />
-      <!--
-        Override Button template: use a minimal template without FluentTheme hover styling.
-        This game client uses image-based buttons (IdleTexture/HoverTexture from INI).
-        The FluentTheme's :pointerover visual state overrides custom Background (ImageBrush),
-        causing buttons to "disappear" on hover. Our INI overlay handles hover via
-        PointerEntered/PointerExited handlers instead.
-      -->
-      <Setter Property="Template">
-        <ControlTemplate>
-          <Border Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}"
-                  CornerRadius="{TemplateBinding CornerRadius}">
-            <ContentPresenter Content="{TemplateBinding Content}"
-                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                              Margin="{TemplateBinding Padding}" />
-          </Border>
-        </ControlTemplate>
-      </Setter>
-    </Style>
-    <Style Selector="ComboBox">
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
-      <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
-      <Setter Property="Foreground" Value="{DynamicResource XnaAltBrush}" />
-      <Setter Property="Padding" Value="0" />
-      <!-- Minimal template: no FluentTheme visual states to override colors -->
-      <Setter Property="Template">
-        <ControlTemplate>
-          <Panel>
-            <!-- Border with right edge removed to make room for arrow -->
-            <Border Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="1,1,0,1"
-                    Padding="0"
-                    Margin="0">
-              <ContentPresenter Name="ContentPresenter"
+        <!-- Global default font size: 12 (matching XNAUI default) -->
+        <!-- Text shadow: matching XNAUI DrawStringWithShadow at offset (1,1) -->
+        <Style Selector="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Effect">
+                <DropShadowEffect BlurRadius="0" OffsetX="1" OffsetY="1" Color="Black" Opacity="1" />
+            </Setter>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <!--
+            Override Button template: use a minimal template without FluentTheme hover styling.
+            This game client uses image-based buttons (IdleTexture/HoverTexture from INI).
+            The FluentTheme's :pointerover visual state overrides custom Background (ImageBrush),
+            causing buttons to "disappear" on hover. Our INI overlay handles hover via
+            PointerEntered/PointerExited handlers instead.
+            -->
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Margin="{TemplateBinding Padding}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="BorderBrush" Value="{DynamicResource XnaPanelBorderBrush}" />
+            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource XnaAltBrush}" />
+            <Setter Property="Padding" Value="0" />
+            <!-- Minimal template: no FluentTheme visual states to override colors -->
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <!-- Border with right edge removed to make room for arrow -->
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1,1,0,1"
+                            Padding="0"
+                            Margin="0">
+                            <ContentPresenter Name="ContentPresenter"
                                 Content="{TemplateBinding SelectionBoxItem}"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 Margin="4,0" />
-            </Border>
-            <!-- Arrow button at the right edge -->
-            <Image Name="DropDownGlyph"
-                   Source="{DynamicResource XnaComboBoxArrow}"
-                   Width="20"
-                   Stretch="Uniform"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Stretch"
-                   Margin="0" />
-            <Popup Name="PART_Popup"
-                   IsLightDismissEnabled="True"
-                   IsOpen="{TemplateBinding IsDropDownOpen}"
-                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
-                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                   PlacementTarget="{TemplateBinding}">
-              <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
-                      BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-                      BorderThickness="1">
-                <ScrollViewer>
-                  <ItemsPresenter Name="PART_ItemsPresenter" />
-                </ScrollViewer>
-              </Border>
-            </Popup>
-          </Panel>
-        </ControlTemplate>
-      </Setter>
-    </Style>
+                        </Border>
+                        <!-- Arrow button at the right edge -->
+                        <Image Name="DropDownGlyph"
+                            Source="{DynamicResource XnaComboBoxArrow}"
+                            Width="20"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Margin="0" />
+                        <Popup Name="PART_Popup"
+                            IsLightDismissEnabled="True"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                            PlacementTarget="{TemplateBinding}">
+                            <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                                BorderThickness="1">
+                                <ScrollViewer>
+                                    <ItemsPresenter Name="PART_ItemsPresenter" />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
 
-    <!-- ComboBoxItem: override template to use INI theme colors -->
-    <Style Selector="ComboBoxItem">
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
-      <Setter Property="Template">
-        <ControlTemplate>
-          <Border Name="Bd"
-                  Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}"
-                  Padding="{TemplateBinding Padding}">
-            <TextBlock Text="{TemplateBinding Content}"
-                       Background="Transparent"
-                       VerticalAlignment="Center" />
-          </Border>
-        </ControlTemplate>
-      </Setter>
-    </Style>
-    <Style Selector="ComboBoxItem:pointerover">
-      <Setter Property="Background" Value="{DynamicResource XnaFocusBrush}" />
-    </Style>
-    <Style Selector="ComboBoxItem:selected">
-      <Setter Property="Background" Value="{DynamicResource XnaFocusBrush}" />
-    </Style>
-    <Style Selector="TextBox">
-      <Setter Property="FontSize" Value="12" />
-    </Style>
-    <Style Selector="CheckBox">
-      <Setter Property="FontSize" Value="12" />
-    </Style>
+        <!-- ComboBoxItem: override template to use INI theme colors -->
+        <Style Selector="ComboBoxItem">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Bd"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                        <TextBlock
+                            Text="{TemplateBinding Content, Converter={StaticResource ObjectToStringConverter}}"
+                            Background="Transparent"
+                            VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ComboBoxItem:pointerover">
+            <Setter Property="Background" Value="{DynamicResource XnaFocusBrush}" />
+        </Style>
+        <Style Selector="ComboBoxItem:selected">
+            <Setter Property="Background" Value="{DynamicResource XnaFocusBrush}" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="FontSize" Value="12" />
+        </Style>
 
-    <!-- Visually gray out disabled controls -->
-    <Style Selector="Button:disabled">
-      <Setter Property="Opacity" Value="0.5" />
-    </Style>
-    <Style Selector="CheckBox:disabled">
-      <Setter Property="Opacity" Value="0.5" />
-    </Style>
-    <Style Selector="ComboBox:disabled">
-      <Setter Property="Opacity" Value="0.5" />
-    </Style>
-    <Style Selector="TextBox:disabled">
-      <Setter Property="Opacity" Value="0.5" />
-    </Style>
-    <Style Selector="Slider:disabled">
-      <Setter Property="Opacity" Value="0.5" />
-    </Style>
+        <!-- Visually gray out disabled controls -->
+        <Style Selector="Button:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+        <Style Selector="CheckBox:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+        <Style Selector="ComboBox:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+        <Style Selector="TextBox:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+        <Style Selector="Slider:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
 
-    <!-- ScrollBar: use XNAUI scrollbar textures -->
-    <Style Selector="ScrollBar">
-      <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
-    </Style>
+        <!-- ScrollBar: use XNAUI scrollbar textures -->
+        <Style Selector="ScrollBar">
+            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
+        </Style>
 
-    <!-- ScrollBar thumb: use XNAUI thumb texture -->
-    <Style Selector="ScrollBar /template/ Thumb">
-      <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
-    </Style>
+        <!-- ScrollBar thumb: use XNAUI thumb texture -->
+        <Style Selector="ScrollBar /template/ Thumb">
+            <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
+        </Style>
 
-    <!-- Slider/Trackbar: use XNAUI trackbarButton.png texture -->
-    <Style Selector="Slider">
-      <Setter Property="Foreground" Value="{DynamicResource XnaPanelBorderBrush}" />
-    </Style>
-  </Application.Styles>
+        <!-- Slider/Trackbar: use XNAUI trackbarButton.png texture -->
+        <Style Selector="Slider">
+            <Setter Property="Foreground" Value="{DynamicResource XnaPanelBorderBrush}" />
+        </Style>
+    </Application.Styles>
 </Application>
