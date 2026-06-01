@@ -596,7 +596,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (fillHeight.HasValue && parentHeight > 0)
         {
             double y = Canvas.GetTop(control);
-            control.Height = parentHeight - y - fillHeight.Value;
+            double newHeight = parentHeight - y - fillHeight.Value;
+            Logger.Log($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
+            control.Height = newHeight;
         }
     }
 
