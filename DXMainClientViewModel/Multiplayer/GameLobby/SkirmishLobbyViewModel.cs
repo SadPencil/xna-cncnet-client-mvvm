@@ -84,6 +84,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
     public void Initialize()
     {
+        base.Initialize();
         RandomSeed = random.Next();
         LoadSettings();
         CopyPlayerDataToUI();
