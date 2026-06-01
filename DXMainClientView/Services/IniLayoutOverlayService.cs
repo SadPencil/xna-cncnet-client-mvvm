@@ -695,10 +695,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     Logger.Log($"INI Layout: CreateExtraControls: skipping '{controlName}' (already exists in {searchRoot.GetType().Name})");
                     continue;
                 }
-                else
-                {
-                    Logger.Log($"INI Layout: CreateExtraControls: creating '{controlName}' for {root.GetType().Name}");
-                }
+                // Also check from root directly
+                var existingFromRoot = FindControlByName(root, controlName);
+                Logger.Log($"INI Layout: CreateExtraControls: creating '{controlName}' for {root.GetType().Name} (searchRoot={searchRoot.GetType().Name}, foundInRoot={existingFromRoot != null})");
 
                 var control = CreateControl(controlType, controlName);
                 if (control != null)
