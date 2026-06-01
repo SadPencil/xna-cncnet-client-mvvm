@@ -30,7 +30,7 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
     private string _password = string.Empty;
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    private bool _isVisible;
 
     private readonly Action<PasswordEventArgs>? onPasswordEntered;
 
@@ -49,7 +49,7 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
         if (string.IsNullOrEmpty(Password))
             return;
 
-        IsWindowVisible = false;
+        IsVisible = false;
         onPasswordEntered?.Invoke(new PasswordEventArgs(Password, hostedGame!));
         Password = string.Empty;
     }
@@ -57,7 +57,7 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
     [RelayCommand]
     private void Cancel()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
         Password = string.Empty;
     }
 
@@ -69,7 +69,7 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
         GameName = hostedGame.RoomName;
         HostName = hostedGame.HostName;
         Password = string.Empty;
-        IsWindowVisible = true;
+        IsVisible = true;
     }
 }
 

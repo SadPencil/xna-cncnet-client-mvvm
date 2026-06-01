@@ -56,7 +56,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     private int _maxPlayerCount = MaxPlayerCountLimit;
 
     [ObservableProperty]
-    private bool _isPanelVisible;
+    private bool _isVisible;
 
     // --- Constructor ---
 
@@ -71,7 +71,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     private void ApplyFilters()
     {
         Save();
-        IsPanelVisible = false;
+        IsVisible = false;
     }
 
     [RelayCommand]
@@ -84,7 +84,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     [RelayCommand]
     private void Close()
     {
-        IsPanelVisible = false;
+        IsVisible = false;
     }
 
     // --- Public methods (called by parent ViewModel) ---
@@ -92,7 +92,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     public void Show()
     {
         Load();
-        IsPanelVisible = true;
+        IsVisible = true;
     }
 
     /// <summary>

@@ -14,7 +14,7 @@ public interface IGlobalContextMenuViewModel : INotifyPropertyChanged
     bool CanAddFriend { get; }
     bool IsFriend { get; }
     bool IsBlocked { get; }
-    bool IsContextMenuVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IReadOnlyList<string> MenuLinks { get; }
 

@@ -13,7 +13,7 @@ public interface IGameLobbySettingsWindowViewModel : INotifyPropertyChanged
     IReadOnlyList<string> MaxPlayerOptions { get; }
     IReadOnlyList<string> SkillLevelNames { get; }
     int SelectedSkillLevelIndex { get; set; }
-    bool IsWindowVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IRelayCommand SaveSettingsCommand { get; }
     IRelayCommand CancelCommand { get; }

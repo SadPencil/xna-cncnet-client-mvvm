@@ -42,7 +42,7 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
     private bool _isConfirmEnabled;
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    private bool _isVisible;
 
     // --- Observable collections ---
 
@@ -72,14 +72,14 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
             return;
 
         CnCNetTunnel tunnel = tunnelHandler.Tunnels[SelectedTunnelIndex];
-        IsWindowVisible = false;
+        IsVisible = false;
         onTunnelSelected?.Invoke(tunnel);
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
         onCancelled?.Invoke();
     }
 
@@ -114,7 +114,7 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
         }
 
         IsConfirmEnabled = false;
-        IsWindowVisible = true;
+        IsVisible = true;
     }
 
     // --- Property change handlers ---

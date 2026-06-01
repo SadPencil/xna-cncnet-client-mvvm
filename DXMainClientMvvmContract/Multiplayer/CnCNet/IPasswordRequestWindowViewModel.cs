@@ -9,7 +9,7 @@ public interface IPasswordRequestWindowViewModel : INotifyPropertyChanged
     string GameName { get; }
     string HostName { get; }
     string Password { get; set; }
-    bool IsWindowVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IRelayCommand SubmitPasswordCommand { get; }
     IRelayCommand CancelCommand { get; }

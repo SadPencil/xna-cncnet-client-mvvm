@@ -3,7 +3,7 @@
              xmlns:vmc="using:DXMainClientMvvmContract.Multiplayer"
              x:Class="DXMainClientView.Multiplayer.LANGameCreationWindow"
              x:DataType="vmc:ILANGameCreationWindowViewModel"
-             IsVisible="{Binding IsWindowVisible}"
+             IsVisible="{Binding IsVisible}"
              Width="447" Height="77">
   <Canvas>
     <!-- Description label -->

@@ -535,7 +535,7 @@ namespace DXMainClientViewModel.Generic
 
                 // Hide all child views before switching
                 cncNetLobbyViewModel.IsVisible = false;
-                privateMessagingWindowViewModel.IsWindowVisible = false;
+                privateMessagingWindowViewModel.IsVisible = false;
 
                 ActivePanel = switchType switch
                 {
@@ -551,7 +551,7 @@ namespace DXMainClientViewModel.Generic
                 }
                 else if (switchType == SwitchType.PRIVATE_MESSAGES)
                 {
-                    privateMessagingWindowViewModel.IsWindowVisible = true;
+                    privateMessagingWindowViewModel.IsVisible = true;
                 }
             }
         }

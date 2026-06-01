@@ -53,7 +53,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     private bool _isBlocked;
 
     [ObservableProperty]
-    private bool _isContextMenuVisible;
+    private bool _isVisible;
 
     // --- Observable collections ---
 
@@ -90,7 +90,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     private void OpenPrivateMessage()
     {
         if (resolvedUser == null) return;
-        IsContextMenuVisible = false;
+        IsVisible = false;
         onPrivateMessageRequested?.Invoke(resolvedUser.Name);
     }
 
@@ -110,7 +110,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
         connectionManager.SendCustomMessage(new QueuedMessage(
             "PRIVMSG " + resolvedUser.Name + " :\u0001" + messageBody + "\u0001", QueuedMessageType.CHAT_MESSAGE, 0));
 
-        IsContextMenuVisible = false;
+        IsVisible = false;
         onInviteRequested?.Invoke(resolvedUser.Name);
     }
 
@@ -118,7 +118,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     private void JoinPlayer()
     {
         if (resolvedUser == null) return;
-        IsContextMenuVisible = false;
+        IsVisible = false;
         onJoinUserRequested?.Invoke(new JoinUserEventArgs(resolvedUser));
     }
 
@@ -127,7 +127,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         if (resolvedUser == null) return;
         cncNetUserData.ToggleFriend(resolvedUser.Name);
-        IsContextMenuVisible = false;
+        IsVisible = false;
     }
 
     [RelayCommand]
@@ -135,7 +135,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         if (resolvedUser == null) return;
         cncNetUserData.ToggleFriend(resolvedUser.Name);
-        IsContextMenuVisible = false;
+        IsVisible = false;
     }
 
     [RelayCommand]
@@ -143,7 +143,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         if (resolvedUser == null) return;
         ToggleIgnoreUser(resolvedUser.Ident);
-        IsContextMenuVisible = false;
+        IsVisible = false;
     }
 
     [RelayCommand]
@@ -151,14 +151,14 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     {
         if (resolvedUser == null) return;
         ToggleIgnoreUser(resolvedUser.Ident);
-        IsContextMenuVisible = false;
+        IsVisible = false;
     }
 
     [RelayCommand]
     private void CopyName()
     {
         if (resolvedUser == null) return;
-        IsContextMenuVisible = false;
+        IsVisible = false;
         onCopyNameRequested?.Invoke(resolvedUser.Name);
     }
 
@@ -201,7 +201,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
 
         UpdateButtons();
         UpdateLinks();
-        IsContextMenuVisible = true;
+        IsVisible = true;
     }
 
     /// <summary>
@@ -209,7 +209,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     /// </summary>
     public void HandleLinkAction(string link, bool open)
     {
-        IsContextMenuVisible = false;
+        IsVisible = false;
         if (open)
             onOpenLinkRequested?.Invoke(link);
         else

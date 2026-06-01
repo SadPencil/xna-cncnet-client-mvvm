@@ -60,7 +60,7 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     private int _selectedTeamStartMappingPresetIndex;
 
     [ObservableProperty]
-    private bool _isPanelVisible;
+    private bool _isVisible;
 
     [ObservableProperty]
     private bool _isHostControlsEnabled;
@@ -86,7 +86,7 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     {
         this.onOptionsChanged = onOptionsChanged;
 
-        IsPanelVisible = false;
+        IsVisible = false;
         IsHostControlsEnabled = false;
         ForceNoTeamsAllowChecking = true;
         UseTeamStartMappingsAllowChecking = true;
@@ -108,7 +108,7 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     [RelayCommand]
     private void ClosePanel()
     {
-        IsPanelVisible = false;
+        IsVisible = false;
     }
 
     // --- Property change handlers ---
@@ -220,7 +220,7 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
 
     public void OpenPanel()
     {
-        IsPanelVisible = true;
+        IsVisible = true;
     }
 
     // --- Helpers ---

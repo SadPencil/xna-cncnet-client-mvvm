@@ -3,7 +3,7 @@
              xmlns:vmc="using:DXMainClientMvvmContract.Multiplayer.CnCNet"
              x:Class="DXMainClientView.Multiplayer.CnCNet.LoadOrSaveGameOptionPresetWindow"
              x:DataType="vmc:ILoadOrSaveGameOptionPresetWindowViewModel"
-             IsVisible="{Binding IsWindowVisible}">
+             IsVisible="{Binding IsVisible}">
   <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
           BorderBrush="{DynamicResource XnaPanelBorderBrush}"
           BorderThickness="1"

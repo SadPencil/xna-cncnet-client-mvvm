@@ -76,7 +76,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     private bool _isMessagesPanelEnabled = true;
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    private bool _isVisible;
 
     // --- Observable collections ---
 
@@ -165,7 +165,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [RelayCommand]
     private void Close()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
         IsNotificationVisible = false;
         privateMessageHandler.ResetUnreadMessageCount();
     }
@@ -177,7 +177,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         IsNotificationVisible = false;
         privateMessageHandler.ResetUnreadMessageCount();
 
-        if (IsWindowVisible)
+        if (IsVisible)
         {
             if (!string.IsNullOrEmpty(lastReceivedPMSender))
             {
@@ -188,7 +188,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         }
         else
         {
-            IsWindowVisible = true;
+            IsVisible = true;
 
             if (!string.IsNullOrEmpty(lastConversationPartner))
             {
@@ -221,7 +221,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     public void InitPM(string name)
     {
-        IsWindowVisible = true;
+        IsVisible = true;
 
         // Check if we've already talked with the user during this session
         int pmUserIndex = privateMessageUsers.FindIndex(

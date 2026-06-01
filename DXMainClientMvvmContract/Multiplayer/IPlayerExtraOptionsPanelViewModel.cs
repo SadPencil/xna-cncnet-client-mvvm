@@ -17,7 +17,7 @@ public interface IPlayerExtraOptionsPanelViewModel : INotifyPropertyChanged
     IReadOnlyList<string> TeamStartMappingPresetNames { get; }
     int SelectedTeamStartMappingPresetIndex { get; set; }
     IReadOnlyList<string> TeamStartMappingSummaries { get; }
-    bool IsPanelVisible { get; set; }
+    bool IsVisible { get; set; }
     bool IsHostControlsEnabled { get; }
 
     IRelayCommand ResetMappingsCommand { get; }

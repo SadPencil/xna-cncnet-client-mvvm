@@ -3,7 +3,7 @@
              xmlns:vmc="using:DXMainClientMvvmContract.Multiplayer.CnCNet"
              x:Class="DXMainClientView.Multiplayer.CnCNet.PrivateMessagingWindow"
              x:DataType="vmc:IPrivateMessagingWindowViewModel"
-             IsVisible="{Binding IsWindowVisible}"
+             IsVisible="{Binding IsVisible}"
              Width="800" Height="500">
   <Canvas>
 

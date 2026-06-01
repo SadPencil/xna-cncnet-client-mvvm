@@ -8,7 +8,7 @@ public interface ILANGameCreationWindowViewModel : INotifyPropertyChanged
 {
     string GameName { get; set; }
     bool IsLoadGameAvailable { get; }
-    bool IsWindowVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IRelayCommand CreateNewGameCommand { get; }
     IRelayCommand LoadGameCommand { get; }

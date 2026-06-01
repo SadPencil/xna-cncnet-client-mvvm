@@ -36,7 +36,7 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
     private int _selectedSkillLevelIndex;
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    private bool _isVisible;
 
     // --- Observable collections ---
 
@@ -92,13 +92,13 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
         onSettingsChanged?.Invoke(new GameLobbySettingsEventArgs(
             sanitizedName, maxPlayers, SelectedSkillLevelIndex, Password));
 
-        IsWindowVisible = false;
+        IsVisible = false;
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
         onCancelled?.Invoke();
     }
 
@@ -113,7 +113,7 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
         Password = currentPassword ?? string.Empty;
         MaxPlayers = currentMaxPlayers;
         SelectedSkillLevelIndex = currentSkillLevel;
-        IsWindowVisible = true;
+        IsVisible = true;
     }
 }
 

@@ -37,7 +37,7 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
     private string _presetName = string.Empty;
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    private bool _isVisible;
 
     [ObservableProperty]
     private bool _isNewPresetNameEnabled;
@@ -86,7 +86,7 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
             onPresetSaved?.Invoke(new GameOptionPresetEventArgs(name));
         }
 
-        IsWindowVisible = false;
+        IsVisible = false;
     }
 
     [RelayCommand]
@@ -108,7 +108,7 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
     [RelayCommand]
     private void Cancel()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
         onCancelled?.Invoke();
     }
 
@@ -134,7 +134,7 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
 
         SelectedPresetIndex = 0;
         RefreshButtons();
-        IsWindowVisible = true;
+        IsVisible = true;
     }
 
     // --- Property change handlers ---

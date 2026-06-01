@@ -38,7 +38,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     private bool _isDownloadAvailable;
 
     [ObservableProperty]
-    private bool _isPanelVisible;
+    private bool _isVisible;
 
     private readonly Action? onMapDownloadConfirmed;
     private readonly Action? onCancelled;
@@ -66,7 +66,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     [RelayCommand]
     private void Cancel()
     {
-        IsPanelVisible = false;
+        IsVisible = false;
         onCancelled?.Invoke();
     }
 
@@ -81,7 +81,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
         HostName = hostName;
         StatusText = MapSharingRequestText;
         IsDownloadAvailable = true;
-        IsPanelVisible = true;
+        IsVisible = true;
     }
 
     /// <summary>

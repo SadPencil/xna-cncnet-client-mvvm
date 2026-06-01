@@ -12,7 +12,7 @@ public interface ITunnelSelectionWindowViewModel : INotifyPropertyChanged
     int SelectedTunnelIndex { get; set; }
     string? SelectedTunnelName { get; }
     bool IsConfirmEnabled { get; }
-    bool IsWindowVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IRelayCommand ConfirmSelectionCommand { get; }
     IRelayCommand CancelCommand { get; }

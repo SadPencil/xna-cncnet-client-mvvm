@@ -20,7 +20,7 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     bool IsRecentPlayersVisible { get; }
     bool IsMessagesPanelEnabled { get; }
     IReadOnlyList<string> RecentPlayerNames { get; }
-    bool IsWindowVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IRelayCommand SendMessageCommand { get; }
     IRelayCommand CloseCommand { get; }

@@ -29,7 +29,7 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     private bool _isLoadGameAvailable;
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    private bool _isVisible;
 
     // --- Callbacks ---
 
@@ -51,14 +51,14 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     [RelayCommand]
     private void CreateNewGame()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
         onNewGameRequested?.Invoke();
     }
 
     [RelayCommand]
     private void LoadGame()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
 
         IniFile iniFile = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, ProgramConstants.SAVED_GAME_SPAWN_INI));
 
@@ -68,7 +68,7 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     [RelayCommand]
     private void Cancel()
     {
-        IsWindowVisible = false;
+        IsVisible = false;
     }
 
     // --- Public methods ---
@@ -76,7 +76,7 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     public void Open()
     {
         IsLoadGameAvailable = AllowLoadingGame();
-        IsWindowVisible = true;
+        IsVisible = true;
     }
 
     // --- Helpers ---

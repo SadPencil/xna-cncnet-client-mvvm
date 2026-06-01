@@ -12,7 +12,7 @@ public interface IGameFiltersPanelViewModel : INotifyPropertyChanged
     bool HidePasswordProtectedGames { get; set; }
     bool HideIncompatibleGames { get; set; }
     int MaxPlayerCount { get; set; }
-    bool IsPanelVisible { get; set; }
+    bool IsVisible { get; set; }
 
     IReadOnlyList<IGameOptionFilterDefinition> FilterDefinitions { get; }
     IReadOnlyList<IGameOptionFilterValue> FilterValues { get; }
