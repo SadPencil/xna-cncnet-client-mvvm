@@ -643,6 +643,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             double x = Canvas.GetLeft(control);
             if (double.IsNaN(x)) x = 0; // fallback if Location X was not set
             control.Width = parentWidth - x - fillWidth.Value;
+            StretchBitmapToFill(control);
         }
 
         // Apply FillHeight (sets height to fill from Y to bottom edge minus value)
@@ -655,17 +656,48 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
             control.Height = newHeight;
 
-            // Debug: log final state after FillHeight
-            if (control.Name is "leftbar" or "rightbar")
+            // After FillHeight changes the control's size, re-stretch the bitmap.
+            // Avalonia's ImageBrush with Stretch.Fill does NOT actually stretch
+            // the image to fill the control — it renders at natural DPI size.
+            // Fix: create a pre-stretched bitmap at the exact target dimensions.
+            StretchBitmapToFill(control);
+        }
+    }
+
+    /// <summary>
+    /// After FillHeight/FillWidth changes a control's size, re-stretch the bitmap.
+    /// Avalonia's ImageBrush with Stretch.Fill renders at the bitmap's natural DPI
+    /// size instead of stretching to fill the control. This method creates a
+    /// pre-stretched bitmap at the exact target dimensions using RenderTargetBitmap.
+    /// </summary>
+    private static void StretchBitmapToFill(Control control)
+    {
+        if (control is not Border border)
+            return;
+        if (border.Background is not ImageBrush brush)
+            return;
+        if (brush.Source is not Bitmap sourceBitmap)
+            return;
+
+        int targetWidth = (int)Math.Max(1, border.Width);
+        int targetHeight = (int)Math.Max(1, border.Height);
+
+        // Skip if the bitmap is already at the target size
+        if (sourceBitmap.PixelSize.Width == targetWidth && sourceBitmap.PixelSize.Height == targetHeight)
+            return;
+
+        try
+        {
+            var target = new RenderTargetBitmap(new PixelSize(targetWidth, targetHeight), new Vector(96, 96));
+            using (var ctx = target.CreateDrawingContext())
             {
-                Logger.Log($"INI Layout: AFTER FillHeight '{control.Name}': Width={control.Width}, Height={control.Height}, Background={control.GetType().Name}");
-                if (control is Border b)
-                {
-                    Logger.Log($"INI Layout: Border.Background type={b.Background?.GetType().Name}, Child={b.Child?.GetType().Name}");
-                    if (b.Background is ImageBrush ib)
-                        Logger.Log($"INI Layout: ImageBrush Stretch={ib.Stretch}, TileMode={ib.TileMode}, Source={ib.Source?.GetType().Name}");
-                }
+                ctx.DrawImage(sourceBitmap, new Rect(0, 0, targetWidth, targetHeight));
             }
+            brush.Source = target;
+        }
+        catch (Exception ex)
+        {
+            Logger.Log($"INI Layout: StretchBitmapToFill failed for '{control.Name}': {ex.Message}");
         }
     }
 
