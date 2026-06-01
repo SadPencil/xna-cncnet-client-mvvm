@@ -59,6 +59,11 @@ public partial class MainMenu : UserControl
         if (iniLeftbar != null)
         {
             iniLeftbar.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Red);
+            System.Diagnostics.Debug.WriteLine($"INI leftbar: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Bounds={iniLeftbar.Bounds}");
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("INI leftbar: NOT FOUND in MainCanvas.Children");
         }
 
         // Ensure we can receive keyboard input
