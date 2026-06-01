@@ -46,25 +46,24 @@ public partial class MainMenu : UserControl
         // TEST: Create a border with ImageBrush to verify stretching
         AddImageBrushTest();
 
-        // DIAGNOSTIC: Override INI leftbar background to solid red to check height
-        Avalonia.Controls.Border? iniLeftbar = null;
-        foreach (var child in MainCanvas.Children)
+        // DIAGNOSTIC: Override INI leftbar background AFTER layout
+        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
         {
-            if (child is Avalonia.Controls.Border b && b.Name == "leftbar")
+            Avalonia.Controls.Border? iniLeftbar = null;
+            foreach (var child in MainCanvas.Children)
             {
-                iniLeftbar = b;
-                break;
+                if (child is Avalonia.Controls.Border b && b.Name == "leftbar")
+                {
+                    iniLeftbar = b;
+                    break;
+                }
             }
-        }
-        if (iniLeftbar != null)
-        {
-            iniLeftbar.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Red);
-            System.Diagnostics.Debug.WriteLine($"INI leftbar: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Bounds={iniLeftbar.Bounds}");
-        }
-        else
-        {
-            System.Diagnostics.Debug.WriteLine("INI leftbar: NOT FOUND in MainCanvas.Children");
-        }
+            if (iniLeftbar != null)
+            {
+                Logger.Log($"INI leftbar AFTER layout: Width={iniLeftbar.Width}, Height={iniLeftbar.Height}, Bounds={iniLeftbar.Bounds}");
+                iniLeftbar.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Colors.Red);
+            }
+        }, Avalonia.Threading.DispatcherPriority.Loaded);
 
         // Ensure we can receive keyboard input
         Focus();
