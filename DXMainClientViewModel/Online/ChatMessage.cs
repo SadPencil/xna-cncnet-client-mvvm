@@ -66,7 +66,7 @@ namespace DXMainClientViewModel.Online
         /// current system date and time.
         /// </summary>
         /// <param name="message">The message.</param>
-        public ChatMessage(string message) : this(new Rgb24Color(255, 255, 255), message) { }
+        public ChatMessage(string message) : this(Rgb24Color.White, message) { }
 
         public string SenderName { get; private set; }
         public string SenderIdent { get; private set; }

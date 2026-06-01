@@ -364,7 +364,7 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
 
     protected override void AddNotice(string message)
     {
-        channel?.AddMessage(new ChatMessage(new Rgb24Color(255, 255, 255), message));
+        channel?.AddMessage(new ChatMessage(Rgb24Color.White, message));
     }
 
     protected override void BroadcastOptions()
