@@ -34,6 +34,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IPendingYesNoDialogData? PendingYesNoDialog { get; set; }
     bool IsUpdateCheckNeeded { get; set; }
     bool IsLoginWindowVisible { get; set; }
+    ICnCNetLoginWindowViewModel LoginWindowViewModel { get; }
     bool IsGameCreationPanelVisible { get; set; }
     IPendingGameInviteData? PendingGameInvite { get; set; }
     string? SoundToPlay { get; set; }

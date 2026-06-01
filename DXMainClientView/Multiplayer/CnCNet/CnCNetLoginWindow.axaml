@@ -27,17 +27,6 @@
                 IsChecked="{Binding RememberPassword}"
                 Foreground="{DynamicResource XnaTextBrush}" />
 
-      <!-- Persistent mode -->
-      <CheckBox Content="Stay connected in the background"
-                IsChecked="{Binding PersistentMode}"
-                Foreground="{DynamicResource XnaTextBrush}" />
-
-      <!-- Auto connect -->
-      <CheckBox Content="Connect automatically on startup"
-                IsChecked="{Binding AutoConnect}"
-                IsEnabled="{Binding IsAutoConnectAllowed}"
-                Foreground="{DynamicResource XnaTextBrush}" />
-
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
         <Button Content="Connect"
