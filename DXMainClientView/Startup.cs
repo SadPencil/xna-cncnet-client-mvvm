@@ -26,12 +26,14 @@ public class Startup
 
     private static AppBuilder BuildAvaloniaApp(bool headless = false)
     {
-        var app = AppBuilder.Configure<App>()
-                .UsePlatformDetect()
-                .WithInterFont().LogToTrace();
+        var app = AppBuilder.Configure<App>();
 
         if (headless)
             app = app.UseHeadless(new AvaloniaHeadlessPlatformOptions { });
+        else
+            app = app.UsePlatformDetect();
+
+        app = app.WithInterFont().LogToTrace();
 
         return app;
     }
