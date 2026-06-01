@@ -879,32 +879,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (!string.IsNullOrEmpty(control.Name)
             && HardcodedDrawModes.TryGetValue(control.Name, out var drawMode))
         {
-            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
-
-            // Check for direct Image child (ExtraControls pattern)
-            if (control is Border border)
-            {
-                if (border.Child is Image img)
-                {
-                    img.Stretch = stretch;
-                    return;
-                }
-                if (border.Child is Panel panel)
-                {
-                    foreach (var child in panel.Children)
-                    {
-                        if (child is Image panelImg)
-                        {
-                            panelImg.Stretch = stretch;
-                            return;
-                        }
-                    }
-                }
-            }
-
             var brush = GetImageBrush(control);
             if (brush != null)
             {
+                var (stretch, tileMode) = GetDrawModeSettings(drawMode);
                 brush.Stretch = stretch;
                 brush.TileMode = tileMode;
             }
@@ -966,31 +944,14 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             {
                 Source = bitmap,
                 Stretch = stretch,
-                TileMode = tileMode
+                TileMode = tileMode,
             };
 
             if (control is Window window)
                 window.Background = brush;
             else if (control is Border border)
             {
-                // For XNAExtraPanel-style controls (Border with empty Panel child),
-                // replace the Panel with an Image so Stretch.Fill actually works.
-                // Avalonia's ImageBrush with TileMode.None renders at natural size,
-                // and Panel children may not stretch properly either.
-                if (border.Child is Panel panel && panel.Children.Count == 0)
-                {
-                    Logger.Log($"INI Layout: Replacing Panel with Image for '{control.Name}', stretch={stretch}");
-                    border.Child = new Image
-                    {
-                        Source = bitmap,
-                        Stretch = stretch,
-                    };
-                }
-                else
-                {
-                    Logger.Log($"INI Layout: Using ImageBrush for '{control.Name}', hasChild={border.Child?.GetType().Name}");
-                    border.Background = brush;
-                }
+                border.Background = brush;
                 // Auto-size from texture if no explicit size set
                 if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
                 {
@@ -1436,47 +1397,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplyDrawMode(Control control, string drawMode)
     {
-        var (stretch, tileMode) = GetDrawModeSettings(drawMode);
-
-        // Check if the control is a Border with a direct Image child (ExtraControls pattern)
-        if (control is Border border)
-        {
-            if (border.Child is Image img)
-            {
-                if (drawMode?.ToLower() == "tiled" && img.Source is Bitmap bmp)
-                {
-                    // For tiled mode, switch from Image child to ImageBrush
-                    border.Child = null;
-                    border.Background = new ImageBrush
-                    {
-                        Source = bmp,
-                        Stretch = stretch,
-                        TileMode = tileMode
-                    };
-                }
-                else
-                {
-                    img.Stretch = stretch;
-                }
-                return;
-            }
-            // Also check for Panel with Image child (legacy path)
-            if (border.Child is Panel panel)
-            {
-                foreach (var child in panel.Children)
-                {
-                    if (child is Image panelImg)
-                    {
-                        panelImg.Stretch = stretch;
-                        return;
-                    }
-                }
-            }
-        }
-
         var brush = GetImageBrush(control);
         if (brush != null)
         {
+            var (stretch, tileMode) = GetDrawModeSettings(drawMode);
             brush.Stretch = stretch;
             brush.TileMode = tileMode;
         }
