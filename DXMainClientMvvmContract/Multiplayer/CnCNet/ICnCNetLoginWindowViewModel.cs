@@ -10,6 +10,6 @@ public interface ICnCNetLoginWindowViewModel : INotifyPropertyChanged
     bool RememberPassword { get; set; }
     bool IsVisible { get; set; }
 
-    IAsyncRelayCommand ConnectCommand { get; }
+    IRelayCommand ConnectCommand { get; }
     IRelayCommand CancelCommand { get; }
 }

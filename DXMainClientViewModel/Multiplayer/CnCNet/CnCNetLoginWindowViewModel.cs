@@ -1,7 +1,6 @@
 using DXMainClientMvvmContract.Multiplayer.CnCNet;
 
 using System;
-using System.Threading.Tasks;
 
 using ClientCore;
 
@@ -61,7 +60,7 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
     // --- Commands ---
 
     [RelayCommand]
-    private async Task Connect()
+    private void Connect()
     {
         NameValidationError validationError = NameValidator.IsNameValid(UserName, out string errorMessage);
 
@@ -82,8 +81,6 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
 
         IsVisible = false;
         onConnectRequested?.Invoke();
-
-        await Task.CompletedTask;
     }
 
     [RelayCommand]
