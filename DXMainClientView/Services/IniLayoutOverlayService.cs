@@ -1266,9 +1266,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         {
             brush.Stretch = drawMode?.ToLower() switch
             {
-                // XNAUI STRETCHED: draw texture to fill control (may distort)
-                "stretched" => Stretch.Fill,
-                // XNAUI CENTERED: center texture, crop if larger (maintain ratio)
+                // STRETCHED: maintain ratio, crop excess (no letterbox)
+                "stretched" => Stretch.UniformToFill,
+                // CENTERED: maintain ratio, crop excess (same as STRETCHED in Avalonia)
                 "centered" => Stretch.UniformToFill,
                 "tiled" => Stretch.None,
                 _ => Stretch.UniformToFill
