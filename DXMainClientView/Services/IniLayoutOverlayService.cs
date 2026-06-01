@@ -1058,6 +1058,23 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     {
         try
         {
+            // DIAGNOSTIC: skip texture for leftbar/rightbar, use red background
+            if (control.Name is "leftbar" or "rightbar")
+            {
+                Logger.Log($"INI Layout: DIAGNOSTIC skipping texture for '{control.Name}', using red background");
+                if (control is Border border)
+                {
+                    border.Background = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0));
+                    // Still auto-size from a known texture size
+                    if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
+                    {
+                        border.Width = 24;
+                        border.Height = 266;
+                    }
+                }
+                return;
+            }
+
             // Search for the texture in resource paths
             string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
