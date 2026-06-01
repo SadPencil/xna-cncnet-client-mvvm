@@ -1005,7 +1005,22 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 window.Background = brush;
             else if (control is Border border)
             {
-                border.Background = brush;
+                // For tiled mode, use ImageBrush on Background (tiling works with ImageBrush).
+                // For stretched/centered, use an Image child — Avalonia's ImageBrush with
+                // TileMode.FlipXY does NOT actually stretch the image to fill the control,
+                // but Image.Stretch.Fill works reliably.
+                if (drawMode?.ToLower() == "tiled")
+                {
+                    border.Background = brush;
+                }
+                else
+                {
+                    border.Child = new Image
+                    {
+                        Source = bitmap,
+                        Stretch = stretch,
+                    };
+                }
                 // Auto-size from texture if no explicit size set
                 if (double.IsNaN(border.Width) && double.IsNaN(border.Height))
                 {
