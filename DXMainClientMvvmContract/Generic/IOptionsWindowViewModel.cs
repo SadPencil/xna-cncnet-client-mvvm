@@ -41,8 +41,4 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     IRelayCommand DismissMessageBoxCommand { get; }
     IRelayCommand YesNoDialogYesCommand { get; }
     IRelayCommand YesNoDialogNoCommand { get; }
-
-    // Lifecycle methods called by MainMenuViewModel
-    void Open();
-    void SwitchToCustomComponentsPanel();
 }

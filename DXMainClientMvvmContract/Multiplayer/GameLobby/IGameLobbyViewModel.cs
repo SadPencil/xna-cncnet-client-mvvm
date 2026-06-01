@@ -43,6 +43,7 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     bool CanLaunchGame { get; }
 
     // --- Map list hover ---
+    // TODO: this must be a command.
     void SetHoveredMapIndex(int hoveredIndex);
 
     // --- Commands ---

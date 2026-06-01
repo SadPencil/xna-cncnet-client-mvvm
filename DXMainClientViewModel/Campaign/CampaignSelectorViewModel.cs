@@ -47,8 +47,11 @@ namespace DXMainClientViewModel.Campaign
         public bool IsMissionPreviewEnabled => File.Exists(DefaultMissionPreviewPath);
 
         // CheckBoxes and DropDowns: created by View from INI, registered here for business logic
-        public List<ICampaignCheckBoxOption> CheckBoxOptions { get; } = new();
-        public List<ICampaignDropDownOption> DropDownOptions { get; } = new();
+        public List<CampaignCheckBoxOption> CheckBoxOptions { get; } = new();
+        List<ICampaignCheckBoxOption> ICampaignSelectorViewModel.CheckBoxOptions => CheckBoxOptions.Cast<ICampaignCheckBoxOption>().ToList();
+        public List<CampaignDropDownOption> DropDownOptions { get; } = new();
+        List<ICampaignDropDownOption> ICampaignSelectorViewModel.DropDownOptions => DropDownOptions.Cast<ICampaignDropDownOption>().ToList();
+
 
         // User settings: created by View from INI, registered here for save/load/reset
         public List<IUserSetting> UserSettings { get; } = new();
@@ -474,10 +477,9 @@ namespace DXMainClientViewModel.Campaign
             spawnIni.AddSection(spawnIniSettings);
             WriteMissionSectionToSpawnIni(spawnIni, mission);
 
-            foreach (ICampaignCheckBoxOption chkBox in CheckBoxOptions)
+            foreach (CampaignCheckBoxOption chkBox in CheckBoxOptions)
                 chkBox.ApplySpawnIniCode(spawnIni);
-
-            foreach (ICampaignDropDownOption dd in DropDownOptions)
+            foreach (CampaignDropDownOption dd in DropDownOptions)
                 dd.ApplySpawnIniCode(spawnIni);
 
             // Apply forced options from GameOptions.ini
@@ -504,10 +506,9 @@ namespace DXMainClientViewModel.Campaign
 
                 IniFile.ConsolidateIniFiles(mapIni, difficultyIni);
 
-                foreach (ICampaignCheckBoxOption chkBox in CheckBoxOptions)
+                foreach (CampaignCheckBoxOption chkBox in CheckBoxOptions)
                     chkBox.ApplyMapCode(mapIni, gameMode: null);
-
-                foreach (ICampaignDropDownOption dd in DropDownOptions)
+                foreach (CampaignDropDownOption dd in DropDownOptions)
                     dd.ApplyMapCode(mapIni, gameMode: null);
 
                 mapIni.WriteIniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawnmap.ini"));
@@ -635,7 +636,7 @@ namespace DXMainClientViewModel.Campaign
             // Handle ResetToDefaultOnGameExit
             {
                 // Reset campaign checkboxes
-                foreach (ICampaignCheckBoxOption cb in CheckBoxOptions)
+                foreach (CampaignCheckBoxOption cb in CheckBoxOptions)
                 {
                     if (cb.ResetToDefaultOnGameExit)
                         cb.ResetToDefault();

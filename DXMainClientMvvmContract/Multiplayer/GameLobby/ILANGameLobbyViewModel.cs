@@ -11,8 +11,4 @@ public interface ILANGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     int ChatColorIndex { get; set; }
 
     IRelayCommand BroadcastGameStateCommand { get; }
-
-    // --- Lifecycle ---
-    void SetUp(bool isHost, IPEndPoint hostEndPoint, TcpClient client);
-    void PostJoin();
 }

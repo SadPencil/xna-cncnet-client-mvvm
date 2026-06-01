@@ -40,9 +40,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private readonly Random random;
 
     // Services that the lobby interacts with but does not own
-    private ICnCNetGameLobbyViewModel? gameLobby;
-    private ICnCNetGameLoadingLobbyViewModel? gameLoadingLobby;
-    private IPrivateMessagingWindowViewModel? pmWindow;
+    private CnCNetGameLobbyViewModel? gameLobby;
+    private CnCNetGameLoadingLobbyViewModel? gameLoadingLobby;
+    private PrivateMessagingWindowViewModel? pmWindow;
 
     private Channel? currentChatChannel;
     private string localGameID;
@@ -209,7 +209,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// <summary>
     /// Sets the game lobby and loading lobby references for game joining/creation.
     /// </summary>
-    public void SetGameLobbies(ICnCNetGameLobbyViewModel gameLobby, ICnCNetGameLoadingLobbyViewModel gameLoadingLobby)
+    public void SetGameLobbies(CnCNetGameLobbyViewModel gameLobby, CnCNetGameLoadingLobbyViewModel gameLoadingLobby)
     {
         this.gameLobby = gameLobby;
         this.gameLoadingLobby = gameLoadingLobby;
@@ -218,7 +218,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// <summary>
     /// Sets the private messaging window reference for invite handling.
     /// </summary>
-    public void SetPrivateMessagingWindow(IPrivateMessagingWindowViewModel pmWindow)
+    public void SetPrivateMessagingWindow(PrivateMessagingWindowViewModel pmWindow)
     {
         this.pmWindow = pmWindow;
     }

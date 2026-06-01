@@ -23,15 +23,4 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     // --- Commands ---
     IRelayCommand ChangeTunnelCommand { get; }
     IRelayCommand LeaveGameLobbyCommand { get; }
-
-    // --- Lifecycle (called by main lobby when creating/joining game) ---
-    void SetUp(IChannel channel, bool isHost, int maxPlayers, ICnCNetTunnel tunnel, string hostName, bool isCustomPassword, int skillLevel);
-    void OnJoined();
-    void Clear();
-    void LeaveGameLobby();
-
-    // --- Game option broadcasting ---
-    List<IGameSessionSetting> GetBroadcastableSettings();
-    int GetBroadcastableCheckboxCount();
-    int GetBroadcastableDropdownCount();
 }

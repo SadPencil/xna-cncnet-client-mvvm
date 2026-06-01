@@ -15,6 +15,7 @@ using DXMainClientViewModel.Domain;
 using DXMainClientViewModel.Domain.Multiplayer;
 using Rampastring.Tools;
 using DXMainClientMvvmContract.ViewServices;
+using System.Diagnostics;
 
 namespace DXMainClientViewModel.Multiplayer.GameLobby;
 
@@ -56,9 +57,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     protected GameModeMapFilter gameModeMapFilter;
     private bool searchAllGameModes;
 
-    // Internal game option lists (IGameSessionSetting)
-    public List<IGameSessionSetting> CheckBoxSettings { get; } = new();
-    public List<IGameSessionSetting> DropDownSettings { get; } = new();
+    // Internal game option lists (GameSessionSetting)
+    public List<GameSessionSetting> CheckBoxSettings { get; } = new();
+    public List<GameSessionSetting> DropDownSettings { get; } = new();
 
     // --- Observable state for View binding ---
 

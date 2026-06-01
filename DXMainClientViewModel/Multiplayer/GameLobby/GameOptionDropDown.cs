@@ -14,7 +14,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// </summary>
 public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
 {
-    public IGameSessionSetting Setting { get; }
+    public GameSessionSetting Setting { get; }
 
     public string Name => Setting.Name;
 
@@ -54,7 +54,7 @@ public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
         set => SetProperty(ref _items, value);
     }
 
-    public GameOptionDropDown(IGameSessionSetting setting)
+    public GameOptionDropDown(GameSessionSetting setting)
     {
         Setting = setting;
         _selectedIndex = setting.Value;

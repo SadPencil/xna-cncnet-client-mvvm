@@ -12,7 +12,7 @@ namespace DXMainClientViewModel.Multiplayer.GameLobby;
 /// </summary>
 public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
 {
-    public IGameSessionSetting Setting { get; }
+    public GameSessionSetting Setting { get; }
 
     public string Name => Setting.Name;
 
@@ -45,7 +45,7 @@ public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
         set => SetProperty(ref _isEnabled, value);
     }
 
-    public GameOptionCheckBox(IGameSessionSetting setting)
+    public GameOptionCheckBox(GameSessionSetting setting)
     {
         Setting = setting;
         _isChecked = setting.Value != 0;

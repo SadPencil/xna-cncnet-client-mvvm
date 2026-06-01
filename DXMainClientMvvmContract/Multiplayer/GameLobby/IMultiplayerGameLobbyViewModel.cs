@@ -44,7 +44,4 @@ public interface IMultiplayerGameLobbyViewModel : IGameLobbyViewModel
     IRelayCommand ToggleReadyCommand { get; }
     IRelayCommand LockGameCommand { get; }
     IRelayCommand StartingLocationAppliedCommand { get; }
-
-    // --- Warning notices ---
-    void AddWarning(string message);
 }

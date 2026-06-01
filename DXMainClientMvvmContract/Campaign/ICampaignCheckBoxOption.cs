@@ -12,7 +12,4 @@ public interface ICampaignCheckBoxOption
     string Name { get; }
     bool Checked { get; set; }
     bool ResetToDefaultOnGameExit { get; }
-    void ResetToDefault();
-    void ApplySpawnIniCode(IniFile spawnIni);
-    void ApplyMapCode(IniFile mapIni, object? gameMode);
 }

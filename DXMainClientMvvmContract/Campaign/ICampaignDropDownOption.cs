@@ -12,6 +12,4 @@ public interface ICampaignDropDownOption
     string Name { get; }
     int SelectedIndex { get; set; }
     int ItemCount { get; }
-    void ApplySpawnIniCode(IniFile spawnIni);
-    void ApplyMapCode(IniFile mapIni, object? gameMode);
 }

@@ -14,10 +14,4 @@ public interface ICnCNetGameLoadingLobbyViewModel : IGameLoadingLobbyViewModel
     int ChatColorIndex { get; }
 
     IRelayCommand ChangeTunnelCommand { get; }
-
-    void SetUp(bool isHost, ICnCNetTunnel tunnel, IChannel channel, string hostName);
-    void OnJoined();
-    void Clear();
-    void ChangeChatColor(IIRCColor color);
-    void OnTunnelSelected(ICnCNetTunnel tunnel);
 }
