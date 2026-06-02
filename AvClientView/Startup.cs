@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 using Avalonia;
@@ -16,6 +18,13 @@ public class Startup
         ViewConstants.ServiceProvider = serviceProvider;
 
         bool headless = args.Contains("--headless");
+
+        if (headless)
+        {
+            string logFile = Path.Combine(AppContext.BaseDirectory, "av_bindings.log");
+            Trace.Listeners.Add(new TextWriterTraceListener(logFile));
+            Trace.AutoFlush = true;
+        }
 
         BuildAvaloniaApp(headless)
             .StartWithClassicDesktopLifetime(args);

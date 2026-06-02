@@ -60,6 +60,30 @@ Logs are written to `Client/client.log` in the build output directory. Check for
 grep -i "error\|exception\|fail" AvClientExe/bin/Debug/net8.0/Client/client.log
 ```
 
+### Capture Avalonia binding errors
+
+Avalonia binding errors are emitted via `System.Diagnostics.Trace` (configured by `LogToTrace()` in `AvClientView/Startup.cs`). These do not appear on stdout/stderr. To capture them in headless mode, add a `TextWriterTraceListener` to `Startup.Run()`:
+
+```csharp
+if (headless)
+{
+    string logFile = Path.Combine(AppContext.BaseDirectory, "av_bindings.log");
+    Trace.Listeners.Add(new TextWriterTraceListener(logFile));
+    Trace.AutoFlush = true;
+}
+```
+
+Then after a headless run, inspect the log:
+
+```shell
+grep -i "binding" AvClientExe/bin/Debug/net8.0/av_bindings.log
+```
+
+Binding errors indicate that the AXAML view binds to a property or command that does not exist on the actual runtime DataContext (the ViewModel interface). Common causes:
+
+- **Missing property on the interface**: The view binds to a property that exists only on the concrete ViewModel class, not on the interface.
+- **Wrong DataContext**: A child control inherits the parent's DataContext but expects a different ViewModel type. `x:DataType` in AXAML is compile-time only; it does not set the runtime DataContext. Use `DataContext="{Binding ChildViewModel}"` to scope to a nested ViewModel exposed by the parent interface.
+
 ### Contributing guidelines
 See [Contributing.md](../Contributing.md) for coding style, formatting, and other contribution guidelines. Be aware, Copilot, you MUST read and follow this file, even if the user did not explicitly ask you to.
 
