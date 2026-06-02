@@ -803,8 +803,23 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static Panel FindFirstPanel(Control control)
     {
+        // Prefer Canvas — ExtraControls use Canvas.Left/Top positioning and
+        // must be placed in a Canvas, not a Grid or other Panel type.
+        if (control is Canvas canvas)
+            return canvas;
+
+        // Descend into non-Canvas Panels (e.g. Grid) to find a Canvas inside.
         if (control is Panel panel)
+        {
+            foreach (var child in GetChildren(panel))
+            {
+                var found = FindFirstPanel(child);
+                if (found != null)
+                    return found;
+            }
+            // Fallback: return the Panel itself if no Canvas found inside.
             return panel;
+        }
 
         foreach (var child in GetChildren(control))
         {

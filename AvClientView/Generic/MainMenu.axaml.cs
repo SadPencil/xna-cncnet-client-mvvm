@@ -37,8 +37,9 @@ public partial class MainMenu : UserControl
         if (ViewModel != null)
             topBar.ViewModel = ViewModel.TopBarViewModel;
 
-        // Set default background (matching original: AssetLoader.LoadTexture("MainMenu/mainmenubg.png"))
-        ApplyDefaultBackground("MainMenu/mainmenubg.png");
+        // Apply default background to MainMenuPanel (the menu content area),
+        // not the full UserControl. INI may later override this.
+        ApplyDefaultBackgroundToPanel(MainMenuPanel, "MainMenu/mainmenubg.png");
 
         // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini).
         // The [MainMenu] section's Size is meant for the main menu content area,
@@ -47,8 +48,6 @@ public partial class MainMenu : UserControl
         iniOverlay?.ApplyLayout(this, "MainMenu");
 
         // Steal the INI Size for MainMenuPanel and keep the UserControl at 1280x720.
-        // The UserControl must always be 1280x720 so DarkeningPanels and TopBar
-        // (in OverlayCanvas) have the full design space to work with.
         var menuWidth = Width;
         var menuHeight = Height;
         MainMenuPanel.Width = menuWidth;
@@ -61,6 +60,14 @@ public partial class MainMenu : UserControl
         messageBoxOverlay.Height = menuHeight;
         yesNoDialogOverlay.Width = menuWidth;
         yesNoDialogOverlay.Height = menuHeight;
+
+        // Apply INI BackgroundTexture to MainMenuPanel (it was applied to the
+        // UserControl by ApplyLayout, but we want it on the content panel).
+        if (Background is ImageBrush bgBrush)
+        {
+            MainMenuPanel.Background = Background;
+            Background = null;
+        }
 
         // Ensure we can receive keyboard input
         Focus();
@@ -140,6 +147,22 @@ public partial class MainMenu : UserControl
             {
                 var bitmap = new Bitmap(fullPath);
                 Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
+            }
+        }
+        catch { }
+    }
+
+    private static void ApplyDefaultBackgroundToPanel(Panel target, string texturePath)
+    {
+        try
+        {
+            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            if (iniOverlay == null) return;
+            var fullPath = iniOverlay.FindTextureFile(texturePath);
+            if (fullPath != null)
+            {
+                var bitmap = new Bitmap(fullPath);
+                target.Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
             }
         }
         catch { }
