@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -26,7 +27,26 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
     public SkirmishLobby()
     {
         InitializeComponent();
+        DataContextChanged += OnDataContextChanged;
         Loaded += OnLoaded;
+    }
+
+    private void OnDataContextChanged(object? sender, EventArgs e)
+    {
+        // Unsubscribe from old
+        if (currentMapPreview != null)
+            currentMapPreview.PropertyChanged -= OnMapPreviewPropertyChanged;
+
+        lobbyViewModel = DataContext as IGameLobbyViewModel;
+        currentMapPreview = lobbyViewModel?.MapPreviewBox;
+
+        // Subscribe to new
+        if (currentMapPreview != null)
+        {
+            currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
+            UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
+            RenderIndicators();
+        }
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -37,6 +57,10 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         iniOverlay?.ApplyLayout(this, "SkirmishLobby");
 
         SetupMapListContextMenu();
+
+        // Re-render in case data was set before Loaded fired
+        if (currentMapPreview != null)
+            RenderIndicators();
     }
 
     private void ApplyDefaultBackground(string texturePath)
@@ -60,19 +84,9 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         get => DataContext as IGameLobbyViewModel;
         set
         {
-            if (currentMapPreview != null)
-                currentMapPreview.PropertyChanged -= OnMapPreviewPropertyChanged;
-
-            lobbyViewModel = value;
-            DataContext = value;
-
-            if (value?.MapPreviewBox != null)
-            {
-                currentMapPreview = value.MapPreviewBox;
-                currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
-                UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
-                RenderIndicators();
-            }
+            if (DataContext != value)
+                DataContext = value;
+            // OnDataContextChanged handles the subscription
         }
     }
 
@@ -116,6 +130,8 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 
     // --- Indicator rendering ---
 
+    private const double INDICATOR_SIZE = 20.0;
+
     private void RenderIndicators()
     {
         // Clear existing indicators
@@ -133,24 +149,35 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
             if (!data.IsVisible)
                 continue;
 
+            // Panel with background for hit testing
             var indicatorPanel = new Border
             {
-                Background = new SolidColorBrush(Colors.Transparent),
+                Width = INDICATOR_SIZE + 60, // extra width for names
+                Height = INDICATOR_SIZE + 8,
+                Padding = new Thickness(2),
                 Tag = data.WaypointNumber
             };
 
             var stackPanel = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
 
-            // Waypoint number
-            var numBlock = new TextBlock
+            // Waypoint number with background circle
+            var numBorder = new Border
             {
-                Text = data.WaypointNumber.ToString(),
-                Foreground = new SolidColorBrush(Colors.White),
-                FontWeight = FontWeight.Bold,
-                FontSize = 10,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+                Width = INDICATOR_SIZE,
+                Height = INDICATOR_SIZE,
+                CornerRadius = new CornerRadius(10),
+                Background = new SolidColorBrush(Color.FromRgb(0, 0, 0), 0.6),
+                Child = new TextBlock
+                {
+                    Text = data.WaypointNumber.ToString(),
+                    Foreground = new SolidColorBrush(Colors.White),
+                    FontWeight = FontWeight.Bold,
+                    FontSize = 10,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+                }
             };
-            stackPanel.Children.Add(numBlock);
+            stackPanel.Children.Add(numBorder);
 
             // Player names
             if (data.Players != null && data.Players.Count > 0)
@@ -158,7 +185,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
                 var namesStack = new StackPanel
                 {
                     Orientation = Avalonia.Layout.Orientation.Vertical,
-                    Margin = new Thickness(16, 0, 0, 0)
+                    Margin = new Thickness(4, 0, 0, 0)
                 };
                 foreach (var player in data.Players)
                 {
@@ -196,13 +223,11 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
             var point = e.GetCurrentPoint(indicator);
             var props = point.Properties;
 
-            // Left click
             if (props.IsLeftButtonPressed)
             {
                 HandleIndicatorLeftClick(waypointNumber);
                 e.Handled = true;
             }
-            // Right click
             else if (props.IsRightButtonPressed)
             {
                 HandleIndicatorRightClick(waypointNumber);
@@ -220,12 +245,10 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 
         if (currentMapPreview.EnableContextMenu)
         {
-            // Show player context menu for assigning location
             ShowIndicatorContextMenu(waypointNumber);
         }
         else
         {
-            // Directly select the location
             currentMapPreview.SelectStartingLocationCommand.Execute(null);
         }
     }
@@ -290,15 +313,11 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 
         var contextMenu = new ContextMenu();
 
-        // Get all players from PlayerSlots that have names
         int menuId = 1;
         for (int i = 0; i < lobbyViewModel.PlayerSlots.Count; i++)
         {
             var slot = lobbyViewModel.PlayerSlots[i];
-            // Only include slots that have a name set (not empty)
             if (slot.SelectedNameIndex < 0)
-                continue;
-            if (slot.PlayerName == null)
                 continue;
 
             string playerName;
@@ -306,8 +325,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
                 playerName = lobbyViewModel.PlayerNames[i];
             else
             {
-                playerName = slot.PlayerName;
-                // AI players have their NameOptions indexed
+                playerName = slot.PlayerName ?? string.Empty;
                 if (slot.SelectedNameIndex > 0 && slot.SelectedNameIndex < slot.NameOptions.Count)
                     playerName = slot.NameOptions[slot.SelectedNameIndex];
             }
@@ -330,7 +348,6 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
             menuId++;
         }
 
-        // Open the context menu at a reasonable position
         contextMenu.Open(mapPreviewPanel);
     }
 
