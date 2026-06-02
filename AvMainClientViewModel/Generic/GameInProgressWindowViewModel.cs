@@ -88,10 +88,8 @@ namespace AvMainClientViewModel.Generic
             IsCursorVisible = false;
             ProgramConstants.IsInGame = true;
 
-#if WINFORMS
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
                 WindowState = WindowState.Minimized;
-#endif
         }
 
         private void OnGameProcessExited()
@@ -100,10 +98,9 @@ namespace AvMainClientViewModel.Generic
             IsCursorVisible = true;
             ProgramConstants.IsInGame = false;
 
-#if WINFORMS
             if (UserINISettings.Instance.MinimizeWindowsOnGameStart)
                 WindowState = WindowState.Normal;
-#endif
+
             UserINISettings.Instance.ReloadSettings();
 
             DateTime dtn = DateTime.Now;

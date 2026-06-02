@@ -1,9 +1,6 @@
 ﻿using System;
 using System.IO;
 
-#if WINFORMS
-using System.Windows.Forms;
-#endif
 using ClientCore;
 
 using Rampastring.Tools;
@@ -51,23 +48,26 @@ namespace AvMainClientViewModel.Domain
             if (LoggerInitialized)
                 Logger.Log(FormattableString.Invariant($"{(title is null ? null : title + Environment.NewLine + Environment.NewLine)}{error}"));
 
-#if WINFORMS
-            MessageBox.Show(error, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-#else
-            if (LoggerInitialized)
-                ProcessLauncher.StartShellProcess(ProgramConstants.LogFileName);
-            else
+            // TODO: call a messagebox service provided by view project
+            ProcessLauncher.StartShellProcess(ProgramConstants.LogFileName);
+            // instead of the following fallback
             {
-                string tempfile = SafePath.CombineFilePath(Path.GetTempPath(), "xna-cncnet-client-error.log");
-                using (StreamWriter writer = new StreamWriter(tempfile))
+                if (LoggerInitialized)
                 {
-                    writer.WriteLine(title);
-                    writer.WriteLine();
-                    writer.WriteLine(error);
+                    ProcessLauncher.StartShellProcess(ProgramConstants.LogFileName);
                 }
-                ProcessLauncher.StartShellProcess(tempfile);
+                else
+                {
+                    string tempfile = SafePath.CombineFilePath(Path.GetTempPath(), "xna-cncnet-client-error.log");
+                    using (StreamWriter writer = new StreamWriter(tempfile))
+                    {
+                        writer.WriteLine(title);
+                        writer.WriteLine();
+                        writer.WriteLine(error);
+                    }
+                    ProcessLauncher.StartShellProcess(tempfile);
+                }
             }
-#endif
 
             if (exit)
                 Environment.Exit(1);

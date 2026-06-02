@@ -58,23 +58,12 @@ namespace AvMainClientViewModel
                 }
                 else
                 {
-                    // Calling dotnet.exe has the following disadvantages:
-                    // 1. We need to specify `UseShellExecute = true` for the `Runas` verb, which means we cannot hide the console window despite setting `CreateNoWindow = true`.
-                    // 2. For XNA build, we need to call the x86 version of dotnet.exe.
+                    // Calling dotnet.exe has a disadvantage:
+                    // We need to specify `UseShellExecute = true` for the `Runas` verb, which means we cannot hide the console window despite setting `CreateNoWindow = true`.
 
                     // Therefore, we calls the launcher exe with the argument of current platform. This makes the client tightly coupled with the launcher, which is not ideal but acceptable for now.
 
-                    string arguments;
-#if XNA
-                    arguments = "-NET8 -XNA";
-#elif DX
-                    arguments = "-NET8 -DX";
-#elif GL
-                    // Note: we can assume no UGL build here because this class is labeled as Windows-only.
-                    arguments = "-NET8 -OGL";
-#else
-                    arguments = "-NET8";
-#endif
+                    string arguments = "-NET8 -Av";
 
                     using var _ = Process.Start(new ProcessStartInfo
                     {

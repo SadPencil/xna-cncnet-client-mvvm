@@ -434,18 +434,17 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         if (restartRequired)
             IsRestartRequired = true;
 
-#if ISWINDOWS
-        // Check for DirectDraw compatibility issues after renderer change
-        if (isChangingRenderer && newSelectedRenderer != null && !newSelectedRenderer.IsDummy)
-        {
-            DirectDrawCompatibilityChecker.Examine(out bool requireFix, out bool requireAdmin, out IEnumerable<string> problematicExeNames);
-            if (requireFix)
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            // Check for DirectDraw compatibility issues after renderer change
+            if (isChangingRenderer && newSelectedRenderer != null && !newSelectedRenderer.IsDummy)
             {
-                IsDirectDrawCompatFixRequired = true;
-                DirectDrawCompatFixRequiresAdmin = requireAdmin;
+                DirectDrawCompatibilityChecker.Examine(out bool requireFix, out bool requireAdmin, out IEnumerable<string> problematicExeNames);
+                if (requireFix)
+                {
+                    IsDirectDrawCompatFixRequired = true;
+                    DirectDrawCompatFixRequiresAdmin = requireAdmin;
+                }
             }
-        }
-#endif
     }
 
     [RelayCommand]
@@ -457,16 +456,18 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     [RelayCommand]
     private void ApplyDirectDrawCompatFix()
     {
-#if ISWINDOWS
-        try
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            DirectDrawCompatibilityChecker.Fix();
+            try
+            {
+                DirectDrawCompatibilityChecker.Fix();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Failed to apply DirectDraw compatibility fix: " + ex.Message);
+            }
         }
-        catch (Exception ex)
-        {
-            Logger.Log("Failed to apply DirectDraw compatibility fix: " + ex.Message);
-        }
-#endif
+
         IsDirectDrawCompatFixRequired = false;
     }
 
