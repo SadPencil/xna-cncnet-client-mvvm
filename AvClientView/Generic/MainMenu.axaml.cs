@@ -44,6 +44,11 @@ public partial class MainMenu : UserControl
         var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "MainMenu");
 
+        // Keep the logical design size. MainMenu sits inside a Viewbox so
+        // changing its size would cause everything to scale up or down.
+        // INI Size is only meaningful for child windows like CampaignSelector.
+        Width = 1280;
+        Height = 720;
 
         // Ensure we can receive keyboard input
         Focus();

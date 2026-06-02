@@ -37,6 +37,11 @@ public partial class LoadingScreen : UserControl
 
         var iniOverlay = ViewConstants.ServiceProvider?.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "LoadingScreen");
+
+        // Keep the logical design size. LoadingScreen sits inside a Viewbox so
+        // changing its size would cause everything to scale.
+        Width = 800;
+        Height = 600;
     }
 
     private void ApplyDefaultBackground(string texturePath)
