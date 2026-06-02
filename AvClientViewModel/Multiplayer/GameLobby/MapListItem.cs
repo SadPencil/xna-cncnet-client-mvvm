@@ -44,10 +44,10 @@ public class MapListItem : ObservableObject, IMapListItem
         set => SetProperty(ref _isDisabled, value);
     }
 
-    private string _rankStar = string.Empty;
-    public string RankStar
+    private string? _rankTexturePath;
+    public string? RankTexturePath
     {
-        get => _rankStar;
-        set => SetProperty(ref _rankStar, value);
+        get => _rankTexturePath;
+        set => SetProperty(ref _rankTexturePath, value);
     }
 }
