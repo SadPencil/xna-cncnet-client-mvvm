@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
+using AvClientMvvmContract.Multiplayer.GameLobby;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Multiplayer;
@@ -17,6 +19,10 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     string PlayerName { get; }
     string DraftMessage { get; set; }
     bool IsEnabled { get; }
+
+    ILANGameCreationWindowViewModel? GameCreationWindow { get; }
+    ILANGameLobbyViewModel? GameLobby { get; }
+    ILANGameLoadingLobbyViewModel? GameLoadingLobby { get; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }

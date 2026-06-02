@@ -67,6 +67,9 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
 
     // --- Observable state ---
     [ObservableProperty]
+    private bool _isVisible;
+
+    [ObservableProperty]
     private string _localAddressText = string.Empty;
 
     [ObservableProperty]

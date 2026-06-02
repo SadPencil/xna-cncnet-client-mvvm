@@ -1,4 +1,5 @@
 using AvClientMvvmContract.Multiplayer;
+using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using System;
 using System.Collections.Generic;
@@ -65,6 +66,11 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private LANGameLobbyViewModel lanGameLobby;
     private LANGameLoadingLobbyViewModel lanGameLoadingLobby;
     private LANGameCreationWindowViewModel gameCreationWindow;
+
+    // Exposed to View via interface
+    public ILANGameCreationWindowViewModel? GameCreationWindow => gameCreationWindow;
+    public ILANGameLobbyViewModel? GameLobby => lanGameLobby;
+    public ILANGameLoadingLobbyViewModel? GameLoadingLobby => lanGameLoadingLobby;
 
     // --- Domain events (for parent coordination) ---
     public event EventHandler? Exited;
@@ -177,6 +183,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             // Directly create a new game without the creation window
             lanGameLobby.SetUp(true,
                 new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
+            lanGameLobby.IsVisible = true;
             IsEnabled = false;
         }
     }
@@ -252,6 +259,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             else
             {
                 lanGameLobby.SetUp(false, hg.EndPoint, client);
+                lanGameLobby.IsVisible = true;
 
                 buffer = encoding.GetBytes("JOIN" + ProgramConstants.LAN_DATA_SEPARATOR +
                     ProgramConstants.PLAYERNAME + ProgramConstants.LAN_MESSAGE_SEPARATOR);
@@ -336,6 +344,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             {
                 lanGameLobby.SetUp(true,
                     new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
+                lanGameLobby.IsVisible = true;
                 IsEnabled = false;
             },
             onLoadGameRequested: e =>
@@ -400,6 +409,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         if (!string.IsNullOrWhiteSpace(e.Message))
             AddChatMessage(e.Message);
 
+        lanGameLobby.IsVisible = false;
         IsEnabled = true;
     }
 

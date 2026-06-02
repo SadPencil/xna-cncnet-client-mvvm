@@ -1,10 +1,12 @@
 using AvClientMvvmContract.Multiplayer;
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,10 @@ public partial class LANLobby : UserControl, ILANLobbyView
 
         var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "LANLobby");
+
+        // Wire up child overlay visibility
+        WireOverlayVisibility(gameCreationWindow, gameCreationOverlay);
+        WireOverlayVisibility(gameLobby, gameLobbyOverlay);
     }
 
     private void ApplyDefaultBackground(string texturePath)
@@ -68,4 +74,14 @@ public partial class LANLobby : UserControl, ILANLobbyView
     void ISwitchableView.Show() => IsVisible = true;
     void ISwitchableView.Hide() => IsVisible = false;
     string ISwitchableView.GetDisplayName() => "LAN Lobby";
+
+    private static void WireOverlayVisibility(Control child, DarkeningPanel overlay)
+    {
+        child.PropertyChanged += (s, e) =>
+        {
+            if (e.Property == IsVisibleProperty)
+                overlay.IsPanelVisible = child.IsVisible;
+        };
+        overlay.IsPanelVisible = child.IsVisible;
+    }
 }

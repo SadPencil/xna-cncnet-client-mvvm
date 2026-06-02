@@ -1,6 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
+             xmlns:mp="using:AvClientView.Multiplayer"
+             xmlns:gamelobby="using:AvClientView.Multiplayer.GameLobby"
+             xmlns:controls="using:AvClientView.Controls"
              x:Class="AvClientView.Multiplayer.LANLobby"
              x:DataType="vmc:ILANLobbyViewModel"
              IsVisible="{Binding IsVisible}"
@@ -129,8 +132,30 @@
               Command="{Binding ExitLobbyCommand}"
               Width="133" Height="23"
               FontWeight="Bold"
-             
+
               Canvas.Left="1075" Canvas.Top="693" />
+
+      <!-- ========== CHILD WINDOWS WITH DARKENING OVERLAYS ========== -->
+
+      <!-- LANGameCreationWindow (centered popup for New Game / Load Game) -->
+      <controls:DarkeningPanel x:Name="gameCreationOverlay"
+                               Width="1220" Height="728"
+                               Canvas.Left="0" Canvas.Top="0">
+        <controls:DarkeningPanel.ChildContent>
+          <mp:LANGameCreationWindow x:Name="gameCreationWindow"
+                                    DataContext="{Binding GameCreationWindow}" />
+        </controls:DarkeningPanel.ChildContent>
+      </controls:DarkeningPanel>
+
+      <!-- LANGameLobby (full-screen game lobby, replaces LANLobby when visible) -->
+      <controls:DarkeningPanel x:Name="gameLobbyOverlay"
+                               Width="1220" Height="728"
+                               Canvas.Left="0" Canvas.Top="0">
+        <controls:DarkeningPanel.ChildContent>
+          <gamelobby:LANGameLobby x:Name="gameLobby"
+                                  DataContext="{Binding GameLobby}" />
+        </controls:DarkeningPanel.ChildContent>
+      </controls:DarkeningPanel>
 
   </Canvas>
 </UserControl>
