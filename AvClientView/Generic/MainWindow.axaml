@@ -9,9 +9,8 @@
         CanResize="True"
         Background="#000000">
   <Viewbox Stretch="Uniform" ClipToBounds="False">
-    <Grid>
+    <Grid x:Name="MainGrid">
       <ContentControl x:Name="MainContent" />
-      <views:PrivacyNotification />
     </Grid>
   </Viewbox>
 </Window>

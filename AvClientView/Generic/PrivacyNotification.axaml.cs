@@ -2,8 +2,6 @@ using Avalonia.Controls;
 
 using AvClientMvvmContract.Generic;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace AvClientView.Generic;
 
 public partial class PrivacyNotification : UserControl, IPrivacyNotificationView
@@ -11,7 +9,6 @@ public partial class PrivacyNotification : UserControl, IPrivacyNotificationView
     public PrivacyNotification()
     {
         InitializeComponent();
-        ViewModel = ViewConstants.ServiceProvider.GetRequiredService<IPrivacyNotificationViewModel>();
     }
 
     public IPrivacyNotificationViewModel? ViewModel

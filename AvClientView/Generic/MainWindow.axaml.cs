@@ -78,6 +78,13 @@ public partial class MainWindow : Window
         mainMenu.SetCnCNetLobbyViewModel(sp.GetRequiredService<ICnCNetLobbyViewModel>());
         mainMenu.SetLANLobbyViewModel(sp.GetRequiredService<ILANLobbyViewModel>());
         mainMenu.SetPrivateMessagingWindowViewModel(sp.GetRequiredService<IPrivateMessagingWindowViewModel>());
+
+        // Connect PrivacyNotification (overlay on top of other content)
+        var privacyNotification = new PrivacyNotification
+        {
+            ViewModel = sp.GetRequiredService<IPrivacyNotificationViewModel>()
+        };
+        MainGrid.Children.Add(privacyNotification);
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)

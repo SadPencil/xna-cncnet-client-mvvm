@@ -1058,7 +1058,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             var bitmap = new Bitmap(fullPath);
 
             // Determine stretch mode from hardcoded mapping or default to Fill
-            string drawMode = HardcodedDrawModes.TryGetValue(control.Name, out var mode) ? mode : "stretched";
+            string drawMode = (control.Name != null && HardcodedDrawModes.TryGetValue(control.Name, out var mode)) ? mode : "stretched";
             var (stretch, tileMode) = GetDrawModeSettings(drawMode);
 
             var brush = new ImageBrush
