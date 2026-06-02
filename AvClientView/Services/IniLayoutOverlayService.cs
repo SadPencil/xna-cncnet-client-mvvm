@@ -644,7 +644,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             double y = Canvas.GetTop(control);
             if (double.IsNaN(y)) y = 0; // fallback if Location Y was not set
             double newHeight = parentHeight - y - fillHeight.Value;
-            Log.Information($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
 
             control.Height = newHeight;
             control.InvalidateMeasure();
