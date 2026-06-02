@@ -37,6 +37,7 @@ using ClientCore.Enums;
 using ClientCore.Extensions;
 using ClientCore.I18N;
 using ClientCore.INIProcessing;
+using ClientCore.PlatformShim;
 using ClientCore.Settings;
 
 using ClientUpdater;
@@ -421,7 +422,7 @@ public static class PreStartup
 
         // LAN services
         services.AddSingleton<ILANBroadcastManagerService>(sp =>
-            new LANBroadcastManagerService(ProgramConstants.LAN_LOBBY_PORT, System.Text.Encoding.UTF8));
+            new LANBroadcastManagerService(ProgramConstants.LAN_LOBBY_PORT, EncodingExt.UTF8NoBOM));
         services.AddSingleton<ILANPlayerManagerService, LANPlayerManagerService>();
         services.AddSingleton<ILANMessageDeduplicatorService>(sp =>
             new LANMessageDeduplicatorService(sp.GetRequiredService<Random>().Next()));

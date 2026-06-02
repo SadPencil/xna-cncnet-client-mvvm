@@ -10,6 +10,7 @@ using System.Threading;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
 
@@ -186,7 +187,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                     files.Add(file);
 
                     byte[] responseArray = UploadFiles(_URL, files, gameName.ToLower());
-                    string response = Encoding.UTF8.GetString(responseArray);
+                    string response = EncodingExt.UTF8NoBOM.GetString(responseArray);
 
                     if (!response.Contains("Upload succeeded!"))
                     {

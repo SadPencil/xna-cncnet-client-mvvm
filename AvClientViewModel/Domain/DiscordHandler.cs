@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.PlatformShim;
 
 using DiscordRPC;
 using DiscordRPC.Message;
@@ -265,10 +266,10 @@ namespace AvClientViewModel.Domain
             if (string.IsNullOrEmpty(value))
                 return value;
 
-            if (Encoding.UTF8.GetByteCount(value) <= MaxDiscordPresenceTextUtf8ByteLength)
+            if (EncodingExt.UTF8NoBOM.GetByteCount(value) <= MaxDiscordPresenceTextUtf8ByteLength)
                 return value;
 
-            int maxTruncatedTextByteLength = MaxDiscordPresenceTextUtf8ByteLength - Encoding.UTF8.GetByteCount(DiscordPresenceTruncateSuffix);
+            int maxTruncatedTextByteLength = MaxDiscordPresenceTextUtf8ByteLength - EncodingExt.UTF8NoBOM.GetByteCount(DiscordPresenceTruncateSuffix);
             return value.TruncateToUtf8ByteLength(maxTruncatedTextByteLength) + DiscordPresenceTruncateSuffix;
         }
 

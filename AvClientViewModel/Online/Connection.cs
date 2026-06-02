@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
 
@@ -105,7 +106,7 @@ namespace AvClientViewModel.Online
 
         private string overMessage;
 
-        private readonly Encoding encoding = Encoding.UTF8;
+        private readonly Encoding encoding = EncodingExt.UTF8NoBOM;
 
         /// <summary>
         /// A list of server IPs that have dropped our connection.

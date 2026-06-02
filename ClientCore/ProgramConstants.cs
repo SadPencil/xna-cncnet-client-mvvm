@@ -6,6 +6,7 @@ using System.Text;
 using System.Reflection;
 using Rampastring.Tools;
 using ClientCore.Extensions;
+using ClientCore.PlatformShim;
 
 namespace ClientCore
 {
@@ -54,7 +55,7 @@ namespace ClientCore
 
         public const int GAME_ID_MAX_LENGTH = 4;
 
-        public static readonly Encoding LAN_ENCODING = Encoding.UTF8;
+        public static readonly Encoding LAN_ENCODING = EncodingExt.UTF8NoBOM;
 
 #if NETFRAMEWORK
         private static bool? isMono;

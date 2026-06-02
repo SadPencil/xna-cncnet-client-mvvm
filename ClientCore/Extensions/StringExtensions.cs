@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ClientCore.I18N;
+using ClientCore.PlatformShim;
 
 namespace ClientCore.Extensions;
 
@@ -165,12 +166,12 @@ public static class StringExtensions
         if (str.Length == 0 || maxUtf8ByteLength == 0)
             return string.Empty;
 
-        if (Encoding.UTF8.GetByteCount(str) <= maxUtf8ByteLength)
+        if (EncodingExt.UTF8NoBOM.GetByteCount(str) <= maxUtf8ByteLength)
             return str;
 
         // Encoder.Convert fits as many source chars as possible into the byte budget
         // without splitting a multi-byte UTF-8 sequence or a surrogate pair.
-        Encoder encoder = Encoding.UTF8.GetEncoder();
+        Encoder encoder = EncodingExt.UTF8NoBOM.GetEncoder();
         char[] chars = str.ToCharArray();
         byte[] buffer = new byte[maxUtf8ByteLength];
         encoder.Convert(chars, 0, chars.Length, buffer, 0, buffer.Length,

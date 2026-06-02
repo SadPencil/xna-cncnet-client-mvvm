@@ -21,6 +21,7 @@ using AvClientViewModel.Online;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.PlatformShim;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -52,7 +53,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly MapLoader mapLoader;
     private readonly DiscordHandler discordHandler;
     private readonly Random random;
-    private readonly Encoding encoding = Encoding.UTF8;
+    private readonly Encoding encoding = EncodingExt.UTF8NoBOM;
 
     private string localGame;
     private int localGameIndex;

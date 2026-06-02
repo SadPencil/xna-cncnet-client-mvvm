@@ -19,6 +19,7 @@ using AvClientViewModel.Services;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.PlatformShim;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -107,7 +108,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)
     {
         this.chatColors = chatColors;
-        this.encoding = Encoding.UTF8;
+        this.encoding = EncodingExt.UTF8NoBOM;
         this.localGame = ClientConfiguration.Instance.LocalGame;
         this.applicationLifecycleService = applicationLifecycleService;
 

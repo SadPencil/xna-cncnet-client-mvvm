@@ -10,6 +10,7 @@ using AvClientMvvmContract.Domain;
 using ClientCore;
 using ClientCore.Enums;
 using ClientCore.Extensions;
+using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
 
@@ -70,7 +71,7 @@ namespace AvClientViewModel.Domain
 #pragma warning disable CA5350 // Do Not Use Weak Cryptographic Algorithms
 #pragma warning disable CA1850 // Prefer static 'HashData' method over 'ComputeHash'
             using var sha1 = SHA1.Create();
-            byte[] digest = sha1.ComputeHash(Encoding.UTF8.GetBytes(missionCodeName));
+            byte[] digest = sha1.ComputeHash(EncodingExt.UTF8NoBOM.GetBytes(missionCodeName));
             return BinaryPrimitives.ReadInt32LittleEndian(digest);
 #pragma warning restore CA1850 // Prefer static 'HashData' method over 'ComputeHash'
 #pragma warning restore CA5350 // Do Not Use Weak Cryptographic Algorithms
