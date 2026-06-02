@@ -4,7 +4,7 @@
              x:Class="AvClientView.Generic.LoadingScreen"
              x:DataType="vmc:ILoadingScreenViewModel"
              Background="Transparent">
-  <Canvas>
+  <Canvas x:Name="lsCanvas">
 
     <!-- Status text -->
     <TextBlock x:Name="lblLoadingText"
