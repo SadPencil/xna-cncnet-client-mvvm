@@ -193,8 +193,6 @@ namespace AvMainClientViewModel.Domain.Multiplayer.CnCNet
                     }
                     Logger.Log("MapSharer: Upload response: " + response);
 
-                    //MessageBox.Show((response));
-
                     success = true;
                     return String.Empty;
                 }
