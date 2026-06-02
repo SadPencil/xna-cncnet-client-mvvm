@@ -21,6 +21,7 @@ using AvClientViewModel.Domain;
 using Rampastring.Tools;
 
 using Serilog;
+
 using ClientCore.Settings;
 
 namespace AvClientViewModel.Campaign
