@@ -7,21 +7,26 @@
 
 | Path | Description |
 |------|-------------|
-| `DXMainClient/` | Main entry-point project — always the build target |
+| `AvClientExe/` | Avalonia entry-point executable — always the build target |
+| `AvClientView/` | Avalonia UI layer (Views, AXAML, styles) |
+| `AvClientViewModel/` | ViewModels, Models, Services (no UI dependencies) |
+| `AvClientMvvmContract/` | Interfaces for View-ViewModel communication |
 | `ClientCore/` | Core game-client logic |
-| `ClientGUI/` | UI layer |
 | `ClientUpdater/` | Auto-updater logic |
 | `SecondStageUpdater/` | Secondary updater executable |
+| `DXMainClient/` | Legacy XNA entry-point (being phased out) |
+| `ClientGUI/` | Legacy XNA UI layer (being phased out) |
 | `Rampastring.XNAUI/` | UI framework (git submodule) |
 | `GitVersion.yml` | GitVersion branch and versioning strategy |
 | `global.json` | Pins the required .NET SDK version (10.0, any feature band) |
 | `Directory.Build.props` | MSBuild properties shared across all projects |
+| `Directory.Build.targets` | MSBuild targets (build events, resource copying) |
 | `Directory.Packages.props` | Central NuGet package version management |
 | `Docs/Build.md` | Human-oriented build documentation |
 
 ### Build the project
 
-Always run restore before building. `SecondStageUpdater` is built via a custom MSBuild target (`BuildUpdater`) that fires for every DXMainClient build, but it is not in DXMainClient's project reference graph. This means the implicit restore triggered by `dotnet build` (without `--no-restore`) will not restore it, causing a build failure after any code change that invalidates the NuGet cache.
+Always run restore before building. `SecondStageUpdater` is built via a custom MSBuild target (`BuildUpdater`) that fires for every AvClientExe build, but it is not in AvClientExe's project reference graph. This means the implicit restore triggered by `dotnet build` (without `--no-restore`) will not restore it, causing a build failure after any code change that invalidates the NuGet cache.
 
 ```shell
 dotnet restore AvClient.slnx
@@ -29,6 +34,32 @@ dotnet build AvClientExe/AvClientExe.csproj -f net8.0 --no-restore
 ```
 
 A successful build ends with `0 Error(s)`.
+
+### Run the client in headless mode
+
+The client can run without a display server using Avalonia's headless platform. This is useful for CI testing and verifying non-UI initialization.
+
+```shell
+dotnet run --project AvClientExe/AvClientExe.csproj -- --headless
+```
+
+Or directly with the built binary:
+
+```shell
+dotnet exec AvClientExe/bin/Debug/net8.0/clientav.dll -- --headless
+```
+
+The client runs an endless event loop in headless mode. Use `timeout` to stop it after a fixed duration:
+
+```shell
+timeout 10 dotnet exec AvClientExe/bin/Debug/net8.0/clientav.dll -- --headless
+```
+
+Logs are written to `Client/client.log` in the build output directory. Check for errors:
+
+```shell
+grep -i "error\|exception\|fail" AvClientExe/bin/Debug/net8.0/Client/client.log
+```
 
 ### Contributing guidelines
 See [Contributing.md](../Contributing.md) for coding style, formatting, and other contribution guidelines. Be aware, Copilot, you MUST read and follow this file, even if the user did not explicitly ask you to.

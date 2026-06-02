@@ -45,10 +45,26 @@ dotnet restore AvClient.slnx
 
 ## Step 4 — Build
 
-`--no-restore` is **required**. When `dotnet build` runs without it, the implicit restore only traverses DXMainClient's `<ProjectReference>` graph, which excludes `SecondStageUpdater`. This leaves SecondStageUpdater's restore assets stale after any code change, causing build failures. Always run Step 3 first, then build with `--no-restore`.
+`--no-restore` is **required**. When `dotnet build` runs without it, the implicit restore only traverses AvClientExe's `<ProjectReference>` graph, which excludes `SecondStageUpdater`. This leaves SecondStageUpdater's restore assets stale after any code change, causing build failures. Always run Step 3 first, then build with `--no-restore`.
 
 ```shell
 dotnet build AvClientExe/AvClientExe.csproj -f net8.0 --no-restore
 ```
 
 A successful build ends with `0 Error(s)`.
+
+## Step 5 — Verify the build with a headless run
+
+The client can run without a display server using Avalonia's headless platform. This verifies that the full initialization chain (PreStartup, logger, map loader, INI preprocessor, main menu) works correctly.
+
+```shell
+timeout 10 dotnet exec AvClientExe/bin/Debug/net8.0/clientav.dll -- --headless
+```
+
+Check the log for errors:
+
+```shell
+grep -i "exception\|KABOOOOOOM\|fatal" AvClientExe/bin/Debug/net8.0/Client/client.log
+```
+
+A successful run shows `PreStartup initialization complete.` and `Startup complete. Client is ready.` in the log with no exceptions.
