@@ -26,12 +26,12 @@
 
   <Target Name="CopyResources" AfterTargets="Build" Condition="$(DefineConstants.Contains('DEBUG')) AND '$(MSBuildProjectName)' == 'AvClientExe'">
     <ItemGroup>
-      <ExampleClientResources Include="$(MSBuildProjectDirectory)\Examples\TSResources\Resources\**\*.*" />
-      <ExampleClientMaps Include="$(MSBuildProjectDirectory)\Examples\TSResources\Maps\**\*.*" />
-      <ExampleClientIni Include="$(MSBuildProjectDirectory)\Examples\TSResources\INI\**\*.*" />
-      <ExampleClientMix Include="$(MSBuildProjectDirectory)\Examples\TSResources\MIX\**\*.*" />
-      <ExampleClientSettings Include="$(MSBuildProjectDirectory)\Examples\TSResources\SUN.ini" />
-      <ExampleClientDefinitions Include="$(MSBuildProjectDirectory)\Examples\TSResources\Resources\ClientDefinitions.ini" />
+      <ExampleClientResources Include="$(MSBuildProjectDirectory)\Examples\YRResources\Resources\**\*.*" />
+      <ExampleClientMaps Include="$(MSBuildProjectDirectory)\Examples\YRResources\Maps\**\*.*" />
+      <ExampleClientIni Include="$(MSBuildProjectDirectory)\Examples\YRResources\INI\**\*.*" />
+      <ExampleClientMix Include="$(MSBuildProjectDirectory)\Examples\YRResources\MIX\**\*.*" />
+      <ExampleClientSettings Include="$(MSBuildProjectDirectory)\Examples\YRResources\SUN.ini" />
+      <ExampleClientDefinitions Include="$(MSBuildProjectDirectory)\Examples\YRResources\Resources\ClientDefinitions.ini" />
     </ItemGroup>
     
     <PropertyGroup>
