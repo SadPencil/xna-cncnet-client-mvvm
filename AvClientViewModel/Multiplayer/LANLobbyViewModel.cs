@@ -364,8 +364,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         // Set initial chat color (after child ViewModels are created)
         int savedColor = UserINISettings.Instance.LANChatColor;
         SelectedColorIndex = savedColor >= 0 && savedColor < chatColors.Length ? savedColor : 0;
-
-        StartUpdateTimer();
     }
 
     public void Open()
@@ -390,6 +388,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         }
 
         SendAlive();
+        StartUpdateTimer();
     }
 
     public void Close()
