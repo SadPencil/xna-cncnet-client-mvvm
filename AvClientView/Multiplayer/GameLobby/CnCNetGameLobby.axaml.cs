@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -26,8 +27,25 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
     public CnCNetGameLobby()
     {
         InitializeComponent();
+        DataContextChanged += OnDataContextChanged;
         Loaded += OnLoaded;
         SetupChatInputEnterKey();
+    }
+
+    private void OnDataContextChanged(object? sender, EventArgs e)
+    {
+        if (currentMapPreview != null)
+            currentMapPreview.PropertyChanged -= OnMapPreviewPropertyChanged;
+
+        lobbyViewModel = DataContext as IGameLobbyViewModel;
+        currentMapPreview = lobbyViewModel?.MapPreviewBox;
+
+        if (currentMapPreview != null)
+        {
+            currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
+            UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
+            RenderIndicators();
+        }
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -38,6 +56,9 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         iniOverlay?.ApplyLayout(this, "MultiplayerGameLobby");
 
         SetupMapListContextMenu();
+
+        if (currentMapPreview != null)
+            RenderIndicators();
     }
 
     private void ApplyDefaultBackground(string texturePath)
@@ -73,23 +94,11 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         get => DataContext as ICnCNetGameLobbyViewModel;
         set
         {
-            if (currentMapPreview != null)
-                currentMapPreview.PropertyChanged -= OnMapPreviewPropertyChanged;
-
-            lobbyViewModel = value as IGameLobbyViewModel;
-            DataContext = value;
-
-            if (value?.MapPreviewBox != null)
-            {
-                currentMapPreview = value.MapPreviewBox;
-                currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
-                UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
-                RenderIndicators();
-            }
+            if (DataContext != value)
+                DataContext = value;
         }
     }
 
-    // Explicit interface implementations for base interfaces
     IMultiplayerGameLobbyViewModel? IMultiplayerGameLobbyView.ViewModel
     {
         get => DataContext as IMultiplayerGameLobbyViewModel;
@@ -136,6 +145,8 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
     // --- Indicator rendering ---
 
+    private const double INDICATOR_SIZE = 20.0;
+
     private void RenderIndicators()
     {
         foreach (var el in indicatorElements)
@@ -154,28 +165,38 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
             var indicatorPanel = new Border
             {
-                Background = new SolidColorBrush(Colors.Transparent),
+                Width = INDICATOR_SIZE + 60,
+                Height = INDICATOR_SIZE + 8,
+                Padding = new Thickness(2),
                 Tag = data.WaypointNumber
             };
 
             var stackPanel = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
 
-            var numBlock = new TextBlock
+            var numBorder = new Border
             {
-                Text = data.WaypointNumber.ToString(),
-                Foreground = new SolidColorBrush(Colors.White),
-                FontWeight = FontWeight.Bold,
-                FontSize = 10,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+                Width = INDICATOR_SIZE,
+                Height = INDICATOR_SIZE,
+                CornerRadius = new CornerRadius(10),
+                Background = new SolidColorBrush(Color.FromRgb(0, 0, 0), 0.6),
+                Child = new TextBlock
+                {
+                    Text = data.WaypointNumber.ToString(),
+                    Foreground = new SolidColorBrush(Colors.White),
+                    FontWeight = FontWeight.Bold,
+                    FontSize = 10,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
+                }
             };
-            stackPanel.Children.Add(numBlock);
+            stackPanel.Children.Add(numBorder);
 
             if (data.Players != null && data.Players.Count > 0)
             {
                 var namesStack = new StackPanel
                 {
                     Orientation = Avalonia.Layout.Orientation.Vertical,
-                    Margin = new Thickness(16, 0, 0, 0)
+                    Margin = new Thickness(4, 0, 0, 0)
                 };
                 foreach (var player in data.Players)
                 {
@@ -307,15 +328,13 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
             var slot = lobbyViewModel.PlayerSlots[i];
             if (slot.SelectedNameIndex < 0)
                 continue;
-            if (slot.PlayerName == null)
-                continue;
 
             string playerName;
             if (i < lobbyViewModel.PlayerNames.Count)
                 playerName = lobbyViewModel.PlayerNames[i];
             else
             {
-                playerName = slot.PlayerName;
+                playerName = slot.PlayerName ?? string.Empty;
                 if (slot.SelectedNameIndex > 0 && slot.SelectedNameIndex < slot.NameOptions.Count)
                     playerName = slot.NameOptions[slot.SelectedNameIndex];
             }

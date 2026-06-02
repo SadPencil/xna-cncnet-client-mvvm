@@ -79,10 +79,10 @@
               BorderThickness="1"
               Width="400" Height="300"
               Canvas.Left="437" Canvas.Top="285">
-        <Canvas x:Name="mapPreviewPanel">
-          <Image x:Name="mapPreviewImage" Stretch="Uniform" />
+        <Panel x:Name="mapPreviewPanel">
+          <Image x:Name="mapPreviewImage" Width="398" Height="298" Stretch="Uniform" />
           <Canvas x:Name="indicatorsCanvas" />
-        </Canvas>
+        </Panel>
       </Border>
 
       <TextBlock x:Name="lblMapName"
