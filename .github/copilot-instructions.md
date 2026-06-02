@@ -26,14 +26,13 @@
 
 ### Build the project
 
-Always run restore before building. `SecondStageUpdater` is built via a custom MSBuild target (`BuildUpdater`) that fires for every AvClientExe build, but it is not in AvClientExe's project reference graph. This means the implicit restore triggered by `dotnet build` (without `--no-restore`) will not restore it, causing a build failure after any code change that invalidates the NuGet cache.
+`SecondStageUpdater` is included as a `ProjectReference` in AvClientExe, so a simple `dotnet build` is sufficient:
 
 ```shell
-dotnet restore AvClient.slnx
-dotnet build AvClientExe/AvClientExe.csproj -f net8.0 --no-restore
+dotnet build AvClientExe/AvClientExe.csproj -f net8.0
 ```
 
-A successful build ends with `0 Error(s)`.
+A successful build ends with `0 Error(s)`. The `BuildUpdater` MSBuild target in `Directory.Build.targets` handles copying the updater output during publish.
 
 ### Run the client in headless mode
 

@@ -35,25 +35,17 @@ git submodule foreach --recursive \
   'git fetch --unshallow origin || true; git remote set-branches origin "*"; git fetch origin'
 ```
 
-## Step 3 — Restore NuGet packages
+## Step 3 — Build
 
-Run restore from the **solution file** so that ALL projects — including `SecondStageUpdater` — are restored. `SecondStageUpdater` is not a `<ProjectReference>` of `DXMainClient`, but it is always built via the custom `BuildUpdater` MSBuild target. If it is not restored before the build, NETSDK1127 or NETSDK1004 errors occur. Always pass the `Configuration` property; omitting it picks the wrong target frameworks.
-
-```shell
-dotnet restore AvClient.slnx
-```
-
-## Step 4 — Build
-
-`--no-restore` is **required**. When `dotnet build` runs without it, the implicit restore only traverses AvClientExe's `<ProjectReference>` graph, which excludes `SecondStageUpdater`. This leaves SecondStageUpdater's restore assets stale after any code change, causing build failures. Always run Step 3 first, then build with `--no-restore`.
+`SecondStageUpdater` is now a `ProjectReference` of AvClientExe (with `ReferenceOutputAssembly="false"`), so a simple `dotnet build` restores and builds everything correctly:
 
 ```shell
-dotnet build AvClientExe/AvClientExe.csproj -f net8.0 --no-restore
+dotnet build AvClientExe/AvClientExe.csproj -f net8.0
 ```
 
 A successful build ends with `0 Error(s)`.
 
-## Step 5 — Verify the build with a headless run
+## Step 4 — Verify the build with a headless run
 
 The client can run without a display server using Avalonia's headless platform. This verifies that the full initialization chain (PreStartup, logger, map loader, INI preprocessor, main menu) works correctly.
 

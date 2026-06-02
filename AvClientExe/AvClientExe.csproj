@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AvClientMvvmContract\AvClientMvvmContract.csproj" />
     <ProjectReference Include="..\AvClientView\AvClientView.csproj" />
-      <ProjectReference Include="..\AvClientViewModel\AvClientViewModel.csproj" />
+    <ProjectReference Include="..\AvClientViewModel\AvClientViewModel.csproj" />
+    <ProjectReference Include="..\SecondStageUpdater\SecondStageUpdater.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>
