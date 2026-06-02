@@ -203,7 +203,6 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
         {
             if (socket == null || !socket.IsBound)
             {
-                Debugger.Break();
                 return false;
             }
 
