@@ -320,9 +320,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     {
         PlayerName = ProgramConstants.PLAYERNAME;
 
-        int savedColor = UserINISettings.Instance.LANChatColor;
-        SelectedColorIndex = savedColor >= 0 && savedColor < chatColors.Length ? savedColor : 0;
-
         // Create child ViewModels
         lanGameLobby = new LANGameLobbyViewModel(
             mapLoader,
@@ -364,10 +361,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         lanGameLoadingLobby.GameLeft += LanGameLoadingLobby_GameLeft;
         lanGameLoadingLobby.GameBroadcast += LanGameLoadingLobby_GameBroadcast;
 
-
-        // Set initial chat color
-        lanGameLobby.ChatColorIndex = SelectedColorIndex;
-        lanGameLoadingLobby.SetChatColorIndex(SelectedColorIndex);
+        // Set initial chat color (after child ViewModels are created)
+        int savedColor = UserINISettings.Instance.LANChatColor;
+        SelectedColorIndex = savedColor >= 0 && savedColor < chatColors.Length ? savedColor : 0;
 
         StartUpdateTimer();
     }
