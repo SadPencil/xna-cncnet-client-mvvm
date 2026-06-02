@@ -5,6 +5,8 @@
     <CLSCompliant>false</CLSCompliant>
     <ImplicitUsings>disable</ImplicitUsings>
     <Platform>AnyCPU</Platform>
+    <!-- Specify PlatformTarget to prevent a weird "net48/win-x86" target despite we have Platform: AnyCPU -->
+    <PlatformTarget>AnyCPU</PlatformTarget>
 
     <Title>CnCNet Client</Title>
     <Company>CnCNet</Company>
