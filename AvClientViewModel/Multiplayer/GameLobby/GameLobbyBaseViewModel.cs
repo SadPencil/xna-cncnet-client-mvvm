@@ -171,7 +171,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     // --- Constructor ---
 
     private readonly MapPreviewBoxViewModel mapPreviewBox;
-    public IMapPreviewBoxViewModel MapPreviewBox => mapPreviewBox;
+    IMapPreviewBoxViewModel IGameLobbyViewModel.MapPreviewBox => mapPreviewBox;
 
     protected GameLobbyBaseViewModel(
         MapLoader mapLoader,
