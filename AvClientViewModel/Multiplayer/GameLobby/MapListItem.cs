@@ -43,4 +43,11 @@ public class MapListItem : ObservableObject, IMapListItem
         get => _isDisabled;
         set => SetProperty(ref _isDisabled, value);
     }
+
+    private string _rankStar = string.Empty;
+    public string RankStar
+    {
+        get => _rankStar;
+        set => SetProperty(ref _rankStar, value);
+    }
 }

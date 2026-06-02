@@ -56,6 +56,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         iniOverlay?.ApplyLayout(this, "MultiplayerGameLobby");
 
         SetupMapListContextMenu();
+        SetupSearchContextMenu();
 
         if (currentMapPreview != null)
             RenderIndicators();
@@ -168,10 +169,15 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
                 Width = INDICATOR_SIZE + 60,
                 Height = INDICATOR_SIZE + 8,
                 Padding = new Thickness(2),
+                Background = Brushes.Transparent,
                 Tag = data.WaypointNumber
             };
 
-            var stackPanel = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+            var stackPanel = new StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                IsHitTestVisible = false
+            };
 
             var numBorder = new Border
             {
@@ -280,6 +286,27 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
             e.Handled = true;
             ShowMapContextMenu();
         };
+    }
+
+    private void SetupSearchContextMenu()
+    {
+        tbMapSearch.ContextRequested += (s, e) =>
+        {
+            e.Handled = true;
+            ShowSearchContextMenu();
+        };
+    }
+
+    private void ShowSearchContextMenu()
+    {
+        if (lobbyViewModel == null)
+            return;
+
+        var contextMenu = new ContextMenu();
+        var toggleSearchItem = new MenuItem { Header = "Toggle Search All Game Modes" };
+        toggleSearchItem.Click += (s, e) => lobbyViewModel.ToggleSearchAllModesCommand.Execute(null);
+        contextMenu.Items.Add(toggleSearchItem);
+        contextMenu.Open(tbMapSearch);
     }
 
     private void ShowMapContextMenu()

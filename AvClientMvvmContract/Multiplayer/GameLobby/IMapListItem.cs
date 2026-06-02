@@ -10,5 +10,6 @@ public interface IMapListItem : INotifyPropertyChanged
     int RankIndex { get; }
     string MapName { get; }
     string GameModeName { get; }
+    string RankStar { get; }
     bool IsDisabled { get; }
 }

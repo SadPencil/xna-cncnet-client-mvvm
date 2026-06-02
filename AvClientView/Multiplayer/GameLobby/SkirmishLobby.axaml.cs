@@ -57,6 +57,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         iniOverlay?.ApplyLayout(this, "SkirmishLobby");
 
         SetupMapListContextMenu();
+        SetupSearchContextMenu();
 
         // Re-render in case data was set before Loaded fired
         if (currentMapPreview != null)
@@ -149,16 +150,20 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
             if (!data.IsVisible)
                 continue;
 
-            // Panel with background for hit testing
             var indicatorPanel = new Border
             {
                 Width = INDICATOR_SIZE + 60, // extra width for names
                 Height = INDICATOR_SIZE + 8,
                 Padding = new Thickness(2),
+                Background = Brushes.Transparent,
                 Tag = data.WaypointNumber
             };
 
-            var stackPanel = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+            var stackPanel = new StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                IsHitTestVisible = false
+            };
 
             // Waypoint number with background circle
             var numBorder = new Border
@@ -271,6 +276,27 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
             e.Handled = true;
             ShowMapContextMenu();
         };
+    }
+
+    private void SetupSearchContextMenu()
+    {
+        tbMapSearch.ContextRequested += (s, e) =>
+        {
+            e.Handled = true;
+            ShowSearchContextMenu();
+        };
+    }
+
+    private void ShowSearchContextMenu()
+    {
+        if (lobbyViewModel == null)
+            return;
+
+        var contextMenu = new ContextMenu();
+        var toggleSearchItem = new MenuItem { Header = "Toggle Search All Game Modes" };
+        toggleSearchItem.Click += (s, e) => lobbyViewModel.ToggleSearchAllModesCommand.Execute(null);
+        contextMenu.Items.Add(toggleSearchItem);
+        contextMenu.Open(tbMapSearch);
     }
 
     private void ShowMapContextMenu()

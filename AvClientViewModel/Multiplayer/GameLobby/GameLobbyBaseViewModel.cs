@@ -502,6 +502,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 Source = gmm,
                 RankIndex = rankIndex,
+                RankStar = rankIndex switch
+                {
+                    1 => "\u2605",
+                    2 => "\u2605\u2605",
+                    3 => "\u2605\u2605\u2605",
+                    _ => ""
+                },
                 MapName = mapNameText,
                 GameModeName = gmm.GameMode.UIName,
                 IsDisabled = gmm.MultiplayerOnly && !IsMultiplayer
