@@ -7,6 +7,7 @@ using ClientCore;
 using ClientCore.Extensions;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain

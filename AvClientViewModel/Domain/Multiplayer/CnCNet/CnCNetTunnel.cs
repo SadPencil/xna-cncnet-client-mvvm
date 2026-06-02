@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using AvClientMvvmContract.Domain.Multiplayer;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet

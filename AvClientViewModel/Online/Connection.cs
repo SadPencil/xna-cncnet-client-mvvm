@@ -14,6 +14,7 @@ using ClientCore.Extensions;
 using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Online

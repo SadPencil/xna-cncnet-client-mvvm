@@ -11,6 +11,7 @@ using ClientCore.Extensions;
 using Microsoft.Win32;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain;

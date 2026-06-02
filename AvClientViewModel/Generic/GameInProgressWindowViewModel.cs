@@ -12,6 +12,7 @@ using ClientCore.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 using SixLabors.ImageSharp;

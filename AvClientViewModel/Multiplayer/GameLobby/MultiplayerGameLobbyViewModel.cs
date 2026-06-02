@@ -18,6 +18,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;

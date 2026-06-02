@@ -7,6 +7,7 @@ using System.Security.Principal;
 using ClientCore;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel

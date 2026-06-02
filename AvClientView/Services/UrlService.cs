@@ -6,6 +6,7 @@ using AvClientMvvmContract.ViewServices;
 using ClientCore;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientView.Services

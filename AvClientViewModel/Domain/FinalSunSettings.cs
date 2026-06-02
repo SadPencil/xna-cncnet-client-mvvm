@@ -5,6 +5,7 @@ using ClientCore;
 using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain

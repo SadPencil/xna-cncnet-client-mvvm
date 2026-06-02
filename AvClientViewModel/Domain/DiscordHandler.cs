@@ -10,6 +10,7 @@ using DiscordRPC;
 using DiscordRPC.Message;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain

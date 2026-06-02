@@ -9,6 +9,7 @@ using System.Threading;
 using ClientCore;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.LAN

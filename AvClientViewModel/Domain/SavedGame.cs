@@ -8,6 +8,7 @@ using ClientCore;
 using OpenMcdf;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain

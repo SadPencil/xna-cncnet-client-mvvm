@@ -19,6 +19,7 @@ using CommunityToolkit.Mvvm.Input;
 using AvClientViewModel.Domain;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Campaign

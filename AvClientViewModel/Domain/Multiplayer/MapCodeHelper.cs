@@ -8,6 +8,7 @@ using ClientCore.Extensions;
 using ClientCore.I18N;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer

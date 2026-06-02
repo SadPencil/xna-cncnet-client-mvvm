@@ -1,6 +1,7 @@
 using System;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel

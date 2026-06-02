@@ -11,6 +11,7 @@ using ClientCore.Enums;
 using ClientCore.I18N;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace AvClientViewModel.Online
