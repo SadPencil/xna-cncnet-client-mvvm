@@ -21,8 +21,12 @@ public class Startup
 
         if (headless)
         {
-            Trace.Listeners.Add(new ConsoleTraceListener(useErrorStream: true));
+            // Write trace (including Avalonia binding errors) to a file
+            string tracePath = Path.GetTempFileName();
+            var writer = new StreamWriter(tracePath, append: false, encoding: Encoding.UTF8);
+            Trace.Listeners.Add(new TextWriterTraceListener(writer));
             Trace.AutoFlush = true;
+            Console.Error.WriteLine($"[AV] Trace path: {tracePath}");
         }
 
         BuildAvaloniaApp(headless)
