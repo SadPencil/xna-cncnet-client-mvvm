@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ClientCore;
 using ClientCore.Caching;
 using ClientCore.Extensions;
+using ClientCore.Settings;
 
 using Rampastring.Tools;
 

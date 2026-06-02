@@ -1,4 +1,5 @@
 using ClientCore;
+using ClientCore.Settings;
 
 namespace AvClientViewModel.Domain
 {

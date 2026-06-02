@@ -8,6 +8,7 @@ using AvClientMvvmContract.Generic;
 
 using ClientCore;
 using ClientCore.Enums;
+using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 

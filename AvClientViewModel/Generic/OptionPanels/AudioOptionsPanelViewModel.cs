@@ -4,6 +4,7 @@ using AvClientMvvmContract.Generic.OptionPanels;
 using AvClientMvvmContract.ViewServices;
 
 using ClientCore;
+using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

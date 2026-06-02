@@ -9,6 +9,7 @@ using AvClientViewModel.Online.EventArguments;
 using ClientCore;
 using ClientCore.Enums;
 using ClientCore.Extensions;
+using ClientCore.Settings;
 
 namespace AvClientViewModel.Online
 {

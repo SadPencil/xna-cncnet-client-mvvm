@@ -5,6 +5,7 @@ using System.Linq;
 using AvClientMvvmContract.Multiplayer;
 
 using ClientCore;
+using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

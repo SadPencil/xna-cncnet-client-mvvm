@@ -1,5 +1,7 @@
 ﻿using System;
 
+using ClientCore.Settings;
+
 using Rampastring.Tools;
 
 namespace ClientCore

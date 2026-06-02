@@ -11,6 +11,7 @@ using AvClientViewModel.Online.EventArguments;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.Settings;
 
 using Rampastring.Tools;
 

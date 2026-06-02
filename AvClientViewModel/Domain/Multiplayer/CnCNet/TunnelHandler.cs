@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ClientCore;
+using ClientCore.Settings;
 
 using Rampastring.Tools;
 

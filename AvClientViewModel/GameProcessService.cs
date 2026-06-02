@@ -6,6 +6,7 @@ using System.Threading;
 
 using ClientCore;
 using ClientCore.INIProcessing;
+using ClientCore.Settings;
 
 using Rampastring.Tools;
 

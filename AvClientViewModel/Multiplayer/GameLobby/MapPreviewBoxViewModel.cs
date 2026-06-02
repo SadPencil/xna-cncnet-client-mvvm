@@ -11,6 +11,7 @@ using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Online;
 
 using ClientCore;
+using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.PlatformShim;
+using ClientCore.Settings;
 
 using DiscordRPC;
 using DiscordRPC.Message;

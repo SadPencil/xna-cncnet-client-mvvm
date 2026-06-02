@@ -2,6 +2,7 @@ using AvClientMvvmContract.Generic;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;

@@ -7,6 +7,7 @@ using AvClientMvvmContract.Generic.OptionPanels;
 
 using ClientCore;
 using ClientCore.Extensions;
+using ClientCore.Settings;
 
 using ClientUpdater;
 

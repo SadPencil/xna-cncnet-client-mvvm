@@ -23,6 +23,7 @@ using ClientCore;
 using ClientCore.Enums;
 using ClientCore.Extensions;
 using ClientCore.I18N;
+using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
