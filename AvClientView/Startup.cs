@@ -13,9 +13,6 @@ public class Startup
     [STAThread]
     public static void Run(ServiceProvider serviceProvider, string[] args)
     {
-        // TODO: move it to view model
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
         ViewConstants.ServiceProvider = serviceProvider;
 
         bool headless = args.Contains("--headless");
