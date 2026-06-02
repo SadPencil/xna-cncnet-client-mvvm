@@ -327,6 +327,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             applicationLifecycleService,
             random,
             chatColors);
+        lanGameLobby.Initialize();
 
         lanGameLoadingLobby = new LANGameLoadingLobbyViewModel(
             discordHandler,
@@ -334,6 +335,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             uiThreadMarshaller,
             applicationLifecycleService,
             chatColors);
+        lanGameLoadingLobby.Initialize();
 
         gameCreationWindow = new LANGameCreationWindowViewModel(
             onNewGameRequested: () =>
