@@ -4,6 +4,7 @@
     <ComVisible>false</ComVisible>
     <CLSCompliant>false</CLSCompliant>
     <ImplicitUsings>disable</ImplicitUsings>
+    <Platform>AnyCPU</Platform>
 
     <Title>CnCNet Client</Title>
     <Company>CnCNet</Company>

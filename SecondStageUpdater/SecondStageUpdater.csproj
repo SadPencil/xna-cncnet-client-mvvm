@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <UseAppHost>false</UseAppHost>
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
-    <Platforms>AnyCPU</Platforms>
+    
   </PropertyGroup>
   <PropertyGroup>
     <Title>CnCNet.SecondStageUpdater</Title>
