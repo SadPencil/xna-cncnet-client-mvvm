@@ -54,7 +54,7 @@ public partial class MainWindow : Window
             });
         }
 
-        // Back on UI thread — connect ViewModel to loading screen
+        // Back on UI thread — connect ViewModels
         await Dispatcher.UIThread.InvokeAsync(ConnectAfterInit);
     }
 
@@ -66,7 +66,7 @@ public partial class MainWindow : Window
         var loadingScreenVM = sp.GetRequiredService<ILoadingScreenViewModel>();
         loadingScreen!.ViewModel = loadingScreenVM;
 
-        // Connect MainMenu ViewModel
+        // Connect MainMenu ViewModel and all child ViewModels
         var mainMenuVM = sp.GetRequiredService<IMainMenuViewModel>();
         mainMenu!.ViewModel = mainMenuVM;
         mainMenu.SetCampaignSelectorViewModel(sp.GetRequiredService<ICampaignSelectorViewModel>());
@@ -78,13 +78,7 @@ public partial class MainWindow : Window
         mainMenu.SetCnCNetLobbyViewModel(sp.GetRequiredService<ICnCNetLobbyViewModel>());
         mainMenu.SetLANLobbyViewModel(sp.GetRequiredService<ILANLobbyViewModel>());
         mainMenu.SetPrivateMessagingWindowViewModel(sp.GetRequiredService<IPrivateMessagingWindowViewModel>());
-
-        // Connect PrivacyNotification (overlay on top of other content)
-        var privacyNotification = new PrivacyNotification
-        {
-            ViewModel = sp.GetRequiredService<IPrivacyNotificationViewModel>()
-        };
-        MainGrid.Children.Add(privacyNotification);
+        mainMenu.SetPrivacyNotificationViewModel(sp.GetRequiredService<IPrivacyNotificationViewModel>());
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)

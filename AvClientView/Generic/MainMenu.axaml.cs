@@ -190,6 +190,11 @@ public partial class MainMenu : UserControl
         WireOverlayVisibility(privateMessagingWindow, pmOverlay);
     }
 
+    public void SetPrivacyNotificationViewModel(IPrivacyNotificationViewModel vm)
+    {
+        privacyNotification.ViewModel = vm;
+    }
+
     /// <summary>
     /// Binds a DarkeningPanel's visibility to a child view's IsVisible.
     /// Pure View-layer logic: observes one control's property, reflects to another.

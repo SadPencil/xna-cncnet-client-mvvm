@@ -246,8 +246,11 @@
       </controls:DarkeningPanel.ChildContent>
     </controls:DarkeningPanel>
 
+    <!-- PrivacyNotification (overlay above all other content) -->
+    <local:PrivacyNotification x:Name="privacyNotification" />
+
     <!-- TopBar (last in Canvas = top z-order, always above DarkeningPanels) -->
-    <!-- TODO: how to sync the width of topbar with the window width? -->         
+    <!-- TODO: how to sync the width of topbar with the window width? -->
     <local:TopBar x:Name="topBar"
                   DataContext="{Binding TopBarViewModel}"
                   Width="1280"

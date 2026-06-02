@@ -1,6 +1,5 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:views="using:AvClientView.Generic"
         x:Class="AvClientView.Generic.MainWindow"
         Title="CnCNet Client"
         Width="1280" Height="720"
@@ -9,8 +8,6 @@
         CanResize="True"
         Background="#000000">
   <Viewbox Stretch="Uniform" ClipToBounds="False">
-    <Grid x:Name="MainGrid">
-      <ContentControl x:Name="MainContent" />
-    </Grid>
+    <ContentControl x:Name="MainContent" />
   </Viewbox>
 </Window>
