@@ -33,18 +33,19 @@ public static class PreStartup
                 path: logFilePath,
                 outputTemplate: SerilogHelper.OutputTemplate,
                 fileSizeLimitBytes: null,
-                shared: false)
+                shared: false,
+                flushToDiskInterval: TimeSpan.FromSeconds(1))
             .CreateLogger();
 
         // Ensure logs are flushed when the process exits
         AppDomain.CurrentDomain.ProcessExit += (_, _) =>
         {
-            Serilog.Log.CloseAndFlush();
+            ShutdownLogger();
         };
 
         AppDomain.CurrentDomain.UnhandledException += (_, _) =>
         {
-            Serilog.Log.CloseAndFlush();
+            ShutdownLogger();
         };
     }
 
@@ -54,6 +55,10 @@ public static class PreStartup
     /// </summary>
     public static void ShutdownLogger()
     {
+#if NET8_0_OR_GREATER
+        Serilog.Log.CloseAndFlushAsync().GetAwaiter().GetResult();
+#else
         Serilog.Log.CloseAndFlush();
+#endif
     }
 }
