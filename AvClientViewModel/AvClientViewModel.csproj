@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <RootNamespace>AvClientViewModel</RootNamespace>
+    <AssemblyName>AvClientViewModel</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="DiscordRichPresence" />
+    <PackageReference Include="lzo.net" />
+    <PackageReference Include="OpenMcdf" />
+    <PackageReference Include="SixLabors.ImageSharp" />
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="System.Management" />
+    <PackageReference Include="System.DirectoryServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
+    <ProjectReference Include="..\ClientUpdater\ClientUpdater.csproj" />
+    <ProjectReference Include="..\AvClientMvvmContract\AvClientMvvmContract.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+</Project>

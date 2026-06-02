@@ -6,8 +6,8 @@
 -Rampastring.XNAUI
 -ClientGUI
 -DXMainClient
-+AvMainClientMvvmContract
-+AvMainClientViewModel
-+AvMainClientView
-+AvMainClientExe
++AvClientMvvmContract
++AvClientViewModel
++AvClientView
++AvClientExe
 ```

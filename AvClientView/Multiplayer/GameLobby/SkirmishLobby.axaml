@@ -1,0 +1,365 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Multiplayer.GameLobby"
+             x:Class="AvClientView.Multiplayer.GameLobby.SkirmishLobby"
+             x:DataType="vmc:ISkirmishLobbyViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="1220" Height="728">
+  <Canvas x:Name="MainCanvas">
+
+      <!-- ========== LEFT COLUMN: Map List Area ========== -->
+
+      <!-- Game Mode Label -->
+      <TextBlock x:Name="lblGameModeSelect"
+                 Text="GAME MODE:"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                
+                 Canvas.Left="12" Canvas.Top="13" />
+
+      <!-- Game Mode Dropdown -->
+      <ComboBox x:Name="ddGameMode"
+                ItemsSource="{Binding GameModeFilterOptions}"
+                SelectedIndex="{Binding SelectedGameModeFilterIndex}"
+                Width="180" Height="21"
+               
+                Canvas.Left="420" Canvas.Top="12" />
+
+      <!-- Sort Button -->
+      <Button x:Name="btnSortAlpha"
+              Content="&#x2195;"
+              Command="{Binding CycleSortDirectionCommand}"
+              IsVisible="{Binding IsMapSortButtonVisible}"
+              IsEnabled="{Binding IsMapSortButtonEnabled}"
+              Width="21" Height="21"
+             
+              Canvas.Left="395" Canvas.Top="12" />
+
+      <!-- Map Search Box -->
+      <TextBox x:Name="tbMapSearch"
+               Text="{Binding MapSearchText}"
+               Watermark="Filter by name, map, game mode..."
+               Width="383" Height="21"
+              
+               Canvas.Left="12" Canvas.Top="42" />
+
+      <!-- Map List -->
+      <Border x:Name="lbMapList"
+              Background="#C8000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Width="415" Height="390"
+              Canvas.Left="12" Canvas.Top="69">
+        <ListBox ItemsSource="{Binding MapListItems}"
+                 SelectedIndex="{Binding SelectedMapIndex}"
+                 Background="Transparent"
+                 ToolTip.Tip="{Binding MapListTooltipText}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vmc:IMapListItem">
+              <TextBlock Text="{Binding MapName}"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         />
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <!-- Pick Random Map Button -->
+      <Button x:Name="btnPickRandomMap"
+              Content="Random"
+              Command="{Binding PickRandomMapCommand}"
+              Width="75" Height="17"
+              FontWeight="Bold"
+              FontSize="10"
+              Canvas.Left="352" Canvas.Top="462" />
+
+      <!-- Map Search below preview (Skirmish position from GameLobbyBase.ini) -->
+      <!-- tbMapSearch is above map list in this layout -->
+
+      <!-- ========== RIGHT COLUMN: Map Preview + Info ========== -->
+
+      <!-- Map Preview Box -->
+      <Border x:Name="MapPreviewBox"
+              Background="#C8000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Width="400" Height="300"
+              Canvas.Left="437" Canvas.Top="285">
+        <Panel x:Name="mapPreviewPanel">
+          <Image x:Name="mapPreviewImage" Stretch="Uniform" />
+          <ItemsControl x:Name="startingLocationIndicators"
+                        ItemsSource="{Binding MapPreviewBox.StartingLocationIndicators}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <Canvas />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vmc:IStartingLocationIndicatorData">
+                <Canvas Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"
+                        IsVisible="{Binding IsVisible}">
+                  <!-- Indicator number -->
+                  <TextBlock Text="{Binding WaypointNumber}"
+                             Foreground="White" FontWeight="Bold" FontSize="10"
+                             HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Margin="0,0,0,0" />
+                  <!-- Player names -->
+                  <ItemsControl ItemsSource="{Binding Players}" Margin="16,0,0,0">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vmc:IIndicatorPlayerInfo">
+                        <TextBlock Text="{Binding Name}" FontSize="9"
+                                   Foreground="White" />
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </Canvas>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </Panel>
+      </Border>
+
+      <!-- Map Name Label (centered above preview) -->
+      <TextBlock x:Name="lblMapName"
+                 Text="{Binding MapName}"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 FontSize="12"
+                 Canvas.Left="437" Canvas.Top="270" />
+
+      <!-- Map Author Label (right-aligned) -->
+      <TextBlock x:Name="lblMapAuthor"
+                 Text="{Binding MapAuthor}"
+                 Foreground="{DynamicResource XnaSubtleTextBrush}"
+                
+                 Canvas.Left="700" Canvas.Top="270" />
+
+      <!-- Game Mode Label (below preview) -->
+      <TextBlock x:Name="lblGameMode"
+                 Text="{Binding GameModeName}"
+                 Foreground="{DynamicResource XnaAltBrush}"
+                
+                 Canvas.Left="437" Canvas.Top="588" />
+
+      <!-- Map Size Label (right-aligned below preview) -->
+      <TextBlock x:Name="lblMapSize"
+                 Text="{Binding MapSize}"
+                 Foreground="{DynamicResource XnaSubtleTextBrush}"
+                
+                 Canvas.Left="700" Canvas.Top="588" />
+
+      <!-- ========== TOP RIGHT: Player Options Panel ========== -->
+
+      <Border x:Name="PlayerOptionsPanel"
+              Background="#C8000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Width="370" Height="260"
+              Canvas.Left="437" Canvas.Top="12">
+        <Canvas>
+          <!-- Column Headers -->
+          <TextBlock Text="PLAYER" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="5" Canvas.Top="4" />
+          <TextBlock Text="SIDE" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="144" Canvas.Top="4" />
+          <TextBlock Text="COLOR" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="238" Canvas.Top="4" />
+          <TextBlock Text="TEAM" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="320" Canvas.Top="4" />
+
+          <!-- Player Slot 0 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[0].NameOptions}" SelectedIndex="{Binding PlayerSlots[0].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[0].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="22" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[0].SideOptions}" SelectedIndex="{Binding PlayerSlots[0].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[0].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="22" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[0].ColorOptions}" SelectedIndex="{Binding PlayerSlots[0].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[0].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="22" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[0].TeamOptions}" SelectedIndex="{Binding PlayerSlots[0].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[0].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="22" />
+
+          <!-- Player Slot 1 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[1].NameOptions}" SelectedIndex="{Binding PlayerSlots[1].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[1].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="50" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[1].SideOptions}" SelectedIndex="{Binding PlayerSlots[1].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[1].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="50" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[1].ColorOptions}" SelectedIndex="{Binding PlayerSlots[1].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[1].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="50" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[1].TeamOptions}" SelectedIndex="{Binding PlayerSlots[1].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[1].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="50" />
+
+          <!-- Player Slot 2 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[2].NameOptions}" SelectedIndex="{Binding PlayerSlots[2].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[2].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="78" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[2].SideOptions}" SelectedIndex="{Binding PlayerSlots[2].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[2].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="78" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[2].ColorOptions}" SelectedIndex="{Binding PlayerSlots[2].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[2].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="78" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[2].TeamOptions}" SelectedIndex="{Binding PlayerSlots[2].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[2].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="78" />
+
+          <!-- Player Slot 3 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[3].NameOptions}" SelectedIndex="{Binding PlayerSlots[3].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[3].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="106" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[3].SideOptions}" SelectedIndex="{Binding PlayerSlots[3].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[3].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="106" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[3].ColorOptions}" SelectedIndex="{Binding PlayerSlots[3].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[3].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="106" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[3].TeamOptions}" SelectedIndex="{Binding PlayerSlots[3].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[3].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="106" />
+
+          <!-- Player Slot 4 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[4].NameOptions}" SelectedIndex="{Binding PlayerSlots[4].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[4].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="134" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[4].SideOptions}" SelectedIndex="{Binding PlayerSlots[4].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[4].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="134" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[4].ColorOptions}" SelectedIndex="{Binding PlayerSlots[4].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[4].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="134" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[4].TeamOptions}" SelectedIndex="{Binding PlayerSlots[4].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[4].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="134" />
+
+          <!-- Player Slot 5 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[5].NameOptions}" SelectedIndex="{Binding PlayerSlots[5].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[5].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="162" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[5].SideOptions}" SelectedIndex="{Binding PlayerSlots[5].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[5].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="162" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[5].ColorOptions}" SelectedIndex="{Binding PlayerSlots[5].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[5].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="162" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[5].TeamOptions}" SelectedIndex="{Binding PlayerSlots[5].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[5].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="162" />
+
+          <!-- Player Slot 6 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[6].NameOptions}" SelectedIndex="{Binding PlayerSlots[6].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[6].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="190" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[6].SideOptions}" SelectedIndex="{Binding PlayerSlots[6].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[6].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="190" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[6].ColorOptions}" SelectedIndex="{Binding PlayerSlots[6].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[6].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="190" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[6].TeamOptions}" SelectedIndex="{Binding PlayerSlots[6].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[6].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="190" />
+
+          <!-- Player Slot 7 -->
+          <ComboBox ItemsSource="{Binding PlayerSlots[7].NameOptions}" SelectedIndex="{Binding PlayerSlots[7].SelectedNameIndex}" IsEnabled="{Binding PlayerSlots[7].IsNameDropdownEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="218" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[7].SideOptions}" SelectedIndex="{Binding PlayerSlots[7].SelectedSideIndex}" IsEnabled="{Binding PlayerSlots[7].IsSideDropdownEnabled}" Width="91" Height="21" FontSize="10" Canvas.Left="144" Canvas.Top="218" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[7].ColorOptions}" SelectedIndex="{Binding PlayerSlots[7].SelectedColorIndex}" IsEnabled="{Binding PlayerSlots[7].IsColorDropdownEnabled}" Width="79" Height="21" FontSize="10" Canvas.Left="238" Canvas.Top="218" />
+          <ComboBox ItemsSource="{Binding PlayerSlots[7].TeamOptions}" SelectedIndex="{Binding PlayerSlots[7].SelectedTeamIndex}" IsEnabled="{Binding PlayerSlots[7].IsTeamDropdownEnabled}" Width="46" Height="21" FontSize="10" Canvas.Left="320" Canvas.Top="218" />
+        </Canvas>
+      </Border>
+
+      <!-- ========== Game Options Panel ========== -->
+
+      <Border x:Name="GameOptionsPanel"
+              Background="#C8000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Width="400" Height="260"
+              Canvas.Left="820" Canvas.Top="12">
+        <ScrollViewer>
+          <StackPanel Margin="8" Spacing="4">
+            <!-- Game option checkboxes (dynamically from ViewModel) -->
+            <ItemsControl ItemsSource="{Binding CheckBoxes}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vmc:IGameOptionCheckBox">
+                  <CheckBox Content="{Binding Name}"
+                            IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                            IsEnabled="{Binding IsEnabled}"
+                            Foreground="{DynamicResource XnaTextBrush}"
+                           
+                            Margin="0,2" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Game option dropdowns (dynamically from ViewModel) -->
+            <ItemsControl ItemsSource="{Binding DropDowns}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vmc:IGameOptionDropDown">
+                  <StackPanel Margin="0,4">
+                    <TextBlock Text="{Binding Name}"
+                               Foreground="{DynamicResource XnaTextBrush}"
+                               FontSize="10" FontWeight="Bold" />
+                    <ComboBox ItemsSource="{Binding Items}"
+                              SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                              IsEnabled="{Binding IsEnabled}"
+                              Width="112" Height="21"
+                              FontSize="10" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
+
+      <!-- ========== BOTTOM: Action Buttons ========== -->
+
+      <!-- Launch Game Button -->
+      <Button x:Name="btnLaunchGame"
+              Content="{Binding LaunchButtonText}"
+              Command="{Binding LaunchGameCommand}"
+              IsEnabled="{Binding CanLaunchGame}"
+              Width="133" Height="23"
+              FontWeight="Bold"
+             
+              Canvas.Left="12" Canvas.Top="693" />
+
+      <!-- Leave Game Button -->
+      <Button x:Name="btnLeaveGame"
+              Content="Main Menu"
+              Command="{Binding LeaveGameCommand}"
+              Width="133" Height="23"
+              FontWeight="Bold"
+             
+              Canvas.Left="1075" Canvas.Top="693" />
+
+      <!-- ========== SKIRMISH-SPECIFIC BUTTONS ========== -->
+
+      <!-- Add AI Player -->
+      <Button x:Name="btnAddAiPlayer"
+              Content="Add AI"
+              Command="{Binding AddAiPlayerCommand}"
+              Width="75" Height="23"
+              FontWeight="Bold"
+              FontSize="10"
+              Canvas.Left="155" Canvas.Top="693" />
+
+      <!-- Remove Player -->
+      <Button x:Name="btnRemovePlayer"
+              Content="Remove"
+              Command="{Binding RemoveSelectedPlayerCommand}"
+              Width="75" Height="23"
+              FontWeight="Bold"
+              FontSize="10"
+              Canvas.Left="238" Canvas.Top="693" />
+
+    <!-- ========== ERROR OVERLAY ========== -->
+    <Border IsVisible="{Binding IsErrorVisible}"
+            Background="#80000000"
+            Canvas.Left="0" Canvas.Top="0"
+            Width="1220" Height="728">
+      <Panel>
+        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1"
+                Padding="16"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Error"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}" />
+            <TextBlock Text="{Binding ErrorMessage}"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource XnaAltBrush}" />
+            <Button Content="OK"
+                    Command="{Binding DismissErrorCommand}"
+                    HorizontalAlignment="Right"
+                    Width="75" Height="23" />
+          </StackPanel>
+        </Border>
+      </Panel>
+    </Border>
+
+    <!-- ========== NOTICE OVERLAY ========== -->
+    <Border IsVisible="{Binding IsNoticeVisible}"
+            Background="#80000000"
+            Canvas.Left="0" Canvas.Top="0"
+            Width="1220" Height="728">
+      <Panel>
+        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1"
+                Padding="16"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+        <StackPanel Spacing="12">
+          <TextBlock Text="Notice"
+                     FontWeight="Bold"
+                     Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="{Binding NoticeMessage}"
+                     TextWrapping="Wrap"
+                     Foreground="{DynamicResource XnaAltBrush}" />
+          <Button Content="OK"
+                  Command="{Binding DismissNoticeCommand}"
+                  HorizontalAlignment="Right"
+                  Width="75" Height="23" />
+        </StackPanel>
+      </Border>
+      </Panel>
+    </Border>
+  </Canvas>
+</UserControl>

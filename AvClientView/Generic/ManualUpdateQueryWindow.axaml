@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Generic"
+             x:Class="AvClientView.Generic.ManualUpdateQueryWindow"
+             x:DataType="vmc:IManualUpdateQueryWindowViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="251" Height="140">
+  <Canvas>
+    <!-- Description label -->
+    <TextBlock Name="lblDescription"
+               Text="{Binding DescriptionText}"
+               Canvas.Left="12" Canvas.Top="9"
+               Foreground="{DynamicResource XnaAltBrush}" />
+
+    <!-- View Downloads button -->
+    <Button Content="View Downloads"
+            Command="{Binding ViewDownloadsCommand}"
+            Canvas.Left="12" Canvas.Top="110"
+            Width="110" Height="23" />
+
+    <!-- Close button -->
+    <Button Content="Close"
+            Command="{Binding CloseCommand}"
+            Canvas.Left="147" Canvas.Top="110"
+            Width="92" Height="23" />
+  </Canvas>
+</UserControl>

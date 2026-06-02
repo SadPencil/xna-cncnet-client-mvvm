@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Generic"
+             x:Class="AvClientView.Generic.PrivacyNotification"
+             x:DataType="vmc:IPrivacyNotificationViewModel"
+             IsVisible="{Binding IsVisible}">
+  <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+          BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+          BorderThickness="1"
+          Padding="16,12"
+          MaxWidth="800"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Bottom">
+    <StackPanel Spacing="8">
+      <!-- Description text -->
+      <TextBlock Text="{Binding DescriptionText}"
+                 TextWrapping="Wrap"
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
+
+      <!-- Links row -->
+      <StackPanel Orientation="Horizontal" Spacing="4">
+        <TextBlock Text="More information: "
+                   Foreground="{DynamicResource XnaSubtleTextBrush}"
+                   VerticalAlignment="Center" />
+        <Button Content="{Binding TermsAndConditionsUrl}"
+                Command="{Binding OpenTermsAndConditionsCommand}"
+                Background="Transparent"
+                Foreground="#4A9EFF"
+                Padding="0"
+                BorderThickness="0"
+                Cursor="Hand" />
+        <TextBlock Text="|"
+                   Foreground="{DynamicResource XnaSubtleTextBrush}"
+                   VerticalAlignment="Center" />
+        <Button Content="{Binding PrivacyPolicyUrl}"
+                Command="{Binding OpenPrivacyPolicyCommand}"
+                Background="Transparent"
+                Foreground="#4A9EFF"
+                Padding="0"
+                BorderThickness="0"
+                Cursor="Hand" />
+      </StackPanel>
+
+      <!-- Explanation text -->
+      <TextBlock Text="{Binding ExplanationText}"
+                 TextWrapping="Wrap"
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
+
+      <!-- Accept button -->
+      <Button Content="{Binding AcceptButtonText}"
+              Command="{Binding AcceptCommand}"
+              HorizontalAlignment="Right"
+              Padding="16,6" />
+    </StackPanel>
+  </Border>
+</UserControl>

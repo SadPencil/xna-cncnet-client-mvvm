@@ -5,7 +5,7 @@ Based on migrating `CampaignSelector.cs` (949 lines) to `CampaignSelectorViewMod
 ## Process
 
 1. **Read the entire source file first.** Do not skim. Understand every method, field, and control interaction before writing a single line.
-2. **Copy the entire file into AvMainClientViewModel, then subtract.** Do not write from scratch. Do not "interpret" the code. Copy it, then replace XNA types with MVVM equivalents line by line.
+2. **Copy the entire file into AvClientViewModel, then subtract.** Do not write from scratch. Do not "interpret" the code. Copy it, then replace XNA types with MVVM equivalents line by line.
 3. **One file at a time.** Read one class, migrate one class, commit one class.
 
 ## What the View Is

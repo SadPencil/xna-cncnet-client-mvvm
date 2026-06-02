@@ -50,7 +50,7 @@ if ($IsDebug) {
 }
 
 $Script:RepoRoot = Split-Path $PSScriptRoot
-$Script:ProjectPath = Join-Path $RepoRoot 'AvMainClientExe' 'AvMainClientExe.csproj'
+$Script:ProjectPath = Join-Path $RepoRoot 'AvClientExe' 'AvClientExe.csproj'
 $Script:CompiledRoot = Join-Path $RepoRoot 'Compiled'
 $Script:FrameworkBinariesFolderMap = @{
   'net48'          = 'Binaries'

@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
+             x:Class="AvClientView.Multiplayer.CnCNet.TunnelSelectionWindow"
+             x:DataType="vmc:ITunnelSelectionWindowViewModel"
+             IsVisible="{Binding IsVisible}">
+  <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+          BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+          BorderThickness="1"
+          Padding="16"
+          Width="500" Height="400"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center">
+    <DockPanel>
+      <!-- Description -->
+      <TextBlock DockPanel.Dock="Top"
+                 Text="{Binding DescriptionText}"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 Margin="0,0,0,8" />
+
+      <!-- Bottom buttons -->
+      <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                  Spacing="8" HorizontalAlignment="Right"
+                  Margin="0,8,0,0">
+        <Button Content="Confirm"
+                Command="{Binding ConfirmSelectionCommand}"
+                Width="92" Height="23"
+                IsEnabled="{Binding IsConfirmEnabled}" />
+        <Button Content="Cancel"
+                Command="{Binding CancelCommand}"
+                Width="92" Height="23" />
+      </StackPanel>
+
+      <!-- Tunnel list -->
+      <ListBox ItemsSource="{Binding TunnelNames}"
+               SelectedIndex="{Binding SelectedTunnelIndex}"
+               Background="#80000000" />
+    </DockPanel>
+  </Border>
+</UserControl>

@@ -1,0 +1,136 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
+             x:Class="AvClientView.Multiplayer.LANLobby"
+             x:DataType="vmc:ILANLobbyViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="1220" Height="728">
+  <Canvas x:Name="MainCanvas">
+
+      <!-- ========== TOP BAR AREA ========== -->
+
+      <!-- Color Label + Dropdown -->
+      <TextBlock x:Name="lblColor"
+                 Text="YOUR COLOR:"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                
+                 Canvas.Left="300" Canvas.Top="14" />
+      <ComboBox x:Name="ddColor"
+                ItemsSource="{Binding ColorOptions}"
+                SelectedIndex="{Binding SelectedColorIndex}"
+                IsEnabled="{Binding IsEnabled}"
+                Width="150" Height="21"
+               
+                Canvas.Left="395" Canvas.Top="12" />
+
+      <!-- ========== LEFT COLUMN: Game List ========== -->
+
+      <!-- Game List -->
+      <Border x:Name="lbGameList"
+              Background="#C8000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Width="278" Height="590"
+              Canvas.Left="12" Canvas.Top="43">
+        <ListBox ItemsSource="{Binding GameNames}"
+                 SelectedIndex="{Binding SelectedGameIndex}"
+                 Background="Transparent"
+                 IsEnabled="{Binding IsEnabled}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="x:String">
+              <TextBlock Text="{Binding .}"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         />
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <!-- ========== MIDDLE COLUMN: Chat ========== -->
+
+      <!-- Chat Messages -->
+      <Border x:Name="lbChatMessages"
+              Background="#C8000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Width="630" Height="590"
+              Canvas.Left="300" Canvas.Top="43">
+        <ListBox ItemsSource="{Binding ChatMessages}"
+                 Background="Transparent"
+                 IsEnabled="{Binding IsEnabled}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="x:String">
+              <TextBlock Text="{Binding .}"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                        
+                         TextWrapping="Wrap" />
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <!-- Chat Input -->
+      <TextBox x:Name="tbChatInput"
+               Text="{Binding DraftMessage}"
+               Watermark="Type here to chat..."
+               IsEnabled="{Binding IsEnabled}"
+               Width="630" Height="23"
+              
+               Canvas.Left="300" Canvas.Top="693" />
+
+      <!-- ========== RIGHT COLUMN: Player List ========== -->
+
+      <!-- Player List -->
+      <Border x:Name="lbPlayerList"
+              Background="#C8000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Width="278" Height="590"
+              Canvas.Left="930" Canvas.Top="43">
+        <ListBox ItemsSource="{Binding PlayerNames}"
+                 Background="Transparent"
+                 IsEnabled="{Binding IsEnabled}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="x:String">
+              <TextBlock Text="{Binding .}"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         />
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+
+      <!-- ========== BOTTOM BUTTONS ========== -->
+
+      <!-- Create Game Button -->
+      <Button x:Name="btnNewGame"
+              Content="Create Game"
+              Command="{Binding CreateGameCommand}"
+              IsEnabled="{Binding IsEnabled}"
+              Width="133" Height="23"
+              FontWeight="Bold"
+             
+              Canvas.Left="12" Canvas.Top="693" />
+
+      <!-- Join Game Button -->
+      <Button x:Name="btnJoinGame"
+              Content="Join Game"
+              Command="{Binding JoinSelectedGameCommand}"
+              IsEnabled="{Binding IsEnabled}"
+              Width="133" Height="23"
+              FontWeight="Bold"
+             
+              Canvas.Left="157" Canvas.Top="693" />
+
+      <!-- Main Menu Button -->
+      <Button x:Name="btnMainMenu"
+              Content="Main Menu"
+              Command="{Binding ExitLobbyCommand}"
+              Width="133" Height="23"
+              FontWeight="Bold"
+             
+              Canvas.Left="1075" Canvas.Top="693" />
+
+  </Canvas>
+</UserControl>

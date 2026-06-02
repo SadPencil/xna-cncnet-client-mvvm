@@ -31,11 +31,11 @@
     <PackageVersion Include="System.Text.Json" Version="8.0.6" />
     <PackageVersion Include="Ude.NetStandard" Version="1.2.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(MSBuildProjectName)' == 'ClientCore' Or '$(MSBuildProjectName)' == 'AvMainClientView' Or '$(MSBuildProjectName)' == 'AvMainClientViewModel' Or '$(MSBuildProjectName)' == 'AvMainClientViewModelExe' Or '$(MSBuildProjectName)' == 'ClientUpdater'">
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'ClientCore' Or '$(MSBuildProjectName)' == 'AvClientView' Or '$(MSBuildProjectName)' == 'AvClientViewModel' Or '$(MSBuildProjectName)' == 'AvClientViewModelExe' Or '$(MSBuildProjectName)' == 'ClientUpdater'">
     <ProjectReference Include="$(MSBuildThisFileDirectory)TranslationNotifierGenerator\TranslationNotifierGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <!-- Polyfill on .NET 4.8 (SecondStageUpdater excluded to prevent including additional dlls) -->
-  <ItemGroup Condition="'$(MSBuildProjectName)' != 'SecondStageUpdater' And '$(MSBuildProjectName)' != 'AvMainClientMvvmContract' And $(TargetFrameworkIdentifier) == '.NETFramework'">
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'SecondStageUpdater' And '$(MSBuildProjectName)' != 'AvClientMvvmContract' And $(TargetFrameworkIdentifier) == '.NETFramework'">
     <GlobalPackageReference Include="Polyfill" Version="10.4.0" />
     <PackageReference Include="System.ValueTuple" Condition="$(TargetFramework.StartsWith('net46'))" />
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
