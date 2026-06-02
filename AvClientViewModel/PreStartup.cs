@@ -150,7 +150,7 @@ public static class PreStartup
         if (parameters.MultipleInstanceMode)
             Logger.Log("Startup parameter: Allow multiple client instances");
 
-        parameters.UnknownStartupParams.ForEach(p => Logger.Log("Unknown startup parameter: " + p));
+        parameters.UnknownStartupParams?.ForEach(p => Logger.Log("Unknown startup parameter: " + p));
 
         Logger.Log("Loading settings.");
 
