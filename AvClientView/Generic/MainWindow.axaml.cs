@@ -26,6 +26,11 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
+        // LoadingScreen fills the design space. The MainMenu, which may be
+        // smaller than 1280x720 when INI sets a smaller size, is centered.
+        MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+        MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+
         // Show the loading screen immediately without a ViewModel.
         // The ServiceProvider is not ready yet — it will be built on a
         // background thread and assigned when done.
@@ -91,6 +96,9 @@ public partial class MainWindow : Window
     private void TransitionToMainMenu()
     {
         loadingScreen = null;
+        // MainMenu is centered so smaller INI sizes (e.g. 800x600) don't stretch
+        MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+        MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
         MainContent.Content = mainMenu;
     }
 }

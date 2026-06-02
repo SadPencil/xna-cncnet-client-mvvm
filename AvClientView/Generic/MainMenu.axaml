@@ -254,12 +254,14 @@
       <!-- PrivacyNotification (overlay above all other content) -->
       <local:PrivacyNotification x:Name="privacyNotification" />
 
-      <!-- TopBar (last in overlay canvas = top z-order) -->
-      <local:TopBar x:Name="topBar"
-                    DataContext="{Binding TopBarViewModel}"
-                    Width="1280"
-                    Canvas.Left="0" Canvas.Top="0" />
-
     </Canvas>
+
+    <!-- Layer 2: TopBar (always on top of OverlayCanvas and MainMenuPanel) -->
+    <local:TopBar x:Name="topBar"
+                  DataContext="{Binding TopBarViewModel}"
+                  Width="1280"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top" />
+
   </Grid>
 </UserControl>
