@@ -32,7 +32,7 @@
     <Move SourceFiles="$(PublishDir)clientav.pdb" DestinationFolder="$(PublishDir)../../" Condition="Exists('$(PublishDir)clientav.pdb')" />
   </Target>
 
-  <Target Name="CopyResources" AfterTargets="Build" Condition="$(DefineConstants.Contains('DEBUG'))">
+  <Target Name="CopyResources" AfterTargets="Build" Condition="$(DefineConstants.Contains('DEBUG')) AND '$(MSBuildProjectName)' == 'AvClientExe'">
     <ItemGroup>
       <ExampleClientResources Include="$(MSBuildProjectDirectory)\Resources\DTA\**\*.*" />
       <ExampleClientMaps Include="$(MSBuildProjectDirectory)\Resources\Maps\**\*.*" />
