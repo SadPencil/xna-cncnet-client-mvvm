@@ -1,10 +1,13 @@
-﻿using ClientCore;
-using Rampastring.Tools;
-using System;
+﻿using System;
 using System.Buffers.Binary;
-using System.IO;
-using OpenMcdf;
 using System.Diagnostics;
+using System.IO;
+
+using ClientCore;
+
+using OpenMcdf;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Domain
 {

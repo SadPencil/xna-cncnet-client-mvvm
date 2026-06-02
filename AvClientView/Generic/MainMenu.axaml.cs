@@ -1,16 +1,16 @@
-using AvClientMvvmContract.Generic;
-using AvClientMvvmContract.Generic.OptionPanels;
-using AvClientMvvmContract.Campaign;
-using AvClientMvvmContract.Multiplayer;
-using AvClientMvvmContract.Multiplayer.CnCNet;
-using AvClientMvvmContract.Multiplayer.GameLobby;
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+
+using AvClientMvvmContract.Campaign;
+using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.Multiplayer;
+using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Services;
 

@@ -1,8 +1,13 @@
-using AvClientMvvmContract.Multiplayer.CnCNet;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
+using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Online;
+using AvClientViewModel.Online.EventArguments;
 
 using ClientCore;
 using ClientCore.Enums;
@@ -11,11 +16,7 @@ using ClientCore.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using AvClientViewModel.Online;
-using AvClientViewModel.Online.EventArguments;
-
 using Rampastring.Tools;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Multiplayer.CnCNet;
 

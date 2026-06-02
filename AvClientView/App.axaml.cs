@@ -5,8 +5,6 @@ using Avalonia.Markup.Xaml;
 
 using AvClientView.Generic;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace AvClientView;
 
 public class App : Application

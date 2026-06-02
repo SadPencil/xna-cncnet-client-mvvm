@@ -1,6 +1,6 @@
-using AvClientMvvmContract.Generic;
-
 using Avalonia.Controls;
+
+using AvClientMvvmContract.Generic;
 
 using Microsoft.Extensions.DependencyInjection;
 

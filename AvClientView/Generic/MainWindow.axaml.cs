@@ -1,14 +1,13 @@
-using AvClientMvvmContract.Generic;
-using AvClientMvvmContract.Campaign;
-using AvClientMvvmContract.Multiplayer;
-using AvClientMvvmContract.Multiplayer.CnCNet;
-using AvClientMvvmContract.Multiplayer.GameLobby;
-
 using System;
 
 using Avalonia.Controls;
 using Avalonia.Threading;
 
+using AvClientMvvmContract.Campaign;
+using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.Multiplayer;
+using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,11 +1,11 @@
+using System.Collections.Generic;
+
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
-using System.Collections.Generic;
+using AvClientViewModel.Domain.Multiplayer;
 
 using CommunityToolkit.Mvvm.ComponentModel;
-
-using AvClientViewModel.Domain.Multiplayer;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 

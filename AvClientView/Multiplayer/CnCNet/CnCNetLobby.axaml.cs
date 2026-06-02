@@ -1,15 +1,15 @@
-using AvClientMvvmContract.Multiplayer.CnCNet;
+using System.Diagnostics;
 
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
+using AvClientMvvmContract.Multiplayer.CnCNet;
+
 using AvClientView.Services;
 
 using Microsoft.Extensions.DependencyInjection;
-
-using System.Diagnostics;
 
 namespace AvClientView.Multiplayer.CnCNet;
 

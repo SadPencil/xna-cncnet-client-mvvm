@@ -1,5 +1,3 @@
-using AvClientMvvmContract.Generic.OptionPanels;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+using AvClientMvvmContract.Generic.OptionPanels;
+
+using AvClientViewModel.Domain;
+using AvClientViewModel.Services;
+
 using ClientCore;
 using ClientCore.Enums;
 using ClientCore.Extensions;
@@ -15,9 +18,6 @@ using ClientCore.I18N;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using AvClientViewModel.Domain;
-using AvClientViewModel.Services;
 
 using Rampastring.Tools;
 

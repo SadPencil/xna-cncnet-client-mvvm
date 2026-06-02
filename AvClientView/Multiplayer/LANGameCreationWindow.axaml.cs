@@ -1,6 +1,6 @@
-using AvClientMvvmContract.Multiplayer;
-
 using Avalonia.Controls;
+
+using AvClientMvvmContract.Multiplayer;
 
 namespace AvClientView.Multiplayer;
 

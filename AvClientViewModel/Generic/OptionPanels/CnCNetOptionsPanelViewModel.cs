@@ -1,9 +1,11 @@
-using AvClientMvvmContract.Generic.OptionPanels;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
+using AvClientMvvmContract.Generic.OptionPanels;
+
+using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
 using ClientCore;
 using ClientCore.Enums;
@@ -11,8 +13,6 @@ using ClientCore.Extensions;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
 namespace AvClientViewModel.Generic.OptionPanels;
 

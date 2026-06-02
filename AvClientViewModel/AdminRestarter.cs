@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Runtime.Versioning;
 using System.Security.Principal;
 
-using Rampastring.Tools;
-
 using ClientCore;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel
 {

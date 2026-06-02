@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Globalization;
-using System.Net.Http;
-using System.Threading;
-using Rampastring.Tools;
-using ClientCore;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+
+using ClientCore;
 using ClientCore.Extensions;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {
@@ -30,9 +32,9 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
         public static event EventHandler<SHA1EventArgs> MapDownloadStarted;
 
-        private volatile static List<string> MapDownloadQueue = new List<string>();
-        private volatile static List<Map> MapUploadQueue = new List<Map>();
-        private volatile static List<string> UploadedMaps = new List<string>();
+        private static volatile List<string> MapDownloadQueue = new List<string>();
+        private static volatile List<Map> MapUploadQueue = new List<Map>();
+        private static volatile List<string> UploadedMaps = new List<string>();
 
         private static readonly object locker = new object();
 

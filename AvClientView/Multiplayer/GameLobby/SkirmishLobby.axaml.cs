@@ -1,11 +1,11 @@
 using System.ComponentModel;
 using System.IO;
 
-using AvClientMvvmContract.Multiplayer.GameLobby;
-
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+
+using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Services;
 

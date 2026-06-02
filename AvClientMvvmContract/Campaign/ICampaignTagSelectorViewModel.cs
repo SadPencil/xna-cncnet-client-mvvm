@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-using CommunityToolkit.Mvvm.Input;
-
 using AvClientMvvmContract.Domain;
+
+using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Campaign;
 

@@ -1,18 +1,3 @@
-using AvClientMvvmContract.Multiplayer.GameLobby;
-using AvClientMvvmContract.Domain.Multiplayer;
-using AvClientMvvmContract.Multiplayer.CnCNet;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ClientCore;
-using ClientCore.Extensions;
-using ClientCore.Enums;
-using AvClientViewModel.Domain.Multiplayer;
-using AvClientViewModel.Domain.Multiplayer.CnCNet;
-using AvClientViewModel.Multiplayer.GameLobby;
-using AvClientViewModel.Online;
-using AvClientViewModel.Online.EventArguments;
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,8 +5,28 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using SixLabors.ImageSharp;
+
+using AvClientMvvmContract.Domain.Multiplayer;
+using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Domain.Multiplayer;
+using AvClientViewModel.Domain.Multiplayer.CnCNet;
+using AvClientViewModel.Multiplayer.GameLobby;
+using AvClientViewModel.Online;
+using AvClientViewModel.Online.EventArguments;
+
+using ClientCore;
+using ClientCore.Enums;
+using ClientCore.Extensions;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using Rampastring.Tools;
+
+using SixLabors.ImageSharp;
 
 namespace AvClientViewModel.Multiplayer.CnCNet;
 

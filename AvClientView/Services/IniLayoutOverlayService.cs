@@ -11,9 +11,9 @@ using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
-using ClientCore;
-
 using AvClientMvvmContract.ViewServices;
+
+using ClientCore;
 
 using Rampastring.Tools;
 

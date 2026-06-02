@@ -1,6 +1,6 @@
-using AvClientMvvmContract.Campaign;
-
 using Avalonia.Controls;
+
+using AvClientMvvmContract.Campaign;
 
 namespace AvClientView.Campaign;
 

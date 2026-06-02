@@ -1,12 +1,12 @@
-using AvClientMvvmContract.Domain.Multiplayer;
-
-using Rampastring.Tools;
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Net.NetworkInformation;
+
+using AvClientMvvmContract.Domain.Multiplayer;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {

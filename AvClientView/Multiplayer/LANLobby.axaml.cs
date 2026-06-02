@@ -1,10 +1,10 @@
-using AvClientMvvmContract.Multiplayer;
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+
+using AvClientMvvmContract.Multiplayer;
 
 using AvClientView.Controls;
 using AvClientView.Services;

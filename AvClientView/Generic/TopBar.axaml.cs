@@ -1,5 +1,3 @@
-using AvClientMvvmContract.Generic;
-
 using System;
 using System.ComponentModel;
 
@@ -8,6 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
+
+using AvClientMvvmContract.Generic;
 
 namespace AvClientView.Generic;
 

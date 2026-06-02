@@ -1,7 +1,7 @@
-﻿using Rampastring.Tools;
-
+﻿using System;
 using System.Collections.Generic;
-using System;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Domain.Multiplayer
 {

@@ -1,6 +1,6 @@
-using AvClientMvvmContract.Multiplayer.GameLobby;
-
 using System.Collections.Generic;
+
+using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 

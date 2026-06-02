@@ -1,20 +1,20 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
 using AvClientMvvmContract.Generic;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-
-using ClientCore;
-using ClientCore.Extensions;
-using ClientCore.Settings;
 
 using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
 using AvClientViewModel.Online;
 
-using Rampastring.Tools;
+using ClientCore;
+using ClientCore.Extensions;
+using ClientCore.Settings;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Generic
 {

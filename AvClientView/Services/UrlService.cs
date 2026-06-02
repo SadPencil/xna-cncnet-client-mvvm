@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 
+using AvClientMvvmContract.ViewServices;
+
 using ClientCore;
 
 using Rampastring.Tools;
-
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientView.Services
 {

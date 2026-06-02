@@ -1,6 +1,6 @@
-using AvClientMvvmContract.Domain.Multiplayer;
-
 using System;
+
+using AvClientMvvmContract.Domain.Multiplayer;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {

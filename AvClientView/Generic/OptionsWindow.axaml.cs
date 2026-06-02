@@ -1,9 +1,9 @@
-using AvClientMvvmContract.Generic;
-using AvClientMvvmContract.Generic.OptionPanels;
-
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+
+using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.Generic.OptionPanels;
 
 using AvClientView.Services;
 

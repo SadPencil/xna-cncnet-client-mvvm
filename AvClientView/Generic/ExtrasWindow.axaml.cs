@@ -1,8 +1,8 @@
-using AvClientMvvmContract.Generic;
-
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+
+using AvClientMvvmContract.Generic;
 
 using AvClientView.Services;
 

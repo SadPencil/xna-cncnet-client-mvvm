@@ -1,6 +1,6 @@
-using AvClientMvvmContract.Multiplayer.CnCNet;
-
 using Avalonia.Controls;
+
+using AvClientMvvmContract.Multiplayer.CnCNet;
 
 namespace AvClientView.Multiplayer.CnCNet;
 

@@ -1,7 +1,7 @@
-﻿using ClientCore;
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
+
+using ClientCore;
 
 namespace AvClientViewModel.Online
 {

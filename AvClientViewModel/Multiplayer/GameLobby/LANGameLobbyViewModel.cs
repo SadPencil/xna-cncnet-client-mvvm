@@ -1,4 +1,3 @@
-using AvClientMvvmContract.Multiplayer.GameLobby;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,19 +7,25 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 
-using ClientCore;
-using ClientCore.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
+
 using AvClientViewModel.Domain;
 using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Domain.Multiplayer.LAN;
 using AvClientViewModel.Multiplayer.GameLobby.CommandHandlers;
 using AvClientViewModel.Online;
 using AvClientViewModel.Services;
+
+using ClientCore;
+using ClientCore.Extensions;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
 using Rampastring.Tools;
+
 using Timer = System.Timers.Timer;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 

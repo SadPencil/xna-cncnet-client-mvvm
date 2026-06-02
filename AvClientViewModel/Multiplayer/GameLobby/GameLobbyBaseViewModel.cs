@@ -4,6 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
+using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Domain;
+using AvClientViewModel.Domain.Multiplayer;
+
 using ClientCore;
 using ClientCore.Enums;
 using ClientCore.Extensions;
@@ -11,12 +17,6 @@ using ClientCore.Statistics;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using AvClientMvvmContract.Multiplayer.GameLobby;
-using AvClientMvvmContract.ViewServices;
-
-using AvClientViewModel.Domain;
-using AvClientViewModel.Domain.Multiplayer;
 
 using Rampastring.Tools;
 

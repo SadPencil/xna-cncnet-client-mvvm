@@ -1,8 +1,3 @@
-using ClientCore;
-using ClientCore.Extensions;
-
-using Rampastring.Tools;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +8,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ClientCore;
+using ClientCore.Extensions;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Online
 {

@@ -1,10 +1,13 @@
-using AvClientMvvmContract.Multiplayer;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Timers;
+
+using AvClientMvvmContract.Multiplayer;
+
+using AvClientViewModel.Domain.Multiplayer;
+using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
 using ClientCore;
 using ClientCore.Enums;
@@ -12,9 +15,6 @@ using ClientCore.Extensions;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using AvClientViewModel.Domain.Multiplayer;
-using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
 using Timer = System.Timers.Timer;
 

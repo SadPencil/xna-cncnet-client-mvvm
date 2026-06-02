@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-using CommunityToolkit.Mvvm.Input;
-
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Online;
+
+using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Multiplayer.GameLobby;
 
