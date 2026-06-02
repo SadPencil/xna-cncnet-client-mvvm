@@ -20,16 +20,23 @@ namespace AvClientView.Generic;
 
 public partial class MainMenu : UserControl
 {
+    private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
+
     public MainMenu()
     {
         InitializeComponent();
         Loaded += OnLoaded;
         KeyDown += OnKeyDown;
+        PointerMoved += OnPointerMoved;
         Focusable = true;
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        // Wire TopBar ViewModel (DataContext set via AXAML binding, but code-behind also needs it)
+        if (ViewModel != null)
+            topBar.ViewModel = ViewModel.TopBarViewModel;
+
         // Set default background (matching original: AssetLoader.LoadTexture("MainMenu/mainmenubg.png"))
         ApplyDefaultBackground("MainMenu/mainmenubg.png");
 
@@ -96,6 +103,13 @@ public partial class MainMenu : UserControl
         //        e.Handled = true;
         //        break;
         //}
+    }
+
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        var pos = e.GetPosition(this);
+        if (pos.Y < APPEAR_CURSOR_THRESHOLD_Y)
+            ViewModel?.TopBarViewModel.ExpandCommand.Execute(null);
     }
 
     private void ApplyDefaultBackground(string texturePath)
