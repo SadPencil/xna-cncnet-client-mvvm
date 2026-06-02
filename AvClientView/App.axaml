@@ -5,6 +5,7 @@
     RequestedThemeVariant="Dark">
   <Application.Resources>
     <converters:ObjectToStringConverter x:Key="ObjectToStringConverter"/>
+    <converters:FilePathToBitmapConverter x:Key="FilePathToBitmapConverter"/>
   </Application.Resources>
 
   <Application.Styles>

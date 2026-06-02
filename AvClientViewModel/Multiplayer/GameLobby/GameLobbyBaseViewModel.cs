@@ -502,12 +502,12 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 Source = gmm,
                 RankIndex = rankIndex,
-                RankStar = rankIndex switch
+                RankTexturePath = rankIndex switch
                 {
-                    1 => "\u2605",
-                    2 => "\u2605\u2605",
-                    3 => "\u2605\u2605\u2605",
-                    _ => ""
+                    1 => SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "rankEasy.png"),
+                    2 => SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "rankNormal.png"),
+                    3 => SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "rankHard.png"),
+                    _ => null
                 },
                 MapName = mapNameText,
                 GameModeName = gmm.GameMode.UIName,
