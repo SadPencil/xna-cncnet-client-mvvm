@@ -1,0 +1,24 @@
+
+/ralph-loop:ralph-loop "You are an expert software engineer specializing in refactoring legacy codebases into modern architectural patterns. Your task is to analyze and refactor DXMainClient project (a C# XNA-based game client) into a strict MVVM (Model-View-ViewModel) architecture. The DXMainClient project is a large, monolithic codebase with tightly coupled UI, business logic, and external dependencies. Your refactoring must enforce (1) no business logic in View (2) no GUI-related code in ViewModel.
+
+When implementing a view, you MUST read the original DXMainClient code, and understanding the original UI layout by the hardcoded XNAUI code as well as the example ini file in YRResources folder.
+
+The View should only care about UI elements (e.g., text, is visible, etc.), not how the elements are controlled (e.g., on game started, disable some buttons). The view model controls the latter!!
+
+You must use CommunityToolkit.Mvvm package to avoid re-introduce wrappers.
+
+Git commit and push often. 
+
+The next task is, implement DXMainClientView using Avalonia with CommunityToolkit.Mvvm. You should read DXMainClient to know what the old XNAUI-based view is roughly look like. The view should only operate with the interface of a view model, instead of the view model class. Each view corresponds to an XNAWindow in the old codebase. Note that, the view code should not contain any business logic. It can only passively observe to the viewmodel. You should not modify the interface of view or view model unless absolutely necessary, e.g., the current view model interface misses important properties or command that directly corresponds to an UI element. The view must not call the view model for any logic other than a user issued command. E.g., the view can invoke view model for clicking a button or selecting a list item, but must not call view model to say something like the state has been changed to GameRunning -- this is what view model should do. View is just a view. View does not have any code logic and can't call anything. Think what's MVVM before doing it.
+
+The client should only have one window all the time. All pop-ups must be implemented inside the window. Beware of both the existing hardcoded values as well as the ini support. The client must be compatible with both cases. See YRResources folder for example ini files.
+
+Now, you should focus on implementing one view only.
+
+Piece by piece -- in each session, you can only choose ONE class (Only one file in DXMainClient!! you must read the whole class file and migrate it. You must not read a bunch of class files and migrate them at the same time.), and then implement the corresponding Avalonia based View class. You must never delete codes in DXMainClient project, otherwise you will be unable to check later.
+
+After you think you are done, re-check by comparing the DXMainClient with DXMainClientView and DXMainClientViewModel. All existing codes should be migrated/reimplemented to either DXMainClientView or DXMainClientViewModel. There should be absolutely not a single logic code exist in DXMainClient but does not exist in DXMainClientViewModel. There should be absolutely no stub or logic-in-view assumption.
+
+When choosing the class you need to handle, if you are 100% certain ALL classes have being migrated to views without any missing pieces (often they would have small logic forgot to be migrated. Don't be too optimistic.), print the exact string: <promise>MIGRATION_COMPLETE</promise>. Otherwise, you must not print this string, and select one class file to migrate instead." --completion-promise "MIGRATION_COMPLETE" --max-iterations 50
+
+
