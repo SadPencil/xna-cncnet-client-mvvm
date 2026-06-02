@@ -1,9 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 
 using Serilog;
-using SerilogTraceListener;
+using Serilog.Core;
+using Serilog.Events;
 
 namespace ClientCore;
 
@@ -21,32 +21,27 @@ public static class PreStartup
             return;
         _isInitialized = true;
 
-        // Add SerilogTraceListener to capture System.Diagnostics.Trace calls
-        _ = Trace.Listeners.Add(new SerilogTraceListener.SerilogTraceListener());
-
         string logFilePath = Path.Combine(logDirectory, logFileName);
 
+        var loggingLevelSwitch = new LoggingLevelSwitch() { MinimumLevel = LogEventLevel.Information };
+
+        string outputTemplate = "{Timestamp:dd.MM. HH:mm:ss.fff}    {Message:lj}{NewLine}{Exception}";
+
         Serilog.Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy(SerilogHelper.LoggingLevelSwitch)
-            .WriteTo.Console(outputTemplate: SerilogHelper.OutputTemplate)
+            .MinimumLevel.ControlledBy(loggingLevelSwitch)
+            .WriteTo.Console(outputTemplate: outputTemplate)
+            .WriteTo.Trace(outputTemplate: outputTemplate)
             .WriteTo.File(
                 path: logFilePath,
-                outputTemplate: SerilogHelper.OutputTemplate,
+                outputTemplate: outputTemplate,
                 fileSizeLimitBytes: null,
                 shared: false,
                 flushToDiskInterval: TimeSpan.FromSeconds(1))
             .CreateLogger();
 
         // Ensure logs are flushed when the process exits
-        AppDomain.CurrentDomain.ProcessExit += (_, _) =>
-        {
-            ShutdownLogger();
-        };
-
-        AppDomain.CurrentDomain.UnhandledException += (_, _) =>
-        {
-            ShutdownLogger();
-        };
+        AppDomain.CurrentDomain.ProcessExit += (_, _) => ShutdownLogger();
+        AppDomain.CurrentDomain.UnhandledException += (_, _) => ShutdownLogger();
     }
 
     /// <summary>

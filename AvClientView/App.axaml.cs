@@ -16,9 +16,7 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        // Emit a log through Avalonia's own logger at Warning level so it
-        // appears on stderr via LogToTrace() → ConsoleTraceListener.
-        Logger.TryGet(LogEventLevel.Warning, "AvClient")?.Log(this, "Avalonia diagnostics service active.");
+        Logger.TryGet(LogEventLevel.Information, "AvClient")?.Log(this, "Avalonia diagnostics service active.");
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

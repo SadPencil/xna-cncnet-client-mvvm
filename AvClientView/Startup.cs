@@ -19,12 +19,6 @@ public class Startup
 
         bool headless = args.Contains("--headless");
 
-        if (headless)
-        {
-            Trace.Listeners.Add(new ConsoleTraceListener(useErrorStream: true));
-            Trace.AutoFlush = true;
-        }
-
         BuildAvaloniaApp(headless)
             .StartWithClassicDesktopLifetime(args);
     }
@@ -33,12 +27,14 @@ public class Startup
     {
         var app = AppBuilder.Configure<App>();
 
+        Avalonia.Logging.Logger.Sink = new AvaloniaSerilogSink();
+
         if (headless)
             app = app.UseHeadless(new AvaloniaHeadlessPlatformOptions());
         else
             app = app.UsePlatformDetect();
 
-        app = app.WithInterFont().LogToTrace();
+        app = app.WithInterFont();
 
         return app;
     }
