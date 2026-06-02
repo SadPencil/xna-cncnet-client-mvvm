@@ -178,11 +178,6 @@ public static class PreStartup
 
                 Translation.Instance = translation;
             }
-            else
-            {
-                Log.Warning($"Failed to load a translation file. " +
-                    $"Neither {translationThemeFile.FullName} nor {translationFile.FullName} exist.");
-            }
 
             Log.Information("Loaded translation: " + Translation.Instance.Name);
         }
