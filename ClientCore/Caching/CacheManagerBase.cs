@@ -286,7 +286,7 @@ public abstract class CacheManagerBase<TInput, TOutput> : ICacheManager<TInput, 
             }
             catch (Exception ex)
             {
-                Log.Information($"{Name}: Failed to get the output for input '{input}'. Error: {ex.ToString()}");
+                Log.Warning($"{Name}: Failed to get the output for input '{input}'. Error: {ex.ToString()}");
             }
         }
     }
@@ -336,7 +336,7 @@ public abstract class CacheManagerBase<TInput, TOutput> : ICacheManager<TInput, 
             if (!workerThread.Join(WorkerThreadShutdownTimeoutMs))
             {
                 // Log warning if thread doesn't terminate gracefully
-                Log.Information($"{Name}: Worker thread did not terminate within timeout period.");
+                Log.Warning($"{Name}: Worker thread did not terminate within timeout period.");
             }
         }
 

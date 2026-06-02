@@ -280,7 +280,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             }
             catch (Exception ex)
             {
-                Log.Information("Listener error: " + ex.ToString());
+                Log.Warning("Listener error: " + ex.ToString());
                 break;
             }
 
@@ -310,13 +310,13 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             }
             catch (Exception ex)
             {
-                Log.Information("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
+                Log.Warning("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
                 break;
             }
 
             if (bytesRead == 0)
             {
-                Log.Information("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
+                Log.Warning("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
                 break;
             }
 
@@ -450,7 +450,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
                 if (leaving)
                     break;
 
-                Log.Information("Reading data from the server failed! Message: " + ex.ToString());
+                Log.Warning("Reading data from the server failed! Message: " + ex.ToString());
                 UIThreadMarshaller.AddCallback(() =>
                 {
                     if (sessionId == mySessionId)
@@ -498,7 +498,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             if (leaving)
                 break;
 
-            Log.Information("Reading data from the server failed (0 bytes received)!");
+            Log.Warning("Reading data from the server failed (0 bytes received)!");
             UIThreadMarshaller.AddCallback(() => { if (sessionId == mySessionId) LeaveGameCommand.Execute(null); });
             break;
         }
@@ -763,7 +763,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
         }
         catch
         {
-            Log.Information("Sending message to game host failed!");
+            Log.Warning("Sending message to game host failed!");
         }
     }
 

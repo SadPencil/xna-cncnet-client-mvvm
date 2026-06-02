@@ -79,12 +79,12 @@ namespace AvClientViewModel.Online
                 if (listFile.Exists)
                     return File.ReadAllLines(listFile.FullName).ToList();
 
-                Log.Information($"Loading {path} failed! File does not exist.");
+                Log.Warning($"Loading {path} failed! File does not exist.");
                 return new();
             }
             catch
             {
-                Log.Information($"Loading {path} list failed!");
+                Log.Warning($"Loading {path} list failed!");
                 return new();
             }
         }
@@ -98,12 +98,12 @@ namespace AvClientViewModel.Online
                 if (listFile.Exists)
                     return JsonSerializer.Deserialize<List<T>>(File.ReadAllText(listFile.FullName)) ?? new List<T>();
 
-                Log.Information($"Loading {path} failed! File does not exist.");
+                Log.Warning($"Loading {path} failed! File does not exist.");
                 return new();
             }
             catch
             {
-                Log.Information($"Loading {path} list failed!");
+                Log.Warning($"Loading {path} list failed!");
                 return new();
             }
         }
@@ -121,7 +121,7 @@ namespace AvClientViewModel.Online
             }
             catch (Exception ex)
             {
-                Log.Information($"Saving {path} failed! Error message: " + ex.ToString());
+                Log.Warning($"Saving {path} failed! Error message: " + ex.ToString());
             }
         }
 
@@ -138,7 +138,7 @@ namespace AvClientViewModel.Online
             }
             catch (Exception ex)
             {
-                Log.Information($"Saving {path} failed! Error message: " + ex.ToString());
+                Log.Warning($"Saving {path} failed! Error message: " + ex.ToString());
             }
         }
 

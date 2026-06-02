@@ -94,7 +94,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
 
         if (previewWidth < 1 || previewHeight < 1)
         {
-            Log.Information("MapPreviewExtractor: " + baseFilename + " - [Preview] Size value is invalid, unable to extract preview.");
+            Log.Warning("MapPreviewExtractor: " + baseFilename + " - [Preview] Size value is invalid, unable to extract preview.");
             return null;
         }
 
@@ -106,7 +106,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
         }
         catch (Exception)
         {
-            Log.Information("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] is malformed, unable to extract preview.");
+            Log.Warning("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] is malformed, unable to extract preview.");
             return null;
         }
 
@@ -114,7 +114,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
 
         if (errorMessage != null)
         {
-            Log.Information("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
+            Log.Warning("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
             return null;
         }
 
@@ -122,7 +122,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
 
         if (errorMessage != null)
         {
-            Log.Information("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
+            Log.Warning("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
             return null;
         }
 

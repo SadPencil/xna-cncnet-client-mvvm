@@ -206,7 +206,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         }
         else
         {
-            Log.Information("MultiplayerGameLobby: Saved games are not available!");
+            Log.Warning("MultiplayerGameLobby: Saved games are not available!");
         }
     }
 

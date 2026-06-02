@@ -59,7 +59,7 @@ public class FileExtensions
             }
             catch (Exception ex)
             {
-                Log.Information($"Failed to create hard link at {destination}. Fallback to copy. {ex.Message}");
+                Log.Warning($"Failed to create hard link at {destination}. Fallback to copy. {ex.Message}");
                 File.Copy(source, destination, true);
             }
 

@@ -211,11 +211,11 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                     }
                     catch (Exception ex)
                     {
-                        Log.Information("Error when downloading tunnel server info: " + ex.Message);
+                        Log.Warning("Error when downloading tunnel server info: " + ex.Message);
                         if (i < retryCount - 1)
                             Log.Information("Retrying.");
                         else
-                            Log.Information("Fetching tunnel server list failed.");
+                            Log.Warning("Fetching tunnel server list failed.");
                     }
                 }
             }
@@ -231,7 +231,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 return data;
             }
             else
-                Log.Information("Tunnel cache file doesn't exist!");
+                Log.Warning("Tunnel cache file doesn't exist!");
 
             return null;
         }
@@ -273,7 +273,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Caught an exception when parsing a tunnel server: " + ex.ToString());
+                    Log.Warning("Caught an exception when parsing a tunnel server: " + ex.ToString());
                 }
             }
 
@@ -293,7 +293,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Refreshing tunnel cache file failed! Returned error: " + ex.ToString());
+                    Log.Warning("Refreshing tunnel cache file failed! Returned error: " + ex.ToString());
                 }
             }
 

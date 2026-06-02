@@ -229,7 +229,7 @@ namespace AvClientViewModel.Generic
 
             if (!savedGamesDirectoryInfo.Exists)
             {
-                Log.Information("Saved Games directory not found!");
+                Log.Warning("Saved Games directory not found!");
                 return;
             }
 
@@ -263,7 +263,7 @@ namespace AvClientViewModel.Generic
             bool scenarioPathFound = mission.TryGetScenarioFilePath(out string scenarioPath);
             if (!scenarioPathFound)
             {
-                Log.Information($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
+                Log.Warning($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
                 return;
             }
 

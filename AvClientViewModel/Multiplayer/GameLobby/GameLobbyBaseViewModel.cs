@@ -1374,7 +1374,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
         catch (IOException ex)
         {
-            Log.Information($"Deleting map {Map.BaseFilePath} failed! Message: {ex}");
+            Log.Warning($"Deleting map {Map.BaseFilePath} failed! Message: {ex}");
             AddNotice("Deleting map failed! Reason:".L10N("Client:Main:DeleteMapFailedText") + " " + ex.Message);
         }
     }
@@ -1906,8 +1906,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             catch (Exception ex)
             {
                 string errorMessage = "Unable to copy supplemental map file".L10N("Client:Main:SupplementalFileCopyError") + $" {file}";
-                Log.Information(errorMessage);
-                Log.Information(ex.ToString());
+                Log.Warning(errorMessage);
+                Log.Warning(ex.ToString());
             }
         }
 
@@ -1928,8 +1928,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             }
             catch (Exception ex)
             {
-                Log.Information("Unable to delete supplemental map file".L10N("Client:Main:SupplementalFileDeleteError") + $" {path}");
-                Log.Information(ex.ToString());
+                Log.Warning("Unable to delete supplemental map file".L10N("Client:Main:SupplementalFileDeleteError") + $" {path}");
+                Log.Warning(ex.ToString());
             }
         }
     }

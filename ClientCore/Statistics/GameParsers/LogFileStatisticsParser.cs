@@ -32,7 +32,7 @@ namespace ClientCore.Statistics.GameParsers
 
             if (!statisticsFileInfo.Exists)
             {
-                Log.Information("DTAStatisticsParser: Failed to read statistics: the log file does not exist.");
+                Log.Warning("DTAStatisticsParser: Failed to read statistics: the log file does not exist.");
                 return;
             }
 
@@ -153,7 +153,7 @@ namespace ClientCore.Statistics.GameParsers
             }
             catch (Exception ex)
             {
-                Log.Information("DTAStatisticsParser: Error parsing statistics from match! Message: " + ex.ToString());
+                Log.Error("DTAStatisticsParser: Error parsing statistics from match! Message: " + ex.ToString());
             }
         }
     }

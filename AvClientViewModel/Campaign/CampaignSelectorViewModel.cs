@@ -303,7 +303,7 @@ namespace AvClientViewModel.Campaign
             FileInfo battleIniFileInfo = SafePath.GetFile(ProgramConstants.GamePath, path);
             if (!battleIniFileInfo.Exists)
             {
-                Log.Information("File " + path + " not found. Ignoring.");
+                Log.Warning("File " + path + " not found. Ignoring.");
                 return false;
             }
 
@@ -427,7 +427,7 @@ namespace AvClientViewModel.Campaign
 
             if (!scenarioPathFound)
             {
-                Log.Information($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without applying {nameof(ClientConfiguration.Instance.CopyMissionsToSpawnmapINI)}.");
+                Log.Warning($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without applying {nameof(ClientConfiguration.Instance.CopyMissionsToSpawnmapINI)}.");
                 copyMapsToSpawnmapINI = false;
             }
 
@@ -537,7 +537,7 @@ namespace AvClientViewModel.Campaign
             bool scenarioPathFound = mission.TryGetScenarioFilePath(out string scenarioPath);
             if (!scenarioPathFound)
             {
-                Log.Information($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
+                Log.Warning($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
                 return;
             }
 
@@ -701,7 +701,7 @@ namespace AvClientViewModel.Campaign
             }
             catch (Exception ex)
             {
-                Log.Information($"Saving campaign settings failed! Reason: {ex}");
+                Log.Warning($"Saving campaign settings failed! Reason: {ex}");
             }
         }
 

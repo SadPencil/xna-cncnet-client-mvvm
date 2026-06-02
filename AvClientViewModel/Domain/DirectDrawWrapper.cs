@@ -97,7 +97,7 @@ namespace AvClientViewModel.Domain
         {
             if (section == null)
             {
-                Log.Information("DirectDrawWrapper: Configuration for renderer '" + InternalName + "' not found!");
+                Log.Warning("DirectDrawWrapper: Configuration for renderer '" + InternalName + "' not found!");
                 return;
             }
 
@@ -145,16 +145,16 @@ namespace AvClientViewModel.Domain
 
             if (!string.IsNullOrEmpty(ddrawDLLPath) &&
                 !SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), ddrawDLLPath).Exists)
-                Log.Information("DirectDrawWrapper: File specified in DLLPath= for renderer '" + InternalName + "' does not exist!");
+                Log.Warning("DirectDrawWrapper: File specified in DLLPath= for renderer '" + InternalName + "' does not exist!");
 
             if (!string.IsNullOrEmpty(resConfigFileName) &&
                 !SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), resConfigFileName).Exists)
-                Log.Information("DirectDrawWrapper: File specified in ConfigFileName= for renderer '" + InternalName + "' does not exist!");
+                Log.Warning("DirectDrawWrapper: File specified in ConfigFileName= for renderer '" + InternalName + "' does not exist!");
 
             foreach (var file in filesToCopy)
             {
                 if (!SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), file).Exists)
-                    Log.Information("DirectDrawWrapper: Additional file '" + file + "' for renderer '" + InternalName + "' does not exist!");
+                    Log.Warning("DirectDrawWrapper: Additional file '" + file + "' for renderer '" + InternalName + "' does not exist!");
             }
         }
 

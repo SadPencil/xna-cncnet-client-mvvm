@@ -237,12 +237,12 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 else
                 {
-                    Log.Information($"MapLoader: Failed to load map info from {filePath}");
+                    Log.Warning($"MapLoader: Failed to load map info from {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                Log.Information($"MapLoader: Error adding map from {filePath}: {ex.Message}");
+                Log.Warning($"MapLoader: Error adding map from {filePath}: {ex.Message}");
             }
         }
 
@@ -315,12 +315,12 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 else
                 {
-                    Log.Information($"MapLoader: Failed to reload map info from {filePath}");
+                    Log.Warning($"MapLoader: Failed to reload map info from {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                Log.Information($"MapLoader: Error updating map from {filePath}: {ex.Message}");
+                Log.Warning($"MapLoader: Error updating map from {filePath}: {ex.Message}");
             }
         }
 
@@ -351,7 +351,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch (Exception ex)
             {
-                Log.Information($"MapLoader: Error removing map from {filePath}: {ex.Message}");
+                Log.Warning($"MapLoader: Error removing map from {filePath}: {ex.Message}");
             }
         }
 
@@ -382,7 +382,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch (Exception ex)
             {
-                Log.Information($"MapLoader: Error converting file path {fullPath}: {ex.Message}");
+                Log.Warning($"MapLoader: Error converting file path {fullPath}: {ex.Message}");
                 return null;
             }
         }
@@ -421,7 +421,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (keys == null)
             {
-                Log.Information("Loading multiplayer map list failed!!!");
+                Log.Warning("Loading multiplayer map list failed!!!");
                 return;
             }
 
@@ -435,7 +435,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                     if (!mapFile.Exists)
                     {
-                        Log.Information("Map " + mapFile.FullName + " doesn't exist!");
+                        Log.Warning("Map " + mapFile.FullName + " doesn't exist!");
                         return null;
                     }
 
@@ -447,7 +447,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Error loading map for key {key}: {ex}");
+                    Log.Warning($"Error loading map for key {key}: {ex}");
                     return null;
                 }
             })).ToArray();
@@ -506,7 +506,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (!customMapsDirectory.Exists)
             {
-                Log.Information($"Custom maps directory {customMapsDirectory} does not exist!");
+                Log.Warning($"Custom maps directory {customMapsDirectory} does not exist!");
                 return;
             }
 
@@ -625,7 +625,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Failed to delete legacy custom map cache file {legacyCacheFile}: {ex.Message}");
+                    Log.Warning($"Failed to delete legacy custom map cache file {legacyCacheFile}: {ex.Message}");
                 }
             }
 
@@ -671,7 +671,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (mapPath != mapPath.ToWin32FileName())
             {
-                Log.Information("LoadCustomMap: Map " + FormattableString.Invariant($"{mapPath}.{ClientConfiguration.Instance.MapFileExtension}") + " contains WIN32API reserved characters!");
+                Log.Warning("LoadCustomMap: Map " + FormattableString.Invariant($"{mapPath}.{ClientConfiguration.Instance.MapFileExtension}") + " contains WIN32API reserved characters!");
 
                 // Return "map file does not exist" message to hide technical details towards users
                 resultMessage = string.Format("Map file {0} doesn't exist!".L10N("Client:MapLoader:MapFileDoesNotExist"), FormattableString.Invariant($"{mapPath}.{ClientConfiguration.Instance.MapFileExtension}"));
@@ -684,7 +684,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (!customMapFile.Exists)
             {
-                Log.Information("LoadCustomMap: Map " + customMapFile.FullName + " not found!");
+                Log.Warning("LoadCustomMap: Map " + customMapFile.FullName + " not found!");
                 resultMessage = string.Format("Map file {0} doesn't exist!".L10N("Client:MapLoader:MapFileDoesNotExist"), customMapFile.Name);
 
                 return null;
@@ -719,7 +719,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 return map;
             }
 
-            Log.Information("LoadCustomMap: Loading map " + customMapFile.FullName + " failed!");
+            Log.Warning("LoadCustomMap: Loading map " + customMapFile.FullName + " failed!");
             resultMessage = string.Format("Loading map {0} failed!".L10N("Client:MapLoader:MapLoadingFailed"), Path.GetFileNameWithoutExtension(customMapFile.Name));
 
             return null;

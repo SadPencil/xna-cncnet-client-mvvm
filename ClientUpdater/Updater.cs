@@ -290,7 +290,7 @@ public static class Updater
                 }
                 else
                 {
-                    Log.Information("Updater: Warning: Malformed file info in local version information: " + str);
+                    Log.Warning("Updater: Warning: Malformed file info in local version information: " + str);
                 }
             }
         }
@@ -492,7 +492,7 @@ public static class Updater
 
         if (!configFile.Exists)
         {
-            Log.Information("Updater config file not found - attempting to read legacy updateconfig.ini.");
+            Log.Warning("Updater config file not found - attempting to read legacy updateconfig.ini.");
             ReadLegacyUpdaterConfig(mirrors);
         }
         else
@@ -568,7 +568,7 @@ public static class Updater
         Updater.customComponents = customComponents;
 
         if (updateMirrors.Count < 1)
-            Log.Information("Warning: No download mirrors found in updater config file or the built-in game info.");
+            Log.Warning("Warning: No download mirrors found in updater config file or the built-in game info.");
     }
 
     /// <summary>
@@ -590,7 +590,7 @@ public static class Updater
         }
         catch (Exception e)
         {
-            Log.Information("Error: Could not read legacy format updateconfig.ini. Message:" + e.Message);
+            Log.Error("Error: Could not read legacy format updateconfig.ini. Message:" + e.Message);
             return;
         }
 
@@ -628,7 +628,7 @@ public static class Updater
 
             if (updateMirrors.Count == 0)
             {
-                Log.Information("Updater: There are no update mirrors!");
+                Log.Warning("Updater: There are no update mirrors!");
             }
             else
             {
@@ -660,7 +660,7 @@ public static class Updater
                     }
                     catch (Exception e)
                     {
-                        Log.Information("Updater: Error connecting to update mirror. Error message: " + e.ToString());
+                        Log.Error("Updater: Error connecting to update mirror. Error message: " + e.ToString());
                         Log.Information("Updater: Seeking other mirrors...");
                         currentUpdateMirrorIndex++;
 
@@ -686,7 +686,7 @@ public static class Updater
 
                         if (tmp.Length < 2)
                         {
-                            Log.Information("Updater: Warning: Malformed file info in downloaded version information: " + key);
+                            Log.Warning("Updater: Warning: Malformed file info in downloaded version information: " + key);
                             continue;
                         }
 
@@ -704,7 +704,7 @@ public static class Updater
 
                         if (tmp.Length < 2)
                         {
-                            Log.Information("Updater: Warning: Malformed addon info in downloaded version information: " + key);
+                            Log.Warning("Updater: Warning: Malformed addon info in downloaded version information: " + key);
                             continue;
                         }
 
@@ -713,7 +713,7 @@ public static class Updater
 
                         if (index == -1)
                         {
-                            Log.Information("Updater: Warning: Invalid custom component ID " + key);
+                            Log.Warning("Updater: Warning: Invalid custom component ID " + key);
                         }
                         else
                         {
@@ -755,7 +755,7 @@ public static class Updater
                 {
                     if (updaterVersionString != "N/A" && UpdaterVersion != updaterVersionString)
                     {
-                        Log.Information("Updater: Server update system version is set to " + updaterVersionString + " and is different to local update system version " + UpdaterVersion + ". Manual update required.");
+                        Log.Warning("Updater: Server update system version is set to " + updaterVersionString + " and is different to local update system version " + UpdaterVersion + ". Manual update required.");
                         VersionState = VersionState.OUTDATED;
                         ManualUpdateRequired = true;
                         ManualDownloadURL = manualDownloadURLString;
@@ -772,7 +772,7 @@ public static class Updater
         catch (Exception exception)
         {
             VersionState = VersionState.UNKNOWN;
-            Log.Information("Updater: An error occured while performing version check: " + exception.Message);
+            Log.Error("Updater: An error occured while performing version check: " + exception.Message);
             DoFileIdentifiersUpdatedEvent();
         }
     }
@@ -817,7 +817,7 @@ public static class Updater
         }
         catch (Exception exception)
         {
-            Log.Information("Updater: Warning: Downloading updateexec failed: " + exception.Message);
+            Log.Warning("Updater: Warning: Downloading updateexec failed: " + exception.Message);
             return;
         }
 
@@ -849,7 +849,7 @@ public static class Updater
         }
         catch (Exception exception)
         {
-            Log.Information("Updater: Warning: Downloading preupdateexec failed: " + exception.Message);
+            Log.Warning("Updater: Warning: Downloading preupdateexec failed: " + exception.Message);
             return false;
         }
 
@@ -884,7 +884,7 @@ public static class Updater
             }
             catch (Exception ex)
             {
-                Log.Information("Updater: " + fileName + ": Deleting file " + key + "failed: " + ex.Message);
+                Log.Warning("Updater: " + fileName + ": Deleting file " + key + "failed: " + ex.Message);
             }
         }
 
@@ -925,7 +925,7 @@ public static class Updater
             }
             catch (Exception ex)
             {
-                Log.Information("Updater: " + fileName + ": Renaming file '" + key + "' to '" + newFilename + "' failed: " + ex.Message);
+                Log.Warning("Updater: " + fileName + ": Renaming file '" + key + "' to '" + newFilename + "' failed: " + ex.Message);
             }
         }
 
@@ -946,7 +946,7 @@ public static class Updater
             }
             catch (Exception ex)
             {
-                Log.Information("Updater: " + fileName + ": Renaming directory '" + key + "' to '" + newDirectoryName + "' failed: " + ex.Message);
+                Log.Warning("Updater: " + fileName + ": Renaming directory '" + key + "' to '" + newDirectoryName + "' failed: " + ex.Message);
             }
         }
 
@@ -1006,7 +1006,7 @@ public static class Updater
             }
             catch (Exception ex)
             {
-                Log.Information("Updater: " + fileName + ": Merging directory '" + directoryName + "' with '" + directoryNameToMergeInto + "' failed: " + ex.Message);
+                Log.Warning("Updater: " + fileName + ": Merging directory '" + directoryName + "' with '" + directoryNameToMergeInto + "' failed: " + ex.Message);
             }
         }
 
@@ -1033,7 +1033,7 @@ public static class Updater
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Updater: " + fileName + ": Deleting directory '" + key + "' failed: " + ex.Message);
+                    Log.Warning("Updater: " + fileName + ": Deleting directory '" + key + "' failed: " + ex.Message);
                 }
             }
         }
@@ -1065,7 +1065,7 @@ public static class Updater
             }
             catch (Exception ex)
             {
-                Log.Information("Updater: " + fileName + ": Deleting directory '" + key + "' if it's empty failed: " + ex.Message);
+                Log.Warning("Updater: " + fileName + ": Deleting directory '" + key + "' if it's empty failed: " + ex.Message);
             }
         }
 
@@ -1087,7 +1087,7 @@ public static class Updater
             }
             catch (Exception ex)
             {
-                Log.Information("Updater: " + fileName + ": Creating directory '" + key + "' failed: " + ex.Message);
+                Log.Warning("Updater: " + fileName + ": Creating directory '" + key + "' failed: " + ex.Message);
             }
         }
 
@@ -1182,13 +1182,13 @@ public static class Updater
                     string uniqueIdForFile = GetUniqueIdForFile(info.Filename);
                     if (uniqueIdForFile != info.Identifier)
                     {
-                        Log.Information("Invalid unique identifier for " + info.Filename + "!");
+                        Log.Warning("Invalid unique identifier for " + info.Filename + "!");
                         info.Identifier = uniqueIdForFile;
                     }
                 }
                 else
                 {
-                    Log.Information("File " + info.Filename + " does not exist!");
+                    Log.Warning("File " + info.Filename + " does not exist!");
                     LocalFileInfos.RemoveAt(i);
                     i--;
                 }
@@ -1273,7 +1273,7 @@ public static class Updater
 
                         if (num == 2)
                         {
-                            Log.Information("Updater: Too many retries for downloading file " +
+                            Log.Error("Updater: Too many retries for downloading file " +
                                 (info.Archived ? info.Filename + ARCHIVE_FILE_EXTENSION : info.Filename) + ". Update halted.");
 
                             string extraMsg = Environment.NewLine + Environment.NewLine + "Download error message: " + errorMessage;
@@ -1380,7 +1380,7 @@ public static class Updater
 
                                 if (!incomingAssemblyFile.Exists)
                                 {
-                                    Log.Information("Updater: Missing assembly file required by second-stage updater: " + incomingAssemblyFile.Name + ".");
+                                    Log.Warning("Updater: Missing assembly file required by second-stage updater: " + incomingAssemblyFile.Name + ".");
                                     continue;
                                 }
 
@@ -1404,10 +1404,10 @@ public static class Updater
 
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !secondStageUpdaterExecutable.Exists)
                         {
-                            Log.Information("Updater: Missing second-stage updater executable " + secondStageUpdaterExecutable.FullName + ".");
+                            Log.Warning("Updater: Missing second-stage updater executable " + secondStageUpdaterExecutable.FullName + ".");
                             if (currentLegacySecondStageUpdaterExecutable.Exists)
                             {
-                                Log.Information("Updater: Falling back to legacy second-stage updater executable " + currentLegacySecondStageUpdaterExecutable.FullName + ".");
+                                Log.Warning("Updater: Falling back to legacy second-stage updater executable " + currentLegacySecondStageUpdaterExecutable.FullName + ".");
                                 secondStageUpdaterExecutable = currentLegacySecondStageUpdaterExecutable;
                                 runNativeWindowsExe = true;
                             }
@@ -1461,7 +1461,7 @@ public static class Updater
         }
         catch (Exception exception)
         {
-            Log.Information("Updater: An error occurred during the update. Message: " + exception.Message);
+            Log.Error("Updater: An error occurred during the update. Message: " + exception.Message);
             VersionState = VersionState.UNKNOWN;
             DoOnUpdateFailed(exception);
         }
@@ -1533,7 +1533,7 @@ public static class Updater
                     else
                     {
                         string errorMsg = "Downloaded archive " + filename + extraExtension + " has a non-matching identifier: " + archiveIdentifier + " against " + fileInfo.ArchiveIdentifier;
-                        Log.Information("Updater: " + errorMsg);
+                        Log.Warning("Updater: " + errorMsg);
                         DeleteFileAndWait(downloadFile.FullName);
 
                         return errorMsg;
@@ -1565,14 +1565,14 @@ public static class Updater
             }
 
             string msg = "Downloaded file " + filename + " has a non-matching identifier: " + fileIdentifier + " against " + fileInfo.Identifier;
-            Log.Information("Updater: " + msg);
+            Log.Warning("Updater: " + msg);
             DeleteFileAndWait(decompressedFile.FullName);
 
             return msg;
         }
         catch (Exception exception)
         {
-            Log.Information("Updater: An error occurred while downloading file " + filename + ": " + exception.Message);
+            Log.Error("Updater: An error occurred while downloading file " + filename + ": " + exception.Message);
             DeleteFileAndWait(decompressedFile.FullName);
 
             return exception.Message;

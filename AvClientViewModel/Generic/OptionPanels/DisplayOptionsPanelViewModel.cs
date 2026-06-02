@@ -184,7 +184,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         }
         catch (Exception ex)
         {
-            Log.Information("Uninstalling DTA/TI/TS Compatibility Fix failed. Error message: " + ex.ToString());
+            Log.Warning("Uninstalling DTA/TI/TS Compatibility Fix failed. Error message: " + ex.ToString());
             ShowMessageBox(
                 "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFixUninstallFailTitle"),
                 "Uninstalling DTA/TI/TS Compatibility Fix failed. Returned error:".L10N("Client:DTAConfig:TSFixUninstallFailText") + " " + ex.Message);
@@ -222,7 +222,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         }
         catch (Exception ex)
         {
-            Log.Information("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.ToString());
+            Log.Warning("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.ToString());
             ShowMessageBox(
                 "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedTitle"),
                 "Uninstalling FinalSun Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedText") + " " + ex.Message);
@@ -467,7 +467,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             }
             catch (Exception ex)
             {
-                Log.Information("Failed to apply DirectDraw compatibility fix: " + ex.Message);
+                Log.Warning("Failed to apply DirectDraw compatibility fix: " + ex.Message);
             }
         }
 
@@ -574,7 +574,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         }
         catch (Exception ex)
         {
-            Log.Information("Error checking compatibility fixes: " + ex.Message);
+            Log.Warning("Error checking compatibility fixes: " + ex.Message);
         }
     }
 

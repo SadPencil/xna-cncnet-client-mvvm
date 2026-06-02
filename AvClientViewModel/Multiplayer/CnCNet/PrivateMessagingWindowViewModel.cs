@@ -141,7 +141,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
             if (iu == null)
             {
-                Log.Information("Null IRCUser in private messaging?");
+                Log.Warning("Null IRCUser in private messaging?");
                 return;
             }
 

@@ -272,7 +272,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         }
         catch (Exception ex)
         {
-            Log.Information("Saving skirmish settings failed! Reason: " + ex.ToString());
+            Log.Warning("Saving skirmish settings failed! Reason: " + ex.ToString());
         }
     }
 
@@ -311,7 +311,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
         if (player == null)
         {
-            Log.Information("Failed to load human player information from skirmish settings!");
+            Log.Warning("Failed to load human player information from skirmish settings!");
             InitDefaultSettings();
             return;
         }
@@ -336,7 +336,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
             if (aiPlayer == null)
             {
-                Log.Information("Failed to load AI player information from skirmish settings!");
+                Log.Warning("Failed to load AI player information from skirmish settings!");
                 InitDefaultSettings();
                 return;
             }

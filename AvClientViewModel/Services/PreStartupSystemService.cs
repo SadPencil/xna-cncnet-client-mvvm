@@ -195,7 +195,7 @@ public class PreStartupSystemService : IPreStartupSystemService
         }
         catch
         {
-            Log.Information("Failed to write installation path to the Windows registry");
+            Log.Warning("Failed to write installation path to the Windows registry");
         }
     }
 }

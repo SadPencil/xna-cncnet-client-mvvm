@@ -1388,7 +1388,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (splitMessage.Length != 14)
         {
-            Log.Information("Ignoring CTCP game message because of an invalid amount of parameters.");
+            Log.Warning("Ignoring CTCP game message because of an invalid amount of parameters.");
 
             if (hostedGames.Count == 0 && !ctcpInvalidGameMessageShown)
             {
@@ -1477,7 +1477,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
             if (tunnelHandler.Tunnels.Count == 0)
             {
-                Log.Information("Ignoring CTCP game message because there are no tunnels at all.");
+                Log.Warning("Ignoring CTCP game message because there are no tunnels at all.");
                 if (hostedGames.Count == 0 && !ctcpNoTunnelMessageShown)
                 {
                     ctcpNoTunnelMessageShown = true;
@@ -1494,7 +1494,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             CnCNetTunnel? tunnel = tunnelHandler.Tunnels.Find(t => t.Address == tunnelAddress && t.Port == tunnelPort);
             if (tunnel == null)
             {
-                Log.Information(string.Format("Ignoring CTCP game message because the specified tunnel {0}:{1} is not available.", tunnelAddress, tunnelPort));
+                Log.Warning(string.Format("Ignoring CTCP game message because the specified tunnel {0}:{1} is not available.", tunnelAddress, tunnelPort));
                 if (hostedGames.Count == 0 && !ctcpNoTunnelForGamesMessageShown)
                 {
                     ctcpNoTunnelForGamesMessageShown = true;
@@ -1555,7 +1555,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         }
         catch (Exception ex)
         {
-            Log.Information("Game parsing error: " + ex.ToString());
+            Log.Warning("Game parsing error: " + ex.ToString());
         }
     }
 

@@ -261,7 +261,7 @@ public class CustomComponent
                         if (num > 2)
                             throw new("Too many retries for downloading component.");
 
-                        Log.Information("CustomComponent: Downloaded archive " + archiveLocalPath + "_u has a non-matching identifier: " + archiveIdentifier + " against " + info.ArchiveIdentifier + ". Retrying.");
+                        Log.Warning("CustomComponent: Downloaded archive " + archiveLocalPath + "_u has a non-matching identifier: " + archiveIdentifier + " against " + info.ArchiveIdentifier + ". Retrying.");
                         Updater.DeleteFileAndWait(archivePathFileInfo.FullName);
                         continue;
                     }
@@ -280,7 +280,7 @@ public class CustomComponent
                         throw new("Too many retries for downloading component.");
 
                     cancellationToken.ThrowIfCancellationRequested();
-                    Log.Information("CustomComponent: Incorrect custom component identifier for " + GUIName + ": " + uniqueIdForFile + " against " + info.Identifier + ". Retrying.");
+                    Log.Warning("CustomComponent: Incorrect custom component identifier for " + GUIName + ": " + uniqueIdForFile + " against " + info.Identifier + ". Retrying.");
                     continue;
                 }
 
@@ -311,11 +311,11 @@ public class CustomComponent
                     {
                         if (!displayError)
                         {
-                            Log.Information("CustomComponent: One or more errors occurred while downloading custom component " + GUIName + ". The download has been aborted.");
+                            Log.Error("CustomComponent: One or more errors occurred while downloading custom component " + GUIName + ". The download has been aborted.");
                             displayError = true;
                         }
 
-                        Log.Information("Message: " + ei.Message);
+                        Log.Error("Message: " + ei.Message);
                     }
 
                     if (canceled)
@@ -339,7 +339,7 @@ public class CustomComponent
                 return;
             }
 
-            Log.Information("CustomComponent: An error occurred while downloading custom component " + GUIName + ". The download has been aborted. Message: " + e.Message);
+            Log.Error("CustomComponent: An error occurred while downloading custom component " + GUIName + ". The download has been aborted. Message: " + e.Message);
             IsBeingDownloaded = false;
             CleanUpAfterDownload();
             DoDownloadFinished(false);

@@ -382,7 +382,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Log.Information("Saving settings failed! Error message: " + ex.ToString());
+                Log.Warning("Saving settings failed! Error message: " + ex.ToString());
                 ShowMessageBox(
                     "Saving Settings Failed".L10N("Client:DTAConfig:SaveSettingFailTitle"),
                     "Saving settings failed! Error message:".L10N("Client:DTAConfig:SaveSettingFailText") + " " + ex.Message);

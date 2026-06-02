@@ -43,7 +43,7 @@ namespace AvClientViewModel
                 waitTimes++;
                 if (waitTimes > 10)
                 {
-                    Log.Information("INI preprocessing not complete. Aborting game launch.");
+                    Log.Warning("INI preprocessing not complete. Aborting game launch.");
                     return;
                 }
             }
@@ -96,7 +96,7 @@ namespace AvClientViewModel
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Error launching QRes: " + ex.ToString());
+                    Log.Warning("Error launching QRes: " + ex.ToString());
                     Debugger.Break();
                     Process_Exited(qresProcess, EventArgs.Empty);
                     return;
@@ -133,7 +133,7 @@ namespace AvClientViewModel
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Error launching " + gameFileInfo.Name + ": " + ex.ToString());
+                    Log.Warning("Error launching " + gameFileInfo.Name + ": " + ex.ToString());
                     Debugger.Break();
                     Process_Exited(gameProcess, EventArgs.Empty);
                     return;

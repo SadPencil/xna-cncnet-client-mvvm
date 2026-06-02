@@ -180,7 +180,7 @@ public static class PreStartup
             }
             else
             {
-                Log.Information($"Failed to load a translation file. " +
+                Log.Warning($"Failed to load a translation file. " +
                     $"Neither {translationThemeFile.FullName} nor {translationFile.FullName} exist.");
             }
 
@@ -188,7 +188,7 @@ public static class PreStartup
         }
         catch (Exception ex)
         {
-            Log.Information("Failed to load the translation file. " + ex.ToString());
+            Log.Warning("Failed to load the translation file. " + ex.ToString());
             Translation.Instance = new Translation(UserINISettings.Instance.Translation);
         }
 
@@ -219,7 +219,7 @@ public static class PreStartup
         }
         catch (Exception ex)
         {
-            Log.Information("Failed to generate the translation stub: " + ex.ToString());
+            Log.Warning("Failed to generate the translation stub: " + ex.ToString());
         }
 
         // --- Custom mission initialization (same as DXMainClient PreStartup lines 194-196) ---
@@ -787,7 +787,7 @@ public static class PreStartup
             }
             catch (Exception e)
             {
-                Log.Information("Steam init failed: " + e.Message);
+                Log.Warning("Steam init failed: " + e.Message);
                 // Couldn't init for some reason (steam is closed etc)
             }
         }
@@ -822,7 +822,7 @@ public static class PreStartup
                     }
                     catch (Exception ex)
                     {
-                        Log.Information("PruneFiles: Could not delete file " + fsEntry.Name +
+                        Log.Warning("PruneFiles: Could not delete file " + fsEntry.Name +
                             ". Error message: " + ex.ToString());
                         continue;
                     }
@@ -834,7 +834,7 @@ public static class PreStartup
         }
         catch (Exception ex)
         {
-            Log.Information("PruneFiles: An error occurred while pruning files from " +
+            Log.Warning("PruneFiles: An error occurred while pruning files from " +
                directory.Name + ". Message: " + ex.ToString());
         }
     }
@@ -886,7 +886,7 @@ public static class PreStartup
         }
         catch (Exception ex)
         {
-            Log.Information("MigrateLogFiles: An error occured while moving log files from " +
+            Log.Warning("MigrateLogFiles: An error occured while moving log files from " +
                 currentDirectory.Name + " to " +
                 newDirectory.Name + ". Message: " + ex.ToString());
         }
