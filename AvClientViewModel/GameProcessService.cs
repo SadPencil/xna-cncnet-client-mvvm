@@ -94,6 +94,7 @@ namespace AvClientViewModel
                 catch (Exception ex)
                 {
                     Logger.Log("Error launching QRes: " + ex.ToString());
+                    Debugger.Break();
                     Process_Exited(qresProcess, EventArgs.Empty);
                     return;
                 }
@@ -130,6 +131,7 @@ namespace AvClientViewModel
                 catch (Exception ex)
                 {
                     Logger.Log("Error launching " + gameFileInfo.Name + ": " + ex.ToString());
+                    Debugger.Break();
                     Process_Exited(gameProcess, EventArgs.Empty);
                     return;
                 }
