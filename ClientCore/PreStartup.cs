@@ -33,15 +33,12 @@ public static class PreStartup
 #endif
         };
 
-        string outputTemplate = "{Timestamp:dd.MM. HH:mm:ss.fff}    {Message:lj}{NewLine}{Exception}";
-
         Serilog.Log.Logger = new LoggerConfiguration()
             .MinimumLevel.ControlledBy(loggingLevelSwitch)
-            .WriteTo.Console(outputTemplate: outputTemplate)
-            .WriteTo.Trace(outputTemplate: outputTemplate)
+            .WriteTo.Console()
+            .WriteTo.Trace()
             .WriteTo.File(
                 path: logFilePath,
-                outputTemplate: outputTemplate,
                 fileSizeLimitBytes: null,
                 shared: false,
                 flushToDiskInterval: TimeSpan.FromSeconds(1))
