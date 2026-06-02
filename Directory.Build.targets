@@ -24,14 +24,6 @@
       Properties="TargetFramework=$(TargetFramework.Split('-')[0]);Platform=AnyCPU;RuntimeIdentifier=" />
   </Target>
 
-  <!-- Note: the folder structure should be consistent with scripts\build.ps1 file -->
-  <Target Name="MoveClientExes" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
-    <Message Importance="high" Text="Moving client executables" />
-    <Move SourceFiles="$(PublishDir)clientav.exe" DestinationFolder="$(PublishDir)../../" Condition="Exists('$(PublishDir)clientav.exe')" />
-    <Move SourceFiles="$(PublishDir)clientav.exe.config" DestinationFolder="$(PublishDir)../../" Condition="Exists('$(PublishDir)clientav.exe.config')" />
-    <Move SourceFiles="$(PublishDir)clientav.pdb" DestinationFolder="$(PublishDir)../../" Condition="Exists('$(PublishDir)clientav.pdb')" />
-  </Target>
-
   <Target Name="CopyResources" AfterTargets="Build" Condition="$(DefineConstants.Contains('DEBUG')) AND '$(MSBuildProjectName)' == 'AvClientExe'">
     <ItemGroup>
       <ExampleClientResources Include="$(MSBuildProjectDirectory)\Resources\DTA\**\*.*" />
