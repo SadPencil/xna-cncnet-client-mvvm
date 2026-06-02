@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Rampastring.Tools;
+using Serilog;
 
 namespace ClientCore.Statistics.GameParsers
 {
@@ -29,11 +30,11 @@ namespace ClientCore.Statistics.GameParsers
 
             if (!statisticsFileInfo.Exists)
             {
-                Logger.Log("DTAStatisticsParser: Failed to read statistics: the log file does not exist.");
+                Log.Information("DTAStatisticsParser: Failed to read statistics: the log file does not exist.");
                 return;
             }
 
-            Logger.Log("Attempting to read statistics from " + fileName);
+            Log.Information("Attempting to read statistics from " + fileName);
 
             try
             {
@@ -59,13 +60,13 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("Found player " + playerName);
+                        Log.Information("Found player " + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
                             // The player has been taken over by an AI during the match
-                            Logger.Log("Losing take-over AI found");
+                            Log.Information("Losing take-over AI found");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
                         }
@@ -83,13 +84,13 @@ namespace ClientCore.Statistics.GameParsers
                         if (isLoadedGame && currentPlayer == null)
                             currentPlayer = Statistics.Players.Find(p => p.Name == playerName);
 
-                        Logger.Log("Found player " + playerName);
+                        Log.Information("Found player " + playerName);
                         numPlayersFound++;
 
                         if (currentPlayer == null && playerName == "Computer" && numPlayersFound <= Statistics.NumberOfHumanPlayers)
                         {
                             // The player has been taken over by an AI during the match
-                            Logger.Log("Winning take-over AI found");
+                            Log.Information("Winning take-over AI found");
                             takeoverAIs.Add(new PlayerStatistics("Computer", false, true, false, 0, 10, 255, 1));
                             currentPlayer = takeoverAIs[takeoverAIs.Count - 1];
                         }
@@ -150,7 +151,7 @@ namespace ClientCore.Statistics.GameParsers
             }
             catch (Exception ex)
             {
-                Logger.Log("DTAStatisticsParser: Error parsing statistics from match! Message: " + ex.ToString());
+                Log.Information("DTAStatisticsParser: Error parsing statistics from match! Message: " + ex.ToString());
             }
         }
     }

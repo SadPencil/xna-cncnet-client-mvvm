@@ -46,6 +46,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Rampastring.Tools;
 
+using Serilog;
+
 using Steamworks;
 
 namespace AvClientViewModel;
@@ -114,14 +116,13 @@ public static class PreStartup
             File.Move(clientLogFile.FullName, clientPrevLogFile.FullName);
         }
 
-        Logger.Initialize(clientUserFilesDirectory.FullName, clientLogFile.Name);
-        Logger.WriteLogFile = true;
-        MainClientConstants.LoggerInitialized = true;
-
         if (!clientUserFilesDirectory.Exists)
             clientUserFilesDirectory.Create();
 
-        Logger.Log("***Logfile for " + MainClientConstants.GAME_NAME_LONG + " client***");
+        ClientCore.PreStartup.InitializeLogger(clientUserFilesDirectory.FullName, clientLogFile.Name);
+        MainClientConstants.LoggerInitialized = true;
+
+        Log.Information("***Logfile for " + MainClientConstants.GAME_NAME_LONG + " client***");
 
         // --- Version logging (same as DXMainClient PreStartup lines 100-110) ---
         string clientVersion = GitVersionInformation.AssemblySemVer;
@@ -129,11 +130,11 @@ public static class PreStartup
         clientVersion = $"{GitVersionInformation.CommitDate} {GitVersionInformation.BranchName}@{GitVersionInformation.ShortSha}";
 #endif
 
-        Logger.Log($"Client version: {clientVersion}");
-        Logger.Log(GitVersionInformation.InformationalVersion);
+        Log.Information($"Client version: {clientVersion}");
+        Log.Information(GitVersionInformation.InformationalVersion);
 
 #if DEVELOPMENT_BUILD
-        Logger.Log("This is a development build of the client. Stability and reliability may not be fully guaranteed.");
+        Log.Information("This is a development build of the client. Stability and reliability may not be fully guaranteed.");
 #endif
 
         // --- Client configuration (same as DXMainClient PreStartup line 111) ---
@@ -142,18 +143,18 @@ public static class PreStartup
         // --- Startup params logging (same as DXMainClient PreStartup lines 114-125) ---
         if (parameters.NoAudio)
         {
-            Logger.Log("Startup parameter: No audio");
+            Log.Information("Startup parameter: No audio");
 
             // TODO fix
             throw new NotImplementedException("-NOAUDIO is currently not implemented, please run the client without it.".L10N("Client:Main:NoAudio"));
         }
 
         if (parameters.MultipleInstanceMode)
-            Logger.Log("Startup parameter: Allow multiple client instances");
+            Log.Information("Startup parameter: Allow multiple client instances");
 
-        parameters.UnknownStartupParams?.ForEach(p => Logger.Log("Unknown startup parameter: " + p));
+        parameters.UnknownStartupParams?.ForEach(p => Log.Information("Unknown startup parameter: " + p));
 
-        Logger.Log("Loading settings.");
+        Log.Information("Loading settings.");
 
         // --- Settings initialization (same as DXMainClient PreStartup lines 127-129) ---
         UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
@@ -167,11 +168,11 @@ public static class PreStartup
 
             if (translationFile.Exists)
             {
-                Logger.Log($"Loading generic translation file at {translationFile.FullName}");
+                Log.Information($"Loading generic translation file at {translationFile.FullName}");
                 translation = new Translation(translationFile.FullName, UserINISettings.Instance.Translation);
                 if (translationThemeFile.Exists)
                 {
-                    Logger.Log($"Loading theme-specific translation file at {translationThemeFile.FullName}");
+                    Log.Information($"Loading theme-specific translation file at {translationThemeFile.FullName}");
                     translation.AppendValuesFromIniFile(translationThemeFile.FullName);
                 }
 
@@ -179,15 +180,15 @@ public static class PreStartup
             }
             else
             {
-                Logger.Log($"Failed to load a translation file. " +
+                Log.Information($"Failed to load a translation file. " +
                     $"Neither {translationThemeFile.FullName} nor {translationFile.FullName} exist.");
             }
 
-            Logger.Log("Loaded translation: " + Translation.Instance.Name);
+            Log.Information("Loaded translation: " + Translation.Instance.Name);
         }
         catch (Exception ex)
         {
-            Logger.Log("Failed to load the translation file. " + ex.ToString());
+            Log.Information("Failed to load the translation file. " + ex.ToString());
             Translation.Instance = new Translation(UserINISettings.Instance.Translation);
         }
 
@@ -203,12 +204,12 @@ public static class PreStartup
 
                 AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
                 {
-                    Logger.Log("Writing the translation stub file.");
+                    Log.Information("Writing the translation stub file.");
                     var ini = Translation.Instance.DumpIni(UserINISettings.Instance.GenerateOnlyNewValuesInTranslationStub);
                     ini.WriteIniFile(stubPath);
                 };
 
-                Logger.Log("Translation stub generation feature is now enabled. The stub file will be written when the client exits.");
+                Log.Information("Translation stub generation feature is now enabled. The stub file will be written when the client exits.");
 
                 // Lookup all compile-time available strings
                 ClientCore.Generated.TranslationNotifier.Register();
@@ -218,7 +219,7 @@ public static class PreStartup
         }
         catch (Exception ex)
         {
-            Logger.Log("Failed to generate the translation stub: " + ex.ToString());
+            Log.Information("Failed to generate the translation stub: " + ex.ToString());
         }
 
         // --- Custom mission initialization (same as DXMainClient PreStartup lines 194-196) ---
@@ -256,8 +257,8 @@ public static class PreStartup
         if (!resourcesDirectory.Exists)
             throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
 
-        Logger.Log("Resource path: " + ProgramConstants.GetResourcePath());
-        Logger.Log("Base resource path: " + ProgramConstants.GetBaseResourcePath());
+        Log.Information("Resource path: " + ProgramConstants.GetResourcePath());
+        Log.Information("Base resource path: " + ProgramConstants.GetBaseResourcePath());
 
         // --- Player name initialization (same as DXMainClient GameClass.Initialize lines 222-240) ---
         string playerName = UserINISettings.Instance.PlayerName.Value.Trim();
@@ -294,7 +295,7 @@ public static class PreStartup
         }
 
         // --- Updater initialization (same as DXMainClient Startup.Execute lines 44-48) ---
-        Logger.Log("Initializing updater.");
+        Log.Information("Initializing updater.");
 
         SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "version_u");
 
@@ -306,12 +307,12 @@ public static class PreStartup
             SafePath.GetFile(ProgramConstants.StartupExecutable).Name);
 
         // --- OS / Framework info logging (same as DXMainClient Startup.Execute lines 50-55) ---
-        Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
-        Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
-        Logger.Log("ProcessArchitecture: " + RuntimeInformation.ProcessArchitecture);
-        Logger.Log("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);
-        Logger.Log("Selected OS profile: " + MainClientConstants.OSId);
-        Logger.Log("Current culture: " + CultureInfo.CurrentCulture);
+        Log.Information("OSDescription: " + RuntimeInformation.OSDescription);
+        Log.Information("OSArchitecture: " + RuntimeInformation.OSArchitecture);
+        Log.Information("ProcessArchitecture: " + RuntimeInformation.ProcessArchitecture);
+        Log.Information("FrameworkDescription: " + RuntimeInformation.FrameworkDescription);
+        Log.Information("Selected OS profile: " + MainClientConstants.OSId);
+        Log.Information("Current culture: " + CultureInfo.CurrentCulture);
 
         // --- System specifications check (same as DXMainClient Startup.Execute lines 57-63) ---
         IPreStartupSystemService preStartupSystemService = new PreStartupSystemService();
@@ -333,7 +334,7 @@ public static class PreStartup
 
         if (updaterFolder.Exists)
         {
-            Logger.Log("Attempting to delete temporary updater directory.");
+            Log.Information("Attempting to delete temporary updater directory.");
             try
             {
                 updaterFolder.Delete(true);
@@ -350,7 +351,7 @@ public static class PreStartup
 
             if (!savedGamesFolder.Exists)
             {
-                Logger.Log("Saved Games directory does not exist - attempting to create one.");
+                Log.Information("Saved Games directory does not exist - attempting to create one.");
                 try
                 {
                     savedGamesFolder.Create();
@@ -364,7 +365,7 @@ public static class PreStartup
         // --- Remove partial custom component downloads (same as DXMainClient Startup.Execute lines 108-122) ---
         if (Updater.CustomComponents != null)
         {
-            Logger.Log("Removing partial custom component downloads.");
+            Log.Information("Removing partial custom component downloads.");
             foreach (var component in Updater.CustomComponents)
             {
                 try
@@ -390,7 +391,7 @@ public static class PreStartup
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             Task.Run(InitSteamworks);
 
-        Logger.Log("PreStartup initialization complete.");
+        Log.Information("PreStartup initialization complete.");
     }
 
     public static void ConfigureServices(ServiceCollection services)
@@ -624,15 +625,15 @@ public static class PreStartup
     public static void LogException(Exception ex, bool innerException = false)
     {
         if (!innerException)
-            Logger.Log("KABOOOOOOM!!! Info:");
+            Log.Error("KABOOOOOOM!!! Info:");
         else
-            Logger.Log("InnerException info:");
+            Log.Error("InnerException info:");
 
-        Logger.Log("Type: " + ex.GetType());
-        Logger.Log("Message: " + ex.Message);
-        Logger.Log("Source: " + ex.Source);
-        Logger.Log("TargetSite.Name: " + ex.TargetSite?.Name);
-        Logger.Log("Stacktrace: " + ex.StackTrace);
+        Log.Error("Type: " + ex.GetType());
+        Log.Error("Message: " + ex.Message);
+        Log.Error("Source: " + ex.Source);
+        Log.Error("TargetSite.Name: " + ex.TargetSite?.Name);
+        Log.Error("Stacktrace: " + ex.StackTrace);
 
         if (ex.InnerException is not null)
             LogException(ex.InnerException, true);
@@ -770,23 +771,23 @@ public static class PreStartup
             {
                 if (ClientConfiguration.Instance.ClientGameType == ClientType.Ares || ClientConfiguration.Instance.ClientGameType == ClientType.YR)
                 {
-                    Logger.Log("Steam init called");
+                    Log.Information("Steam init called");
                     SteamClient.Init(2229850);
                 }
                 else if (ClientConfiguration.Instance.ClientGameType == ClientType.TS)
                 {
-                    Logger.Log("Steam init called");
+                    Log.Information("Steam init called");
                     SteamClient.Init(2229880);
                 }
                 else if (ClientConfiguration.Instance.ClientGameType == ClientType.RA)
                 {
-                    Logger.Log("Steam init called");
+                    Log.Information("Steam init called");
                     SteamClient.Init(2229840);
                 }
             }
             catch (Exception e)
             {
-                Logger.Log("Steam init failed: " + e.Message);
+                Log.Information("Steam init failed: " + e.Message);
                 // Couldn't init for some reason (steam is closed etc)
             }
         }
@@ -821,7 +822,7 @@ public static class PreStartup
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log("PruneFiles: Could not delete file " + fsEntry.Name +
+                        Log.Information("PruneFiles: Could not delete file " + fsEntry.Name +
                             ". Error message: " + ex.ToString());
                         continue;
                     }
@@ -833,7 +834,7 @@ public static class PreStartup
         }
         catch (Exception ex)
         {
-            Logger.Log("PruneFiles: An error occurred while pruning files from " +
+            Log.Information("PruneFiles: An error occurred while pruning files from " +
                directory.Name + ". Message: " + ex.ToString());
         }
     }
@@ -885,7 +886,7 @@ public static class PreStartup
         }
         catch (Exception ex)
         {
-            Logger.Log("MigrateLogFiles: An error occured while moving log files from " +
+            Log.Information("MigrateLogFiles: An error occured while moving log files from " +
                 currentDirectory.Name + " to " +
                 newDirectory.Name + ". Message: " + ex.ToString());
         }

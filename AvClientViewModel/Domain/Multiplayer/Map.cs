@@ -12,6 +12,7 @@ using ClientCore;
 using ClientCore.Extensions;
 
 using Rampastring.Tools;
+using Serilog;
 
 using SixLabors.ImageSharp;
 
@@ -285,7 +286,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                     if (parts.Length is < 3 or > 5)
                     {
-                        Logger.Log($"Invalid format for ExtraTexture{i} in map " + BaseFilePath);
+                        Log.Information($"Invalid format for ExtraTexture{i} in map " + BaseFilePath);
                         continue;
                     }
 
@@ -358,8 +359,8 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch (Exception ex)
             {
-                Logger.Log("Setting info for " + BaseFilePath + " failed! Reason: " + ex.ToString());
-                Logger.Log(ex.ToString());
+                Log.Information("Setting info for " + BaseFilePath + " failed! Reason: " + ex.ToString());
+                Log.Information(ex.ToString());
                 return false;
             }
         }
@@ -387,7 +388,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"Unable to parse team start mappings. Map: \"{Name}\", Error: {ex.Message}");
+                    Log.Information($"Unable to parse team start mappings. Map: \"{Name}\", Error: {ex.Message}");
                     TeamStartMappingPresets = new List<TeamStartMappingPreset>();
                 }
             }
@@ -469,7 +470,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                 if (GameModes.Length == 0)
                 {
-                    Logger.Log("Custom map " + customMapFilePath + " has no game modes!");
+                    Log.Information("Custom map " + customMapFilePath + " has no game modes!");
                     return false;
                 }
 
@@ -543,7 +544,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch
             {
-                Logger.Log("Loading custom map " + customMapFilePath + " failed!");
+                Log.Information("Loading custom map " + customMapFilePath + " failed!");
                 return false;
             }
         }
@@ -566,7 +567,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (keys == null)
             {
-                Logger.Log("Invalid ForcedOptions section \"" + forcedOptionsSection + "\" in map " + BaseFilePath);
+                Log.Information("Invalid ForcedOptions section \"" + forcedOptionsSection + "\" in map " + BaseFilePath);
                 return;
             }
 

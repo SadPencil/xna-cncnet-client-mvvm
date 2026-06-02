@@ -8,6 +8,7 @@ using ClientCore;
 using ClientCore.INIProcessing;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel
 {
@@ -30,17 +31,17 @@ namespace AvClientViewModel
 
         public void StartGameProcess()
         {
-            Logger.Log("About to launch main game executable.");
+            Log.Information("About to launch main game executable.");
 
             int waitTimes = 0;
             while (PreprocessorBackgroundTask.Instance.IsRunning)
             {
-                Logger.Log("The preprocessor background task is still running. Wait for it...");
+                Log.Information("The preprocessor background task is still running. Wait for it...");
                 Thread.Sleep(1000);
                 waitTimes++;
                 if (waitTimes > 10)
                 {
-                    Logger.Log("INI preprocessing not complete. Aborting game launch.");
+                    Log.Information("INI preprocessing not complete. Aborting game launch.");
                     return;
                 }
             }
@@ -74,7 +75,7 @@ namespace AvClientViewModel
 
             if (UserINISettings.Instance.WindowedMode && UseQres && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Logger.Log("Windowed mode is enabled - using QRes.");
+                Log.Information("Windowed mode is enabled - using QRes.");
                 var qresProcess = new Process();
                 qresProcess.StartInfo.FileName = ProgramConstants.QRES_EXECUTABLE;
                 qresProcess.StartInfo.UseShellExecute = false;
@@ -85,15 +86,15 @@ namespace AvClientViewModel
                     qresProcess.StartInfo.Arguments = "c=16 /R " + "\"" + SafePath.CombineFilePath(ProgramConstants.GamePath, gameExecutableName) + "\" " + additionalExecutableName + "-SPAWN";
                 qresProcess.EnableRaisingEvents = true;
                 qresProcess.Exited += Process_Exited;
-                Logger.Log("Launch executable: " + qresProcess.StartInfo.FileName);
-                Logger.Log("Launch arguments: " + qresProcess.StartInfo.Arguments);
+                Log.Information("Launch executable: " + qresProcess.StartInfo.FileName);
+                Log.Information("Launch arguments: " + qresProcess.StartInfo.Arguments);
                 try
                 {
                     qresProcess.Start();
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Error launching QRes: " + ex.ToString());
+                    Log.Information("Error launching QRes: " + ex.ToString());
                     Debugger.Break();
                     Process_Exited(qresProcess, EventArgs.Empty);
                     return;
@@ -121,16 +122,16 @@ namespace AvClientViewModel
                 gameProcess.EnableRaisingEvents = true;
                 gameProcess.Exited += Process_Exited;
 
-                Logger.Log("Launch executable: " + gameProcess.StartInfo.FileName);
-                Logger.Log("Launch arguments: " + gameProcess.StartInfo.Arguments);
+                Log.Information("Launch executable: " + gameProcess.StartInfo.FileName);
+                Log.Information("Launch arguments: " + gameProcess.StartInfo.Arguments);
                 try
                 {
                     gameProcess.Start();
-                    Logger.Log("GameProcessService: Process started.");
+                    Log.Information("GameProcessService: Process started.");
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Error launching " + gameFileInfo.Name + ": " + ex.ToString());
+                    Log.Information("Error launching " + gameFileInfo.Name + ": " + ex.ToString());
                     Debugger.Break();
                     Process_Exited(gameProcess, EventArgs.Empty);
                     return;
@@ -144,12 +145,12 @@ namespace AvClientViewModel
             }
 
             GameProcessStarted?.Invoke();
-            Logger.Log("Waiting for qres.dat or game executable to exit.");
+            Log.Information("Waiting for qres.dat or game executable to exit.");
         }
 
         private void Process_Exited(object sender, EventArgs e)
         {
-            Logger.Log("GameProcessService: Process exited.");
+            Log.Information("GameProcessService: Process exited.");
             if (sender is Process proc)
             {
                 proc.Exited -= Process_Exited;

@@ -5,6 +5,7 @@ using ClientCore;
 using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain
 {
@@ -28,10 +29,10 @@ namespace AvClientViewModel.Domain
                 string finalSunIniPath = ClientConfiguration.Instance.FinalSunIniPath;
                 var finalSunIniFile = new FileInfo(Path.Combine(ProgramConstants.GamePath, finalSunIniPath));
 
-                Logger.Log("Checking for the existence of FinalSun.ini.");
+                Log.Information("Checking for the existence of FinalSun.ini.");
                 if (finalSunIniFile.Exists)
                 {
-                    Logger.Log("FinalSun settings file exists.");
+                    Log.Information("FinalSun settings file exists.");
 
                     IniFile iniFile = new IniFile();
                     iniFile.FileName = finalSunIniFile.FullName;
@@ -46,7 +47,7 @@ namespace AvClientViewModel.Domain
                     return;
                 }
 
-                Logger.Log("FinalSun.ini doesn't exist - writing default settings.");
+                Log.Information("FinalSun.ini doesn't exist - writing default settings.");
 
                 if (!finalSunIniFile.Directory.Exists)
                     finalSunIniFile.Directory.Create();
@@ -68,7 +69,7 @@ namespace AvClientViewModel.Domain
             }
             catch
             {
-                Logger.Log("An exception occurred while checking the existence of FinalSun settings");
+                Log.Information("An exception occurred while checking the existence of FinalSun settings");
             }
         }
     }

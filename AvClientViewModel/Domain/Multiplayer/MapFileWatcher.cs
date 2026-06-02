@@ -2,6 +2,7 @@ using System;
 using System.IO;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer;
 
@@ -43,11 +44,11 @@ public class MapFileWatcher
 
             fileSystemWatcher.EnableRaisingEvents = true;
 
-            Logger.Log($"MapFileWatcher: Started watching {mapsDirectory} for *.{mapFileExtension} files");
+            Log.Information($"MapFileWatcher: Started watching {mapsDirectory} for *.{mapFileExtension} files");
         }
         catch (Exception ex)
         {
-            Logger.Log($"MapFileWatcher: Failed to start watching directory {mapsDirectory}: {ex.Message}");
+            Log.Information($"MapFileWatcher: Failed to start watching directory {mapsDirectory}: {ex.Message}");
             fileSystemWatcher?.Dispose();
             fileSystemWatcher = null;
         }
@@ -74,7 +75,7 @@ public class MapFileWatcher
         }
         catch (Exception ex)
         {
-            Logger.Log($"MapFileWatcher: Error processing file event for {filePath}: {ex.Message}");
+            Log.Information($"MapFileWatcher: Error processing file event for {filePath}: {ex.Message}");
         }
     }
 }

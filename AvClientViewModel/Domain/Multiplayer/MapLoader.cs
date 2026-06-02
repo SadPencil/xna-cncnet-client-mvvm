@@ -11,6 +11,7 @@ using ClientCore.Caching;
 using ClientCore.Extensions;
 
 using Rampastring.Tools;
+using Serilog;
 
 using SixLabors.ImageSharp;
 
@@ -136,12 +137,12 @@ namespace AvClientViewModel.Domain.Multiplayer
 
         private async Task LoadMapsInternalAsync()
         {
-            Logger.Log("MapLoader: Map loading task started.");
+            Log.Information("MapLoader: Map loading task started.");
             var stopwatch = Stopwatch.StartNew();
 
             string mpMapsPath = SafePath.CombineFilePath(ProgramConstants.GamePath, ClientConfiguration.Instance.MPMapsIniPath);
 
-            Logger.Log($"MapLoader: Loading maps from {mpMapsPath}.");
+            Log.Information($"MapLoader: Loading maps from {mpMapsPath}.");
 
             IniFile mpMapsIni = new IniFile(mpMapsPath);
 
@@ -151,7 +152,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             await LoadMultiMapsAsync(mpMapsIni);
             await LoadCustomMapsAsync();
 
-            Logger.Log("MapLoader: Post-processing game mode map collections.");
+            Log.Information("MapLoader: Post-processing game mode map collections.");
             PublishSnapshot(_initialGameModes);
             _initialGameModes = null;
 
@@ -160,7 +161,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             stopwatch.Stop();
 
-            Logger.Log($"MapLoader: Map loading complete. Total time: {stopwatch.ElapsedMilliseconds} ms");
+            Log.Information($"MapLoader: Map loading complete. Total time: {stopwatch.ElapsedMilliseconds} ms");
             MapLoadingComplete?.Invoke(this, EventArgs.Empty);
         }
 
@@ -228,18 +229,18 @@ namespace AvClientViewModel.Domain.Multiplayer
                         AddMapToGameModes(map, gameModeSnapshot, true);
                         ReplaceGameModeSnapshot(gameModeSnapshot);
 
-                        Logger.Log($"MapLoader: Added new map {map.Name} from {filePath}");
+                        Log.Information($"MapLoader: Added new map {map.Name} from {filePath}");
                         MapChanged?.Invoke(this, new MapChangedEventArgs(map, MapChangeType.Added));
                     }
                 }
                 else
                 {
-                    Logger.Log($"MapLoader: Failed to load map info from {filePath}");
+                    Log.Information($"MapLoader: Failed to load map info from {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log($"MapLoader: Error adding map from {filePath}: {ex.Message}");
+                Log.Information($"MapLoader: Error adding map from {filePath}: {ex.Message}");
             }
         }
 
@@ -292,18 +293,18 @@ namespace AvClientViewModel.Domain.Multiplayer
                                 AddMapToGameModes(newMap, gameModeSnapshot, true);
                                 ReplaceGameModeSnapshot(gameModeSnapshot);
 
-                                Logger.Log($"MapLoader: Updated map {newMap.Name} from {filePath} (SHA1 changed: {oldSHA1} -> {newMap.SHA1})");
+                                Log.Information($"MapLoader: Updated map {newMap.Name} from {filePath} (SHA1 changed: {oldSHA1} -> {newMap.SHA1})");
                                 MapChanged?.Invoke(this, new MapChangedEventArgs(newMap, MapChangeType.Updated, oldSHA1));
                             }
                             else
                             {
-                                Logger.Log($"MapLoader: Map file {filePath} changed but SHA1 remained the same ({newMap.SHA1})");
+                                Log.Information($"MapLoader: Map file {filePath} changed but SHA1 remained the same ({newMap.SHA1})");
                             }
                         }
                         else
                         {
                             // Map not found, treat as new
-                            Logger.Log($"MapLoader: Changed event for unknown map {filePath}, treating as new");
+                            Log.Information($"MapLoader: Changed event for unknown map {filePath}, treating as new");
                             AddMapToGameModes(newMap, gameModeSnapshot, true);
                             ReplaceGameModeSnapshot(gameModeSnapshot);
                             MapChanged?.Invoke(this, new MapChangedEventArgs(newMap, MapChangeType.Added));
@@ -312,12 +313,12 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 else
                 {
-                    Logger.Log($"MapLoader: Failed to reload map info from {filePath}");
+                    Log.Information($"MapLoader: Failed to reload map info from {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log($"MapLoader: Error updating map from {filePath}: {ex.Message}");
+                Log.Information($"MapLoader: Error updating map from {filePath}: {ex.Message}");
             }
         }
 
@@ -340,7 +341,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                         RemoveMapBySHA1(mapSHA1, gameModeSnapshot);
                         ReplaceGameModeSnapshot(gameModeSnapshot);
 
-                        Logger.Log($"MapLoader: Removed map from {filePath}");
+                        Log.Information($"MapLoader: Removed map from {filePath}");
                         if (removedMap != null)
                             MapChanged?.Invoke(this, new MapChangedEventArgs(removedMap, MapChangeType.Removed));
                     }
@@ -348,7 +349,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch (Exception ex)
             {
-                Logger.Log($"MapLoader: Error removing map from {filePath}: {ex.Message}");
+                Log.Information($"MapLoader: Error removing map from {filePath}: {ex.Message}");
             }
         }
 
@@ -379,7 +380,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch (Exception ex)
             {
-                Logger.Log($"MapLoader: Error converting file path {fullPath}: {ex.Message}");
+                Log.Information($"MapLoader: Error converting file path {fullPath}: {ex.Message}");
                 return null;
             }
         }
@@ -418,7 +419,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (keys == null)
             {
-                Logger.Log("Loading multiplayer map list failed!!!");
+                Log.Information("Loading multiplayer map list failed!!!");
                 return;
             }
 
@@ -432,7 +433,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                     if (!mapFile.Exists)
                     {
-                        Logger.Log("Map " + mapFile.FullName + " doesn't exist!");
+                        Log.Information("Map " + mapFile.FullName + " doesn't exist!");
                         return null;
                     }
 
@@ -444,7 +445,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"Error loading map for key {key}: {ex}");
+                    Log.Information($"Error loading map for key {key}: {ex}");
                     return null;
                 }
             })).ToArray();
@@ -454,7 +455,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             {
                 string message = "MapLoader: Waiting for the multiplayer map loading task to complete. Remaining files: " + tasks.Count(t => !t.IsCompleted) + ". Total: " + tasks.Length;
                 Debug.WriteLine(message);
-                Logger.Log(message);
+                Log.Information(message);
             }
 
             await waitMultiMapsTask;
@@ -503,11 +504,11 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (!customMapsDirectory.Exists)
             {
-                Logger.Log($"Custom maps directory {customMapsDirectory} does not exist!");
+                Log.Information($"Custom maps directory {customMapsDirectory} does not exist!");
                 return;
             }
 
-            Logger.Log("MapLoader: Loading custom maps...");
+            Log.Information("MapLoader: Loading custom maps...");
 
             // Load custom map cache from file system
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -518,7 +519,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             CustomMapCache customMapCache = LoadCustomMapCache();
 
             stopwatch.Stop();
-            Logger.Log(FormattableString.Invariant($"MapLoader: Loaded custom map cache from file system in {stopwatch.ElapsedMilliseconds} ms"));
+            Log.Information(FormattableString.Invariant($"MapLoader: Loaded custom map cache from file system in {stopwatch.ElapsedMilliseconds} ms"));
 
             // Process uncached custom maps.
             stopwatch.Restart();
@@ -555,7 +556,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 {
                     string message = "MapLoader: Waiting for the custom map loading task to complete. Remaining files: " + tasks.Count(t => !t.IsCompleted) + ". Total: " + tasks.Length;
                     Debug.WriteLine(message);
-                    Logger.Log(message);
+                    Log.Information(message);
                 }
 
                 await waitCustomMapsTask;
@@ -564,7 +565,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
 
             stopwatch.Stop();
-            Logger.Log(FormattableString.Invariant($"MapLoader: Processed uncached custom maps in {stopwatch.ElapsedMilliseconds} ms"));
+            Log.Information(FormattableString.Invariant($"MapLoader: Processed uncached custom maps in {stopwatch.ElapsedMilliseconds} ms"));
 
             // Remove cached maps that no longer exist locally
             stopwatch.Restart();
@@ -580,20 +581,20 @@ namespace AvClientViewModel.Domain.Multiplayer
                 customMapCache.Items.TryRemove(missingPath, out _);
 
             stopwatch.Stop();
-            Logger.Log(FormattableString.Invariant($"MapLoader: Removed outdated maps from cache in {stopwatch.ElapsedMilliseconds} ms"));
+            Log.Information(FormattableString.Invariant($"MapLoader: Removed outdated maps from cache in {stopwatch.ElapsedMilliseconds} ms"));
 
             // Save custom map cache
             stopwatch.Restart();
             CacheCustomMaps(customMapCache);
             stopwatch.Stop();
-            Logger.Log(FormattableString.Invariant($"MapLoader: Saved custom map cache to disk in {stopwatch.ElapsedMilliseconds} ms"));
+            Log.Information(FormattableString.Invariant($"MapLoader: Saved custom map cache to disk in {stopwatch.ElapsedMilliseconds} ms"));
 
             foreach (Map map in customMapCache.Items.Values.Select(item => item.Map))
             {
                 AddMapToGameModes(map, _initialGameModes, false);
             }
 
-            Logger.Log("MapLoader: Custom maps loaded.");
+            Log.Information("MapLoader: Custom maps loaded.");
         }
 
         /// <summary>
@@ -622,7 +623,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"Failed to delete legacy custom map cache file {legacyCacheFile}: {ex.Message}");
+                    Log.Information($"Failed to delete legacy custom map cache file {legacyCacheFile}: {ex.Message}");
                 }
             }
 
@@ -668,7 +669,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (mapPath != mapPath.ToWin32FileName())
             {
-                Logger.Log("LoadCustomMap: Map " + FormattableString.Invariant($"{mapPath}.{ClientConfiguration.Instance.MapFileExtension}") + " contains WIN32API reserved characters!");
+                Log.Information("LoadCustomMap: Map " + FormattableString.Invariant($"{mapPath}.{ClientConfiguration.Instance.MapFileExtension}") + " contains WIN32API reserved characters!");
 
                 // Return "map file does not exist" message to hide technical details towards users
                 resultMessage = string.Format("Map file {0} doesn't exist!".L10N("Client:MapLoader:MapFileDoesNotExist"), FormattableString.Invariant($"{mapPath}.{ClientConfiguration.Instance.MapFileExtension}"));
@@ -681,13 +682,13 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (!customMapFile.Exists)
             {
-                Logger.Log("LoadCustomMap: Map " + customMapFile.FullName + " not found!");
+                Log.Information("LoadCustomMap: Map " + customMapFile.FullName + " not found!");
                 resultMessage = string.Format("Map file {0} doesn't exist!".L10N("Client:MapLoader:MapFileDoesNotExist"), customMapFile.Name);
 
                 return null;
             }
 
-            Logger.Log("LoadCustomMap: Loading custom map " + customMapFile.FullName);
+            Log.Information("LoadCustomMap: Loading custom map " + customMapFile.FullName);
 
             var map = new Map(mapPath, true);
 
@@ -699,7 +700,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                     if (IsMapAlreadyLoaded(map.SHA1, gameModeSnapshot))
                     {
-                        Logger.Log("LoadCustomMap: Custom map " + customMapFile.FullName + " is already loaded!");
+                        Log.Information("LoadCustomMap: Custom map " + customMapFile.FullName + " is already loaded!");
                         resultMessage = string.Format("Map {0} is already loaded.".L10N("Client:MapLoader:MapAlreadyLoaded"), map.Name);
 
                         return null;
@@ -709,14 +710,14 @@ namespace AvClientViewModel.Domain.Multiplayer
                     ReplaceGameModeSnapshot(gameModeSnapshot);
                 }
 
-                Logger.Log("LoadCustomMap: Map " + customMapFile.FullName + " added successfully.");
+                Log.Information("LoadCustomMap: Map " + customMapFile.FullName + " added successfully.");
 
                 resultMessage = string.Format("Map {0} loaded successfully.".L10N("Client:MapLoader:MapLoadedSuccessfully"), map.Name);
 
                 return map;
             }
 
-            Logger.Log("LoadCustomMap: Loading map " + customMapFile.FullName + " failed!");
+            Log.Information("LoadCustomMap: Loading map " + customMapFile.FullName + " failed!");
             resultMessage = string.Format("Loading map {0} failed!".L10N("Client:MapLoader:MapLoadingFailed"), Path.GetFileNameWithoutExtension(customMapFile.Name));
 
             return null;
@@ -724,7 +725,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
         public void DeleteCustomMap(GameModeMap gameModeMap)
         {
-            Logger.Log("Deleting map " + gameModeMap.Map.UntranslatedName);
+            Log.Information("Deleting map " + gameModeMap.Map.UntranslatedName);
             File.Delete(gameModeMap.Map.CompleteFilePath);
 
             lock (mapModificationLock)
@@ -762,7 +763,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                     gm.Maps.Add(map);
                     if (enableLogging)
-                        Logger.Log("AddMapToGameModes: Added map " + map.UntranslatedName + " to game mode " + gm.Name);
+                        Log.Information("AddMapToGameModes: Added map " + map.UntranslatedName + " to game mode " + gm.Name);
                 }
             }
         }

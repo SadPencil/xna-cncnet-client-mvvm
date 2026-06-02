@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Online
 {
@@ -77,12 +78,12 @@ namespace AvClientViewModel.Online
                 if (listFile.Exists)
                     return File.ReadAllLines(listFile.FullName).ToList();
 
-                Logger.Log($"Loading {path} failed! File does not exist.");
+                Log.Information($"Loading {path} failed! File does not exist.");
                 return new();
             }
             catch
             {
-                Logger.Log($"Loading {path} list failed!");
+                Log.Information($"Loading {path} list failed!");
                 return new();
             }
         }
@@ -96,19 +97,19 @@ namespace AvClientViewModel.Online
                 if (listFile.Exists)
                     return JsonSerializer.Deserialize<List<T>>(File.ReadAllText(listFile.FullName)) ?? new List<T>();
 
-                Logger.Log($"Loading {path} failed! File does not exist.");
+                Log.Information($"Loading {path} failed! File does not exist.");
                 return new();
             }
             catch
             {
-                Logger.Log($"Loading {path} list failed!");
+                Log.Information($"Loading {path} list failed!");
                 return new();
             }
         }
 
         private static void SaveTextList(string path, List<string> textList)
         {
-            Logger.Log($"Saving {path}.");
+            Log.Information($"Saving {path}.");
 
             try
             {
@@ -119,13 +120,13 @@ namespace AvClientViewModel.Online
             }
             catch (Exception ex)
             {
-                Logger.Log($"Saving {path} failed! Error message: " + ex.ToString());
+                Log.Information($"Saving {path} failed! Error message: " + ex.ToString());
             }
         }
 
         private static void SaveJsonList<T>(string path, IReadOnlyCollection<T> jsonList)
         {
-            Logger.Log($"Saving {path}.");
+            Log.Information($"Saving {path}.");
 
             try
             {
@@ -136,7 +137,7 @@ namespace AvClientViewModel.Online
             }
             catch (Exception ex)
             {
-                Logger.Log($"Saving {path} failed! Error message: " + ex.ToString());
+                Log.Information($"Saving {path} failed! Error message: " + ex.ToString());
             }
         }
 

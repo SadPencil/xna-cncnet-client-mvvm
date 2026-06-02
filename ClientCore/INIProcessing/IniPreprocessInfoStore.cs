@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ClientCore.Extensions;
+using Serilog;
 
 namespace ClientCore.INIProcessing
 {
@@ -55,7 +56,7 @@ namespace ClientCore.INIProcessing
 
                 if (values.Length != 3)
                 {
-                    Logger.Log("Failed to parse preprocessed INI info, key " + key);
+                    Log.Information("Failed to parse preprocessed INI info, key " + key);
                     continue;
                 }
 

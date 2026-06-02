@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {
@@ -195,7 +196,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
         private byte[] GetRawTunnelData(int retryCount = 2)
         {
-            Logger.Log("Fetching tunnel server info.");
+            Log.Information("Fetching tunnel server info.");
 
             if (OnlineTunnelDataAvailable)
             {
@@ -208,27 +209,27 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log("Error when downloading tunnel server info: " + ex.Message);
+                        Log.Information("Error when downloading tunnel server info: " + ex.Message);
                         if (i < retryCount - 1)
-                            Logger.Log("Retrying.");
+                            Log.Information("Retrying.");
                         else
-                            Logger.Log("Fetching tunnel server list failed.");
+                            Log.Information("Fetching tunnel server list failed.");
                     }
                 }
             }
             else
             {
-                Logger.Log("Fetching tunnel server list online is disabled.");
+                Log.Information("Fetching tunnel server list online is disabled.");
             }
 
             if (OfflineTunnelDataAvailable)
             {
-                Logger.Log("Using cached tunnel data.");
+                Log.Information("Using cached tunnel data.");
                 byte[] data = GetRawTunnelDataOffline();
                 return data;
             }
             else
-                Logger.Log("Tunnel cache file doesn't exist!");
+                Log.Information("Tunnel cache file doesn't exist!");
 
             return null;
         }
@@ -270,7 +271,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Caught an exception when parsing a tunnel server: " + ex.ToString());
+                    Log.Information("Caught an exception when parsing a tunnel server: " + ex.ToString());
                 }
             }
 
@@ -290,11 +291,11 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Refreshing tunnel cache file failed! Returned error: " + ex.ToString());
+                    Log.Information("Refreshing tunnel cache file failed! Returned error: " + ex.ToString());
                 }
             }
 
-            Logger.Log($"Successfully refreshed tunnel cache with {returnValue.Count} servers.");
+            Log.Information($"Successfully refreshed tunnel cache with {returnValue.Count} servers.");
             return returnValue;
         }
 

@@ -16,6 +16,7 @@ using AvClientMvvmContract.ViewServices;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientView.Services;
 
@@ -72,11 +73,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         string iniPath = FindIniFile(sectionName);
         if (iniPath == null)
         {
-            Logger.Log($"INI Layout: No INI file found for '{sectionName}'");
+            Log.Information($"INI Layout: No INI file found for '{sectionName}'");
             return;
         }
 
-        Logger.Log($"INI Layout: Loading {iniPath}");
+        Log.Information($"INI Layout: Loading {iniPath}");
         var iniFile = new CCIniFile(iniPath);
 
         // Merge base INI at key level (fills in missing keys like
@@ -84,7 +85,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         string basePath = FindBaseIniFile(sectionName);
         if (basePath != null && !string.Equals(basePath, iniPath, StringComparison.OrdinalIgnoreCase))
         {
-            Logger.Log($"INI Layout: Merging base {sectionName}.ini from {basePath}");
+            Log.Information($"INI Layout: Merging base {sectionName}.ini from {basePath}");
             var baseIni = new CCIniFile(basePath);
             MergeMissingKeys(baseIni, iniFile);
         }
@@ -95,7 +96,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (themeGwPath != null && baseGwPath != null &&
             !string.Equals(themeGwPath, baseGwPath, StringComparison.OrdinalIgnoreCase))
         {
-            Logger.Log($"INI Layout: Merging GenericWindow.ini (base={baseGwPath}, theme={themeGwPath})");
+            Log.Information($"INI Layout: Merging GenericWindow.ini (base={baseGwPath}, theme={themeGwPath})");
             var baseGwIni = new CCIniFile(baseGwPath);
             var themeGwIni = new CCIniFile(themeGwPath);
             IniFile.ConsolidateIniFiles(baseGwIni, themeGwIni); // theme overrides base
@@ -106,7 +107,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string gwPath = baseGwPath ?? themeGwPath;
             if (gwPath != null)
             {
-                Logger.Log($"INI Layout: Merging GenericWindow.ini from {gwPath}");
+                Log.Information($"INI Layout: Merging GenericWindow.ini from {gwPath}");
                 var gwIni = new CCIniFile(gwPath);
                 MergeMissingKeys(gwIni, iniFile);
             }
@@ -159,7 +160,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Matches XNADropDown/XNATextBox drawing with BackColor, BorderColor, TextColor.
         ApplyInputControlStyles(control);
 
-        Logger.Log($"INI Layout: Applied layout for '{sectionName}'");
+        Log.Information($"INI Layout: Applied layout for '{sectionName}'");
     }
 
 
@@ -320,7 +321,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string hoverPath = DeriveHoverTexturePath(idleTexturePath);
             if (hoverPath != null)
             {
-                Logger.Log($"INI Layout: Auto-derived HoverTexture '{hoverPath}' for '{controlName}'");
+                Log.Information($"INI Layout: Auto-derived HoverTexture '{hoverPath}' for '{controlName}'");
                 ApplyButtonTexture(control, hoverPath, isHover: true);
             }
         }
@@ -392,11 +393,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                             if (_urlService != null)
                                 _urlService.OpenUrl(url);
                             else
-                                Logger.Log($"INI Layout: IUrlService not available, cannot open '{url}'");
+                                Log.Information($"INI Layout: IUrlService not available, cannot open '{url}'");
                         }
                         catch (Exception ex)
                         {
-                            Logger.Log($"INI Layout: Failed to open URL '{url}': {ex.Message}");
+                            Log.Information($"INI Layout: Failed to open URL '{url}': {ex.Message}");
                         }
                     };
                 }
@@ -643,7 +644,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             double y = Canvas.GetTop(control);
             if (double.IsNaN(y)) y = 0; // fallback if Location Y was not set
             double newHeight = parentHeight - y - fillHeight.Value;
-            Logger.Log($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
+            Log.Information($"INI Layout: FillHeight for '{control.Name}': parent={parentHeight}, y={y}, fillHeight={fillHeight.Value} → height={newHeight}");
 
             control.Height = newHeight;
             control.InvalidateMeasure();
@@ -1049,11 +1050,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
             {
-                Logger.Log($"INI Layout: Texture not found: '{texturePath}'");
+                Log.Information($"INI Layout: Texture not found: '{texturePath}'");
                 return;
             }
 
-            Logger.Log($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
+            Log.Information($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
             var bitmap = new Bitmap(fullPath);
 
             // Determine stretch mode from hardcoded mapping or default to Fill
@@ -1090,7 +1091,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
         catch (Exception ex)
         {
-            Logger.Log($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
+            Log.Information($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
         }
     }
 
@@ -1474,7 +1475,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
             {
-                Logger.Log($"INI Layout: Button texture not found: '{texturePath}'");
+                Log.Information($"INI Layout: Button texture not found: '{texturePath}'");
                 return;
             }
 
@@ -1511,7 +1512,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
         catch (Exception ex)
         {
-            Logger.Log($"INI Layout: Failed to load button texture '{texturePath}': {ex.Message}");
+            Log.Information($"INI Layout: Failed to load button texture '{texturePath}': {ex.Message}");
         }
     }
 

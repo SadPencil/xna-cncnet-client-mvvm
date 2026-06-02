@@ -1,6 +1,7 @@
 using System;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel
 {
@@ -23,7 +24,7 @@ namespace AvClientViewModel
 
         public void PlayThemeSong()
         {
-            Logger.Log("MusicPlayerService: Music playback not available on this platform.");
+            Log.Information("MusicPlayerService: Music playback not available on this platform.");
         }
 
         public void Stop() { }

@@ -25,6 +25,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 using Timer = System.Timers.Timer;
 
@@ -225,22 +226,22 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
             }
             catch (Exception ex)
             {
-                Logger.Log("Listener error: " + ex.ToString());
+                Log.Information("Listener error: " + ex.ToString());
                 break;
             }
 
-            Logger.Log("New client connected from " + ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString());
+            Log.Information("New client connected from " + ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString());
 
             if (Players.Count >= MAX_PLAYER_COUNT)
             {
-                Logger.Log("Dropping client because of player limit.");
+                Log.Information("Dropping client because of player limit.");
                 tcpClient.Close();
                 continue;
             }
 
             if (Locked)
             {
-                Logger.Log("Dropping client because the game room is locked.");
+                Log.Information("Dropping client because the game room is locked.");
                 tcpClient.Close();
                 continue;
             }
@@ -269,13 +270,13 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
             }
             catch (Exception ex)
             {
-                Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
+                Log.Information("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
                 break;
             }
 
             if (bytesRead == 0)
             {
-                Logger.Log("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
+                Log.Information("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
                 break;
             }
 
@@ -367,7 +368,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 return;
         }
 
-        Logger.Log("Unknown LAN command from " + lpInfo.ToString() + " : " + data);
+        Log.Information("Unknown LAN command from " + lpInfo.ToString() + " : " + data);
     }
 
     private void CleanUpPlayer(LANPlayerInfo lpInfo)
@@ -407,7 +408,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 if (leaving)
                     break;
 
-                Logger.Log(string.Format(
+                Log.Information(string.Format(
                     "Reading data from the server failed! Server address: {0}. Exception: {1}",
                     hostEndPoint.Address.ToString(), ex.ToString()));
 
@@ -463,7 +464,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 break;
 
             {
-                Logger.Log(string.Format(
+                Log.Information(string.Format(
                     "Reading data from the server failed (0 bytes received)! Server address: {0}", hostEndPoint.Address.ToString()));
 
                 string localizedMessage = string.Format(
@@ -491,7 +492,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 return;
         }
 
-        Logger.Log("Unknown LAN command from the server: " + message);
+        Log.Information("Unknown LAN command from the server: " + message);
     }
 
     // --- Leave game ---
@@ -838,7 +839,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         }
         catch
         {
-            Logger.Log("Sending message to game host failed!");
+            Log.Information("Sending message to game host failed!");
         }
     }
 
@@ -1108,7 +1109,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         {
             AddNotice(("The game host has sent an invalid game options message! " +
                 "The game host's game version might be different from yours.").L10N("Client:Main:HostGameOptionInvalid"));
-            Logger.Log("Invalid game options message from host: " + data);
+            Log.Information("Invalid game options message from host: " + data);
             return;
         }
 

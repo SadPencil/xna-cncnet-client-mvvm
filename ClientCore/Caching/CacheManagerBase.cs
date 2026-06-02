@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace ClientCore.Caching;
 
@@ -284,7 +285,7 @@ public abstract class CacheManagerBase<TInput, TOutput> : ICacheManager<TInput, 
             }
             catch (Exception ex)
             {
-                Logger.Log($"{Name}: Failed to get the output for input '{input}'. Error: {ex.ToString()}");
+                Log.Information($"{Name}: Failed to get the output for input '{input}'. Error: {ex.ToString()}");
             }
         }
     }
@@ -334,7 +335,7 @@ public abstract class CacheManagerBase<TInput, TOutput> : ICacheManager<TInput, 
             if (!workerThread.Join(WorkerThreadShutdownTimeoutMs))
             {
                 // Log warning if thread doesn't terminate gracefully
-                Logger.Log($"{Name}: Worker thread did not terminate within timeout period.");
+                Log.Information($"{Name}: Worker thread did not terminate within timeout period.");
             }
         }
 

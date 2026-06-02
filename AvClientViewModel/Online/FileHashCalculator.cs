@@ -11,6 +11,7 @@ using ClientCore.Enums;
 using ClientCore.I18N;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Online
 {
@@ -107,30 +108,30 @@ namespace AvClientViewModel.Online
                 FHCConfigHash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.BASE_RESOURCE_PATH, CONFIGNAME)),
             };
 
-            Logger.Log($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\{ClientConfiguration.CLIENT_DEFS}: {fh.ClientDefinitionsHash}");
-            Logger.Log($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\{CONFIGNAME}: {fh.FHCConfigHash}");
-            Logger.Log($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\{ClientConfiguration.GAME_OPTIONS}: {fh.GameOptionsHash}");
-            Logger.Log($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\clientdx.exe: {fh.ClientDXHash}");
-            Logger.Log($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\clientxna.exe: {fh.ClientXNAHash}");
-            Logger.Log($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\clientogl.exe: {fh.ClientOGLHash}");
-            Logger.Log($"Hash for ClientDX NET8: {fh.ClientDXNET8Hash}");
-            Logger.Log($"Hash for ClientXNA NET8: {fh.ClientXNANET8Hash}");
-            Logger.Log($"Hash for ClientOGL NET8: {fh.ClientOGLNET8Hash}");
-            Logger.Log($"Hash for ClientUGL NET8: {fh.ClientUGLNET8Hash}");
-            Logger.Log($"Hash for {ClientConfiguration.Instance.MPMapsIniPath}: {fh.MPMapsHash}");
+            Log.Information($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\{ClientConfiguration.CLIENT_DEFS}: {fh.ClientDefinitionsHash}");
+            Log.Information($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\{CONFIGNAME}: {fh.FHCConfigHash}");
+            Log.Information($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\{ClientConfiguration.GAME_OPTIONS}: {fh.GameOptionsHash}");
+            Log.Information($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\clientdx.exe: {fh.ClientDXHash}");
+            Log.Information($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\clientxna.exe: {fh.ClientXNAHash}");
+            Log.Information($"Hash for {ProgramConstants.BASE_RESOURCE_PATH}\\clientogl.exe: {fh.ClientOGLHash}");
+            Log.Information($"Hash for ClientDX NET8: {fh.ClientDXNET8Hash}");
+            Log.Information($"Hash for ClientXNA NET8: {fh.ClientXNANET8Hash}");
+            Log.Information($"Hash for ClientOGL NET8: {fh.ClientOGLNET8Hash}");
+            Log.Information($"Hash for ClientUGL NET8: {fh.ClientUGLNET8Hash}");
+            Log.Information($"Hash for {ClientConfiguration.Instance.MPMapsIniPath}: {fh.MPMapsHash}");
 
             if (calculateGameExeHash)
-                Logger.Log($"Hash for {ClientConfiguration.Instance.GetGameExecutableName()}: {fh.GameExeHash}");
+                Log.Information($"Hash for {ClientConfiguration.Instance.GetGameExecutableName()}: {fh.GameExeHash}");
 
             if (!string.IsNullOrEmpty(ClientConfiguration.Instance.GameLauncherExecutableName))
-                Logger.Log($"Hash for {ClientConfiguration.Instance.GameLauncherExecutableName}: {fh.LauncherExeHash}");
+                Log.Information($"Hash for {ClientConfiguration.Instance.GameLauncherExecutableName}: {fh.LauncherExeHash}");
 
             foreach (string relativePath in fileNamesToCheck)
             {
                 string fullPath = SafePath.CombineFilePath(ProgramConstants.GamePath, relativePath);
                 string hash = fh.AddHashForFileIfExists(relativePath, fullPath);
                 if (!string.IsNullOrEmpty(hash))
-                    Logger.Log($"Hash for {relativePath}: {hash}");
+                    Log.Information($"Hash for {relativePath}: {hash}");
             }
 
             List<DirectoryInfo> iniPaths = [SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Game Options")];
@@ -153,7 +154,7 @@ namespace AvClientViewModel.Online
 
                         string hash = fh.AddHashForFileIfExists(fileRelativePath, fileFullPath);
                         if (!string.IsNullOrEmpty(hash))
-                            Logger.Log("Hash for " + fileRelativePath + ": " + hash);
+                            Log.Information("Hash for " + fileRelativePath + ": " + hash);
                     }
                 }
             }
@@ -176,13 +177,13 @@ namespace AvClientViewModel.Online
 
                         string hash = fh.AddHashForFileIfExists(fileRelativePath, fileFullPath);
                         if (!string.IsNullOrEmpty(hash))
-                            Logger.Log($"Hash for {fileRelativePath}: {hash}");
+                            Log.Information($"Hash for {fileRelativePath}: {hash}");
                     }
                 }
             }
 
             finalHash = fh.GetFinalHash();
-            Logger.Log($"Complete hash: {finalHash}");
+            Log.Information($"Complete hash: {finalHash}");
         }
 
         public string GetCompleteHash() => finalHash;

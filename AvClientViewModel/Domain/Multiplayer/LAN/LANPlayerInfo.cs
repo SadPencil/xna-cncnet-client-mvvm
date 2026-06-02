@@ -9,6 +9,7 @@ using System.Threading;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.LAN
 {
@@ -104,7 +105,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
             }
             catch
             {
-                Logger.Log("Sending message to " + ToString() + " failed!");
+                Log.Information("Sending message to " + ToString() + " failed!");
             }
 
             TimeSinceLastSentMessage = TimeSpan.Zero;
@@ -150,7 +151,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
                 catch (Exception ex)
                 {
                     //a socket error has occured
-                    Logger.Log("Socket error with client " + Name + "; removing. Message: " + ex.ToString());
+                    Log.Information("Socket error with client " + Name + "; removing. Message: " + ex.ToString());
                     ConnectionLost?.Invoke(this, EventArgs.Empty);
                     break;
                 }
@@ -205,7 +206,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
                 }
                 catch (PingException ex)
                 {
-                    Logger.Log($"Caught an exception when pinging {Name} LAN player: {ex.ToString()}");
+                    Log.Information($"Caught an exception when pinging {Name} LAN player: {ex.ToString()}");
                 }
             }
         }

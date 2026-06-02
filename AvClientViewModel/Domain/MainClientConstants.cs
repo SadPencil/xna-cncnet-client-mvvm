@@ -4,6 +4,7 @@ using System.IO;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain
 {
@@ -46,7 +47,7 @@ namespace AvClientViewModel.Domain
             Console.WriteLine(error);
 
             if (LoggerInitialized)
-                Logger.Log(FormattableString.Invariant($"{(title is null ? null : title + Environment.NewLine + Environment.NewLine)}{error}"));
+                Log.Information(FormattableString.Invariant($"{(title is null ? null : title + Environment.NewLine + Environment.NewLine)}{error}"));
 
             // TODO: call a messagebox service provided by view project
             ProcessLauncher.StartShellProcess(ProgramConstants.LogFileName);

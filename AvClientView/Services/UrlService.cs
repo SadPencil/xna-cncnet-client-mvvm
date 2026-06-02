@@ -6,6 +6,7 @@ using AvClientMvvmContract.ViewServices;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientView.Services
 {
@@ -28,7 +29,7 @@ namespace AvClientView.Services
             }
             catch (Exception ex)
             {
-                Logger.Log($"Error in parsing the URL \"{url}\": {ex}");
+                Log.Information($"Error in parsing the URL \"{url}\": {ex}");
                 return false;
             }
         }

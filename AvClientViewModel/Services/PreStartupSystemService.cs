@@ -11,6 +11,7 @@ using ClientCore;
 using ClientCore.Settings;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Services;
 
@@ -104,7 +105,7 @@ public class PreStartupSystemService : IPreStartupSystemService
             cpu = "Memory info not found";
         }
 
-        Logger.Log(string.Format("Hardware info: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
+        Log.Information(string.Format("Hardware info: {0} | {1} | {2}", cpu.Trim(), videoController.Trim(), memory));
     }
 
     /// <summary>
@@ -180,11 +181,11 @@ public class PreStartupSystemService : IPreStartupSystemService
     {
         if (!UserINISettings.Instance.WritePathToRegistry)
         {
-            Logger.Log("Skipping writing installation path to the Windows Registry because of INI setting.");
+            Log.Information("Skipping writing installation path to the Windows Registry because of INI setting.");
             return;
         }
 
-        Logger.Log("Writing installation path to the Windows registry.");
+        Log.Information("Writing installation path to the Windows registry.");
 
         try
         {
@@ -193,7 +194,7 @@ public class PreStartupSystemService : IPreStartupSystemService
         }
         catch
         {
-            Logger.Log("Failed to write installation path to the Windows registry");
+            Log.Information("Failed to write installation path to the Windows registry");
         }
     }
 }

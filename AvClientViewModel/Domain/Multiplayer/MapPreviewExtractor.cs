@@ -12,6 +12,7 @@ using ClientCore.Extensions;
 using lzo.net;
 
 using Rampastring.Tools;
+using Serilog;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
@@ -44,14 +45,14 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (sectionKeys == null || sectionKeys.Count == 0)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - no [PreviewPack] exists, unable to extract preview.");
+                Log.Information("MapPreviewExtractor: " + baseFilename + " - no [PreviewPack] exists, unable to extract preview.");
                 return null;
             }
 
             if (mapIni.GetStringValue("PreviewPack", "1", string.Empty) ==
                 "yAsAIAXQ5PDQ5PDQ6JQATAEE6PDQ4PDI4JgBTAFEAkgAJyAATAG0AydEAEABpAJIA0wBVA")
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - Hidden preview detected, not extracting preview.");
+                Log.Information("MapPreviewExtractor: " + baseFilename + " - Hidden preview detected, not extracting preview.");
                 return null;
             }
 
@@ -61,7 +62,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (previewWidth < 1 || previewHeight < 1)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - [Preview] Size value is invalid, unable to extract preview.");
+                Log.Information("MapPreviewExtractor: " + baseFilename + " - [Preview] Size value is invalid, unable to extract preview.");
                 return null;
             }
 
@@ -80,7 +81,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch (Exception)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] is malformed, unable to extract preview.");
+                Log.Information("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] is malformed, unable to extract preview.");
                 return null;
             }
 
@@ -88,7 +89,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (errorMessage != null)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
+                Log.Information("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
                 return null;
             }
 
@@ -96,7 +97,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (errorMessage != null)
             {
-                Logger.Log("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
+                Log.Information("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
                 return null;
             }
 

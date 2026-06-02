@@ -5,6 +5,7 @@ using System.Linq;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer
 {
@@ -48,7 +49,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 string[] splitValue = value.Split(':');
                 if (splitValue.Length != 2)
                 {
-                    Logger.Log($"Failed to parse game option preset value ({ProfileName}, {keyName})");
+                    Log.Information($"Failed to parse game option preset value ({ProfileName}, {keyName})");
                     continue;
                 }
 

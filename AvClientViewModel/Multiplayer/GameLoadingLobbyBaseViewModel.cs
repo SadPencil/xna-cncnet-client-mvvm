@@ -19,6 +19,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Multiplayer;
 
@@ -344,7 +345,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     private void HandleFSWEvent(FileSystemEventArgs e)
     {
-        Logger.Log("FSW Event: " + e.FullPath);
+        Log.Information("FSW Event: " + e.FullPath);
 
         if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")
         {

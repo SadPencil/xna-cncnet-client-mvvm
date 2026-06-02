@@ -7,6 +7,7 @@ using AvClientViewModel.Domain.Multiplayer.CnCNet;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.LAN
 {
@@ -39,7 +40,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
         {
             if (parameters.Length != 10)
             {
-                Logger.Log("Ignoring LAN GAME message because of an incorrect number of parameters.");
+                Log.Information("Ignoring LAN GAME message because of an incorrect number of parameters.");
                 return false;
             }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Linq;
 using Rampastring.Tools;
+using Serilog;
 using System.Diagnostics;
 
 namespace ClientCore.Statistics
@@ -37,12 +38,12 @@ namespace ClientCore.Statistics
 
             if (!scoreFileInfo.Exists)
             {
-                Logger.Log("Skipping reading statistics because the file doesn't exist!");
+                Log.Information("Skipping reading statistics because the file doesn't exist!");
                 _statisticsInitialized = true;
                 return;
             }
 
-            Logger.Log("Reading statistics.");
+            Log.Information("Reading statistics.");
 
             Statistics.Clear();
 
@@ -114,7 +115,7 @@ namespace ClientCore.Statistics
             }
             catch (Exception ex)
             {
-                Logger.Log("Error reading statistics: " + ex.ToString());
+                Log.Information("Error reading statistics: " + ex.ToString());
             }
 
             return returnValue;
@@ -266,7 +267,7 @@ namespace ClientCore.Statistics
             }
             catch (Exception ex)
             {
-                Logger.Log("Reading the statistics file failed! Message: " + ex.ToString());
+                Log.Information("Reading the statistics file failed! Message: " + ex.ToString());
             }
         }
 
@@ -278,7 +279,7 @@ namespace ClientCore.Statistics
             {
                 if (Statistics[i].LengthInSeconds < 60)
                 {
-                    Logger.Log("Removing match on " + Statistics[i].MapName + " because it's too short.");
+                    Log.Information("Removing match on " + Statistics[i].MapName + " because it's too short.");
                     Statistics.RemoveAt(i);
                     i--;
                     removedCount++;
@@ -300,20 +301,20 @@ namespace ClientCore.Statistics
         {
             if (ms == null)
             {
-                Logger.Log("Skipping adding match to statistics because match statistics is null.");
+                Log.Information("Skipping adding match to statistics because match statistics is null.");
                 return;
             }
 
             // Skip adding stats if the game only had one player, make exception for co-op since it doesn't recognize pre-placed houses as players.
             if (ms.GetPlayerCount() <= 1 && !ms.MapIsCoop)
             {
-                Logger.Log("Skipping adding match to statistics because game only had one player.");
+                Log.Information("Skipping adding match to statistics because game only had one player.");
                 return;
             }
 
             if (ms.LengthInSeconds < 60)
             {
-                Logger.Log("Skipping adding match to statistics because the game was cancelled.");
+                Log.Information("Skipping adding match to statistics because the game was cancelled.");
                 return;
             }
 
@@ -330,7 +331,7 @@ namespace ClientCore.Statistics
                 CreateDummyFile();
             }
 
-            Logger.Log("Writing game info to statistics file.");
+            Log.Information("Writing game info to statistics file.");
 
             using (FileStream fs = scoreFileInfo.Open(FileMode.Open, FileAccess.ReadWrite))
             {
@@ -341,12 +342,12 @@ namespace ClientCore.Statistics
                 ms.Write(fs);
             }
 
-            Logger.Log("Finished writing statistics.");
+            Log.Information("Finished writing statistics.");
         }
 
         private void CreateDummyFile()
         {
-            Logger.Log("Creating empty statistics file.");
+            Log.Information("Creating empty statistics file.");
 
             using StreamWriter sw = new StreamWriter(SafePath.GetFile(ProgramConstants.GamePath, SCORE_FILE_PATH).Create());
             sw.Write(VERSION);

@@ -25,6 +25,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 using SixLabors.ImageSharp;
 
@@ -1228,7 +1229,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             return;
         }
 
-        Logger.Log("Unhandled private CTCP command: " + e.Message + " from " + e.Sender);
+        Log.Information("Unhandled private CTCP command: " + e.Message + " from " + e.Sender);
     }
 
     private void HandleGameInviteCommand(string sender, string argumentsString)
@@ -1385,7 +1386,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (splitMessage.Length != 14)
         {
-            Logger.Log("Ignoring CTCP game message because of an invalid amount of parameters.");
+            Log.Information("Ignoring CTCP game message because of an invalid amount of parameters.");
 
             if (hostedGames.Count == 0 && !ctcpInvalidGameMessageShown)
             {
@@ -1474,7 +1475,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
             if (tunnelHandler.Tunnels.Count == 0)
             {
-                Logger.Log("Ignoring CTCP game message because there are no tunnels at all.");
+                Log.Information("Ignoring CTCP game message because there are no tunnels at all.");
                 if (hostedGames.Count == 0 && !ctcpNoTunnelMessageShown)
                 {
                     ctcpNoTunnelMessageShown = true;
@@ -1491,7 +1492,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             CnCNetTunnel? tunnel = tunnelHandler.Tunnels.Find(t => t.Address == tunnelAddress && t.Port == tunnelPort);
             if (tunnel == null)
             {
-                Logger.Log(string.Format("Ignoring CTCP game message because the specified tunnel {0}:{1} is not available.", tunnelAddress, tunnelPort));
+                Log.Information(string.Format("Ignoring CTCP game message because the specified tunnel {0}:{1} is not available.", tunnelAddress, tunnelPort));
                 if (hostedGames.Count == 0 && !ctcpNoTunnelForGamesMessageShown)
                 {
                     ctcpNoTunnelForGamesMessageShown = true;
@@ -1552,7 +1553,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         }
         catch (Exception ex)
         {
-            Logger.Log("Game parsing error: " + ex.ToString());
+            Log.Information("Game parsing error: " + ex.ToString());
         }
     }
 

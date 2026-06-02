@@ -8,6 +8,7 @@ using ClientCore.Extensions;
 using ClientCore.Settings;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace ClientCore
 {
@@ -471,7 +472,7 @@ namespace ClientCore
 
         public void SaveSettings()
         {
-            Logger.Log("Writing settings INI.");
+            Log.Information("Writing settings INI.");
 
             ApplyDefaults();
             // CleanUpLegacySettings();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Rampastring.Tools;
+using Serilog;
 
 namespace ClientCore
 {
@@ -77,13 +78,13 @@ namespace ClientCore
 
             try
             {
-                Logger.Log("Writing spawn.ini for saved game.");
+                Log.Information("Writing spawn.ini for saved game.");
                 SafePath.DeleteFileIfExists(ProgramConstants.GamePath, SAVED_GAMES_DIRECTORY, "spawnSG.ini");
                 File.Copy(SafePath.CombineFilePath(ProgramConstants.GamePath, "spawn.ini"), SafePath.CombineFilePath(ProgramConstants.GamePath, SAVED_GAMES_DIRECTORY, "spawnSG.ini"));
             }
             catch (Exception ex)
             {
-                Logger.Log("Writing spawn.ini for saved game failed! Exception message: " + ex.ToString());
+                Log.Information("Writing spawn.ini for saved game failed! Exception message: " + ex.ToString());
                 return false;
             }
 
@@ -92,11 +93,11 @@ namespace ClientCore
 
         public static void RenameSavedGame()
         {
-            Logger.Log("Renaming saved game.");
+            Log.Information("Renaming saved game.");
 
             if (saveRenameInProgress)
             {
-                Logger.Log("Save renaming in progress!");
+                Log.Information("Save renaming in progress!");
                 return;
             }
 
@@ -104,7 +105,7 @@ namespace ClientCore
 
             if (!SafePath.GetFile(saveGameDirectory, "SAVEGAME.NET").Exists)
             {
-                Logger.Log("SAVEGAME.NET doesn't exist!");
+                Log.Information("SAVEGAME.NET doesn't exist!");
                 return;
             }
 
@@ -124,7 +125,7 @@ namespace ClientCore
             if (saveGameId == 999)
             {
                 if (SafePath.GetFile(saveGameDirectory, "SVGM_999.NET").Exists)
-                    Logger.Log("1000 saved games exceeded! Overwriting previous MP save.");
+                    Log.Information("1000 saved games exceeded! Overwriting previous MP save.");
             }
 
             string sgPath = SafePath.CombineFilePath(saveGameDirectory, string.Format("SVGM_{0}.NET", saveGameId.ToString("D3")));
@@ -140,14 +141,14 @@ namespace ClientCore
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Renaming saved game failed! Exception message: " + ex.ToString());
+                    Log.Information("Renaming saved game failed! Exception message: " + ex.ToString());
                 }
 
                 tryCount++;
 
                 if (tryCount > 40)
                 {
-                    Logger.Log("Renaming saved game failed 40 times! Aborting.");
+                    Log.Information("Renaming saved game failed 40 times! Aborting.");
                     return;
                 }
 
@@ -156,12 +157,12 @@ namespace ClientCore
 
             saveRenameInProgress = false;
 
-            Logger.Log("Saved game SAVEGAME.NET succesfully renamed to " + Path.GetFileName(sgPath));
+            Log.Information("Saved game SAVEGAME.NET succesfully renamed to " + Path.GetFileName(sgPath));
         }
 
         public static bool EraseSavedGames()
         {
-            Logger.Log("Erasing previous MP saved games.");
+            Log.Information("Erasing previous MP saved games.");
 
             try
             {
@@ -172,11 +173,11 @@ namespace ClientCore
             }
             catch (Exception ex)
             {
-                Logger.Log("Erasing previous MP saved games failed! Exception message: " + ex.ToString());
+                Log.Information("Erasing previous MP saved games failed! Exception message: " + ex.ToString());
                 return false;
             }
 
-            Logger.Log("MP saved games succesfully erased.");
+            Log.Information("MP saved games succesfully erased.");
             return true;
         }
     }

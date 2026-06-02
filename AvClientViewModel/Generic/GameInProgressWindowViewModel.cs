@@ -12,6 +12,7 @@ using ClientCore.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using Rampastring.Tools;
+using Serilog;
 
 using SixLabors.ImageSharp;
 
@@ -79,7 +80,7 @@ namespace AvClientViewModel.Generic
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Exception when deleting error log files! Message: " + ex.ToString());
+                    Log.Information("Exception when deleting error log files! Message: " + ex.ToString());
                     deletingLogFilesFailed = true;
                 }
             }
@@ -162,7 +163,7 @@ namespace AvClientViewModel.Generic
                     if (!errorLogDirectoryInfo.Exists)
                         errorLogDirectoryInfo.Create();
 
-                    Logger.Log("The game crashed! Copying " + filename + " file.");
+                    Log.Information("The game crashed! Copying " + filename + " file.");
 
                     string timeStamp = dateTime.HasValue ? dateTime.Value.ToString("_yyyy_MM_dd_HH_mm") : "";
 
@@ -175,7 +176,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("An error occured while checking for " + filename + " file. Message: " + ex.ToString());
+                Log.Information("An error occured while checking for " + filename + " file. Message: " + ex.ToString());
             }
             return copied;
         }
@@ -198,7 +199,7 @@ namespace AvClientViewModel.Generic
                         if (!syncErrorLogDirectoryInfo.Exists)
                             syncErrorLogDirectoryInfo.Create();
 
-                        Logger.Log("There was a sync error! Copying file " + filename);
+                        Log.Information("There was a sync error! Copying file " + filename);
 
                         string timeStamp = dateTime.HasValue ? dateTime.Value.ToString("_yyyy_MM_dd_HH_mm") : "";
 
@@ -213,7 +214,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("An error occured while checking for SYNCX.TXT files. Message: " + ex.ToString());
+                Log.Information("An error occured while checking for SYNCX.TXT files. Message: " + ex.ToString());
             }
             return copied;
         }
@@ -270,7 +271,7 @@ namespace AvClientViewModel.Generic
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ProcessScreenshots: An error occured trying to create Screenshots directory. Message: " + ex.ToString());
+                    Log.Information("ProcessScreenshots: An error occured trying to create Screenshots directory. Message: " + ex.ToString());
                     return;
                 }
             }
@@ -288,11 +289,11 @@ namespace AvClientViewModel.Generic
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("ProcessScreenshots: Error occured when trying to save " + Path.GetFileNameWithoutExtension(file.FullName) + ".png. Message: " + ex.ToString());
+                    Log.Information("ProcessScreenshots: Error occured when trying to save " + Path.GetFileNameWithoutExtension(file.FullName) + ".png. Message: " + ex.ToString());
                     continue;
                 }
 
-                Logger.Log("ProcessScreenshots: " + Path.GetFileNameWithoutExtension(file.FullName) + ".png has been saved to Screenshots directory.");
+                Log.Information("ProcessScreenshots: " + Path.GetFileNameWithoutExtension(file.FullName) + ".png has been saved to Screenshots directory.");
                 file.Delete();
             }
         }

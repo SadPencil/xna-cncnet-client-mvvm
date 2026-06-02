@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Generic
 {
@@ -379,7 +380,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("Saving settings failed! Error message: " + ex.ToString());
+                Log.Information("Saving settings failed! Error message: " + ex.ToString());
                 ShowMessageBox(
                     "Saving Settings Failed".L10N("Client:DTAConfig:SaveSettingFailTitle"),
                     "Saving settings failed! Error message:".L10N("Client:DTAConfig:SaveSettingFailText") + " " + ex.Message);

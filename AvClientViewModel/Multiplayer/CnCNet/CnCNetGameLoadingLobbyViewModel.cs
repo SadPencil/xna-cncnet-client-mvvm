@@ -22,6 +22,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Multiplayer.CnCNet;
 
@@ -334,7 +335,7 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
                 return;
         }
 
-        Logger.Log("Unhandled CTCP command: " + e.Message + " from " + e.UserName);
+        Log.Information("Unhandled CTCP command: " + e.Message + " from " + e.UserName);
     }
 
     private void ConnectionManager_Disconnected(object? sender, EventArgs e) => Clear();

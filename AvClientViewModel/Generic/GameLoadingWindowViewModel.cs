@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Generic
 {
@@ -92,7 +93,7 @@ namespace AvClientViewModel.Generic
                 return;
 
             SavedGame sg = SavedGames[SelectedSavedGameIndex];
-            Logger.Log("Loading saved game " + sg.FileName);
+            Log.Information("Loading saved game " + sg.FileName);
 
             Mission mission = (Mission)campaignSelectorViewModel.UniqueIDToMissions
                 .GetValueOrDefault(sg.CustomMissionID, null);
@@ -179,7 +180,7 @@ namespace AvClientViewModel.Generic
 
             SavedGame sg = SavedGames[SelectedSavedGameIndex];
 
-            Logger.Log("Deleting saved game " + sg.FileName);
+            Log.Information("Deleting saved game " + sg.FileName);
             SafePath.DeleteFileIfExists(ProgramConstants.GamePath, SAVED_GAMES_DIRECTORY, sg.FileName);
             ListSaves();
         }
@@ -226,7 +227,7 @@ namespace AvClientViewModel.Generic
 
             if (!savedGamesDirectoryInfo.Exists)
             {
-                Logger.Log("Saved Games directory not found!");
+                Log.Information("Saved Games directory not found!");
                 return;
             }
 
@@ -260,7 +261,7 @@ namespace AvClientViewModel.Generic
             bool scenarioPathFound = mission.TryGetScenarioFilePath(out string scenarioPath);
             if (!scenarioPathFound)
             {
-                Logger.Log($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
+                Log.Information($"CampaignSelector: mission scenario contains invalid path characters. Mission code name: {mission.CodeName}. Scenario: {mission.Scenario}. This mission will be launched without mission section data.");
                 return;
             }
 

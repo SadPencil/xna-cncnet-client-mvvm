@@ -25,6 +25,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
@@ -582,7 +583,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void Channel_UserNameChanged(object sender, UserNameChangedEventArgs e)
     {
-        Logger.Log("CnCNetGameLobby: Nickname change: " + e.OldUserName + " to " + e.User.Name);
+        Log.Information("CnCNetGameLobby: Nickname change: " + e.OldUserName + " to " + e.User.Name);
         int index = Players.FindIndex(p => p.Name == e.OldUserName);
         if (index > -1)
         {
@@ -725,7 +726,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void Channel_CTCPReceived(object sender, ChannelCTCPEventArgs e)
     {
-        Logger.Log("CnCNetGameLobby_CTCPReceived");
+        Log.Information("CnCNetGameLobby_CTCPReceived");
 
         foreach (CommandHandlerBase cmdHandler in ctcpCommandHandlers)
         {
@@ -736,7 +737,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             }
         }
 
-        Logger.Log("Unhandled CTCP command: " + e.Message + " from " + e.UserName);
+        Log.Information("Unhandled CTCP command: " + e.Message + " from " + e.UserName);
     }
 
     private void Channel_MessageAdded(object sender, IRCMessageEventArgs e)
@@ -800,7 +801,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         }
         else
         {
-            Logger.Log("One player MP -- starting!");
+            Log.Information("One player MP -- starting!");
         }
 
         cncnetUserData.AddRecentPlayers(Players.Select(p => p.Name), _gameRoomNameValue);
@@ -1321,7 +1322,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     public void OnMapDownloadConfirmed()
     {
-        Logger.Log("Map sharing confirmed.");
+        Log.Information("Map sharing confirmed.");
         AddNotice("Attempting to download map.".L10N("Client:Main:DownloadingMap"));
         MapDownloadStarted?.Invoke(this, EventArgs.Empty);
         MapSharer.DownloadMap(lastMapSHA1, localGame, lastMapName);
@@ -1425,7 +1426,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 else
                 {
                     AddNotice("Failed to match the tunnel address provided by the host to any available tunnel. The game cannot be started.".L10N("Client:Main:TunnelErrorMessage"), NoticeSeverity.Error);
-                    Logger.Log("Failed to match tunnel address: " + ipAndPort[0]);
+                    Log.Information("Failed to match tunnel address: " + ipAndPort[0]);
                     return;
                 }
             }
@@ -1452,7 +1453,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
         if (gameFilesHash != fhc.GetCompleteHash())
         {
-            Logger.Log("Game files modified during client session!");
+            Log.Information("Game files modified during client session!");
             channel.SendCTCPMessage(CHEAT_DETECTED_MESSAGE, QueuedMessageType.INSTANT_MESSAGE, 0);
             HandleCheatDetectedMessage(ProgramConstants.PLAYERNAME);
         }
@@ -1834,7 +1835,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         UIThreadMarshaller.AddCallback(new Action(() =>
         {
             string mapFileName = MapSharer.GetMapFileName(e.SHA1, e.MapName);
-            Logger.Log("Map " + mapFileName + " downloaded successfully.");
+            Log.Information("Map " + mapFileName + " downloaded successfully.");
         }));
     }
 
@@ -1918,7 +1919,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     {
         if (MapSharer.IsMapUploaded(mapSHA1))
         {
-            Logger.Log("HandleMapUploadRequest: Map " + mapSHA1 + " is already uploaded, sending download notification.");
+            Log.Information("HandleMapUploadRequest: Map " + mapSHA1 + " is already uploaded, sending download notification.");
 
             if (Map != null && Map.SHA1 == mapSHA1)
                 channel.SendCTCPMessage(MAP_SHARING_DOWNLOAD_REQUEST + " " + mapSHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
@@ -1938,13 +1939,13 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
         if (map == null)
         {
-            Logger.Log("Unknown map upload request from " + sender + ": " + mapSHA1);
+            Log.Information("Unknown map upload request from " + sender + ": " + mapSHA1);
             return;
         }
 
         if (map.Official)
         {
-            Logger.Log("HandleMapUploadRequest: Map is official, so skip request");
+            Log.Information("HandleMapUploadRequest: Map is official, so skip request");
 
             AddNotice(string.Format(("{0} doesn't have the map '{1}' on their local installation. " +
                 "The map needs to be changed or {0} is unable to participate in the match.").L10N("Client:Main:PlayerMissingMap"),
@@ -1997,7 +1998,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
         if (lastMapSHA1 == sha1 && Map == null)
         {
-            Logger.Log("The game host has uploaded the map into the database. Re-attempting download...");
+            Log.Information("The game host has uploaded the map into the database. Re-attempting download...");
             MapSharer.DownloadMap(sha1, localGame, lastMapName);
         }
     }
@@ -2042,7 +2043,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 loadedMap.Map.BaseFilePath,
                 ClientConfiguration.Instance.MapFileExtension);
             AddNotice(message, NoticeSeverity.Warning);
-            Logger.Log(message);
+            Log.Information(message);
             return;
         }
 
@@ -2053,7 +2054,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         chatCommandDownloadedMaps.Add(sha1);
 
         message = String.Format("Attempting to download map via chat command: sha1={0}, mapName={1}".L10N("Client:Main:DownloadMapCommandStartingDownload"), sha1, mapName);
-        Logger.Log(message);
+        Log.Information(message);
         AddNotice(message);
 
         MapSharer.DownloadMap(sha1, localGame, safeMapName);

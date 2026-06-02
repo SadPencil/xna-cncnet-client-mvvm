@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
 using Rampastring.Tools;
+using Serilog;
 using ClientCore.PlatformShim;
 
 namespace ClientCore.Extensions;
@@ -55,7 +56,7 @@ public class FileExtensions
             }
             catch (Exception ex)
             {
-                Logger.Log($"Failed to create hard link at {destination}. Fallback to copy. {ex.Message}");
+                Log.Information($"Failed to create hard link at {destination}. Fallback to copy. {ex.Message}");
                 File.Copy(source, destination, true);
             }
 

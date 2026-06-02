@@ -7,6 +7,7 @@ using System.Security.Principal;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel
 {
@@ -78,7 +79,7 @@ namespace AvClientViewModel
             }
             catch (Exception ex)
             {
-                Logger.Log("Failed to restart with admin privileges: " + ex.ToString());
+                Log.Information("Failed to restart with admin privileges: " + ex.ToString());
                 return false;
             }
         }

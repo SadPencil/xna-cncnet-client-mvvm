@@ -8,6 +8,7 @@ using ClientCore.Extensions;
 using ClientCore.I18N;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer
 {
@@ -81,12 +82,12 @@ namespace AvClientViewModel.Domain.Multiplayer
                     if (!String.IsNullOrEmpty(objectRemapPair.Value))
                     {
                         mapIni.SetStringValue(sectionName, matchingSectionKVP.Key, matchingSectionKVP.Value.Replace(id, objectRemapPair.Value));
-                        Logger.Log("MapCodeHelper: Changed an instance of '" + sectionName + "' object '" + id + "' into '" + objectRemapPair.Value + "'.");
+                        Log.Information("MapCodeHelper: Changed an instance of '" + sectionName + "' object '" + id + "' into '" + objectRemapPair.Value + "'.");
                     }
                     else
                     {
                         mapIni.SetStringValue(sectionName, matchingSectionKVP.Key, "");
-                        Logger.Log("MapCodeHelper: Removed an instance of '" + sectionName + "' object '" + id + "'.");
+                        Log.Information("MapCodeHelper: Removed an instance of '" + sectionName + "' object '" + id + "'.");
                     }
                 }
             }

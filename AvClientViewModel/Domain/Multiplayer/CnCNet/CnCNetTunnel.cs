@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using AvClientMvvmContract.Domain.Multiplayer;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {
@@ -64,7 +65,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             {
                 if (ex is FormatException || ex is OverflowException || ex is IndexOutOfRangeException)
                 {
-                    Logger.Log("Parsing tunnel information failed: " + ex.ToString() + Environment.NewLine + "Parsed string: " + str);
+                    Log.Information("Parsing tunnel information failed: " + ex.ToString() + Environment.NewLine + "Parsed string: " + str);
                     return null;
                 }
 
@@ -116,11 +117,11 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
         {
             try
             {
-                Logger.Log($"Contacting tunnel at {Address}:{Port}");
+                Log.Information($"Contacting tunnel at {Address}:{Port}");
 
                 // Do not use https here as not supported by tunnels
                 string addressString = $"http://{Address}:{Port}/request?clients={playerCount}";
-                Logger.Log($"Downloading from {addressString}");
+                Log.Information($"Downloading from {addressString}");
 
                 string data = new TimedHttpClient(REQUEST_TIMEOUT).GetString(addressString);
 
@@ -133,14 +134,14 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 foreach (string _port in portIDs)
                 {
                     playerPorts.Add(Convert.ToInt32(_port));
-                    Logger.Log($"Added port {_port}");
+                    Log.Information($"Added port {_port}");
                 }
 
                 return playerPorts;
             }
             catch (Exception ex)
             {
-                Logger.Log("Unable to connect to the specified tunnel server. Returned error message: " + ex.ToString());
+                Log.Information("Unable to connect to the specified tunnel server. Returned error message: " + ex.ToString());
             }
 
             return new List<int>();
@@ -158,7 +159,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (PingException ex)
                 {
-                    Logger.Log($"Caught an exception when pinging {Name} tunnel server: {ex.ToString()}");
+                    Log.Information($"Caught an exception when pinging {Name} tunnel server: {ex.ToString()}");
                 }
             }
         }

@@ -25,6 +25,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 using Timer = System.Timers.Timer;
 
@@ -278,11 +279,11 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             }
             catch (Exception ex)
             {
-                Logger.Log("Listener error: " + ex.ToString());
+                Log.Information("Listener error: " + ex.ToString());
                 break;
             }
 
-            Logger.Log("New client connected from " + ((IPEndPoint)client.Client.RemoteEndPoint!).Address.ToString());
+            Log.Information("New client connected from " + ((IPEndPoint)client.Client.RemoteEndPoint!).Address.ToString());
 
             LANPlayerInfo lpInfo = new LANPlayerInfo(encoding);
             lpInfo.SetClient(client);
@@ -308,13 +309,13 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             }
             catch (Exception ex)
             {
-                Logger.Log("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
+                Log.Information("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
                 break;
             }
 
             if (bytesRead == 0)
             {
-                Logger.Log("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
+                Log.Information("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
                 break;
             }
 
@@ -408,7 +409,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
                 return;
         }
 
-        Logger.Log("Unknown LAN command from " + lpInfo.ToString() + " : " + data);
+        Log.Information("Unknown LAN command from " + lpInfo.ToString() + " : " + data);
     }
 
     private void CleanUpPlayer(LANPlayerInfo lpInfo)
@@ -448,7 +449,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
                 if (leaving)
                     break;
 
-                Logger.Log("Reading data from the server failed! Message: " + ex.ToString());
+                Log.Information("Reading data from the server failed! Message: " + ex.ToString());
                 UIThreadMarshaller.AddCallback(() =>
                 {
                     if (sessionId == mySessionId)
@@ -496,7 +497,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             if (leaving)
                 break;
 
-            Logger.Log("Reading data from the server failed (0 bytes received)!");
+            Log.Information("Reading data from the server failed (0 bytes received)!");
             UIThreadMarshaller.AddCallback(() => { if (sessionId == mySessionId) LeaveGameCommand.Execute(null); });
             break;
         }
@@ -512,7 +513,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
                 return;
         }
 
-        Logger.Log("Unknown LAN command from the server: " + message);
+        Log.Information("Unknown LAN command from the server: " + message);
     }
 
     private void HandleHostQuit()
@@ -761,7 +762,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
         }
         catch
         {
-            Logger.Log("Sending message to game host failed!");
+            Log.Information("Sending message to game host failed!");
         }
     }
 

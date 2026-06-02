@@ -18,6 +18,7 @@
     <PackageReference Include="System.Management" />
     <PackageReference Include="Facepunch.Steamworks" />
     <PackageReference Include="System.DirectoryServices" />
+    <PackageReference Include="Serilog" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClientCore\ClientCore.csproj" />

@@ -28,6 +28,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Generic
 {
@@ -268,7 +269,7 @@ namespace AvClientViewModel.Generic
             CheckIfFirstRun();
             CheckAndApplyTranslationGameFiles();
 
-            Logger.Log("Main menu initialization complete.");
+            Log.Information("Main menu initialization complete.");
         }
 
         partial void OnIsLanModeChanged(bool value)
@@ -409,7 +410,7 @@ namespace AvClientViewModel.Generic
         [RelayCommand]
         private void UpdateStatus()
         {
-            Logger.Log(updateService.VersionState.ToString());
+            Log.Information(updateService.VersionState.ToString());
 
             if (updateService.VersionState == VersionState.OUTDATED ||
                 updateService.VersionState == VersionState.MISMATCHED ||
@@ -625,7 +626,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("Refreshing settings failed: " + ex.ToString());
+                Log.Information("Refreshing settings failed: " + ex.ToString());
             }
         }
 
@@ -889,7 +890,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Logger.Log("Failed to apply translation game files. " + ex.ToString());
+                Log.Information("Failed to apply translation game files. " + ex.ToString());
                 ShowMessageBox(
                     "Applying Translation Files Failed".L10N("Client:Main:ApplyTranslationFilesFailTitle"),
                     "Applying translation files failed! Error message:".L10N("Client:Main:ApplyTranslationFilesFailText") + " " + ex.Message);
@@ -947,7 +948,7 @@ namespace AvClientViewModel.Generic
 
         private void ExitClient()
         {
-            Logger.Log("Exiting.");
+            Log.Information("Exiting.");
             lifecycleService.Shutdown();
             musicPlayer.Dispose();
         }

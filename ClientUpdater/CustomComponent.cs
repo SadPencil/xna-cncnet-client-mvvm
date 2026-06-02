@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using ClientUpdater.Compression;
 
 using Rampastring.Tools;
+using Serilog;
 
 /// <summary>
 /// Custom component.
@@ -159,7 +160,7 @@ public class CustomComponent
 
         try
         {
-            Logger.Log("CustomComponent: Initializing download of custom component: " + GUIName);
+            Log.Information("CustomComponent: Initializing download of custom component: " + GUIName);
 
 #if NETFRAMEWORK
             progressMessageHandler = new(new HttpClientHandler
@@ -197,7 +198,7 @@ public class CustomComponent
 
             progressMessageHandler.HttpReceiveProgress += ProgressMessageHandlerOnHttpReceiveProgress;
 
-            Logger.Log("CustomComponent: Downloading version info.");
+            Log.Information("CustomComponent: Downloading version info.");
 
             var versionFileStream = new FileStream(versionFileName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
 
@@ -216,11 +217,11 @@ public class CustomComponent
             Updater.GetArchiveInfo(version, LocalPath, out string archiveID, out int archiveSize);
             UpdaterFileInfo info = Updater.CreateFileInfo(finalFileName, tmp[0], Conversions.IntFromString(tmp[1], 0), archiveID, archiveSize);
 
-            Logger.Log("CustomComponent: Version info parsed. Proceeding to download component.");
+            Log.Information("CustomComponent: Version info parsed. Proceeding to download component.");
             int num = 0;
             Uri downloadUri = GetDownloadUri(DownloadPath, info);
             string downloadFileName = FormattableString.Invariant($"{GetArchivePath(finalFileName, info)}_u");
-            Logger.Log("CustomComponent: Download URL for custom component " + GUIName + ": " + downloadUri.AbsoluteUri);
+            Log.Information("CustomComponent: Download URL for custom component " + GUIName + ": " + downloadUri.AbsoluteUri);
 
             while (true)
             {
@@ -241,7 +242,7 @@ public class CustomComponent
                     }
                 }
 
-                Logger.Log("CustomComponent: Download of custom component " + GUIName + " finished - verifying.");
+                Log.Information("CustomComponent: Download of custom component " + GUIName + " finished - verifying.");
 
                 if (info.Archived)
                 {
@@ -249,7 +250,7 @@ public class CustomComponent
                     string archiveLocalPath = GetArchivePath(LocalPath, info);
                     string archiveLocalPathTemp = FormattableString.Invariant($"{archiveLocalPath}_u");
                     FileInfo archivePathFileInfo = SafePath.GetFile(Updater.GamePath, archiveLocalPathTemp);
-                    Logger.Log("CustomComponent: Custom component is an archive.");
+                    Log.Information("CustomComponent: Custom component is an archive.");
                     string archiveIdentifier = Updater.GetUniqueIdForFile(archiveLocalPathTemp);
 
                     if (archiveIdentifier != info.ArchiveIdentifier)
@@ -259,13 +260,13 @@ public class CustomComponent
                         if (num > 2)
                             throw new("Too many retries for downloading component.");
 
-                        Logger.Log("CustomComponent: Downloaded archive " + archiveLocalPath + "_u has a non-matching identifier: " + archiveIdentifier + " against " + info.ArchiveIdentifier + ". Retrying.");
+                        Log.Information("CustomComponent: Downloaded archive " + archiveLocalPath + "_u has a non-matching identifier: " + archiveIdentifier + " against " + info.ArchiveIdentifier + ". Retrying.");
                         Updater.DeleteFileAndWait(archivePathFileInfo.FullName);
                         continue;
                     }
 
                     cancellationToken.ThrowIfCancellationRequested();
-                    Logger.Log("CustomComponent: Archive " + archiveLocalPath + "_u is intact. Unpacking...");
+                    Log.Information("CustomComponent: Archive " + archiveLocalPath + "_u is intact. Unpacking...");
                     await CompressionHelper.DecompressFileAsync(archivePathFileInfo.FullName, finalFileNameTemp, downloadTaskCancelToken).ConfigureAwait(false);
                     archivePathFileInfo.Delete();
                 }
@@ -278,7 +279,7 @@ public class CustomComponent
                         throw new("Too many retries for downloading component.");
 
                     cancellationToken.ThrowIfCancellationRequested();
-                    Logger.Log("CustomComponent: Incorrect custom component identifier for " + GUIName + ": " + uniqueIdForFile + " against " + info.Identifier + ". Retrying.");
+                    Log.Information("CustomComponent: Incorrect custom component identifier for " + GUIName + ": " + uniqueIdForFile + " against " + info.Identifier + ". Retrying.");
                     continue;
                 }
 
@@ -286,7 +287,7 @@ public class CustomComponent
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            Logger.Log("Downloaded custom component " + GUIName + " verified successfully.");
+            Log.Information("Downloaded custom component " + GUIName + " verified successfully.");
             File.Copy(finalFileNameTemp, finalFileName, true);
             LocalIdentifier = uniqueIdForFile;
             IsBeingDownloaded = false;
@@ -309,11 +310,11 @@ public class CustomComponent
                     {
                         if (!displayError)
                         {
-                            Logger.Log("CustomComponent: One or more errors occurred while downloading custom component " + GUIName + ". The download has been aborted.");
+                            Log.Information("CustomComponent: One or more errors occurred while downloading custom component " + GUIName + ". The download has been aborted.");
                             displayError = true;
                         }
 
-                        Logger.Log("Message: " + ei.Message);
+                        Log.Information("Message: " + ei.Message);
                     }
 
                     if (canceled)
@@ -337,7 +338,7 @@ public class CustomComponent
                 return;
             }
 
-            Logger.Log("CustomComponent: An error occurred while downloading custom component " + GUIName + ". The download has been aborted. Message: " + e.Message);
+            Log.Information("CustomComponent: An error occurred while downloading custom component " + GUIName + ". The download has been aborted. Message: " + e.Message);
             IsBeingDownloaded = false;
             CleanUpAfterDownload();
             DoDownloadFinished(false);
@@ -352,7 +353,7 @@ public class CustomComponent
 
     private void HandleAfterCancelDownload()
     {
-        Logger.Log("CustomComponent: Download of custom component " + GUIName + " canceled.");
+        Log.Information("CustomComponent: Download of custom component " + GUIName + " canceled.");
         IsBeingDownloaded = false;
         DoDownloadFinished(false);
         CleanUpAfterDownload();

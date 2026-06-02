@@ -18,6 +18,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
@@ -270,7 +271,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         }
         catch (Exception ex)
         {
-            Logger.Log("Saving skirmish settings failed! Reason: " + ex.ToString());
+            Log.Information("Saving skirmish settings failed! Reason: " + ex.ToString());
         }
     }
 
@@ -309,7 +310,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
         if (player == null)
         {
-            Logger.Log("Failed to load human player information from skirmish settings!");
+            Log.Information("Failed to load human player information from skirmish settings!");
             InitDefaultSettings();
             return;
         }
@@ -334,7 +335,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
             if (aiPlayer == null)
             {
-                Logger.Log("Failed to load AI player information from skirmish settings!");
+                Log.Information("Failed to load AI player information from skirmish settings!");
                 InitDefaultSettings();
                 return;
             }
@@ -354,7 +355,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
                     int gameModeMatchIndex = GameMode.ForcedDropDownValues.FindIndex(p => p.Key.Equals(dd.Name));
                     if (gameModeMatchIndex > -1)
                     {
-                        Logger.Log("Dropdown '" + dd.Name + "' has forced value in gamemode - saved settings ignored.");
+                        Log.Information("Dropdown '" + dd.Name + "' has forced value in gamemode - saved settings ignored.");
                         continue;
                     }
                 }
@@ -364,7 +365,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
                     int gameModeMatchIndex = Map.ForcedDropDownValues.FindIndex(p => p.Key.Equals(dd.Name));
                     if (gameModeMatchIndex > -1)
                     {
-                        Logger.Log("Dropdown '" + dd.Name + "' has forced value in map - saved settings ignored.");
+                        Log.Information("Dropdown '" + dd.Name + "' has forced value in map - saved settings ignored.");
                         continue;
                     }
                 }
@@ -383,7 +384,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
                     int gameModeMatchIndex = GameMode.ForcedCheckBoxValues.FindIndex(p => p.Key.Equals(cb.Name));
                     if (gameModeMatchIndex > -1)
                     {
-                        Logger.Log("Checkbox '" + cb.Name + "' has forced value in gamemode - saved settings ignored.");
+                        Log.Information("Checkbox '" + cb.Name + "' has forced value in gamemode - saved settings ignored.");
                         continue;
                     }
                 }
@@ -393,7 +394,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
                     int gameModeMatchIndex = Map.ForcedCheckBoxValues.FindIndex(p => p.Key.Equals(cb.Name));
                     if (gameModeMatchIndex > -1)
                     {
-                        Logger.Log("Checkbox '" + cb.Name + "' has forced value in map - saved settings ignored.");
+                        Log.Information("Checkbox '" + cb.Name + "' has forced value in map - saved settings ignored.");
                         continue;
                     }
                 }

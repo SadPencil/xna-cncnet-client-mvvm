@@ -18,6 +18,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
@@ -203,7 +204,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         }
         else
         {
-            Logger.Log("MultiplayerGameLobby: Saved games are not available!");
+            Log.Information("MultiplayerGameLobby: Saved games are not available!");
         }
     }
 
@@ -994,7 +995,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     private void FSWEvent(FileSystemEventArgs e)
     {
-        Logger.Log("FSW Event: " + e.FullPath);
+        Log.Information("FSW Event: " + e.FullPath);
 
         if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")
         {

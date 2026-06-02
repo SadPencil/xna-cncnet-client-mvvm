@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using ClientCore.Statistics.GameParsers;
 using Rampastring.Tools;
+using Serilog;
 
 namespace ClientCore.Statistics
 {
@@ -61,7 +62,7 @@ namespace ClientCore.Statistics
 
         public void ParseStatistics(string gamePath, string gameName, bool isLoadedGame)
         {
-            Logger.Log("Parsing game statistics.");
+            Log.Information("Parsing game statistics.");
 
             LengthInSeconds = (int)(DateTime.Now - DateAndTime).TotalSeconds;
 

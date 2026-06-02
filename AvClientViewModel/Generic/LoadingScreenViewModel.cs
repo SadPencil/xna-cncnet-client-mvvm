@@ -15,6 +15,7 @@ using ClientCore.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Generic
 {
@@ -128,30 +129,30 @@ namespace AvClientViewModel.Generic
                 else
                     throw new Exception("Assert failed. No pending tasks. This should not happen.");
 
-                Logger.Log(logMessage);
+                Log.Information(logMessage);
                 CurrentTaskText = logMessage;
             }
         }
 
         private void InitUpdater()
         {
-            Logger.Log("Updater: Updater initialization task started.");
+            Log.Information("Updater: Updater initialization task started.");
 
             updateService.OnLocalFileVersionsChecked += LogGameClientVersion;
             updateService.CheckLocalFileVersions();
 
-            Logger.Log("Updater: Updater initialization task completed.");
+            Log.Information("Updater: Updater initialization task completed.");
         }
 
         private void LogGameClientVersion()
         {
-            Logger.Log($"Game Client Version: {ClientConfiguration.Instance.LocalGame} {updateService.GameVersion}");
+            Log.Information($"Game Client Version: {ClientConfiguration.Instance.LocalGame} {updateService.GameVersion}");
             updateService.OnLocalFileVersionsChecked -= LogGameClientVersion;
         }
 
         private void Finish()
         {
-            Logger.Log("LoadingScreen: Finish waiting for updater and map loading tasks. Proceeding to main menu.");
+            Log.Information("LoadingScreen: Finish waiting for updater and map loading tasks. Proceeding to main menu.");
 
             ProgramConstants.GAME_VERSION = ClientConfiguration.Instance.ModMode ?
                 "N/A" : updateService.GameVersion;
@@ -165,7 +166,7 @@ namespace AvClientViewModel.Generic
             IsLoading = false;
             Completed?.Invoke(this, EventArgs.Empty);
 
-            Logger.Log("Startup complete. Client is ready.");
+            Log.Information("Startup complete. Client is ready.");
         }
     }
 }

@@ -19,6 +19,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
@@ -1307,7 +1308,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         int randomValue = random.Next(0, gameModeMaps.Count);
         GameModeMap = gameModeMaps[randomValue];
-        Logger.Log("PickRandomMap: Rolled " + randomValue + " out of " + gameModeMaps.Count + ". Picked map: " + GameModeMap.Map.Name);
+        Log.Information("PickRandomMap: Rolled " + randomValue + " out of " + gameModeMaps.Count + ". Picked map: " + GameModeMap.Map.Name);
 
         ChangeMap(GameModeMap);
         MapSearchText = string.Empty;
@@ -1371,7 +1372,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
         catch (IOException ex)
         {
-            Logger.Log($"Deleting map {Map.BaseFilePath} failed! Message: {ex}");
+            Log.Information($"Deleting map {Map.BaseFilePath} failed! Message: {ex}");
             AddNotice("Deleting map failed! Reason:".L10N("Client:Main:DeleteMapFailedText") + " " + ex.Message);
         }
     }
@@ -1708,7 +1709,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     private PlayerHouseInfo[] WriteSpawnIni(Random pseudoRandom)
     {
-        Logger.Log("Writing spawn.ini");
+        Log.Information("Writing spawn.ini");
 
         FileInfo spawnerSettingsFile = SafePath.GetFile(ProgramConstants.GamePath, ProgramConstants.SPAWNER_SETTINGS);
         spawnerSettingsFile.Delete();
@@ -1847,8 +1848,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         DeleteSupplementalMapFiles();
         spawnMapIniFile.Delete();
 
-        Logger.Log("Writing map.");
-        Logger.Log("Loading map INI from " + Map.CompleteFilePath);
+        Log.Information("Writing map.");
+        Log.Information("Loading map INI from " + Map.CompleteFilePath);
 
         IniFile mapIni = Map.GetMapIni();
         IniFile globalCodeIni = new IniFile(SafePath.CombineFilePath(ProgramConstants.GamePath, "INI", "Map Code", "GlobalCode.ini"));
@@ -1903,8 +1904,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             catch (Exception ex)
             {
                 string errorMessage = "Unable to copy supplemental map file".L10N("Client:Main:SupplementalFileCopyError") + $" {file}";
-                Logger.Log(errorMessage);
-                Logger.Log(ex.ToString());
+                Log.Information(errorMessage);
+                Log.Information(ex.ToString());
             }
         }
 
@@ -1925,8 +1926,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             }
             catch (Exception ex)
             {
-                Logger.Log("Unable to delete supplemental map file".L10N("Client:Main:SupplementalFileDeleteError") + $" {path}");
-                Logger.Log(ex.ToString());
+                Log.Information("Unable to delete supplemental map file".L10N("Client:Main:SupplementalFileDeleteError") + $" {path}");
+                Log.Information(ex.ToString());
             }
         }
     }
@@ -2059,10 +2060,10 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         UIThreadMarshaller.AddCallback(new Action(() =>
         {
-            Logger.Log("GameProcessExited: Parsing statistics.");
+            Log.Information("GameProcessExited: Parsing statistics.");
             matchStatistics?.ParseStatistics(ProgramConstants.GamePath, ClientConfiguration.Instance.LocalGame, false);
 
-            Logger.Log("GameProcessExited: Adding match to statistics.");
+            Log.Information("GameProcessExited: Adding match to statistics.");
             StatisticsManager.Instance.AddMatchAndSaveDatabase(true, matchStatistics);
 
             ClearReadyStatuses();

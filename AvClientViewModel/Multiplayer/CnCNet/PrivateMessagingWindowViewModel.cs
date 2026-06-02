@@ -17,6 +17,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Multiplayer.CnCNet;
 
@@ -138,7 +139,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
             if (iu == null)
             {
-                Logger.Log("Null IRCUser in private messaging?");
+                Log.Information("Null IRCUser in private messaging?");
                 return;
             }
 

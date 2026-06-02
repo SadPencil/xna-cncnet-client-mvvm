@@ -13,6 +13,7 @@ using ClientCore.Extensions;
 using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {
@@ -65,7 +66,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             {
                 if (UploadedMaps.Contains(map.SHA1) || MapUploadQueue.Contains(map))
                 {
-                    Logger.Log("MapSharer: Already uploading map " + map.BaseFilePath + " - returning.");
+                    Log.Information("MapSharer: Already uploading map " + map.BaseFilePath + " - returning.");
                     return;
                 }
 
@@ -92,11 +93,11 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
             MapUploadStarted?.Invoke(null, new MapEventArgs(map));
 
-            Logger.Log("MapSharer: Starting upload of " + map.BaseFilePath);
+            Log.Information("MapSharer: Starting upload of " + map.BaseFilePath);
 
             if (string.IsNullOrWhiteSpace(ClientConfiguration.Instance.CnCNetMapDBUploadURL))
             {
-                Logger.Log("MapSharer: Upload URL is not configured.");
+                Log.Information("MapSharer: Upload URL is not configured.");
                 MapUploadFailed?.Invoke(null, new MapEventArgs(map));
                 return;
             }
@@ -112,13 +113,13 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
                 MapUploadComplete?.Invoke(null, new MapEventArgs(map));
 
-                Logger.Log("MapSharer: Uploading map " + map.BaseFilePath + " completed succesfully.");
+                Log.Information("MapSharer: Uploading map " + map.BaseFilePath + " completed succesfully.");
             }
             else
             {
                 MapUploadFailed?.Invoke(null, new MapEventArgs(map));
 
-                Logger.Log("MapSharer: Uploading map " + map.BaseFilePath + " failed! Returned message: " + message);
+                Log.Information("MapSharer: Uploading map " + map.BaseFilePath + " failed! Returned message: " + message);
             }
 
             lock (locker)
@@ -133,7 +134,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                     array[0] = nextMap;
                     array[1] = myGameId;
 
-                    Logger.Log("MapSharer: There are additional maps in the queue.");
+                    Log.Information("MapSharer: There are additional maps in the queue.");
 
                     Upload(array);
                 }
@@ -194,7 +195,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                         success = false;
                         return response;
                     }
-                    Logger.Log("MapSharer: Upload response: " + response);
+                    Log.Information("MapSharer: Upload response: " + response);
 
                     success = true;
                     return String.Empty;
@@ -247,7 +248,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             {
                 if (MapDownloadQueue.Contains(sha1))
                 {
-                    Logger.Log("MapSharer: Map " + sha1 + " already exists in the download queue.");
+                    Log.Information("MapSharer: Map " + sha1 + " already exists in the download queue.");
                     return;
                 }
 
@@ -274,18 +275,18 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             string myGameId = (string)sha1AndGame[1];
             string mapName = (string)sha1AndGame[2];
 
-            Logger.Log("MapSharer: Preparing to download map " + sha1 + " with name: " + mapName);
+            Log.Information("MapSharer: Preparing to download map " + sha1 + " with name: " + mapName);
 
             bool success;
 
             try
             {
-                Logger.Log("MapSharer: MapDownloadStarted");
+                Log.Information("MapSharer: MapDownloadStarted");
                 MapDownloadStarted?.Invoke(null, new SHA1EventArgs(sha1, mapName));
             }
             catch (Exception ex)
             {
-                Logger.Log("MapSharer: ERROR " + ex.ToString());
+                Log.Information("MapSharer: ERROR " + ex.ToString());
             }
 
             string mapPath = DownloadMain(sha1, myGameId, mapName, out success);
@@ -294,12 +295,12 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             {
                 if (success)
                 {
-                    Logger.Log("MapSharer: Download of map " + sha1 + " completed succesfully.");
+                    Log.Information("MapSharer: Download of map " + sha1 + " completed succesfully.");
                     MapDownloadComplete?.Invoke(null, new SHA1EventArgs(sha1, mapName));
                 }
                 else
                 {
-                    Logger.Log("MapSharer: Download of map " + sha1 + "failed! Reason: " + mapPath);
+                    Log.Information("MapSharer: Download of map " + sha1 + "failed! Reason: " + mapPath);
                     MapDownloadFailed?.Invoke(null, new SHA1EventArgs(sha1, mapName));
                 }
 
@@ -307,7 +308,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
                 if (MapDownloadQueue.Count > 0)
                 {
-                    Logger.Log("MapSharer: Continuing custom map downloads.");
+                    Log.Information("MapSharer: Continuing custom map downloads.");
 
                     object[] array = new object[3];
                     array[0] = MapDownloadQueue[0];
@@ -341,7 +342,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"MapSharer: Failed to delete existing zip file: {ex.Message}");
+                    Log.Information($"MapSharer: Failed to delete existing zip file: {ex.Message}");
                 }
 
                 try
@@ -350,13 +351,13 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"MapSharer: Failed to delete existing map file: {ex.Message}");
+                    Log.Information($"MapSharer: Failed to delete existing map file: {ex.Message}");
                 }
 
                 if (string.IsNullOrWhiteSpace(ClientConfiguration.Instance.CnCNetMapDBDownloadURL))
                 {
                     success = false;
-                    Logger.Log("MapSharer: Download URL is not configured.");
+                    Log.Information("MapSharer: Download URL is not configured.");
                     return null;
                 }
 
@@ -364,7 +365,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
                 try
                 {
-                    Logger.Log($"MapSharer: Downloading URL: {url}");
+                    Log.Information($"MapSharer: Downloading URL: {url}");
                     new TimedHttpClient(DOWNLOAD_TIMEOUT).DownloadFile(url, destinationFile.FullName);
                 }
                 catch (Exception ex)
@@ -389,7 +390,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"MapSharer: Failed to extract map: {ex.Message}");
+                    Log.Information($"MapSharer: Failed to extract map: {ex.Message}");
                     success = false;
                     return ex.Message;
                 }
@@ -406,7 +407,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"MapSharer: Failed to delete zip file after extraction: {ex.Message}");
+                    Log.Information($"MapSharer: Failed to delete zip file after extraction: {ex.Message}");
                 }
 
                 success = true;
@@ -414,7 +415,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Logger.Log($"MapSharer: Map download failed with exception: {ex.Message}");
+                Log.Information($"MapSharer: Map download failed with exception: {ex.Message}");
                 success = false;
                 return ex.Message;
             }

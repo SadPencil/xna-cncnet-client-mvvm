@@ -6,6 +6,7 @@ using System.Text;
 using ClientCore;
 
 using Rampastring.Tools;
+using Serilog;
 
 using SixLabors.ImageSharp;
 
@@ -73,7 +74,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
                 string value = line.Substring(equalsIndex + 1).Trim();
                 if (line.Substring(0, equalsIndex).Trim() == "1" && value == hiddenPreviewSentinel)
                 {
-                    Logger.Log("MapPreviewExtractor: " + baseFilename + " - Hidden preview detected, not extracting preview.");
+                    Log.Information("MapPreviewExtractor: " + baseFilename + " - Hidden preview detected, not extracting preview.");
                     return null;
                 }
                 sb.Append(value);
@@ -82,7 +83,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
 
         if (!hasPreviewPack)
         {
-            Logger.Log("MapPreviewExtractor: " + baseFilename + " - no [PreviewPack] exists, unable to extract preview.");
+            Log.Information("MapPreviewExtractor: " + baseFilename + " - no [PreviewPack] exists, unable to extract preview.");
             return null;
         }
 
@@ -92,7 +93,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
 
         if (previewWidth < 1 || previewHeight < 1)
         {
-            Logger.Log("MapPreviewExtractor: " + baseFilename + " - [Preview] Size value is invalid, unable to extract preview.");
+            Log.Information("MapPreviewExtractor: " + baseFilename + " - [Preview] Size value is invalid, unable to extract preview.");
             return null;
         }
 
@@ -104,7 +105,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
         }
         catch (Exception)
         {
-            Logger.Log("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] is malformed, unable to extract preview.");
+            Log.Information("MapPreviewExtractor: " + baseFilename + " - [PreviewPack] is malformed, unable to extract preview.");
             return null;
         }
 
@@ -112,7 +113,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
 
         if (errorMessage != null)
         {
-            Logger.Log("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
+            Log.Information("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
             return null;
         }
 
@@ -120,7 +121,7 @@ public class FastMapPreviewExtractor : MapPreviewExtractor, IMapPreviewExtractor
 
         if (errorMessage != null)
         {
-            Logger.Log("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
+            Log.Information("MapPreviewExtractor: " + baseFilename + " - " + errorMessage);
             return null;
         }
 

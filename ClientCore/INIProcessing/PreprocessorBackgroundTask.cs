@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace ClientCore.INIProcessing
 {
@@ -40,13 +41,13 @@ namespace ClientCore.INIProcessing
 
         private static void CheckFiles()
         {
-            Logger.Log("Starting background processing of INI files.");
+            Log.Information("Starting background processing of INI files.");
 
             DirectoryInfo iniFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "INI", "Base");
 
             if (!iniFolder.Exists)
             {
-                Logger.Log("/INI/Base does not exist, skipping background processing of INI files.");
+                Log.Information("/INI/Base does not exist, skipping background processing of INI files.");
                 return;
             }
 
@@ -66,7 +67,7 @@ namespace ClientCore.INIProcessing
 
                 if (!infoStore.IsIniUpToDate(iniFile.Name))
                 {
-                    Logger.Log("INI file " + iniFile.Name + " is not processed or outdated, re-processing it.");
+                    Log.Information("INI file " + iniFile.Name + " is not processed or outdated, re-processing it.");
 
                     string sourcePath = iniFile.FullName;
                     string destinationPath = SafePath.CombineFilePath(ProgramConstants.GamePath, "INI", iniFile.Name);
@@ -80,17 +81,17 @@ namespace ClientCore.INIProcessing
                 }
                 else
                 {
-                    Logger.Log("INI file " + iniFile.Name + " is up to date.");
+                    Log.Information("INI file " + iniFile.Name + " is up to date.");
                 }
             }
 
             if (processedCount > 0)
             {
-                Logger.Log("Writing preprocessed INI info store.");
+                Log.Information("Writing preprocessed INI info store.");
                 infoStore.Write();
             }
 
-            Logger.Log("Ended background processing of INI files.");
+            Log.Information("Ended background processing of INI files.");
         }
     }
 }

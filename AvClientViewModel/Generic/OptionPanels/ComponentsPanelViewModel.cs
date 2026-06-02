@@ -17,6 +17,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Generic.OptionPanels;
 
@@ -151,7 +152,7 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     [RelayCommand]
     private async Task CancelDownloads()
     {
-        Logger.Log("Cancelling all custom component downloads.");
+        Log.Information("Cancelling all custom component downloads.");
         downloadCancelled = true;
 
         if (Updater.CustomComponents == null)

@@ -8,6 +8,7 @@ using ClientCore;
 using OpenMcdf;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain
 {
@@ -84,7 +85,7 @@ namespace AvClientViewModel.Domain
             }
             catch (Exception ex)
             {
-                Logger.Log("An error occured while parsing saved game " + FileName + ":" +
+                Log.Information("An error occured while parsing saved game " + FileName + ":" +
                     ex.ToString());
                 return false;
             }

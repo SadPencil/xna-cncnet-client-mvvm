@@ -7,6 +7,7 @@ using ClientCore;
 using ClientCore.Extensions;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain
 {
@@ -95,7 +96,7 @@ namespace AvClientViewModel.Domain
         {
             if (section == null)
             {
-                Logger.Log("DirectDrawWrapper: Configuration for renderer '" + InternalName + "' not found!");
+                Log.Information("DirectDrawWrapper: Configuration for renderer '" + InternalName + "' not found!");
                 return;
             }
 
@@ -143,16 +144,16 @@ namespace AvClientViewModel.Domain
 
             if (!string.IsNullOrEmpty(ddrawDLLPath) &&
                 !SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), ddrawDLLPath).Exists)
-                Logger.Log("DirectDrawWrapper: File specified in DLLPath= for renderer '" + InternalName + "' does not exist!");
+                Log.Information("DirectDrawWrapper: File specified in DLLPath= for renderer '" + InternalName + "' does not exist!");
 
             if (!string.IsNullOrEmpty(resConfigFileName) &&
                 !SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), resConfigFileName).Exists)
-                Logger.Log("DirectDrawWrapper: File specified in ConfigFileName= for renderer '" + InternalName + "' does not exist!");
+                Log.Information("DirectDrawWrapper: File specified in ConfigFileName= for renderer '" + InternalName + "' does not exist!");
 
             foreach (var file in filesToCopy)
             {
                 if (!SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), file).Exists)
-                    Logger.Log("DirectDrawWrapper: Additional file '" + file + "' for renderer '" + InternalName + "' does not exist!");
+                    Log.Information("DirectDrawWrapper: Additional file '" + file + "' for renderer '" + InternalName + "' does not exist!");
             }
         }
 

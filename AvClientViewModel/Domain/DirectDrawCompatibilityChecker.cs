@@ -11,6 +11,7 @@ using ClientCore.Extensions;
 using Microsoft.Win32;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Domain;
 
@@ -35,7 +36,7 @@ public static class DirectDrawCompatibilityChecker
 
         executablePaths.Add(currentExePath);
 
-        Logger.Log("Checking compatibility settings for executables: " +
+        Log.Information("Checking compatibility settings for executables: " +
                    string.Join(", ", executablePaths));
 
         return executablePaths;
@@ -66,14 +67,14 @@ public static class DirectDrawCompatibilityChecker
 
             if (IsFixRequired(hkcuValue))
             {
-                Logger.Log($"Executable '{exeFullPath}' has problematic compatibility settings in HKCU. Value: {hkcuValue}");
+                Log.Information($"Executable '{exeFullPath}' has problematic compatibility settings in HKCU. Value: {hkcuValue}");
                 anyHkcuRequireFix = true;
                 problematicExeNameHashSet.Add(Path.GetFileName(exeFullPath));
             }
 
             if (IsFixRequired(hklmValue))
             {
-                Logger.Log($"Executable '{exeFullPath}' has problematic compatibility settings in HKLM. Value: {hklmValue}");
+                Log.Information($"Executable '{exeFullPath}' has problematic compatibility settings in HKLM. Value: {hklmValue}");
                 anyHklmRequireFix = true;
                 problematicExeNameHashSet.Add(Path.GetFileName(exeFullPath));
             }
@@ -130,7 +131,7 @@ public static class DirectDrawCompatibilityChecker
             }
             catch (Exception ex)
             {
-                Logger.Log($"Failed to fix registry key {rootKey.Name}\\{subKeyPath}: {ex.Message}");
+                Log.Information($"Failed to fix registry key {rootKey.Name}\\{subKeyPath}: {ex.Message}");
             }
         }
 
@@ -153,7 +154,7 @@ public static class DirectDrawCompatibilityChecker
         string fixedCompatLayerEnv = FixCompatLayerString(compatLayerEnv);
         if (compatLayerEnv != fixedCompatLayerEnv)
         {
-            Logger.Log("Fixing __COMPAT_LAYER environment variable. Previous value: " +
+            Log.Information("Fixing __COMPAT_LAYER environment variable. Previous value: " +
                        $"'{compatLayerEnv}', new value: '{fixedCompatLayerEnv}'");
             Environment.SetEnvironmentVariable("__COMPAT_LAYER", fixedCompatLayerEnv);
         }

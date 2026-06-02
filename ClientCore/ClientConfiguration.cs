@@ -9,6 +9,7 @@ using ClientCore.Extensions;
 using ClientCore.I18N;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace ClientCore
 {
@@ -58,7 +59,7 @@ namespace ClientCore
             if (File.Exists(networkDefsPathLocal))
             {
                 networkDefinitionsIni = new IniFile(networkDefsPathLocal);
-                Logger.Log("Loaded network definitions from NetworkDefinitions.local.ini (user override)");
+                Log.Information("Loaded network definitions from NetworkDefinitions.local.ini (user override)");
             }
             else
             {

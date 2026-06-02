@@ -13,6 +13,7 @@ using ClientCore;
 using ClientCore.Extensions;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Online
 {
@@ -956,7 +957,7 @@ namespace AvClientViewModel.Online
             IRCUser user = UserList.Find(u => u.Name.ToUpper() == oldNickname.ToUpper());
             if (user == null)
             {
-                Logger.Log("DoUserNicknameChange: Failed to find user with nickname " + oldNickname);
+                Log.Information("DoUserNicknameChange: Failed to find user with nickname " + oldNickname);
                 return;
             }
             string realOldNickname = user.Name; // To make sure that case matches

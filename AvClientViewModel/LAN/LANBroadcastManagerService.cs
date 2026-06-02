@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 
 using Rampastring.Tools;
+using Serilog;
 
 using NetworkInterface = System.Net.NetworkInformation.NetworkInterface;
 
@@ -100,7 +101,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
             // Clear broadcast interfaces
             broadcastInterfaces.Clear();
 
-            Logger.Log("Creating LAN socket.");
+            Log.Information("Creating LAN socket.");
 
             try
             {
@@ -119,21 +120,21 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
             }
             catch (SocketException ex)
             {
-                Logger.Log("Creating LAN socket failed! Message: " + ex.ToString());
+                Log.Information("Creating LAN socket failed! Message: " + ex.ToString());
                 throw;
             }
 
             // Reset stop flag for the refresher thread
             stopRefresher = false;
 
-            Logger.Log("Starting LAN broadcast message listener.");
+            Log.Information("Starting LAN broadcast message listener.");
             listener = new Thread(new ThreadStart(Listen))
             {
                 IsBackground = true
             };
             listener.Start();
 
-            Logger.Log("Starting network interface refresh thread.");
+            Log.Information("Starting network interface refresh thread.");
             interfaceRefresher = new Thread(new ThreadStart(RefreshInterfacesPeriodically))
             {
                 IsBackground = true
@@ -150,7 +151,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
     /// <returns>A dictionary of network interfaces keyed by their local IP address.</returns>
     private static Dictionary<string, PlayerNetworkInterface> DiscoverBroadcastInterfaces(int port)
     {
-        Logger.Log("Discovering broadcast interfaces.");
+        Log.Information("Discovering broadcast interfaces.");
 
         var discoveredInterfaces = new Dictionary<string, PlayerNetworkInterface>();
         NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
@@ -184,7 +185,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
 
         if (discoveredInterfaces.Count == 0)
         {
-            Logger.Log("Warning: No broadcast interfaces found! LAN lobby broadcasting will not function. " +
+            Log.Information("Warning: No broadcast interfaces found! LAN lobby broadcasting will not function. " +
                 "Please ensure that your network adapters are enabled and have valid IPv4 addresses.");
         }
 
@@ -210,7 +211,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
 
             if (broadcastInterfaces.IsEmpty)
             {
-                Logger.Log("Warning: No broadcast interfaces available in SendMessage!");
+                Log.Information("Warning: No broadcast interfaces available in SendMessage!");
             }
 
             bool success = false;
@@ -270,7 +271,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
             }
             else
             {
-                Logger.Log("LAN socket listener: exception: " + ex.ToString());
+                Log.Information("LAN socket listener: exception: " + ex.ToString());
             }
         }
     }
@@ -349,7 +350,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
         }
         catch (Exception ex)
         {
-            Logger.Log("Network interface refresh thread: exception: " + ex.ToString());
+            Log.Information("Network interface refresh thread: exception: " + ex.ToString());
         }
     }
 
@@ -387,7 +388,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
         {
             bool listenerTerminated = listener.Join(millisecondsTimeout: THREAD_SHUTDOWN_TIMEOUT_MS);
             if (!listenerTerminated)
-                Logger.Log("Failed to shut down listener after timeout!");
+                Log.Information("Failed to shut down listener after timeout!");
 
             listener = null;
         }
@@ -398,7 +399,7 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
             interfaceRefresher.Interrupt();
             bool refresherTerminated = interfaceRefresher.Join(millisecondsTimeout: THREAD_SHUTDOWN_TIMEOUT_MS);
             if (!refresherTerminated)
-                Logger.Log("Failed to shut down interface refresher after timeout!");
+                Log.Information("Failed to shut down interface refresher after timeout!");
 
             interfaceRefresher = null;
         }

@@ -14,6 +14,7 @@ using ClientCore.Extensions;
 using ClientCore.PlatformShim;
 
 using Rampastring.Tools;
+using Serilog;
 
 namespace AvClientViewModel.Online
 {
@@ -183,15 +184,15 @@ namespace AvClientViewModel.Online
                         var result = client.BeginConnect(server.Host, server.Ports[i], null, null);
                         result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(3), false);
 
-                        Logger.Log("Attempting connection to " + server.Host + ":" + server.Ports[i]);
+                        Log.Information("Attempting connection to " + server.Host + ":" + server.Ports[i]);
 
                         if (!client.Connected)
                         {
-                            Logger.Log("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
+                            Log.Information("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
                             continue; // Start all over again, using the next port
                         }
 
-                        Logger.Log("Succesfully connected to " + server.Host + " on port " + server.Ports[i]);
+                        Log.Information("Succesfully connected to " + server.Host + " on port " + server.Ports[i]);
                         client.EndConnect(result);
 
                         _isConnected = true;
@@ -213,11 +214,11 @@ namespace AvClientViewModel.Online
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log("Unable to connect to the server. " + ex.ToString());
+                    Log.Information("Unable to connect to the server. " + ex.ToString());
                 }
             }
 
-            Logger.Log("Connecting to CnCNet failed!");
+            Log.Information("Connecting to CnCNet failed!");
             // Clear the failed server list in case connecting to all servers has failed
             failedServerIPs.Clear();
             _attemptingConnection = false;
@@ -257,7 +258,7 @@ namespace AvClientViewModel.Online
                     if (errorTimes > MAX_ERROR_COUNT)
                     {
                         const string errorMessage = "Disconnected from CnCNet after not receiving a packet for too long.";
-                        Logger.Log(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
+                        Log.Information(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
                         failedServerIPs.Add(currentConnectedServerIP);
                         connectionManager.OnConnectionLost(errorMessage.L10N("Client:Main:ClientDisconnectedAfterRetries"));
                         break;
@@ -268,7 +269,7 @@ namespace AvClientViewModel.Online
                 catch (Exception ex)
                 {
                     const string errorMessage = "Disconnected from CnCNet due to an internal error.";
-                    Logger.Log(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
+                    Log.Information(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
                     failedServerIPs.Add(currentConnectedServerIP);
                     connectionManager.OnConnectionLost(errorMessage.L10N("Client:Main:ClientDisconnectedAfterException"));
                     break;
@@ -280,7 +281,7 @@ namespace AvClientViewModel.Online
 
                     if (errorTimes > MAX_ERROR_COUNT)
                     {
-                        Logger.Log("Disconnected from CnCNet.");
+                        Log.Information("Disconnected from CnCNet.");
                         failedServerIPs.Add(currentConnectedServerIP);
                         connectionManager.OnConnectionLost("Server disconnected.".L10N("Client:Main:ServerDisconnected"));
                         break;
@@ -293,7 +294,7 @@ namespace AvClientViewModel.Online
 
                 // A message has been succesfully received
                 string msg = encoding.GetString(message, 0, bytesRead);
-                Logger.Log("Message received: " + msg);
+                Log.Information("Message received: " + msg);
 
                 HandleMessage(msg);
                 timer.Change(30000, 30000);
@@ -314,7 +315,7 @@ namespace AvClientViewModel.Online
 
                 if (reconnectCount > MAX_RECONNECT_COUNT)
                 {
-                    Logger.Log("Reconnect attempt count exceeded!");
+                    Log.Information("Reconnect attempt count exceeded!");
                     return;
                 }
 
@@ -322,11 +323,11 @@ namespace AvClientViewModel.Online
 
                 if (IsConnected || AttemptingConnection)
                 {
-                    Logger.Log("Cancelling reconnection attempt because the user has attempted to reconnect manually.");
+                    Log.Information("Cancelling reconnection attempt because the user has attempted to reconnect manually.");
                     return;
                 }
 
-                Logger.Log("Attempting to reconnect to CnCNet.");
+                Log.Information("Attempting to reconnect to CnCNet.");
                 connectionManager.OnReconnectAttempt();
             }
         }
@@ -351,7 +352,7 @@ namespace AvClientViewModel.Online
 
                 Task<IEnumerable<Tuple<IPAddress, string, int[]>>> dnsTask = new Task<IEnumerable<Tuple<IPAddress, string, int[]>>>(() =>
                 {
-                    Logger.Log($"Attempting to DNS resolve {serverName} ({serverHostnameOrIPAddress}).");
+                    Log.Information($"Attempting to DNS resolve {serverName} ({serverHostnameOrIPAddress}).");
                     ICollection<Tuple<IPAddress, string, int[]>> _serverInfos = new List<Tuple<IPAddress, string, int[]>>();
 
                     try
@@ -360,7 +361,7 @@ namespace AvClientViewModel.Online
                         IEnumerable<IPAddress> serverIPAddresses = Dns.GetHostAddresses(serverHostnameOrIPAddress)
                                                                       .Where(IPAddress => IPAddress.AddressFamily == AddressFamily.InterNetwork);
 
-                        Logger.Log($"DNS resolved {serverName} ({serverHostnameOrIPAddress}): " +
+                        Log.Information($"DNS resolved {serverName} ({serverHostnameOrIPAddress}): " +
                             $"{string.Join(", ", serverIPAddresses.Select(item => item.ToString()))}");
 
                         // Store each IPAddress in a different tuple.
@@ -371,7 +372,7 @@ namespace AvClientViewModel.Online
                     }
                     catch (SocketException ex)
                     {
-                        Logger.Log($"Caught an exception when DNS resolving {serverName} ({serverHostnameOrIPAddress}) Lobby server: {ex.ToString()}");
+                        Log.Information($"Caught an exception when DNS resolving {serverName} ({serverHostnameOrIPAddress}) Lobby server: {ex.ToString()}");
                     }
 
                     return _serverInfos;
@@ -415,10 +416,10 @@ namespace AvClientViewModel.Online
                 string serverNames = string.Join(", ", serverInfo.Item2.ToString());
                 string serverPorts = string.Join(", ", serverInfo.Item3.Select(port => port.ToString()));
 
-                Logger.Log($"Got a Lobby server. IP: {serverIPAddress}; Name: {serverNames}; Ports: {serverPorts}.");
+                Log.Information($"Got a Lobby server. IP: {serverIPAddress}; Name: {serverNames}; Ports: {serverPorts}.");
             }
 
-            Logger.Log($"The number of Lobby servers is {serverInfos.Count()}.");
+            Log.Information($"The number of Lobby servers is {serverInfos.Count()}.");
 
             // Test the latency.
             ICollection<Task<Tuple<Server, long>>> pingTasks = new List<Task<Tuple<Server, long>>>(serverInfos.Count());
@@ -431,13 +432,13 @@ namespace AvClientViewModel.Online
 
                 if (failedServerIPs.Contains(serverIPAddress.ToString()))
                 {
-                    Logger.Log($"Skipped a failed server {serverNames} ({serverIPAddress}).");
+                    Log.Information($"Skipped a failed server {serverNames} ({serverIPAddress}).");
                     continue;
                 }
 
                 Task<Tuple<Server, long>> pingTask = new Task<Tuple<Server, long>>(() =>
                 {
-                    Logger.Log($"Attempting to ping {serverNames} ({serverIPAddress}).");
+                    Log.Information($"Attempting to ping {serverNames} ({serverIPAddress}).");
                     Server server = new Server(serverIPAddress.ToString(), serverNames, serverPorts);
 
                     using (Ping ping = new Ping())
@@ -449,13 +450,13 @@ namespace AvClientViewModel.Online
                             if (pingReply.Status == IPStatus.Success)
                             {
                                 long pingInMs = pingReply.RoundtripTime;
-                                Logger.Log($"The latency in milliseconds to the server {serverNames} ({serverIPAddress}): {pingInMs}.");
+                                Log.Information($"The latency in milliseconds to the server {serverNames} ({serverIPAddress}): {pingInMs}.");
 
                                 return new Tuple<Server, long>(server, pingInMs);
                             }
                             else
                             {
-                                Logger.Log($"Failed to ping the server {serverNames} ({serverIPAddress}): " +
+                                Log.Information($"Failed to ping the server {serverNames} ({serverIPAddress}): " +
                                     $"{Enum.GetName(typeof(IPStatus), pingReply.Status)}.");
 
                                 return new Tuple<Server, long>(server, long.MaxValue);
@@ -463,7 +464,7 @@ namespace AvClientViewModel.Online
                         }
                         catch (PingException ex)
                         {
-                            Logger.Log($"Caught an exception when pinging {serverNames} ({serverIPAddress}) Lobby server: {ex.ToString()}");
+                            Log.Information($"Caught an exception when pinging {serverNames} ({serverIPAddress}) Lobby server: {ex.ToString()}");
 
                             return new Tuple<Server, long>(server, long.MaxValue);
                         }
@@ -488,7 +489,7 @@ namespace AvClientViewModel.Online
                 long serverLatencyValue = serverAndLatencyResult.Item2;
                 string serverLatencyString = serverLatencyValue <= MAXIMUM_LATENCY ? serverLatencyValue.ToString() : "DNF";
 
-                Logger.Log($"Lobby server IP: {serverIPAddress}, latency: {serverLatencyString}.");
+                Log.Information($"Lobby server IP: {serverIPAddress}, latency: {serverLatencyString}.");
             }
 
             {
@@ -496,7 +497,7 @@ namespace AvClientViewModel.Online
                 int closerCount = sortedServerAndLatencyResults.Count(
                     serverAndLatencyResult => serverAndLatencyResult.Item2 <= MAXIMUM_LATENCY);
 
-                Logger.Log($"Lobby servers: {candidateCount} available, {closerCount} fast.");
+                Log.Information($"Lobby servers: {candidateCount} available, {closerCount} fast.");
                 connectionManager.OnServerLatencyTested(candidateCount, closerCount);
             }
 
@@ -560,7 +561,7 @@ namespace AvClientViewModel.Online
             ParseIrcMessage(message, out prefix, out command, out parameters);
             string paramString = String.Empty;
             foreach (string param in parameters) { paramString = paramString + param + ","; }
-            Logger.Log("RMP: " + prefix + " " + command + " " + paramString);
+            Log.Information("RMP: " + prefix + " " + command + " " + paramString);
 
             try
             {
@@ -761,12 +762,12 @@ namespace AvClientViewModel.Online
                         if (parameters.Count > 0)
                         {
                             QueueMessage(new QueuedMessage("PONG " + parameters[0], QueuedMessageType.SYSTEM_MESSAGE, 5000));
-                            Logger.Log("PONG " + parameters[0]);
+                            Log.Information("PONG " + parameters[0]);
                         }
                         else
                         {
                             QueueMessage(new QueuedMessage("PONG", QueuedMessageType.SYSTEM_MESSAGE, 5000));
-                            Logger.Log("PONG");
+                            Log.Information("PONG");
                         }
                         break;
                     case "TOPIC":
@@ -782,7 +783,7 @@ namespace AvClientViewModel.Online
                         {
                             string oldNick = prefix.Substring(0, nickExclamIndex);
                             string newNick = parameters[0];
-                            Logger.Log("Nick change - " + oldNick + " -> " + newNick);
+                            Log.Information("Nick change - " + oldNick + " -> " + newNick);
                             connectionManager.OnUserNicknameChange(oldNick, newNick);
                         }
                         break;
@@ -790,7 +791,7 @@ namespace AvClientViewModel.Online
             }
             catch
             {
-                Logger.Log("Warning: Failed to parse command " + message);
+                Log.Information("Warning: Failed to parse command " + message);
             }
         }
 
@@ -844,7 +845,7 @@ namespace AvClientViewModel.Online
             if (commandAndParameters.Length == 0)
             {
                 command = String.Empty;
-                Logger.Log("Nonexistant command!");
+                Log.Information("Nonexistant command!");
                 return;
             }
 
@@ -888,7 +889,7 @@ namespace AvClientViewModel.Online
                             {
                                 message = qm.Command;
 
-                                Logger.Log("Delayed message sent: " + qm.ID);
+                                Log.Information("Delayed message sent: " + qm.ID);
 
                                 MessageQueue.RemoveAt(i);
                                 break;
@@ -939,7 +940,7 @@ namespace AvClientViewModel.Online
             if (welcomeMessageReceived)
                 return;
 
-            Logger.Log("Registering.");
+            Log.Information("Registering.");
 
             var defaultGame = ClientConfiguration.Instance.LocalGame;
 
@@ -966,7 +967,7 @@ namespace AvClientViewModel.Online
         {
             QueuedMessage qm = new QueuedMessage(message, type, priority, delay);
             QueueMessage(qm);
-            Logger.Log("Setting delay to " + delay + "ms for " + qm.ID);
+            Log.Information("Setting delay to " + delay + "ms for " + qm.ID);
         }
 
         /// <summary>
@@ -978,7 +979,7 @@ namespace AvClientViewModel.Online
             if (serverStream == null)
                 return;
 
-            Logger.Log("SRM: " + message);
+            Log.Information("SRM: " + message);
 
             byte[] buffer = encoding.GetBytes(message + "\r\n");
             if (serverStream.CanWrite)
@@ -990,7 +991,7 @@ namespace AvClientViewModel.Online
                 }
                 catch (IOException ex)
                 {
-                    Logger.Log("Sending message to the server failed! Reason: " + ex.ToString());
+                    Log.Information("Sending message to the server failed! Reason: " + ex.ToString());
                 }
             }
         }
@@ -1052,7 +1053,7 @@ namespace AvClientViewModel.Online
                     default:
                         int placeInQueue = MessageQueue.FindIndex(m => m.Priority < qm.Priority);
                         if (ProgramConstants.LOG_LEVEL > 1)
-                            Logger.Log("QM Undefined: " + qm.Command + " " + placeInQueue);
+                            Log.Information("QM Undefined: " + qm.Command + " " + placeInQueue);
                         if (placeInQueue == -1)
                             MessageQueue.Add(qm);
                         else
@@ -1076,14 +1077,14 @@ namespace AvClientViewModel.Online
             if (broadcastingMessageIndex > -1)
             {
                 if (ProgramConstants.LOG_LEVEL > 1)
-                    Logger.Log("QM Replace: " + qm.Command + " " + broadcastingMessageIndex);
+                    Log.Information("QM Replace: " + qm.Command + " " + broadcastingMessageIndex);
                 MessageQueue[broadcastingMessageIndex] = qm;
             }
             else
             {
                 int placeInQueue = MessageQueue.FindIndex(m => m.Priority < qm.Priority);
                 if (ProgramConstants.LOG_LEVEL > 1)
-                    Logger.Log("QM: " + qm.Command + " " + placeInQueue);
+                    Log.Information("QM: " + qm.Command + " " + placeInQueue);
                 if (placeInQueue == -1)
                     MessageQueue.Add(qm);
                 else
