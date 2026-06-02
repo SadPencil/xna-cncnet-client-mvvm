@@ -36,10 +36,13 @@ public partial class LoadingScreen : UserControl
         ApplyDefaultBackground("loadingscreen.png");
 
         var iniOverlay = ViewConstants.ServiceProvider?.GetService<IIniLayoutOverlayService>();
-        iniOverlay?.ApplyLayout(this, "LoadingScreen");
+        // Pass the design space size (1280x720) so deferred properties
+        // (DistanceFrom*, FillWidth/FillHeight) calculate positions
+        // relative to the actual visible area, not the INI Size.
+        iniOverlay?.ApplyLayout(this, "LoadingScreen", effectiveWidth: 1280, effectiveHeight: 720);
 
-        // The INI Size (e.g. 1920x1080 from YRResources) is meant for a
-        // different resolution. Reset so Stretch fills the Grid at 1280x720.
+        // Reset explicit size so Stretch fills the Grid regardless of
+        // the INI Size (e.g. YRResources uses 1920x1080).
         Width = double.NaN;
         Height = double.NaN;
     }

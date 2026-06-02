@@ -69,7 +69,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         return FontIndexConfig[0]; // fallback
     }
 
-    public void ApplyLayout(Control control, string sectionName)
+    public void ApplyLayout(Control control, string sectionName, double? effectiveWidth = null, double? effectiveHeight = null)
     {
         string iniPath = FindIniFile(sectionName);
         if (iniPath == null)
@@ -143,10 +143,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         ApplyToDescendants(control, iniFile);
 
         // Create ExtraControls
-        CreateExtraControls(control, iniFile, sectionName);
+        CreateExtraControls(control, iniFile, sectionName, effectiveWidth, effectiveHeight);
 
         // Apply deferred properties (FillWidth, FillHeight, DistanceFrom*)
-        ApplyDeferredProperties(control, iniFile);
+        ApplyDeferredProperties(control, iniFile, effectiveWidth, effectiveHeight);
 
         // Auto-load standard {width}pxbtn.png / {width}pxbtn_c.png textures for
         // buttons that weren't given a custom IdleTexture via INI.  This matches
@@ -511,12 +511,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void ApplyDeferredProperties(Control root, CCIniFile iniFile)
+    private static void ApplyDeferredProperties(Control root, CCIniFile iniFile, double? effectiveWidth = null, double? effectiveHeight = null)
     {
-        ApplyDeferredRecursive(root, iniFile);
+        ApplyDeferredRecursive(root, iniFile, effectiveWidth, effectiveHeight);
     }
 
-    private static void ApplyDeferredRecursive(Control parent, CCIniFile iniFile)
+    private static void ApplyDeferredRecursive(Control parent, CCIniFile iniFile, double? effectiveWidth = null, double? effectiveHeight = null)
     {
         // Process named children
         IEnumerable<Control> children = GetChildren(parent);
@@ -531,10 +531,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 var section = FindSectionDirect(iniFile, child.Name);
                 if (section != null)
                 {
-                    ApplyDeferredToControl(child, section, parent);
+                    ApplyDeferredToControl(child, section, parent, effectiveWidth, effectiveHeight);
                 }
             }
-            ApplyDeferredRecursive(child, iniFile);
+            ApplyDeferredRecursive(child, iniFile, effectiveWidth, effectiveHeight);
         }
     }
 
@@ -561,7 +561,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         return null;
     }
 
-    private static void ApplyDeferredToControl(Control control, IniSection section, Control parent)
+    private static void ApplyDeferredToControl(Control control, IniSection section, Control parent, double? effectiveWidth = null, double? effectiveHeight = null)
     {
         double? fillWidth = null;
         double? fillHeight = null;
@@ -601,10 +601,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             }
         }
 
-        // Find the nearest ancestor with explicit dimensions (Window or sized control).
-        // Canvas/Panel may not have explicit Width/Height, so walk up to the Window.
-        double parentWidth = GetEffectiveWidth(parent);
-        double parentHeight = GetEffectiveHeight(parent);
+        // Use explicit effective dimensions when provided (e.g. LoadingScreen uses
+        // 1280x720 design size regardless of INI Size). Otherwise walk up the tree.
+        double parentWidth = effectiveWidth ?? GetEffectiveWidth(parent);
+        double parentHeight = effectiveHeight ?? GetEffectiveHeight(parent);
 
         // Apply DistanceFromLeftBorder first (sets X)
         if (distLeft.HasValue)
@@ -651,7 +651,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void CreateExtraControls(Control root, CCIniFile iniFile, string sectionName)
+    private static void CreateExtraControls(Control root, CCIniFile iniFile, string sectionName, double? effectiveWidth = null, double? effectiveHeight = null)
     {
         var hostPanel = FindFirstPanel(root);
         if (hostPanel == null)
@@ -700,7 +700,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                     // Must happen BEFORE adding to canvas so the control has the correct
                     // size at creation time — same as AXAML-defined test borders.
                     if (section != null)
-                        ApplyFillPropertiesInline(control, section, hostPanel);
+                        ApplyFillPropertiesInline(control, section, hostPanel, effectiveWidth, effectiveHeight);
 
                     // Insert at beginning so ExtraControls are below DarkeningPanels
                     hostPanel.Children.Insert(insertIndex, control);
@@ -748,7 +748,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     /// are processed in order alongside BackgroundTexture. This ensures the
     /// control has the correct size at creation time.
     /// </summary>
-    private static void ApplyFillPropertiesInline(Control control, IniSection section, Control parent)
+    private static void ApplyFillPropertiesInline(Control control, IniSection section, Control parent, double? effectiveWidth = null, double? effectiveHeight = null)
     {
         double? fillWidth = null;
         double? fillHeight = null;
@@ -768,8 +768,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             }
         }
 
-        double parentWidth = GetEffectiveWidth(parent);
-        double parentHeight = GetEffectiveHeight(parent);
+        double parentWidth = effectiveWidth ?? GetEffectiveWidth(parent);
+        double parentHeight = effectiveHeight ?? GetEffectiveHeight(parent);
 
         if (fillWidth.HasValue && parentWidth > 0)
         {

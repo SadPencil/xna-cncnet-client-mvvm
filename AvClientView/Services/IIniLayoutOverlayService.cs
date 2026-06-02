@@ -18,7 +18,10 @@ public interface IIniLayoutOverlayService
     /// </summary>
     /// <param name="control">The root control to apply layout to.</param>
     /// <param name="sectionName">The INI section name (e.g., "MainMenu", "LoadingScreen").</param>
-    void ApplyLayout(Control control, string sectionName);
+    /// <param name="effectiveWidth">Optional override for the effective parent width used by
+    /// DistanceFromRightBorder, FillWidth, etc. When null (default), walks up the visual tree.</param>
+    /// <param name="effectiveHeight">Optional override for the effective parent height.</param>
+    void ApplyLayout(Control control, string sectionName, double? effectiveWidth = null, double? effectiveHeight = null);
 
     /// <summary>
     /// Finds a texture file in the resource paths (theme first, then base).
