@@ -26,14 +26,10 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
-        // LoadingScreen fills the design space. The MainMenu, which may be
-        // smaller than 1280x720 when INI sets a smaller size, is centered.
+        // LoadingScreen fills the Grid (1280x720). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
 
-        // Show the loading screen immediately without a ViewModel.
-        // The ServiceProvider is not ready yet — it will be built on a
-        // background thread and assigned when done.
         loadingScreen = new LoadingScreen();
         loadingScreen.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         loadingScreen.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
@@ -41,15 +37,11 @@ public partial class MainWindow : Window
         loadingScreen.Loaded += (s, e) =>
         {
             var ls = (LoadingScreen)s!;
-            Serilog.Log.Debug($"[DEBUG] LoadingScreen Loaded: Bounds={ls.Bounds}, DesiredSize={ls.DesiredSize}, Width={ls.Width}, Height={ls.Height}, HA={ls.HorizontalAlignment}, VA={ls.VerticalAlignment}");
+            Serilog.Log.Debug($"[DEBUG] LoadingScreen Loaded: Bounds={ls.Bounds}, DesiredSize={ls.DesiredSize}, Width={ls.Width}, Height={ls.Height}");
         };
         MainContent.Content = loadingScreen;
 
-        // Pre-create MainMenu (will be connected later after ServiceProvider is ready)
         mainMenu = new MainMenu();
-
-        // Start heavy initialization on a background thread.
-        // The loading screen is already visible while this runs.
         _ = InitializeAsync();
     }
 
@@ -101,14 +93,8 @@ public partial class MainWindow : Window
     private void TransitionToMainMenu()
     {
         loadingScreen = null;
-        // MainMenu is centered so smaller INI sizes (e.g. 800x600) don't stretch
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
         MainContent.Content = mainMenu;
-        Serilog.Log.Debug($"[DEBUG] TransitionToMainMenu: MainContent.Bounds={MainContent.Bounds}, DesiredSize={MainContent.DesiredSize}");
-        Serilog.Log.Debug($"[DEBUG] MainMenu: Width={mainMenu!.Width}, Height={mainMenu.Height}, Bounds={mainMenu.Bounds}, DesiredSize={mainMenu.DesiredSize}");
-        Serilog.Log.Debug($"[DEBUG] MainMenu.OverlayCanvas: Width={mainMenu.OverlayCanvas.Width}, Height={mainMenu.OverlayCanvas.Height}, Bounds={mainMenu.OverlayCanvas.Bounds}");
-        Serilog.Log.Debug($"[DEBUG] MainMenu.MainMenuPanel: Width={mainMenu.MainMenuPanel.Width}, Height={mainMenu.MainMenuPanel.Height}, Bounds={mainMenu.MainMenuPanel.Bounds}");
-        Serilog.Log.Debug($"[DEBUG] MainMenu.TopBar: Width={mainMenu.topBar.Width}, Height={mainMenu.topBar.Height}, Bounds={mainMenu.topBar.Bounds}, IsVisible={mainMenu.topBar.IsVisible}");
     }
 }

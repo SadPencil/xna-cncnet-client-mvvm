@@ -38,12 +38,8 @@ public partial class LoadingScreen : UserControl
         var iniOverlay = ViewConstants.ServiceProvider?.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "LoadingScreen");
 
-        // Steal the INI Size for the internal Canvas and reset the
-        // UserControl to stretch. The LoadingScreen must always fill
-        // the Viewbox design space regardless of the INI Size
-        // (e.g. YRResources sets 1920x1080 which overflows).
-        lsCanvas.Width = Width;
-        lsCanvas.Height = Height;
+        // The INI Size (e.g. 1920x1080 from YRResources) is meant for a
+        // different resolution. Reset so Stretch fills the Grid at 1280x720.
         Width = double.NaN;
         Height = double.NaN;
     }
