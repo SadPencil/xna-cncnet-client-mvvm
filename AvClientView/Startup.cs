@@ -21,8 +21,7 @@ public class Startup
 
         if (headless)
         {
-            string logFile = Path.Combine(AppContext.BaseDirectory, "av_bindings.log");
-            Trace.Listeners.Add(new TextWriterTraceListener(logFile));
+            Trace.Listeners.Add(new ConsoleTraceListener(useErrorStream: true));
             Trace.AutoFlush = true;
         }
 

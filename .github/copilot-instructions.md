@@ -62,22 +62,7 @@ grep -i "error\|exception\|fail" AvClientExe/bin/Debug/net8.0/Client/client.log
 
 ### Capture Avalonia binding errors
 
-Avalonia binding errors are emitted via `System.Diagnostics.Trace` (configured by `LogToTrace()` in `AvClientView/Startup.cs`). These do not appear on stdout/stderr. To capture them in headless mode, add a `TextWriterTraceListener` to `Startup.Run()`:
-
-```csharp
-if (headless)
-{
-    string logFile = Path.Combine(AppContext.BaseDirectory, "av_bindings.log");
-    Trace.Listeners.Add(new TextWriterTraceListener(logFile));
-    Trace.AutoFlush = true;
-}
-```
-
-Then after a headless run, inspect the log:
-
-```shell
-grep -i "binding" AvClientExe/bin/Debug/net8.0/av_bindings.log
-```
+Avalonia binding errors are emitted via `System.Diagnostics.Trace`. When headless mode is on, trace messages are redirected to stderr. Please capture and check them for binding errors.
 
 Binding errors indicate that the AXAML view binds to a property or command that does not exist on the actual runtime DataContext (the ViewModel interface). Common causes:
 
