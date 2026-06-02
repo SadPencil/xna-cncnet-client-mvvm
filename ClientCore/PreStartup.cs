@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 
 using Serilog;
@@ -23,7 +24,14 @@ public static class PreStartup
 
         string logFilePath = Path.Combine(logDirectory, logFileName);
 
-        var loggingLevelSwitch = new LoggingLevelSwitch() { MinimumLevel = LogEventLevel.Information };
+        var loggingLevelSwitch = new LoggingLevelSwitch()
+        {
+#if DEBUG
+            MinimumLevel = LogEventLevel.Debug
+#else
+            MinimumLevel = LogEventLevel.Information
+#endif
+        };
 
         string outputTemplate = "{Timestamp:dd.MM. HH:mm:ss.fff}    {Message:lj}{NewLine}{Exception}";
 
