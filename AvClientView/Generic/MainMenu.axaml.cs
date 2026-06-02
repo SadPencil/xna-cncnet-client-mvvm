@@ -40,9 +40,27 @@ public partial class MainMenu : UserControl
         // Set default background (matching original: AssetLoader.LoadTexture("MainMenu/mainmenubg.png"))
         ApplyDefaultBackground("MainMenu/mainmenubg.png");
 
-        // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini)
+        // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini).
+        // The [MainMenu] section's Size is meant for the main menu content area,
+        // not the full UserControl which must stay at 1280x720 for overlays.
         var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "MainMenu");
+
+        // Steal the INI Size for MainMenuPanel and keep the UserControl at 1280x720.
+        // The UserControl must always be 1280x720 so DarkeningPanels and TopBar
+        // (in OverlayCanvas) have the full design space to work with.
+        var menuWidth = Width;
+        var menuHeight = Height;
+        MainMenuPanel.Width = menuWidth;
+        MainMenuPanel.Height = menuHeight;
+        Width = 1280;
+        Height = 720;
+
+        // Resize message box and yes/no dialog to cover the full menu panel
+        messageBoxOverlay.Width = menuWidth;
+        messageBoxOverlay.Height = menuHeight;
+        yesNoDialogOverlay.Width = menuWidth;
+        yesNoDialogOverlay.Height = menuHeight;
 
         // Ensure we can receive keyboard input
         Focus();
