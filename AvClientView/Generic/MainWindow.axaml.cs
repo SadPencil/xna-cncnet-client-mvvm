@@ -35,8 +35,8 @@ public partial class MainWindow : Window
         // The ServiceProvider is not ready yet — it will be built on a
         // background thread and assigned when done.
         loadingScreen = new LoadingScreen();
-        loadingScreen.Width = 800;
-        loadingScreen.Height = 600;
+        loadingScreen.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+        loadingScreen.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
         loadingScreen.Completed += OnLoadingCompleted;
         MainContent.Content = loadingScreen;
 
