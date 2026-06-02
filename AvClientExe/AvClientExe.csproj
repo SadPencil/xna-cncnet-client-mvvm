@@ -14,24 +14,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Resources\**" />
-    <EmbeddedResource Remove="Resources\**" />
-    <None Remove="Resources\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AvClientMvvmContract\AvClientMvvmContract.csproj" />
     <ProjectReference Include="..\AvClientView\AvClientView.csproj" />
       <ProjectReference Include="..\AvClientViewModel\AvClientViewModel.csproj" />
   </ItemGroup>
-
-  <!-- Copy Resources folder to output directory -->
-  <Target Name="CopyResources" AfterTargets="Build">
-    <ItemGroup>
-      <ResourceFiles Include="Resources\**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(ResourceFiles)"
-          DestinationFiles="@(ResourceFiles->'$(OutputPath)Resources\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
-  </Target>
 </Project>
