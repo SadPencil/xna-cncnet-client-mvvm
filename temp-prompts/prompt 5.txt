@@ -20,11 +20,39 @@ When investigating the bugs, do not directly fix it, but find the root cause. Re
 
 Git commit and push often.
 
-Now, your task is:  clicking the LAN button in main menu gets an exception:
+Now, your task is: 
+
+I got exception on startup
 
 System.NullReferenceException
   HResult=0x80004003
   Message=Object reference not set to an instance of an object.
-  Source=DXMainClientViewModel
+  Source=AvClientViewModel
   StackTrace:
-   at DXMainClientViewModel.Online.Connection.Disconnect() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\DXMainClientViewModel\Online\Connection.cs:line 510
+   at AvClientViewModel.Multiplayer.LANLobbyViewModel.OnSelectedColorIndexChanged(Int32 value) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\LANLobbyViewModel.cs:line 446
+
+AvClientViewModel.dll!AvClientViewModel.Multiplayer.LANLobbyViewModel.OnSelectedColorIndexChanged(int value) Line 446
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\LANLobbyViewModel.cs(446)
+AvClientViewModel.dll!AvClientViewModel.Multiplayer.LANLobbyViewModel.SelectedColorIndex.set(int value) Line 44
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\obj\Debug\net8.0\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator\AvClientViewModel.Multiplayer.LANLobbyViewModel.g.cs(44)
+AvClientViewModel.dll!AvClientViewModel.Multiplayer.LANLobbyViewModel.Initialize() Line 324
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\LANLobbyViewModel.cs(324)
+AvClientViewModel.dll!AvClientViewModel.Generic.MainMenuViewModel.MainMenuViewModel(AvClientViewModel.IUpdateService updateService, AvClientViewModel.IGameProcessService gameProcessService, AvClientViewModel.Domain.IDiscordHandlerService discordHandler, AvClientViewModel.IMusicPlayerService musicPlayer, AvClientMvvmContract.ViewServices.IUIThreadMarshaller uiThreadMarshaller, AvClientMvvmContract.ViewServices.IApplicationLifecycleService lifecycleService, AvClientViewModel.Online.CnCNetManager connectionManager, AvClientViewModel.Generic.OptionsWindowViewModel optionsWindowViewModel, AvClientViewModel.Generic.TopBarViewModel topBarViewModel, AvClientViewModel.Campaign.CampaignSelectorViewModel campaignSelectorViewModel, AvClientViewModel.Generic.GameLoadingWindowViewModel gameLoadingWindowViewModel, AvClientViewModel.Generic.ExtrasWindowViewModel extrasWindowViewModel, AvClientViewModel.Generic.StatisticsWindowViewModel statisticsWindowViewModel, AvClientViewModel.Generic.UpdateWindowViewModel updateWindowViewModel, AvClientViewModel.Online.CnCNetUserData cncNetUserData, AvClientViewModel.Multiplayer.GameLobby.SkirmishLobbyViewModel skirmishLobbyViewModel, AvClientViewModel.Multiplayer.CnCNet.CnCNetLobbyViewModel cncNetLobbyViewModel, AvClientViewModel.Multiplayer.LANLobbyViewModel lanLobbyViewModel, AvClientViewModel.Multiplayer.CnCNet.PrivateMessagingWindowViewModel privateMessagingWindowViewModel, AvClientViewModel.Multiplayer.GameLobby.CnCNetGameLobbyViewModel cncNetGameLobbyViewModel, AvClientViewModel.Multiplayer.CnCNet.CnCNetGameLoadingLobbyViewModel cncNetGameLoadingLobbyViewModel) Line 212
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Generic\MainMenuViewModel.cs(212)
+AvClientViewModel.dll!AvClientViewModel.PreStartup.ConfigureServices.AnonymousMethod__4_34(System.IServiceProvider sp) Line 580
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\PreStartup.cs(580)
+[External Code]
+AvClientViewModel.dll!AvClientViewModel.PreStartup.ConfigureServices.AnonymousMethod__4_35(System.IServiceProvider sp) Line 603
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\PreStartup.cs(603)
+[External Code]
+AvClientView.dll!AvClientView.Generic.MainWindow.GetMainMenu() Line 57
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientView\Generic\MainWindow.axaml.cs(57)
+AvClientView.dll!AvClientView.Generic.MainWindow.ShowMainWindow() Line 31
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientView\Generic\MainWindow.axaml.cs(31)
+AvClientView.dll!AvClientView.App.OnFrameworkInitializationCompleted() Line 26
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientView\App.axaml.cs(26)
+[External Code]
+AvClientView.dll!AvClientView.Startup.Run(Microsoft.Extensions.DependencyInjection.ServiceProvider serviceProvider, string[] args) Line 28
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientView\Startup.cs(28)
+clientav.dll!AvClientExe.Program.Main(string[] args) Line 13
+	at D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientExe\Program.cs(13)
