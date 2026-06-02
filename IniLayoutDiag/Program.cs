@@ -9,7 +9,7 @@ namespace IniLayoutDiag;
 
 /// <summary>
 /// Standalone diagnostic tool that tests the INI layout overlay service logic
-/// without needing Avalonia or the full DXMainClientView. Replicates the
+/// without needing Avalonia or the full AvMainClientView. Replicates the
 /// FindIniFile and FindTextureFile logic from IniLayoutOverlayService.
 /// </summary>
 class Program
@@ -17,7 +17,7 @@ class Program
     static void Main(string[] args)
     {
         // ---------------------------------------------------------------
-        // 1. Set working directory the same way DXMainClientView does
+        // 1. Set working directory the same way AvMainClientView does
         // ---------------------------------------------------------------
         string gameRoot = SetWorkingDirectoryToGameRoot();
 
@@ -292,7 +292,7 @@ class Program
     }
 
     // ---------------------------------------------------------------
-    // Replicates DXMainClientView SetWorkingDirectoryToGameRoot logic.
+    // Replicates AvMainClientView SetWorkingDirectoryToGameRoot logic.
     // Walks up from BaseDirectory looking for Resources/ClientDefinitions.ini,
     // then falls back to DXMainClient/ subdirectory.
     // ---------------------------------------------------------------

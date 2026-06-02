@@ -48,12 +48,12 @@
     <UseWindowsForms Condition="$(Engine.Contains(Windows))">true</UseWindowsForms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'TranslationNotifierGenerator' Or '$(MSBuildProjectName)' == 'DXMainClientMvvmContract'">
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'TranslationNotifierGenerator' Or '$(MSBuildProjectName)' == 'AvMainClientMvvmContract'">
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'ClientCore' Or '$(MSBuildProjectName)' == 'SecondStageUpdater' Or '$(MSBuildProjectName)' == 'ClientUpdater' Or '$(MSBuildProjectName)' == 'DXMainClientViewModel'">
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'ClientCore' Or '$(MSBuildProjectName)' == 'SecondStageUpdater' Or '$(MSBuildProjectName)' == 'ClientUpdater' Or '$(MSBuildProjectName)' == 'AvMainClientViewModel'">
     <TargetFrameworks>net8.0;net48</TargetFrameworks>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>

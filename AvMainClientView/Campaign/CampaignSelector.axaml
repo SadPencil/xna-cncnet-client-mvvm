@@ -1,0 +1,180 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvMainClientMvvmContract.Campaign"
+             x:Class="AvMainClientView.Campaign.CampaignSelector"
+             x:DataType="vmc:ICampaignSelectorViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="672" Height="600">
+  <Canvas>
+    <!-- MISSIONS: label -->
+    <TextBlock x:Name="lblSelectCampaign"
+               Text="MISSIONS:"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="12" Canvas.Top="12" />
+
+    <!-- Campaign list (left side) -->
+    <ListBox x:Name="lbCampaignList"
+             ItemsSource="{Binding CampaignListItems}"
+             SelectedIndex="{Binding SelectedCampaignIndex}"
+             IsEnabled="{Binding IsControlsEnabled}"
+             Background="#80000000"
+             Canvas.Left="12" Canvas.Top="30"
+             Width="322" Height="554">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="vmc:ICampaignListItem">
+          <TextBlock Text="{Binding Text}" />
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <!-- MISSION DESCRIPTION: label -->
+    <TextBlock x:Name="lblMissionDescriptionHeader"
+               Text="MISSION DESCRIPTION:"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="346" Canvas.Top="12" />
+
+    <!-- Mission description text (right side) -->
+    <Border x:Name="tbMissionDescription"
+            Background="{DynamicResource XnaPanelBackgroundBrush}"
+            Canvas.Left="346" Canvas.Top="34"
+            Width="314" Height="230">
+      <ScrollViewer>
+        <TextBlock Text="{Binding MissionDescriptionText}"
+                   TextWrapping="Wrap"
+                   Foreground="{DynamicResource XnaAltBrush}"
+                   Margin="4" />
+      </ScrollViewer>
+    </Border>
+
+    <!-- Mission Preview Panel (shown when enabled) -->
+    <Border x:Name="pnlMissionPreview"
+            IsVisible="{Binding IsMissionPreviewEnabled}"
+            Background="#80000000"
+            BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+            BorderThickness="1"
+            Canvas.Left="346" Canvas.Top="270"
+            Width="314" Height="200">
+      <Image Source="{Binding MissionPreviewImagePath}"
+             Stretch="Uniform" />
+    </Border>
+
+    <!-- Campaign Options (CheckBoxes) -->
+    <ItemsControl x:Name="icCheckBoxOptions"
+                  ItemsSource="{Binding CheckBoxOptions}"
+                  IsEnabled="{Binding IsControlsEnabled}"
+                  Canvas.Left="346" Canvas.Top="476"
+                  Width="314">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="vmc:ICampaignCheckBoxOption">
+          <CheckBox Content="{Binding Name}"
+                    IsChecked="{Binding Checked}"
+                    Foreground="{DynamicResource XnaTextBrush}"
+                    Margin="0,2" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <!-- DIFFICULTY LEVEL label (centered above trackbar) -->
+    <TextBlock x:Name="lblDifficultyLevel"
+               Text="DIFFICULTY LEVEL"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="440" Canvas.Top="496" />
+
+    <!-- Difficulty trackbar -->
+    <Slider x:Name="trbDifficultySelector"
+            Minimum="0"
+            Maximum="2"
+            TickFrequency="1"
+            IsSnapToTickEnabled="True"
+            IsEnabled="{Binding IsControlsEnabled}"
+            Value="{Binding SelectedDifficultyIndex}"
+            Canvas.Left="346" Canvas.Top="518"
+            Width="314" />
+
+    <!-- Difficulty labels (dynamic from VM) -->
+    <ItemsControl x:Name="icDifficultyLabels"
+                  ItemsSource="{Binding DifficultyNames}"
+                  Canvas.Left="346" Canvas.Top="550"
+                  Width="314">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <UniformGrid Rows="1" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="x:String">
+          <TextBlock Text="{Binding .}"
+                     FontWeight="Bold"
+                     Foreground="{DynamicResource XnaTextBrush}"
+                     HorizontalAlignment="Center" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <!-- Launch button (bottom-left) -->
+    <Button x:Name="btnLaunch"
+            Content="Launch"
+            Command="{Binding LaunchCampaignCommand}"
+            IsEnabled="{Binding CanLaunchCampaign}"
+            Width="147" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="346" Canvas.Top="565" />
+
+    <!-- Cancel button (bottom-right) -->
+    <Button x:Name="btnCancel"
+            Content="Cancel"
+            Command="{Binding CancelCommand}"
+            IsEnabled="{Binding IsControlsEnabled}"
+            Width="147" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="513" Canvas.Top="565" />
+
+    <!-- Return button (optional, for CampaignTagSelector) -->
+    <Button x:Name="btnReturn"
+            Content="Campaigns"
+            Command="{Binding ReturnCommand}"
+            IsVisible="{Binding IsReturnButtonVisible}"
+            IsEnabled="{Binding IsControlsEnabled}"
+            Width="147" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="346" Canvas.Top="565" />
+
+    <!-- ========== CHEATER WINDOW OVERLAY ========== -->
+    <Border IsVisible="{Binding IsCheaterWindowVisible}"
+            Background="#80000000"
+            Canvas.Left="0" Canvas.Top="0"
+            Width="672" Height="600">
+      <Panel>
+        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1"
+                Padding="16"
+                Width="400"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Text="{Binding CheaterWindow.TitleText}"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}" />
+            <TextBlock Text="{Binding CheaterWindow.MessageText}"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource XnaAltBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+              <Button Content="OK"
+                      Width="100" Height="23"
+                      FontWeight="Bold"
+                      Command="{Binding CheaterWindow.ConfirmCommand}" />
+              <Button Content="Cancel"
+                      Width="100" Height="23"
+                      FontWeight="Bold"
+                      Command="{Binding CheaterWindow.CancelCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </Panel>
+    </Border>
+  </Canvas>
+</UserControl>

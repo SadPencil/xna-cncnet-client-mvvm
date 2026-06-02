@@ -102,10 +102,10 @@ DistanceFromRightBorder=179
 
 ### 3. INI Layout Overlay Service
 
-Create a new service in `DXMainClientView` that applies INI overrides to Avalonia controls:
+Create a new service in `AvMainClientView` that applies INI overrides to Avalonia controls:
 
 ```csharp
-// DXMainClientView/Services/IIniLayoutOverlayService.cs
+// AvMainClientView/Services/IIniLayoutOverlayService.cs
 public interface IIniLayoutOverlayService
 {
     void ApplyLayout(Window window, string windowName);
@@ -135,7 +135,7 @@ getBottom(control) -> Canvas.GetTop(control) + control.Height
 getRight(control)  -> Canvas.GetLeft(control) + control.Width
 ```
 
-**Decision**: Port `Parser.cs` to `DXMainClientView` as `AvaloniaParser.cs`, operating on `Control` instead of `XNAControl`.
+**Decision**: Port `Parser.cs` to `AvMainClientView` as `AvaloniaParser.cs`, operating on `Control` instead of `XNAControl`.
 
 ### 5. Avalonia Control Type Mapping
 
@@ -468,7 +468,7 @@ For these windows, the AXAML provides only the window shell. The INI overlay fil
 
 **Problem**: INI files use `BasedOn` for file-level inheritance and `$BaseSection` for section-level inheritance.
 
-**Solution**: Use the existing `CCIniFile` class from `ClientCore` (already migrated to `DXMainClientViewModel`). It handles both inheritance mechanisms. The INI overlay service just needs to load the file and query sections.
+**Solution**: Use the existing `CCIniFile` class from `ClientCore` (already migrated to `AvMainClientViewModel`). It handles both inheritance mechanisms. The INI overlay service just needs to load the file and query sections.
 
 ### Challenge 6: Localization
 
@@ -487,7 +487,7 @@ private string Localize(string controlName, string attributeName, string value)
 ## File Structure
 
 ```
-DXMainClientView/
+AvMainClientView/
 ├── Services/
 │   ├── IIniLayoutOverlayService.cs      # INI overlay interface
 │   ├── IniLayoutOverlayService.cs       # INI overlay implementation

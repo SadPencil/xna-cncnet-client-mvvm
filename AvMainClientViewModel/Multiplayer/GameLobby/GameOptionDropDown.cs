@@ -1,0 +1,63 @@
+using AvMainClientMvvmContract.Domain.Multiplayer;
+using AvMainClientMvvmContract.Multiplayer.GameLobby;
+
+using System.Collections.Generic;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using AvMainClientViewModel.Domain.Multiplayer;
+
+namespace AvMainClientViewModel.Multiplayer.GameLobby;
+
+/// <summary>
+/// Observable wrapper for a game option dropdown.
+/// </summary>
+public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
+{
+    public GameSessionSetting Setting { get; }
+
+    public string Name => Setting.Name;
+
+    private int _selectedIndex;
+    public int SelectedIndex
+    {
+        get => _selectedIndex;
+        set
+        {
+            if (SetProperty(ref _selectedIndex, value))
+                Setting.Value = value;
+        }
+    }
+
+    /// <summary>
+    /// The host's selected index. Used for broadcasting and restoring after forced options.
+    /// </summary>
+    public int HostSelectedIndex { get; set; }
+
+    /// <summary>
+    /// The user's selected index. Persists across forced value changes.
+    /// Used for saving/loading skirmish settings.
+    /// </summary>
+    public int UserSelectedIndex { get; set; }
+
+    private bool _isEnabled = true;
+    public bool IsEnabled
+    {
+        get => _isEnabled;
+        set => SetProperty(ref _isEnabled, value);
+    }
+
+    private IReadOnlyList<string> _items = System.Array.Empty<string>();
+    public IReadOnlyList<string> Items
+    {
+        get => _items;
+        set => SetProperty(ref _items, value);
+    }
+
+    public GameOptionDropDown(GameSessionSetting setting)
+    {
+        Setting = setting;
+        _selectedIndex = setting.Value;
+        UserSelectedIndex = setting.Value;
+    }
+}

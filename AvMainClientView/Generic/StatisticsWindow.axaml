@@ -1,0 +1,209 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvMainClientMvvmContract.Generic"
+             x:Class="AvMainClientView.Generic.StatisticsWindow"
+             x:DataType="vmc:IStatisticsWindowViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="800" Height="600">
+  <Canvas x:Name="MainCanvas">
+
+    <!-- ========== Tabs ========== -->
+    <StackPanel Orientation="Horizontal" Spacing="2"
+                Canvas.Left="12" Canvas.Top="12">
+      <Button x:Name="tabGameStatistics" Content="Game Statistics" Width="120" Height="23"
+              FontWeight="Bold" />
+      <Button x:Name="tabTotalStatistics" Content="Total Statistics" Width="120" Height="23"
+              FontWeight="Bold" />
+    </StackPanel>
+
+    <!-- ========== Filters ========== -->
+    <TextBlock Text="FILTER:" FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="300" Canvas.Top="16" />
+    <ComboBox x:Name="cmbGameClassFilter"
+              ItemsSource="{Binding GameClassNames}"
+              SelectedIndex="{Binding SelectedGameClassIndex}"
+              Width="130" Height="21"
+              Canvas.Left="360" Canvas.Top="13" />
+
+    <TextBlock Text="GAME MODE:" FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="510" Canvas.Top="16" />
+    <ComboBox x:Name="cmbGameModeFilter"
+              ItemsSource="{Binding GameModeNames}"
+              SelectedIndex="{Binding SelectedGameModeIndex}"
+              Width="130" Height="21"
+              Canvas.Left="610" Canvas.Top="13" />
+
+    <!-- Include Spectated Games -->
+    <CheckBox x:Name="chkIncludeSpectated"
+              Content="Include spectated games"
+              IsChecked="{Binding IncludeSpectatedGames}"
+              Foreground="{DynamicResource XnaTextBrush}"
+              Canvas.Left="590" Canvas.Top="555" />
+
+    <!-- ========== Game Statistics Panel ========== -->
+    <Border x:Name="panelGameStatistics"
+            Background="#C8000000"
+            BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+            BorderThickness="1"
+            Width="776" Height="500"
+            Canvas.Left="12" Canvas.Top="44">
+      <Grid RowDefinitions="Auto,*,Auto,*">
+        <!-- Games Label -->
+        <TextBlock Text="GAMES:" FontWeight="Bold"
+                   Foreground="{DynamicResource XnaTextBrush}"
+                   Margin="8,4" />
+
+        <!-- Game List -->
+        <Border Grid.Row="1" Background="#80000000" Margin="8,0,8,4"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}" BorderThickness="1">
+          <ListBox ItemsSource="{Binding StatisticEntrySummaries}"
+                   SelectedIndex="{Binding SelectedGameModeIndex}"
+                   Background="Transparent">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="x:String">
+                <TextBlock Text="{Binding .}" Foreground="{DynamicResource XnaTextBrush}" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+
+        <!-- Game Details Label -->
+        <TextBlock Grid.Row="2" Text="GAME DETAILS:" FontWeight="Bold"
+                   Foreground="{DynamicResource XnaTextBrush}"
+                   Margin="8,4" />
+
+        <!-- Selected Game Player Stats -->
+        <Border Grid.Row="3" Background="#80000000" Margin="8,0,8,8"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}" BorderThickness="1">
+          <ListBox ItemsSource="{Binding SelectedGamePlayers}"
+                   Background="Transparent">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vmc:IGamePlayerStatistics">
+                <Grid ColumnDefinitions="120,60,60,60,60,60">
+                  <TextBlock Text="{Binding Name}" Foreground="{DynamicResource XnaTextBrush}" />
+                  <TextBlock Grid.Column="1" Text="{Binding Kills}" Foreground="{DynamicResource XnaTextBrush}" />
+                  <TextBlock Grid.Column="2" Text="{Binding Losses}" Foreground="{DynamicResource XnaTextBrush}" />
+                  <TextBlock Grid.Column="3" Text="{Binding Economy}" Foreground="{DynamicResource XnaTextBrush}" />
+                  <TextBlock Grid.Column="4" Text="{Binding Score}" Foreground="{DynamicResource XnaTextBrush}" />
+                  <TextBlock Grid.Column="5" Text="{Binding SideName}" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+      </Grid>
+    </Border>
+
+    <!-- ========== Total Statistics Panel (same position, toggled) ========== -->
+    <Border x:Name="panelTotalStatistics"
+            Background="#C8000000"
+            BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+            BorderThickness="1"
+            IsVisible="False"
+            Width="776" Height="500"
+            Canvas.Left="12" Canvas.Top="44">
+      <ScrollViewer Margin="12">
+        <Grid ColumnDefinitions="200,150,50,200,150" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+          <!-- Left column labels -->
+          <TextBlock Grid.Row="0" Text="Games started:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding TotalStatistics.GamesStarted}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="1" Text="Games finished:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TotalStatistics.GamesFinished}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="2" Text="Wins:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalStatistics.Wins}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="3" Text="Losses:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TotalStatistics.Losses}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="4" Text="Win/Loss ratio:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding TotalStatistics.WinLossRatio}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="5" Text="Average game length:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding TotalStatistics.AverageGameLength}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="6" Text="Total time played:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding TotalStatistics.TotalTimePlayed}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="7" Text="Average enemies:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding TotalStatistics.AverageEnemyCount}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="8" Text="Average allies:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding TotalStatistics.AverageAllyCount}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <!-- Right column -->
+          <TextBlock Grid.Row="0" Grid.Column="3" Text="Total kills:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding TotalStatistics.TotalKills}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="1" Grid.Column="3" Text="Kills per game:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding TotalStatistics.KillsPerGame}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="2" Grid.Column="3" Text="Total losses:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding TotalStatistics.TotalLosses}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="3" Grid.Column="3" Text="Losses per game:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding TotalStatistics.LossesPerGame}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="4" Grid.Column="3" Text="Kill/Loss ratio:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding TotalStatistics.KillLossRatio}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="5" Grid.Column="3" Text="Total score:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="5" Grid.Column="4" Text="{Binding TotalStatistics.TotalScore}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="6" Grid.Column="3" Text="Average economy:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="6" Grid.Column="4" Text="{Binding TotalStatistics.AverageEconomy}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="7" Grid.Column="3" Text="Favourite side:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="7" Grid.Column="4" Text="{Binding TotalStatistics.FavouriteSide}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+
+          <TextBlock Grid.Row="8" Grid.Column="3" Text="Average AI level:" Foreground="{DynamicResource XnaTextBrush}" Margin="0,4" />
+          <TextBlock Grid.Row="8" Grid.Column="4" Text="{Binding TotalStatistics.AverageAILevel}" Foreground="{DynamicResource XnaAltBrush}" Margin="0,4" />
+        </Grid>
+      </ScrollViewer>
+    </Border>
+
+    <!-- ========== Bottom Buttons ========== -->
+    <Button x:Name="btnReturnToMenu"
+            Content="Return to Main Menu"
+            Command="{Binding ReturnCommand}"
+            Width="160" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="12" Canvas.Top="555" />
+
+    <Button x:Name="btnClearStatistics"
+            Content="Clear Statistics"
+            Command="{Binding ClearStatisticsCommand}"
+            Width="133" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="184" Canvas.Top="555" />
+
+    <!-- ========== Clear Confirmation Overlay ========== -->
+    <Border IsVisible="{Binding ShowClearConfirmation}"
+            Background="#80000000"
+            Canvas.Left="0" Canvas.Top="0"
+            Width="800" Height="600">
+      <Panel>
+        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                BorderThickness="1" Padding="16" Width="400"
+                HorizontalAlignment="Center" VerticalAlignment="Center">
+          <StackPanel Spacing="12">
+            <TextBlock Text="Clear Statistics" FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}" />
+            <TextBlock Text="Are you sure you want to clear all statistics? This action cannot be undone."
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource XnaAltBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+              <Button Content="Yes" Command="{Binding ConfirmClearCommand}" Width="75" Height="23" />
+              <Button Content="No" Command="{Binding CancelClearCommand}" Width="75" Height="23" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </Panel>
+    </Border>
+
+  </Canvas>
+</UserControl>

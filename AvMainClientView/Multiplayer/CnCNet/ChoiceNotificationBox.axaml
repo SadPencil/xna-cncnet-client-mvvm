@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvMainClientMvvmContract.Multiplayer.CnCNet"
+             x:Class="AvMainClientView.Multiplayer.CnCNet.ChoiceNotificationBox"
+             x:DataType="vmc:IChoiceNotificationBoxViewModel"
+             IsVisible="{Binding IsVisible}">
+  <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+          BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+          BorderThickness="1"
+          Padding="12"
+          MaxWidth="350"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Bottom"
+          Margin="16">
+    <StackPanel Spacing="8">
+      <!-- Title -->
+      <TextBlock Text="{Binding TitleText}"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}" />
+
+      <!-- Sender -->
+      <TextBlock Text="{Binding SenderName}"
+                 Foreground="{DynamicResource XnaSubtleTextBrush}" />
+
+      <!-- Message -->
+      <TextBlock Text="{Binding MessageText}"
+                 TextWrapping="Wrap"
+                 Foreground="{DynamicResource XnaAltBrush}" />
+
+      <!-- Buttons -->
+      <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+        <Button Content="{Binding AcceptButtonText}"
+                Command="{Binding AcceptCommand}"
+                Width="92" Height="23" />
+        <Button Content="{Binding DeclineButtonText}"
+                Command="{Binding DeclineCommand}"
+                Width="92" Height="23" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>
