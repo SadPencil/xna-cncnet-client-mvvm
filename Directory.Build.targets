@@ -26,19 +26,25 @@
 
   <Target Name="CopyResources" AfterTargets="Build" Condition="$(DefineConstants.Contains('DEBUG')) AND '$(MSBuildProjectName)' == 'AvClientExe'">
     <ItemGroup>
-      <ExampleClientResources Include="$(MSBuildProjectDirectory)\Resources\DTA\**\*.*" />
-      <ExampleClientMaps Include="$(MSBuildProjectDirectory)\Resources\Maps\**\*.*" />
-      <ExampleClientIni Include="$(MSBuildProjectDirectory)\Resources\INI\**\*.*" />
-      <ExampleClientMix Include="$(MSBuildProjectDirectory)\Resources\MIX\**\*.*" />
-      <ExampleClientSettings Include="$(MSBuildProjectDirectory)\Resources\SUN.ini" />
-      <ExampleClientDefinitions Include="$(MSBuildProjectDirectory)\Resources\ClientDefinitions.ini" />
+      <ExampleClientResources Include="$(MSBuildProjectDirectory)\Examples\TSResources\Resources\**\*.*" />
+      <ExampleClientMaps Include="$(MSBuildProjectDirectory)\Examples\TSResources\Maps\**\*.*" />
+      <ExampleClientIni Include="$(MSBuildProjectDirectory)\Examples\TSResources\INI\**\*.*" />
+      <ExampleClientMix Include="$(MSBuildProjectDirectory)\Examples\TSResources\MIX\**\*.*" />
+      <ExampleClientSettings Include="$(MSBuildProjectDirectory)\Examples\TSResources\SUN.ini" />
+      <ExampleClientDefinitions Include="$(MSBuildProjectDirectory)\Examples\TSResources\Resources\ClientDefinitions.ini" />
     </ItemGroup>
-    <Copy Condition="! Exists('$(OutputPath)\Resources\ClientDefinitions.ini') " SourceFiles="@(ExampleClientResources)" DestinationFolder="$(OutputPath)\Resources\%(RecursiveDir)" />
-    <Copy Condition="! Exists('$(OutputPath)\Resources\ClientDefinitions.ini') " SourceFiles="@(ExampleClientMaps)" DestinationFolder="$(OutputPath)\Maps\%(RecursiveDir)" />
-    <Copy Condition="! Exists('$(OutputPath)\Resources\ClientDefinitions.ini') " SourceFiles="@(ExampleClientIni)" DestinationFolder="$(OutputPath)\INI\%(RecursiveDir)" />
-    <Copy Condition="! Exists('$(OutputPath)\Resources\ClientDefinitions.ini') " SourceFiles="@(ExampleClientMix)" DestinationFolder="$(OutputPath)\MIX\%(RecursiveDir)" />
-    <Copy Condition="! Exists('$(OutputPath)\Resources\ClientDefinitions.ini') " SourceFiles="@(ExampleClientSettings)" DestinationFolder="$(OutputPath)" />
-    <Copy Condition="! Exists('$(OutputPath)\Resources\ClientDefinitions.ini') " SourceFiles="@(ExampleClientDefinitions)" DestinationFolder="$(OutputPath)\Resources" />
+    
+    <PropertyGroup>
+      <NeedsCopyResources>false</NeedsCopyResources>
+      <NeedsCopyResources Condition="!Exists('$(OutputPath)\Resources\ClientDefinitions.ini')">true</NeedsCopyResources>
+    </PropertyGroup>
+
+    <Copy Condition="'$(NeedsCopyResources)' == 'true'" SourceFiles="@(ExampleClientResources)" DestinationFolder="$(OutputPath)\Resources\%(RecursiveDir)" />
+    <Copy Condition="'$(NeedsCopyResources)' == 'true'" SourceFiles="@(ExampleClientMaps)" DestinationFolder="$(OutputPath)\Maps\%(RecursiveDir)" />
+    <Copy Condition="'$(NeedsCopyResources)' == 'true'" SourceFiles="@(ExampleClientIni)" DestinationFolder="$(OutputPath)\INI\%(RecursiveDir)" />
+    <Copy Condition="'$(NeedsCopyResources)' == 'true'" SourceFiles="@(ExampleClientMix)" DestinationFolder="$(OutputPath)\MIX\%(RecursiveDir)" />
+    <Copy Condition="'$(NeedsCopyResources)' == 'true'" SourceFiles="@(ExampleClientSettings)" DestinationFolder="$(OutputPath)" />
+    <Copy Condition="'$(NeedsCopyResources)' == 'true'" SourceFiles="@(ExampleClientDefinitions)" DestinationFolder="$(OutputPath)\Resources" />
   </Target>
 
   <Target Name="CopyUpdater" AfterTargets="Build" Condition="'$(PublishDir)' != '' AND '$(MSBuildProjectName)' == 'SecondStageUpdater'">
