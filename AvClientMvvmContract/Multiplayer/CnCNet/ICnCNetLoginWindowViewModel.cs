@@ -12,4 +12,6 @@ public interface ICnCNetLoginWindowViewModel : INotifyPropertyChanged
 
     IRelayCommand ConnectCommand { get; }
     IRelayCommand CancelCommand { get; }
+
+    void LoadSettings();
 }

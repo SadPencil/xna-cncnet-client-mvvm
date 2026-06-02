@@ -151,8 +151,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private List<string> channelOptions = new();
     public IReadOnlyList<string> ChannelOptions => channelOptions;
 
-    private readonly CnCNetLoginWindowViewModel LoginWindowViewModel;
-    ICnCNetLoginWindowViewModel ICnCNetLobbyViewModel.LoginWindowViewModel => LoginWindowViewModel;
+    public ICnCNetLoginWindowViewModel LoginWindowViewModel { get; }
 
     public CnCNetLobbyViewModel(
         CnCNetManager connectionManager,
