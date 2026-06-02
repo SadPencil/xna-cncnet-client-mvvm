@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -19,7 +18,6 @@ using AvClientViewModel.Domain.Multiplayer.LAN;
 using AvClientViewModel.LAN;
 using AvClientViewModel.Multiplayer.GameLobby;
 using AvClientViewModel.Online;
-using AvClientViewModel.Services;
 
 using ClientCore;
 using ClientCore.Extensions;
