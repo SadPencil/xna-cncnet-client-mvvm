@@ -123,6 +123,8 @@ namespace AvClientViewModel.Generic
             this.updaterOptionsPanel = updaterOptionsPanel;
             this.componentsPanel = componentsPanel;
 
+            componentsPanel.Initialize();
+
             // Original: if ModMode || no update mirrors -> hide both updater and components tabs
             // else if no custom components -> hide only components tab
             if (ClientConfiguration.Instance.ModMode || Updater.UpdateMirrors == null || Updater.UpdateMirrors.Count < 1)

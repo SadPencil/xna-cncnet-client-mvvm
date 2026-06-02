@@ -485,6 +485,11 @@ public static class PreStartup
         services.AddSingleton<ICampaignSelectorViewModel>(sp =>
             sp.GetRequiredService<CampaignSelectorViewModel>());
 
+        // CampaignTagSelectorViewModel (singleton: MainMenuViewModel holds a reference and sets IsVisible)
+        services.AddSingleton<CampaignTagSelectorViewModel>();
+        services.AddSingleton<ICampaignTagSelectorViewModel>(sp =>
+            sp.GetRequiredService<CampaignTagSelectorViewModel>());
+
         // GameLoadingWindowViewModel (singleton: MainMenuViewModel holds a reference and sets IsVisible)
         services.AddSingleton<GameLoadingWindowViewModel>();
         services.AddSingleton<IGameLoadingWindowViewModel>(sp =>
@@ -588,6 +593,7 @@ public static class PreStartup
             sp.GetRequiredService<OptionsWindowViewModel>(),
             sp.GetRequiredService<TopBarViewModel>(),
             sp.GetRequiredService<CampaignSelectorViewModel>(),
+            sp.GetRequiredService<CampaignTagSelectorViewModel>(),
             sp.GetRequiredService<GameLoadingWindowViewModel>(),
             sp.GetRequiredService<ExtrasWindowViewModel>(),
             sp.GetRequiredService<StatisticsWindowViewModel>(),

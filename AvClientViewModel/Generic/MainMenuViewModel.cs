@@ -51,6 +51,7 @@ namespace AvClientViewModel.Generic
         private readonly OptionsWindowViewModel optionsWindowViewModel;
         private readonly TopBarViewModel topBarViewModel;
         private readonly CampaignSelectorViewModel campaignSelectorViewModel;
+        private readonly CampaignTagSelectorViewModel campaignTagSelectorViewModel;
         private readonly GameLoadingWindowViewModel gameLoadingWindowViewModel;
         private readonly ExtrasWindowViewModel extrasWindowViewModel;
         private readonly StatisticsWindowViewModel statisticsWindowViewModel;
@@ -154,6 +155,7 @@ namespace AvClientViewModel.Generic
             OptionsWindowViewModel optionsWindowViewModel,
             TopBarViewModel topBarViewModel,
             CampaignSelectorViewModel campaignSelectorViewModel,
+            CampaignTagSelectorViewModel campaignTagSelectorViewModel,
             GameLoadingWindowViewModel gameLoadingWindowViewModel,
             ExtrasWindowViewModel extrasWindowViewModel,
             StatisticsWindowViewModel statisticsWindowViewModel,
@@ -176,6 +178,7 @@ namespace AvClientViewModel.Generic
             this.optionsWindowViewModel = optionsWindowViewModel;
             this.topBarViewModel = topBarViewModel;
             this.campaignSelectorViewModel = campaignSelectorViewModel;
+            this.campaignTagSelectorViewModel = campaignTagSelectorViewModel;
             this.gameLoadingWindowViewModel = gameLoadingWindowViewModel;
             this.extrasWindowViewModel = extrasWindowViewModel;
             this.statisticsWindowViewModel = statisticsWindowViewModel;
@@ -211,6 +214,9 @@ namespace AvClientViewModel.Generic
             skirmishLobbyViewModel.Initialize();
             lanLobbyViewModel.Initialize();
             cncNetLobbyViewModel.Initialize();
+            privateMessagingWindowViewModel.Initialize();
+            updateWindowViewModel.Initialize();
+            campaignTagSelectorViewModel.Initialize();
 
             ShowVersionInfo = !ClientConfiguration.Instance.ModMode;
 
@@ -296,13 +302,19 @@ namespace AvClientViewModel.Generic
         [RelayCommand]
         private void StartCampaign()
         {
-            campaignSelectorViewModel.IsVisible = true;
+            if (ClientConfiguration.Instance.CampaignTagSelectorEnabled)
+                campaignTagSelectorViewModel.Open();
+            else
+                campaignSelectorViewModel.IsVisible = true;
         }
 
         [RelayCommand]
         private void ContinueCampaign()
         {
-            campaignSelectorViewModel.IsVisible = true;
+            if (ClientConfiguration.Instance.CampaignTagSelectorEnabled)
+                campaignTagSelectorViewModel.Open();
+            else
+                campaignSelectorViewModel.IsVisible = true;
         }
 
         [RelayCommand]
