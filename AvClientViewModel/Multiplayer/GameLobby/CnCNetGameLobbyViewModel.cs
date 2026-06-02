@@ -350,6 +350,8 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         ResetDiscordPresence();
     }
 
+    protected override void LeaveGame() => LeaveGameLobby();
+
     [RelayCommand]
     public void LeaveGameLobby()
     {

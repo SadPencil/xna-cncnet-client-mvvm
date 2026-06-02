@@ -499,6 +499,8 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     [RelayCommand]
     public void LeaveGameLobby() => LeaveGame();
 
+    protected override void LeaveGame() => LeaveGame(null);
+
     protected void LeaveGame(string message = null)
     {
         if (leaving)
