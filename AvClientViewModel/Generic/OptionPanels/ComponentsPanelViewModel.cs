@@ -1,11 +1,12 @@
-using AvClientMvvmContract.Generic.OptionPanels;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
+using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.ViewServices;
 
 using ClientCore;
 using ClientCore.Extensions;
@@ -16,7 +17,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Generic.OptionPanels;
 

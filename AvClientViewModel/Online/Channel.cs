@@ -1,11 +1,14 @@
-using AvClientMvvmContract.Online;
-using ClientCore;
-using ClientCore.Enums;
-using AvClientViewModel.Online.EventArguments;
 using System;
 using System.Collections.Generic;
-using ClientCore.Extensions;
 using System.Diagnostics;
+
+using AvClientMvvmContract.Online;
+
+using AvClientViewModel.Online.EventArguments;
+
+using ClientCore;
+using ClientCore.Enums;
+using ClientCore.Extensions;
 
 namespace AvClientViewModel.Online
 {

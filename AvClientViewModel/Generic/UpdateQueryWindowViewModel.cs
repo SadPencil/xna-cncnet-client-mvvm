@@ -1,10 +1,10 @@
 using AvClientMvvmContract.Generic;
 
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-
 using ClientCore;
 using ClientCore.Extensions;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientViewModel.Generic
 {

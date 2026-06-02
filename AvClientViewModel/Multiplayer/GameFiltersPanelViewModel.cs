@@ -1,8 +1,8 @@
-using AvClientMvvmContract.Multiplayer;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using AvClientMvvmContract.Multiplayer;
 
 using ClientCore;
 

@@ -1,12 +1,12 @@
-﻿using ClientCore;
-using ClientCore.Extensions;
-
-using Rampastring.Tools;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using ClientCore;
+using ClientCore.Extensions;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Domain
 {

@@ -1,17 +1,21 @@
-using AvClientMvvmContract.Generic;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ClientCore;
-using ClientCore.Extensions;
-using AvClientViewModel.Domain.Multiplayer.CnCNet;
-using AvClientViewModel.Online;
-using AvClientViewModel.Online.EventArguments;
-using Rampastring.Tools;
 using System;
 using System.Threading;
 using System.Timers;
+
+using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Domain.Multiplayer.CnCNet;
+using AvClientViewModel.Online;
+using AvClientViewModel.Online.EventArguments;
+
+using ClientCore;
+using ClientCore.Extensions;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Generic
 {

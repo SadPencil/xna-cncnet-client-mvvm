@@ -1,17 +1,17 @@
-using AvClientMvvmContract.Multiplayer.CnCNet;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+using AvClientMvvmContract.Multiplayer.CnCNet;
+
+using AvClientViewModel.Domain.Multiplayer;
+using AvClientViewModel.Online.EventArguments;
+
 using ClientCore.Extensions;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using AvClientViewModel.Domain.Multiplayer;
-using AvClientViewModel.Online.EventArguments;
 
 namespace AvClientViewModel.Multiplayer.CnCNet;
 

@@ -7,8 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using ClientCore;
-using ClientCore.I18N;
 using ClientCore.Enums;
+using ClientCore.I18N;
 
 using Rampastring.Tools;
 

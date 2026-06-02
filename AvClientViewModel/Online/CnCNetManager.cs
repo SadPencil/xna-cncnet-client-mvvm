@@ -1,14 +1,18 @@
-using ClientCore;
-using AvClientViewModel.Domain.Multiplayer.CnCNet;
-using AvClientViewModel.Online.EventArguments;
-using ClientCore.Extensions;
-using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AvClientMvvmContract.ViewServices;
+
 using AvClientMvvmContract;
+using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Domain.Multiplayer.CnCNet;
+using AvClientViewModel.Online.EventArguments;
+
+using ClientCore;
+using ClientCore.Extensions;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Online
 {

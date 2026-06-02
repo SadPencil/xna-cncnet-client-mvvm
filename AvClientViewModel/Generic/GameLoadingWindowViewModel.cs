@@ -1,20 +1,20 @@
-using AvClientMvvmContract.Generic;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-
-using ClientCore;
-using ClientCore.Extensions;
-
-using AvClientViewModel.Campaign;
-using AvClientViewModel.Domain;
-
-using Rampastring.Tools;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using AvClientMvvmContract.Generic;
+
+using AvClientViewModel.Campaign;
+using AvClientViewModel.Domain;
+
+using ClientCore;
+using ClientCore.Extensions;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Generic
 {

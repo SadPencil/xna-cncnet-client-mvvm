@@ -1,9 +1,9 @@
-using AvClientMvvmContract.Generic.OptionPanels;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
+using AvClientMvvmContract.Generic.OptionPanels;
 
 using ClientCore;
 using ClientCore.Extensions;

@@ -1,7 +1,7 @@
+using System;
+
 using AvClientMvvmContract;
 using AvClientMvvmContract.Online;
-
-using System;
 
 namespace AvClientViewModel.Online
 {

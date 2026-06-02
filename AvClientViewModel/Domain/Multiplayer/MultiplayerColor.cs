@@ -1,14 +1,14 @@
-using ClientCore;
-using ClientCore.Extensions;
+using System;
+using System.Collections.Generic;
 
 using AvClientMvvmContract;
 
 using AvClientViewModel.Online;
 
-using Rampastring.Tools;
+using ClientCore;
+using ClientCore.Extensions;
 
-using System;
-using System.Collections.Generic;
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Domain.Multiplayer
 {

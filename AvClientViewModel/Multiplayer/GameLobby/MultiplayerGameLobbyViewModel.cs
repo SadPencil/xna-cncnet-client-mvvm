@@ -1,19 +1,23 @@
-using AvClientMvvmContract.Multiplayer.GameLobby;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
+using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Domain;
+using AvClientViewModel.Domain.Multiplayer;
+
 using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.Statistics;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using AvClientViewModel.Domain;
-using AvClientViewModel.Domain.Multiplayer;
+
 using Rampastring.Tools;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 

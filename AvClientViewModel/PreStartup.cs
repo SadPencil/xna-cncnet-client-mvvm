@@ -1,11 +1,3 @@
-using AvClientMvvmContract.Generic;
-using AvClientMvvmContract.Generic.OptionPanels;
-using AvClientMvvmContract.Campaign;
-using AvClientMvvmContract.Multiplayer;
-using AvClientMvvmContract.Multiplayer.CnCNet;
-using AvClientMvvmContract.Multiplayer.GameLobby;
-using AvClientMvvmContract.ViewServices;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,19 +11,18 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ClientCore;
-using ClientCore.Enums;
-using ClientCore.Extensions;
-using ClientCore.I18N;
-using ClientCore.INIProcessing;
-using ClientCore.Settings;
+using AvClientMvvmContract.Campaign;
+using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.Multiplayer;
+using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
 
-using ClientUpdater;
-
+using AvClientViewModel.Campaign;
 using AvClientViewModel.Domain;
 using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
-using AvClientViewModel.Campaign;
 using AvClientViewModel.Generic;
 using AvClientViewModel.Generic.OptionPanels;
 using AvClientViewModel.LAN;
@@ -40,6 +31,15 @@ using AvClientViewModel.Multiplayer.CnCNet;
 using AvClientViewModel.Multiplayer.GameLobby;
 using AvClientViewModel.Online;
 using AvClientViewModel.Services;
+
+using ClientCore;
+using ClientCore.Enums;
+using ClientCore.Extensions;
+using ClientCore.I18N;
+using ClientCore.INIProcessing;
+using ClientCore.Settings;
+
+using ClientUpdater;
 
 using Microsoft.Extensions.DependencyInjection;
 

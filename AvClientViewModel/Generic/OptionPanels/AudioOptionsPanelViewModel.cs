@@ -1,12 +1,12 @@
-using AvClientMvvmContract.Generic.OptionPanels;
-
 using System;
+
+using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.ViewServices;
 
 using ClientCore;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Generic.OptionPanels;
 

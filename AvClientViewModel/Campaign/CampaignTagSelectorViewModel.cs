@@ -1,17 +1,17 @@
-using AvClientMvvmContract.Domain;
-using AvClientMvvmContract.Campaign;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+using AvClientMvvmContract.Campaign;
+using AvClientMvvmContract.Domain;
+
+using AvClientViewModel.Domain;
+
 using ClientCore;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using AvClientViewModel.Domain;
 
 namespace AvClientViewModel.Campaign;
 

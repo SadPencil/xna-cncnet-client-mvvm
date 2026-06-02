@@ -1,9 +1,15 @@
-using AvClientMvvmContract;
-using AvClientMvvmContract.Multiplayer;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using AvClientMvvmContract;
+using AvClientMvvmContract.Multiplayer;
+using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Domain;
+using AvClientViewModel.Domain.Multiplayer;
+using AvClientViewModel.Online;
 
 using ClientCore;
 using ClientCore.Extensions;
@@ -12,12 +18,7 @@ using ClientCore.Statistics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using AvClientViewModel.Domain;
-using AvClientViewModel.Domain.Multiplayer;
-using AvClientViewModel.Online;
-
 using Rampastring.Tools;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Multiplayer;
 

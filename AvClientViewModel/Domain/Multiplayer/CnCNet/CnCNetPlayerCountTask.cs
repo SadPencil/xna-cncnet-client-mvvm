@@ -1,8 +1,8 @@
 #nullable enable
-using ClientCore;
-
 using System;
 using System.Threading;
+
+using ClientCore;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {

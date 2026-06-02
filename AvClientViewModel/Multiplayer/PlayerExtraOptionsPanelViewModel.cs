@@ -1,16 +1,16 @@
-using AvClientMvvmContract.Multiplayer;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+using AvClientMvvmContract.Multiplayer;
+
+using AvClientViewModel.Domain.Multiplayer;
+
 using ClientCore.Extensions;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using AvClientViewModel.Domain.Multiplayer;
 
 namespace AvClientViewModel.Multiplayer;
 

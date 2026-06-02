@@ -1,10 +1,11 @@
-using AvClientMvvmContract.Multiplayer.CnCNet;
 using System;
 using System.Timers;
 
+using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.ViewServices;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Multiplayer.CnCNet;
 

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
 
-using ClientCore;
-
 using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
+
+using ClientCore;
 
 using Rampastring.Tools;
 

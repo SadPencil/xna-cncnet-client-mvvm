@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
+
 using AvClientMvvmContract.Domain.Multiplayer;
 
 using ClientCore;
 using ClientCore.Extensions;
 
 using Rampastring.Tools;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
 
 namespace AvClientViewModel.Domain.Multiplayer
 {

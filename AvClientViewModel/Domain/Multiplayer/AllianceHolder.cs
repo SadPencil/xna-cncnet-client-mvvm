@@ -1,9 +1,9 @@
-﻿using ClientCore;
+﻿using System.Collections.Generic;
+
+using ClientCore;
 using ClientCore.Enums;
 
 using Rampastring.Tools;
-
-using System.Collections.Generic;
 
 namespace AvClientViewModel.Domain.Multiplayer
 {

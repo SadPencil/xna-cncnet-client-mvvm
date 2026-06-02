@@ -1,6 +1,6 @@
-﻿using AvClientViewModel.Domain.Multiplayer.CnCNet;
+﻿using System;
 
-using System;
+using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
 using ClientCore;
 

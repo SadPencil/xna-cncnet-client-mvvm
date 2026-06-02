@@ -1,6 +1,6 @@
-using AvClientMvvmContract.Campaign;
-
 using System.ComponentModel;
+
+using AvClientMvvmContract.Campaign;
 
 namespace AvClientViewModel.Campaign;
 

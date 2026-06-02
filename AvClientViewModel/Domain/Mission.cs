@@ -1,11 +1,11 @@
-using AvClientMvvmContract.Domain;
-
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
+
+using AvClientMvvmContract.Domain;
 
 using ClientCore;
 using ClientCore.Enums;

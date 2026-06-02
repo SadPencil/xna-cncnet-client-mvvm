@@ -1,7 +1,7 @@
-using AvClientMvvmContract.Online;
-
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using AvClientMvvmContract.Online;
 
 namespace AvClientViewModel.Online;
 

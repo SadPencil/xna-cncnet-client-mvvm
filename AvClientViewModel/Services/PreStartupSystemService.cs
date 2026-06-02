@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Threading;
 
+using AvClientViewModel.Online;
+
 using ClientCore;
 using ClientCore.Settings;
-
-using AvClientViewModel.Online;
 
 using Rampastring.Tools;
 

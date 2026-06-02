@@ -1,8 +1,8 @@
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
-using CommunityToolkit.Mvvm.ComponentModel;
-
 using AvClientViewModel.Domain.Multiplayer;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 

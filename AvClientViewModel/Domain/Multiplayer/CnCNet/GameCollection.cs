@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
-
-using Rampastring.Tools;
 
 using ClientCore;
 using ClientCore.Extensions;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {

@@ -1,7 +1,7 @@
-using AvClientMvvmContract.Multiplayer.CnCNet;
-
 using System;
 using System.Threading.Tasks;
+
+using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using ClientCore.Extensions;
 

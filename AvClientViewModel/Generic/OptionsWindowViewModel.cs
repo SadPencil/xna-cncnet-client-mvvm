@@ -1,20 +1,20 @@
+using System;
+
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Generic.OptionPanels;
+
+using AvClientViewModel.Generic.OptionPanels;
+
+using ClientCore;
+using ClientCore.Enums;
+using ClientCore.Extensions;
+
+using ClientUpdater;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using ClientCore;
-using ClientCore.Extensions;
-using ClientCore.Enums;
-
-using ClientUpdater;
-
 using Rampastring.Tools;
-
-using System;
-
-using AvClientViewModel.Generic.OptionPanels;
 
 namespace AvClientViewModel.Generic
 {

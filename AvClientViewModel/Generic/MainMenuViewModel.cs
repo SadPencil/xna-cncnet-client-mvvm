@@ -1,14 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
 
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using ClientCore;
-using ClientCore.Enums;
-using ClientCore.Extensions;
-using ClientCore.I18N;
 using AvClientViewModel.Campaign;
 using AvClientViewModel.Domain;
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
@@ -17,13 +18,16 @@ using AvClientViewModel.Multiplayer.CnCNet;
 using AvClientViewModel.Multiplayer.GameLobby;
 using AvClientViewModel.Online;
 using AvClientViewModel.Services;
+
+using ClientCore;
+using ClientCore.Enums;
+using ClientCore.Extensions;
+using ClientCore.I18N;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
 using Rampastring.Tools;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Generic
 {

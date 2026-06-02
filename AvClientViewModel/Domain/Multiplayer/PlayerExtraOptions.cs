@@ -1,9 +1,9 @@
-﻿using ClientCore.Extensions;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using ClientCore.Extensions;
 
 namespace AvClientViewModel.Domain.Multiplayer
 {

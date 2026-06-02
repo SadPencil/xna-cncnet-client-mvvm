@@ -1,14 +1,18 @@
+using System;
+using System.Threading;
+
 using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.ViewServices;
+
+using AvClientViewModel.Domain;
+
+using ClientCore;
+using ClientCore.Extensions;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ClientCore;
-using ClientCore.Extensions;
-using AvClientViewModel.Domain;
+
 using Rampastring.Tools;
-using System;
-using System.Threading;
-using AvClientMvvmContract.ViewServices;
 
 namespace AvClientViewModel.Generic
 {
