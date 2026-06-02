@@ -7,14 +7,21 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.ViewServices;
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 
 using ClientCore;
 using ClientCore.Enums;
+using ClientCore.Extensions;
 using ClientCore.I18N;
 using ClientCore.INIProcessing;
 using ClientCore.Settings;
@@ -38,7 +45,27 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Rampastring.Tools;
 
+using Steamworks;
+
 namespace AvClientViewModel;
+
+/// <summary>
+/// Contains client startup parameters.
+/// </summary>
+public struct StartupParams
+{
+    public StartupParams(bool noAudio, bool multipleInstanceMode,
+        List<string> unknownParams)
+    {
+        NoAudio = noAudio;
+        MultipleInstanceMode = multipleInstanceMode;
+        UnknownStartupParams = unknownParams ?? new List<string>();
+    }
+
+    public bool NoAudio { get; }
+    public bool MultipleInstanceMode { get; }
+    public List<string> UnknownStartupParams { get; }
+}
 
 /// <summary>
 /// Initializes client systems before the UI starts.
@@ -46,32 +73,40 @@ namespace AvClientViewModel;
 /// </summary>
 public static class PreStartup
 {
+    private static readonly Stopwatch startupStopwatch = Stopwatch.StartNew();
+    public static TimeSpan StartupElapsed => startupStopwatch.Elapsed;
+
     /// <summary>
     /// Initializes all non-UI systems.
     /// </summary>
-    public static void Initialize()
+    public static void Initialize(StartupParams parameters = default)
     {
-        // --- Culture (same as DXMainClient PreStartup) ---
+        // --- Culture (same as DXMainClient PreStartup lines 60-61) ---
         Translation.InitialUICulture = CultureInfo.CurrentUICulture;
         CultureInfo.CurrentUICulture = new CultureInfo(ProgramConstants.HARDCODED_LOCALE_CODE);
 
         IniFile.DisallowDesktopIni = true;
 
+        // --- Exception handling (same as DXMainClient PreStartup lines 65-69) ---
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-            Logger.Log("Unhandled exception: " + args.ExceptionObject);
+            HandleException(sender, (Exception)args.ExceptionObject);
 
-        // --- Working directory (same as DXMainClient PreStartup) ---
+        // --- Working directory (same as DXMainClient PreStartup lines 71-73) ---
         DirectoryInfo gameDirectory = SafePath.GetDirectory(ProgramConstants.GamePath);
         Environment.CurrentDirectory = gameDirectory.FullName;
-        Logger.Log("Game path: " + ProgramConstants.GamePath);
 
-        // --- Logger (same as DXMainClient PreStartup) ---
+        // --- Check permissions (same as DXMainClient PreStartup lines 75-76) ---
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            CheckPermissions();
+
+        // --- Logger setup (same as DXMainClient PreStartup lines 78-97) ---
         DirectoryInfo clientUserFilesDirectory = SafePath.GetDirectory(ProgramConstants.ClientUserFilesPath);
         FileInfo clientLogFile = SafePath.GetFile(clientUserFilesDirectory.FullName, "client.log");
         ProgramConstants.LogFileName = clientLogFile.FullName;
 
         if (clientLogFile.Exists)
         {
+            // Copy client.log file as client_previous.log. Override client_previous.log if it exists.
             FileInfo clientPrevLogFile = SafePath.GetFile(clientUserFilesDirectory.FullName, "client_previous.log");
             if (clientPrevLogFile.Exists)
                 File.Delete(clientPrevLogFile.FullName);
@@ -80,22 +115,168 @@ public static class PreStartup
 
         Logger.Initialize(clientUserFilesDirectory.FullName, clientLogFile.Name);
         Logger.WriteLogFile = true;
-        Domain.MainClientConstants.LoggerInitialized = true;
+        MainClientConstants.LoggerInitialized = true;
 
         if (!clientUserFilesDirectory.Exists)
             clientUserFilesDirectory.Create();
 
-        Logger.Log("***Logfile for " + Domain.MainClientConstants.GAME_NAME_LONG + " client***");
+        Logger.Log("***Logfile for " + MainClientConstants.GAME_NAME_LONG + " client***");
 
+        // --- Version logging (same as DXMainClient PreStartup lines 100-110) ---
         string clientVersion = GitVersionInformation.AssemblySemVer;
-        Logger.Log("Client version: " + clientVersion);
+#if DEVELOPMENT_BUILD
+        clientVersion = $"{GitVersionInformation.CommitDate} {GitVersionInformation.BranchName}@{GitVersionInformation.ShortSha}";
+#endif
+
+        Logger.Log($"Client version: {clientVersion}");
         Logger.Log(GitVersionInformation.InformationalVersion);
 
-        // --- Client configuration (same as DXMainClient PreStartup) ---
-        Domain.MainClientConstants.Initialize();
+#if DEVELOPMENT_BUILD
+        Logger.Log("This is a development build of the client. Stability and reliability may not be fully guaranteed.");
+#endif
+
+        // --- Client configuration (same as DXMainClient PreStartup line 111) ---
+        MainClientConstants.Initialize();
+
+        // --- Startup params logging (same as DXMainClient PreStartup lines 114-125) ---
+        if (parameters.NoAudio)
+        {
+            Logger.Log("Startup parameter: No audio");
+
+            // TODO fix
+            throw new NotImplementedException("-NOAUDIO is currently not implemented, please run the client without it.".L10N("Client:Main:NoAudio"));
+        }
+
+        if (parameters.MultipleInstanceMode)
+            Logger.Log("Startup parameter: Allow multiple client instances");
+
+        parameters.UnknownStartupParams.ForEach(p => Logger.Log("Unknown startup parameter: " + p));
 
         Logger.Log("Loading settings.");
+
+        // --- Settings initialization (same as DXMainClient PreStartup lines 127-129) ---
         UserINISettings.Initialize(ClientConfiguration.Instance.SettingsIniName);
+
+        // --- Translation loading (same as DXMainClient PreStartup lines 131-164) ---
+        try
+        {
+            Translation translation;
+            FileInfo translationThemeFile = SafePath.GetFile(UserINISettings.Instance.TranslationThemeFolderPath, ClientConfiguration.Instance.TranslationIniName);
+            FileInfo translationFile = SafePath.GetFile(UserINISettings.Instance.TranslationFolderPath, ClientConfiguration.Instance.TranslationIniName);
+
+            if (translationFile.Exists)
+            {
+                Logger.Log($"Loading generic translation file at {translationFile.FullName}");
+                translation = new Translation(translationFile.FullName, UserINISettings.Instance.Translation);
+                if (translationThemeFile.Exists)
+                {
+                    Logger.Log($"Loading theme-specific translation file at {translationThemeFile.FullName}");
+                    translation.AppendValuesFromIniFile(translationThemeFile.FullName);
+                }
+
+                Translation.Instance = translation;
+            }
+            else
+            {
+                Logger.Log($"Failed to load a translation file. " +
+                    $"Neither {translationThemeFile.FullName} nor {translationFile.FullName} exist.");
+            }
+
+            Logger.Log("Loaded translation: " + Translation.Instance.Name);
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("Failed to load the translation file. " + ex.ToString());
+            Translation.Instance = new Translation(UserINISettings.Instance.Translation);
+        }
+
+        CultureInfo.CurrentUICulture = Translation.Instance.Culture;
+
+        // --- Translation stub generation (same as DXMainClient PreStartup lines 166-192) ---
+        try
+        {
+            if (UserINISettings.Instance.GenerateTranslationStub)
+            {
+                string stubPath = SafePath.CombineFilePath(
+                    ProgramConstants.ClientUserFilesPath, ClientConfiguration.Instance.TranslationIniName);
+
+                AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+                {
+                    Logger.Log("Writing the translation stub file.");
+                    var ini = Translation.Instance.DumpIni(UserINISettings.Instance.GenerateOnlyNewValuesInTranslationStub);
+                    ini.WriteIniFile(stubPath);
+                };
+
+                Logger.Log("Translation stub generation feature is now enabled. The stub file will be written when the client exits.");
+
+                // Lookup all compile-time available strings
+                ClientCore.Generated.TranslationNotifier.Register();
+                ClientUpdater.Generated.TranslationNotifier.Register();
+                AvClientViewModel.Generated.TranslationNotifier.Register();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Log("Failed to generate the translation stub: " + ex.ToString());
+        }
+
+        // --- Custom mission initialization (same as DXMainClient PreStartup lines 194-196) ---
+        CustomMissionHelper.Initialize();
+        CustomMissionHelper.DeleteSupplementalMissionFiles();
+
+        // --- Delete obsolete files from old target project versions (same as DXMainClient PreStartup lines 199-218) ---
+        Task.Run(() =>
+        {
+            gameDirectory.EnumerateFiles("mainclient.log").SingleOrDefault()?.Delete();
+            gameDirectory.EnumerateFiles("aunchupdt.dat").SingleOrDefault()?.Delete();
+
+            try
+            {
+                gameDirectory.EnumerateFiles("wsock32.dll").SingleOrDefault()?.Delete();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+
+                string error = ("Deleting wsock32.dll failed! Please close any " +
+                    "applications that could be using the file, and then start the client again." + "\n\n" +
+                    "Message:").L10N("Client:Main:DeleteWsock32Failed") + " " + ex.Message;
+
+                MainClientConstants.DisplayErrorAction(null, error, true);
+            }
+        });
+
+        // --- Resource path (same as DXMainClient Startup.Execute lines 37-41) ---
+        ProgramConstants.RESOURCES_DIR = SafePath.CombineDirectoryPath(
+            ProgramConstants.BASE_RESOURCE_PATH,
+            UserINISettings.Instance.ThemeFolderPath);
+
+        DirectoryInfo resourcesDirectory = SafePath.GetDirectory(ProgramConstants.GetResourcePath());
+        if (!resourcesDirectory.Exists)
+            throw new DirectoryNotFoundException("Theme directory not found!" + Environment.NewLine + ProgramConstants.RESOURCES_DIR);
+
+        Logger.Log("Resource path: " + ProgramConstants.GetResourcePath());
+        Logger.Log("Base resource path: " + ProgramConstants.GetBaseResourcePath());
+
+        // --- Player name initialization (same as DXMainClient GameClass.Initialize lines 222-240) ---
+        string playerName = UserINISettings.Instance.PlayerName.Value.Trim();
+
+        if (UserINISettings.Instance.AutoRemoveUnderscoresFromName)
+        {
+            while (playerName.EndsWith("_"))
+                playerName = playerName.Substring(0, playerName.Length - 1);
+        }
+
+        if (string.IsNullOrEmpty(playerName))
+        {
+            playerName = Environment.UserName;
+            playerName = playerName.Substring(playerName.IndexOf("\\") + 1);
+        }
+
+        playerName = NameValidator.GetValidOfflineName(playerName);
+
+        ProgramConstants.PLAYERNAME = playerName;
+        UserINISettings.Instance.PlayerName.Value = playerName;
 
         // --- Client resolution initialization (same as DXMainClient Startup.Execute lines 133-147) ---
         if (!UserINISettings.Instance.BorderlessWindowedClient)
@@ -111,64 +292,7 @@ public static class PreStartup
             UserINISettings.Instance.ClientResolutionY = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionY", safeHeight);
         }
 
-        // --- Player name initialization (same as DXMainClient GameClass.Initialize) ---
-        string playerName = UserINISettings.Instance.PlayerName.Value.Trim();
-
-        if (UserINISettings.Instance.AutoRemoveUnderscoresFromName)
-        {
-            while (playerName.EndsWith("_"))
-                playerName = playerName.Substring(0, playerName.Length - 1);
-        }
-
-        if (string.IsNullOrEmpty(playerName))
-        {
-            playerName = Environment.UserName;
-            playerName = playerName.Substring(playerName.IndexOf("\\") + 1);
-        }
-
-        playerName = Domain.Multiplayer.CnCNet.NameValidator.GetValidOfflineName(playerName);
-
-        ProgramConstants.PLAYERNAME = playerName;
-        UserINISettings.Instance.PlayerName.Value = playerName;
-
-        // --- Theme resource path (same as DXMainClient Startup.Execute) ---
-        ProgramConstants.RESOURCES_DIR = SafePath.CombineDirectoryPath(
-            ProgramConstants.BASE_RESOURCE_PATH,
-            UserINISettings.Instance.ThemeFolderPath);
-
-        DirectoryInfo resourcesDirectory = SafePath.GetDirectory(ProgramConstants.GetResourcePath());
-        if (!resourcesDirectory.Exists)
-        {
-            Logger.Log("Theme directory not found: " + ProgramConstants.GetResourcePath());
-            Logger.Log("Falling back to base resources.");
-            ProgramConstants.RESOURCES_DIR = ProgramConstants.BASE_RESOURCE_PATH;
-        }
-
-        Logger.Log("Resource path: " + ProgramConstants.GetResourcePath());
-        Logger.Log("Base resource path: " + ProgramConstants.GetBaseResourcePath());
-
-        // --- Delete obsolete files from old target project versions (same as DXMainClient PreStartup) ---
-        Task.Run(() =>
-        {
-            gameDirectory.EnumerateFiles("mainclient.log").SingleOrDefault()?.Delete();
-            gameDirectory.EnumerateFiles("aunchupdt.dat").SingleOrDefault()?.Delete();
-
-            try
-            {
-                gameDirectory.EnumerateFiles("wsock32.dll").SingleOrDefault()?.Delete();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Deleting wsock32.dll failed! Error message: " + ex.ToString());
-            }
-        });
-
-        // --- Custom mission initialization (same as DXMainClient PreStartup lines 195-196) ---
-        CustomMissionHelper.Initialize();
-        CustomMissionHelper.DeleteSupplementalMissionFiles();
-
-        // --- Startup initialization (same as DXMainClient Startup.Execute lines 46-129) ---
-
+        // --- Updater initialization (same as DXMainClient Startup.Execute lines 44-48) ---
         Logger.Log("Initializing updater.");
 
         SafePath.DeleteFileIfExists(ProgramConstants.GamePath, "version_u");
@@ -180,6 +304,7 @@ public static class PreStartup
             ClientConfiguration.Instance.LocalGame,
             SafePath.GetFile(ProgramConstants.StartupExecutable).Name);
 
+        // --- OS / Framework info logging (same as DXMainClient Startup.Execute lines 50-55) ---
         Logger.Log("OSDescription: " + RuntimeInformation.OSDescription);
         Logger.Log("OSArchitecture: " + RuntimeInformation.OSArchitecture);
         Logger.Log("ProcessArchitecture: " + RuntimeInformation.ProcessArchitecture);
@@ -187,18 +312,22 @@ public static class PreStartup
         Logger.Log("Selected OS profile: " + MainClientConstants.OSId);
         Logger.Log("Current culture: " + CultureInfo.CurrentCulture);
 
+        // --- System specifications check (same as DXMainClient Startup.Execute lines 57-63) ---
         IPreStartupSystemService preStartupSystemService = new PreStartupSystemService();
         preStartupSystemService.StartSystemSpecificationsCheck();
         preStartupSystemService.StartOnlineIdGeneration();
 
+        // --- Ares debug file pruning (same as DXMainClient Startup.Execute lines 69-70) ---
         if (ClientConfiguration.Instance.ClientGameType == ClientType.Ares)
             Task.Run(() => PruneFiles(SafePath.GetDirectory(ProgramConstants.GamePath, "debug"), DateTime.Now.AddDays(-7)));
 
+        // --- Log file migration (same as DXMainClient Startup.Execute line 72) ---
         Task.Run(MigrateOldLogFiles);
 
-        // Start INI file preprocessor
+        // --- INI file preprocessor (same as DXMainClient Startup.Execute line 75) ---
         PreprocessorBackgroundTask.Instance.Run();
 
+        // --- Delete temporary updater directory (same as DXMainClient Startup.Execute lines 77-89) ---
         DirectoryInfo updaterFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Updater");
 
         if (updaterFolder.Exists)
@@ -213,6 +342,7 @@ public static class PreStartup
             }
         }
 
+        // --- Create Saved Games directory (same as DXMainClient Startup.Execute lines 91-106) ---
         if (ClientConfiguration.Instance.CreateSavedGamesDirectory)
         {
             DirectoryInfo savedGamesFolder = SafePath.GetDirectory(ProgramConstants.GamePath, "Saved Games");
@@ -230,6 +360,7 @@ public static class PreStartup
             }
         }
 
+        // --- Remove partial custom component downloads (same as DXMainClient Startup.Execute lines 108-122) ---
         if (Updater.CustomComponents != null)
         {
             Logger.Log("Removing partial custom component downloads.");
@@ -245,11 +376,18 @@ public static class PreStartup
             }
         }
 
+        // --- FinalSun settings (same as DXMainClient Startup.Execute line 124) ---
         FinalSunSettings.WriteFinalSunIniAsync();
 
+        // --- Write install path to registry (same as DXMainClient Startup.Execute lines 126-127) ---
         preStartupSystemService.WriteInstallPathToRegistryIfNeeded();
 
+        // --- Refresh settings (same as DXMainClient Startup.Execute line 129) ---
         ClientConfiguration.Instance.RefreshSettings();
+
+        // --- Steamworks initialization (same as DXMainClient Startup.Execute lines 157-158) ---
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            Task.Run(InitSteamworks);
 
         Logger.Log("PreStartup initialization complete.");
     }
@@ -472,6 +610,184 @@ public static class PreStartup
         services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
     }
 
+    // ===================================================================
+    // Exception handling (same as DXMainClient PreStartup lines 239-286)
+    // ===================================================================
+
+    public static void LogException(Exception ex, bool innerException = false)
+    {
+        if (!innerException)
+            Logger.Log("KABOOOOOOM!!! Info:");
+        else
+            Logger.Log("InnerException info:");
+
+        Logger.Log("Type: " + ex.GetType());
+        Logger.Log("Message: " + ex.Message);
+        Logger.Log("Source: " + ex.Source);
+        Logger.Log("TargetSite.Name: " + ex.TargetSite?.Name);
+        Logger.Log("Stacktrace: " + ex.StackTrace);
+
+        if (ex.InnerException is not null)
+            LogException(ex.InnerException, true);
+    }
+
+    public static void HandleException(object sender, Exception ex)
+    {
+        LogException(ex, innerException: false);
+
+        string errorLogPath = SafePath.CombineFilePath(ProgramConstants.ClientUserFilesPath, "ClientCrashLogs", FormattableString.Invariant($"ClientCrashLog{DateTime.Now.ToString("_yyyy_MM_dd_HH_mm")}.txt"));
+        bool crashLogCopied = false;
+
+        try
+        {
+            DirectoryInfo crashLogsDirectoryInfo = SafePath.GetDirectory(ProgramConstants.ClientUserFilesPath, "ClientCrashLogs");
+
+            if (!crashLogsDirectoryInfo.Exists)
+                crashLogsDirectoryInfo.Create();
+
+            File.Copy(SafePath.CombineFilePath(ProgramConstants.ClientUserFilesPath, "client.log"), errorLogPath, true);
+            crashLogCopied = true;
+        }
+        catch { }
+
+        string error = string.Format("{0} has crashed. Error message:".L10N("Client:Main:FatalErrorText1") + Environment.NewLine + Environment.NewLine +
+            ex.Message + Environment.NewLine + Environment.NewLine + (crashLogCopied ?
+            "A crash log has been saved to the following file:".L10N("Client:Main:FatalErrorText2") + " " + Environment.NewLine + Environment.NewLine +
+            errorLogPath + Environment.NewLine + Environment.NewLine : "") +
+            (crashLogCopied ? "If the issue is repeatable, contact the {1} staff at {2} and provide the crash log file.".L10N("Client:Main:FatalErrorText3") :
+            "If the issue is repeatable, contact the {1} staff at {2}.".L10N("Client:Main:FatalErrorText4")),
+            MainClientConstants.GAME_NAME_LONG,
+            MainClientConstants.GAME_NAME_SHORT,
+            MainClientConstants.SUPPORT_URL_SHORT);
+
+        MainClientConstants.DisplayErrorAction("KABOOOOOOOM".L10N("Client:Main:FatalErrorTitle"), error, true);
+    }
+
+    // ===================================================================
+    // Permissions check (same as DXMainClient PreStartup lines 288-378)
+    // ===================================================================
+
+    [SupportedOSPlatform("windows")]
+    private static void CheckPermissions()
+    {
+        if (UserHasDirectoryAccessRights(ProgramConstants.GamePath, FileSystemRights.Modify))
+            return;
+
+        string error = string.Format(("You seem to be running {0} from a write-protected directory.\n\n" +
+            "For {1} to function properly when run from a write-protected directory, it needs administrative privileges.\n\n" +
+            "Please also make sure that your security software isn't blocking {1}.").L10N("Client:Main:AdminRequiredExplanation"),
+            MainClientConstants.GAME_NAME_LONG, MainClientConstants.GAME_NAME_SHORT);
+
+        string title = "Administrative privileges required".L10N("Client:Main:AdminRequiredTitle");
+
+        MainClientConstants.DisplayErrorAction(title, error, true);
+
+        Environment.Exit(1);
+    }
+
+    /// <summary>
+    /// Checks whether the client has specific file system rights to a directory.
+    /// See ssds's answer at https://stackoverflow.com/questions/1410127/c-sharp-test-if-user-has-write-access-to-a-folder
+    /// </summary>
+    /// <param name="path">The path to the directory.</param>
+    /// <param name="accessRights">The file system rights.</param>
+    [SupportedOSPlatform("windows")]
+    private static bool UserHasDirectoryAccessRights(string path, FileSystemRights accessRights)
+    {
+        var currentUser = WindowsIdentity.GetCurrent();
+        var principal = new WindowsPrincipal(currentUser);
+
+        // If the user is not running the client with administrator privileges in Program Files, they need to be prompted to do so.
+        if (!principal.IsInRole(WindowsBuiltInRole.Administrator))
+        {
+            string progfiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            string progfilesx86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            if (ProgramConstants.GamePath.Contains(progfiles) || ProgramConstants.GamePath.Contains(progfilesx86))
+                return false;
+        }
+
+        var isInRoleWithAccess = false;
+
+        try
+        {
+            var di = new DirectoryInfo(path);
+            var acl = di.GetAccessControl();
+            var rules = acl.GetAccessRules(true, true, typeof(NTAccount));
+
+            foreach (AuthorizationRule rule in rules)
+            {
+                var fsAccessRule = rule as FileSystemAccessRule;
+                if (fsAccessRule == null)
+                    continue;
+
+                if ((fsAccessRule.FileSystemRights & accessRights) > 0)
+                {
+                    var ntAccount = rule.IdentityReference as NTAccount;
+                    if (ntAccount == null)
+                        continue;
+
+                    try
+                    {
+                        if (principal.IsInRole(ntAccount.Value))
+                        {
+                            if (fsAccessRule.AccessControlType == AccessControlType.Deny)
+                                return false;
+                            isInRoleWithAccess = true;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        //IsInRole may throw for selected roles when running in Wine, keep iterating other rules
+                        continue;
+                    }
+                }
+            }
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
+        return isInRoleWithAccess;
+    }
+
+    // ===================================================================
+    // Steamworks (same as DXMainClient Startup lines 163-192)
+    // ===================================================================
+
+    [SupportedOSPlatform("windows")]
+    private static void InitSteamworks()
+    {
+        if (UserINISettings.Instance.SteamIntegration)
+        {
+            try
+            {
+                if (ClientConfiguration.Instance.ClientGameType == ClientType.Ares || ClientConfiguration.Instance.ClientGameType == ClientType.YR)
+                {
+                    Logger.Log("Steam init called");
+                    SteamClient.Init(2229850);
+                }
+                else if (ClientConfiguration.Instance.ClientGameType == ClientType.TS)
+                {
+                    Logger.Log("Steam init called");
+                    SteamClient.Init(2229880);
+                }
+                else if (ClientConfiguration.Instance.ClientGameType == ClientType.RA)
+                {
+                    Logger.Log("Steam init called");
+                    SteamClient.Init(2229840);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Steam init failed: " + e.Message);
+                // Couldn't init for some reason (steam is closed etc)
+            }
+        }
+    }
+
+    // ===================================================================
+    // File pruning and log migration (same as DXMainClient Startup lines 198-291)
+    // ===================================================================
 
     /// <summary>
     /// Recursively deletes all files from the specified directory that were created at <paramref name="pruneThresholdTime"/> or before.
@@ -567,6 +883,10 @@ public static class PreStartup
                 newDirectory.Name + ". Message: " + ex.ToString());
         }
     }
+
+    // ===================================================================
+    // Resolution helpers (same as DXMainClient ScreenResolution)
+    // ===================================================================
 
     /// <summary>
     /// Gets the best recommended resolution from ClientConfiguration.
