@@ -287,7 +287,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                     if (parts.Length is < 3 or > 5)
                     {
-                        Log.Information($"Invalid format for ExtraTexture{i} in map " + BaseFilePath);
+                        Log.Warning($"Invalid format for ExtraTexture{i} in map " + BaseFilePath);
                         continue;
                     }
 
@@ -360,8 +360,8 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch (Exception ex)
             {
-                Log.Information("Setting info for " + BaseFilePath + " failed! Reason: " + ex.ToString());
-                Log.Information(ex.ToString());
+                Log.Warning("Setting info for " + BaseFilePath + " failed! Reason: " + ex.ToString());
+                Log.Warning(ex.ToString());
                 return false;
             }
         }
@@ -389,7 +389,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Unable to parse team start mappings. Map: \"{Name}\", Error: {ex.Message}");
+                    Log.Warning($"Unable to parse team start mappings. Map: \"{Name}\", Error: {ex.Message}");
                     TeamStartMappingPresets = new List<TeamStartMappingPreset>();
                 }
             }
@@ -471,7 +471,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
                 if (GameModes.Length == 0)
                 {
-                    Log.Information("Custom map " + customMapFilePath + " has no game modes!");
+                    Log.Warning("Custom map " + customMapFilePath + " has no game modes!");
                     return false;
                 }
 
@@ -545,7 +545,7 @@ namespace AvClientViewModel.Domain.Multiplayer
             }
             catch
             {
-                Log.Information("Loading custom map " + customMapFilePath + " failed!");
+                Log.Warning("Loading custom map " + customMapFilePath + " failed!");
                 return false;
             }
         }
@@ -568,7 +568,7 @@ namespace AvClientViewModel.Domain.Multiplayer
 
             if (keys == null)
             {
-                Log.Information("Invalid ForcedOptions section \"" + forcedOptionsSection + "\" in map " + BaseFilePath);
+                Log.Warning("Invalid ForcedOptions section \"" + forcedOptionsSection + "\" in map " + BaseFilePath);
                 return;
             }
 

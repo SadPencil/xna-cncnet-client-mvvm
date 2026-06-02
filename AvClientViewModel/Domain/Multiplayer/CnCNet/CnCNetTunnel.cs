@@ -66,7 +66,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             {
                 if (ex is FormatException || ex is OverflowException || ex is IndexOutOfRangeException)
                 {
-                    Log.Information("Parsing tunnel information failed: " + ex.ToString() + Environment.NewLine + "Parsed string: " + str);
+                    Log.Warning("Parsing tunnel information failed: " + ex.ToString() + Environment.NewLine + "Parsed string: " + str);
                     return null;
                 }
 
@@ -142,7 +142,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Log.Information("Unable to connect to the specified tunnel server. Returned error message: " + ex.ToString());
+                Log.Warning("Unable to connect to the specified tunnel server. Returned error message: " + ex.ToString());
             }
 
             return new List<int>();
@@ -160,7 +160,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (PingException ex)
                 {
-                    Log.Information($"Caught an exception when pinging {Name} tunnel server: {ex.ToString()}");
+                    Log.Warning($"Caught an exception when pinging {Name} tunnel server: {ex.ToString()}");
                 }
             }
         }

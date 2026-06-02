@@ -227,7 +227,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
             }
             catch (Exception ex)
             {
-                Log.Information("Listener error: " + ex.ToString());
+                Log.Warning("Listener error: " + ex.ToString());
                 break;
             }
 
@@ -271,13 +271,13 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
             }
             catch (Exception ex)
             {
-                Log.Information("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
+                Log.Warning("Socket error with client " + lpInfo.IPAddress + "; removing. Message: " + ex.ToString());
                 break;
             }
 
             if (bytesRead == 0)
             {
-                Log.Information("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
+                Log.Warning("Connect attempt from " + lpInfo.IPAddress + " failed! (0 bytes read)");
                 break;
             }
 
@@ -409,7 +409,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 if (leaving)
                     break;
 
-                Log.Information(string.Format(
+                Log.Warning(string.Format(
                     "Reading data from the server failed! Server address: {0}. Exception: {1}",
                     hostEndPoint.Address.ToString(), ex.ToString()));
 
@@ -465,7 +465,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 break;
 
             {
-                Log.Information(string.Format(
+                Log.Warning(string.Format(
                     "Reading data from the server failed (0 bytes received)! Server address: {0}", hostEndPoint.Address.ToString()));
 
                 string localizedMessage = string.Format(
@@ -840,7 +840,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         }
         catch
         {
-            Log.Information("Sending message to game host failed!");
+            Log.Warning("Sending message to game host failed!");
         }
     }
 
@@ -1110,7 +1110,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         {
             AddNotice(("The game host has sent an invalid game options message! " +
                 "The game host's game version might be different from yours.").L10N("Client:Main:HostGameOptionInvalid"));
-            Log.Information("Invalid game options message from host: " + data);
+            Log.Warning("Invalid game options message from host: " + data);
             return;
         }
 

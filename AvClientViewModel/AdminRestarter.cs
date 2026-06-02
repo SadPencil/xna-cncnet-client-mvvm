@@ -80,7 +80,7 @@ namespace AvClientViewModel
             }
             catch (Exception ex)
             {
-                Log.Information("Failed to restart with admin privileges: " + ex.ToString());
+                Log.Warning("Failed to restart with admin privileges: " + ex.ToString());
                 return false;
             }
         }

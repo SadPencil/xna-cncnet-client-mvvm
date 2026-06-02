@@ -132,7 +132,7 @@ public static class DirectDrawCompatibilityChecker
             }
             catch (Exception ex)
             {
-                Log.Information($"Failed to fix registry key {rootKey.Name}\\{subKeyPath}: {ex.Message}");
+                Log.Warning($"Failed to fix registry key {rootKey.Name}\\{subKeyPath}: {ex.Message}");
             }
         }
 

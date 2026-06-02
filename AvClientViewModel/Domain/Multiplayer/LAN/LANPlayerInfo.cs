@@ -106,7 +106,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
             }
             catch
             {
-                Log.Information("Sending message to " + ToString() + " failed!");
+                Log.Warning("Sending message to " + ToString() + " failed!");
             }
 
             TimeSinceLastSentMessage = TimeSpan.Zero;
@@ -152,7 +152,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
                 catch (Exception ex)
                 {
                     //a socket error has occured
-                    Log.Information("Socket error with client " + Name + "; removing. Message: " + ex.ToString());
+                    Log.Warning("Socket error with client " + Name + "; removing. Message: " + ex.ToString());
                     ConnectionLost?.Invoke(this, EventArgs.Empty);
                     break;
                 }
@@ -207,7 +207,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
                 }
                 catch (PingException ex)
                 {
-                    Log.Information($"Caught an exception when pinging {Name} LAN player: {ex.ToString()}");
+                    Log.Warning($"Caught an exception when pinging {Name} LAN player: {ex.ToString()}");
                 }
             }
         }

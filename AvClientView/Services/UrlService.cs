@@ -30,7 +30,7 @@ namespace AvClientView.Services
             }
             catch (Exception ex)
             {
-                Log.Information($"Error in parsing the URL \"{url}\": {ex}");
+                Log.Warning($"Error in parsing the URL \"{url}\": {ex}");
                 return false;
             }
         }

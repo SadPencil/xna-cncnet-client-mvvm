@@ -25,7 +25,7 @@ namespace AvClientViewModel
 
         public void PlayThemeSong()
         {
-            Log.Information("MusicPlayerService: Music playback not available on this platform.");
+            Log.Warning("MusicPlayerService: Music playback not available on this platform.");
         }
 
         public void Stop() { }

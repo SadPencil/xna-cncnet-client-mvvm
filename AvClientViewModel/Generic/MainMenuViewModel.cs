@@ -628,7 +628,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Log.Information("Refreshing settings failed: " + ex.ToString());
+                Log.Warning("Refreshing settings failed: " + ex.ToString());
             }
         }
 
@@ -892,7 +892,7 @@ namespace AvClientViewModel.Generic
             }
             catch (Exception ex)
             {
-                Log.Information("Failed to apply translation game files. " + ex.ToString());
+                Log.Warning("Failed to apply translation game files. " + ex.ToString());
                 ShowMessageBox(
                     "Applying Translation Files Failed".L10N("Client:Main:ApplyTranslationFilesFailTitle"),
                     "Applying translation files failed! Error message:".L10N("Client:Main:ApplyTranslationFilesFailText") + " " + ex.Message);

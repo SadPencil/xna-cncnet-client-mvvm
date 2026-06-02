@@ -86,7 +86,7 @@ namespace AvClientViewModel.Domain
             }
             catch (Exception ex)
             {
-                Log.Information("An error occured while parsing saved game " + FileName + ":" +
+                Log.Warning("An error occured while parsing saved game " + FileName + ":" +
                     ex.ToString());
                 return false;
             }

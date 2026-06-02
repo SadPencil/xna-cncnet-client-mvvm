@@ -41,7 +41,7 @@ namespace AvClientViewModel.Domain.Multiplayer.LAN
         {
             if (parameters.Length != 10)
             {
-                Log.Information("Ignoring LAN GAME message because of an incorrect number of parameters.");
+                Log.Warning("Ignoring LAN GAME message because of an incorrect number of parameters.");
                 return false;
             }
 

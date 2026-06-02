@@ -1428,7 +1428,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
                 else
                 {
                     AddNotice("Failed to match the tunnel address provided by the host to any available tunnel. The game cannot be started.".L10N("Client:Main:TunnelErrorMessage"), NoticeSeverity.Error);
-                    Log.Information("Failed to match tunnel address: " + ipAndPort[0]);
+                    Log.Warning("Failed to match tunnel address: " + ipAndPort[0]);
                     return;
                 }
             }
@@ -1455,7 +1455,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
         if (gameFilesHash != fhc.GetCompleteHash())
         {
-            Log.Information("Game files modified during client session!");
+            Log.Warning("Game files modified during client session!");
             channel.SendCTCPMessage(CHEAT_DETECTED_MESSAGE, QueuedMessageType.INSTANT_MESSAGE, 0);
             HandleCheatDetectedMessage(ProgramConstants.PLAYERNAME);
         }
@@ -1941,7 +1941,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
         if (map == null)
         {
-            Log.Information("Unknown map upload request from " + sender + ": " + mapSHA1);
+            Log.Warning("Unknown map upload request from " + sender + ": " + mapSHA1);
             return;
         }
 

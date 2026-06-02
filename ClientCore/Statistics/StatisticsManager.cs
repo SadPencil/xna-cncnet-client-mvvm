@@ -117,7 +117,7 @@ namespace ClientCore.Statistics
             }
             catch (Exception ex)
             {
-                Log.Information("Error reading statistics: " + ex.ToString());
+                Log.Error("Error reading statistics: " + ex.ToString());
             }
 
             return returnValue;
@@ -269,7 +269,7 @@ namespace ClientCore.Statistics
             }
             catch (Exception ex)
             {
-                Log.Information("Reading the statistics file failed! Message: " + ex.ToString());
+                Log.Error("Reading the statistics file failed! Message: " + ex.ToString());
             }
         }
 
@@ -303,7 +303,7 @@ namespace ClientCore.Statistics
         {
             if (ms == null)
             {
-                Log.Information("Skipping adding match to statistics because match statistics is null.");
+                Log.Warning("Skipping adding match to statistics because match statistics is null.");
                 return;
             }
 

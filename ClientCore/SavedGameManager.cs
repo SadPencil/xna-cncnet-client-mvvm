@@ -86,7 +86,7 @@ namespace ClientCore
             }
             catch (Exception ex)
             {
-                Log.Information("Writing spawn.ini for saved game failed! Exception message: " + ex.ToString());
+                Log.Error("Writing spawn.ini for saved game failed! Exception message: " + ex.ToString());
                 return false;
             }
 
@@ -127,7 +127,7 @@ namespace ClientCore
             if (saveGameId == 999)
             {
                 if (SafePath.GetFile(saveGameDirectory, "SVGM_999.NET").Exists)
-                    Log.Information("1000 saved games exceeded! Overwriting previous MP save.");
+                    Log.Warning("1000 saved games exceeded! Overwriting previous MP save.");
             }
 
             string sgPath = SafePath.CombineFilePath(saveGameDirectory, string.Format("SVGM_{0}.NET", saveGameId.ToString("D3")));
@@ -143,14 +143,14 @@ namespace ClientCore
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Renaming saved game failed! Exception message: " + ex.ToString());
+                    Log.Error("Renaming saved game failed! Exception message: " + ex.ToString());
                 }
 
                 tryCount++;
 
                 if (tryCount > 40)
                 {
-                    Log.Information("Renaming saved game failed 40 times! Aborting.");
+                    Log.Error("Renaming saved game failed 40 times! Aborting.");
                     return;
                 }
 
@@ -175,7 +175,7 @@ namespace ClientCore
             }
             catch (Exception ex)
             {
-                Log.Information("Erasing previous MP saved games failed! Exception message: " + ex.ToString());
+                Log.Error("Erasing previous MP saved games failed! Exception message: " + ex.ToString());
                 return false;
             }
 

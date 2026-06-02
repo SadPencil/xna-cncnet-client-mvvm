@@ -98,7 +98,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
             if (string.IsNullOrWhiteSpace(ClientConfiguration.Instance.CnCNetMapDBUploadURL))
             {
-                Log.Information("MapSharer: Upload URL is not configured.");
+                Log.Warning("MapSharer: Upload URL is not configured.");
                 MapUploadFailed?.Invoke(null, new MapEventArgs(map));
                 return;
             }
@@ -120,7 +120,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             {
                 MapUploadFailed?.Invoke(null, new MapEventArgs(map));
 
-                Log.Information("MapSharer: Uploading map " + map.BaseFilePath + " failed! Returned message: " + message);
+                Log.Warning("MapSharer: Uploading map " + map.BaseFilePath + " failed! Returned message: " + message);
             }
 
             lock (locker)
@@ -287,7 +287,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Log.Information("MapSharer: ERROR " + ex.ToString());
+                Log.Warning("MapSharer: ERROR " + ex.ToString());
             }
 
             string mapPath = DownloadMain(sha1, myGameId, mapName, out success);
@@ -301,7 +301,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 else
                 {
-                    Log.Information("MapSharer: Download of map " + sha1 + "failed! Reason: " + mapPath);
+                    Log.Warning("MapSharer: Download of map " + sha1 + "failed! Reason: " + mapPath);
                     MapDownloadFailed?.Invoke(null, new SHA1EventArgs(sha1, mapName));
                 }
 
@@ -343,7 +343,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"MapSharer: Failed to delete existing zip file: {ex.Message}");
+                    Log.Warning($"MapSharer: Failed to delete existing zip file: {ex.Message}");
                 }
 
                 try
@@ -352,13 +352,13 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"MapSharer: Failed to delete existing map file: {ex.Message}");
+                    Log.Warning($"MapSharer: Failed to delete existing map file: {ex.Message}");
                 }
 
                 if (string.IsNullOrWhiteSpace(ClientConfiguration.Instance.CnCNetMapDBDownloadURL))
                 {
                     success = false;
-                    Log.Information("MapSharer: Download URL is not configured.");
+                    Log.Warning("MapSharer: Download URL is not configured.");
                     return null;
                 }
 
@@ -391,7 +391,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"MapSharer: Failed to extract map: {ex.Message}");
+                    Log.Warning($"MapSharer: Failed to extract map: {ex.Message}");
                     success = false;
                     return ex.Message;
                 }
@@ -408,7 +408,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"MapSharer: Failed to delete zip file after extraction: {ex.Message}");
+                    Log.Warning($"MapSharer: Failed to delete zip file after extraction: {ex.Message}");
                 }
 
                 success = true;
@@ -416,7 +416,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             }
             catch (Exception ex)
             {
-                Log.Information($"MapSharer: Map download failed with exception: {ex.Message}");
+                Log.Warning($"MapSharer: Map download failed with exception: {ex.Message}");
                 success = false;
                 return ex.Message;
             }

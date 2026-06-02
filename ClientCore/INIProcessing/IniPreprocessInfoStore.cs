@@ -59,7 +59,7 @@ namespace ClientCore.INIProcessing
 
                 if (values.Length != 3)
                 {
-                    Log.Information("Failed to parse preprocessed INI info, key " + key);
+                    Log.Warning("Failed to parse preprocessed INI info, key " + key);
                     continue;
                 }
 

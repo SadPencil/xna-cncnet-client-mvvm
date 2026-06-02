@@ -113,7 +113,7 @@ namespace AvClientViewModel.Domain
             if (success)
                 Log.Information("DiscordHandler: Connected Discord RPC client.");
             else
-                Log.Information("DiscordHandler: Failed to connect Discord RPC client.");
+                Log.Warning("DiscordHandler: Failed to connect Discord RPC client.");
         }
 
         /// <summary>
@@ -288,12 +288,12 @@ namespace AvClientViewModel.Domain
 
         private void OnClose(object sender, CloseMessage args)
         {
-            Log.Information($"Discord: Lost Connection with client because of '{args.Reason}'");
+            Log.Warning($"Discord: Lost Connection with client because of '{args.Reason}'");
         }
 
         private void OnError(object sender, ErrorMessage args)
         {
-            Log.Information($"Discord: Error occured. ({args.Code}) {args.Message}");
+            Log.Warning($"Discord: Error occured. ({args.Code}) {args.Message}");
         }
 
         private void OnConnectionEstablished(object sender, ConnectionEstablishedMessage args)
@@ -303,7 +303,7 @@ namespace AvClientViewModel.Domain
 
         private void OnConnectionFailed(object sender, ConnectionFailedMessage args)
         {
-            Log.Information($"Discord: Pipe Connection Failed. Could not connect to pipe #{args.FailedPipe}");
+            Log.Warning($"Discord: Pipe Connection Failed. Could not connect to pipe #{args.FailedPipe}");
         }
 
         private void OnPresenceUpdate(object sender, PresenceMessage args)

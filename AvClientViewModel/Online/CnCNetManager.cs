@@ -959,7 +959,7 @@ namespace AvClientViewModel.Online
             IRCUser user = UserList.Find(u => u.Name.ToUpper() == oldNickname.ToUpper());
             if (user == null)
             {
-                Log.Information("DoUserNicknameChange: Failed to find user with nickname " + oldNickname);
+                Log.Warning("DoUserNicknameChange: Failed to find user with nickname " + oldNickname);
                 return;
             }
             string realOldNickname = user.Name; // To make sure that case matches

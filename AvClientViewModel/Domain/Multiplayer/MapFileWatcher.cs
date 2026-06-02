@@ -49,7 +49,7 @@ public class MapFileWatcher
         }
         catch (Exception ex)
         {
-            Log.Information($"MapFileWatcher: Failed to start watching directory {mapsDirectory}: {ex.Message}");
+            Log.Warning($"MapFileWatcher: Failed to start watching directory {mapsDirectory}: {ex.Message}");
             fileSystemWatcher?.Dispose();
             fileSystemWatcher = null;
         }
@@ -76,7 +76,7 @@ public class MapFileWatcher
         }
         catch (Exception ex)
         {
-            Log.Information($"MapFileWatcher: Error processing file event for {filePath}: {ex.Message}");
+            Log.Warning($"MapFileWatcher: Error processing file event for {filePath}: {ex.Message}");
         }
     }
 }

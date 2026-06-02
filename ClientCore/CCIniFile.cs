@@ -20,7 +20,7 @@ namespace ClientCore
                 var baseSection = Sections.Find(s => s.SectionName == baseSectionName);
                 if (baseSection == null)
                 {
-                    Log.Information($"Base section not found in INI file {path}, section {section.SectionName}, base section name: {baseSectionName}");
+                    Log.Warning($"Base section not found in INI file {path}, section {section.SectionName}, base section name: {baseSectionName}");
                     continue;
                 }
 
@@ -61,7 +61,7 @@ namespace ClientCore
 
             // Consolidate with the INI file that this INI file is based on
             if (!baseIniFile.Exists)
-                Log.Information(FileName + ": Base INI file not found! " + baseIniFile.FullName);
+                Log.Warning(FileName + ": Base INI file not found! " + baseIniFile.FullName);
 
             CCIniFile baseIni = new CCIniFile(baseIniFile.FullName);
             ConsolidateIniFiles(baseIni, this);

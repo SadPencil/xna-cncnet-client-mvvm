@@ -70,7 +70,7 @@ namespace AvClientViewModel.Domain
             }
             catch
             {
-                Log.Information("An exception occurred while checking the existence of FinalSun settings");
+                Log.Warning("An exception occurred while checking the existence of FinalSun settings");
             }
         }
     }

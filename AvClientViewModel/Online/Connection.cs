@@ -189,7 +189,7 @@ namespace AvClientViewModel.Online
 
                         if (!client.Connected)
                         {
-                            Log.Information("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
+                            Log.Warning("Connecting to " + server.Host + " port " + server.Ports[i] + " timed out!");
                             continue; // Start all over again, using the next port
                         }
 
@@ -215,11 +215,11 @@ namespace AvClientViewModel.Online
                 }
                 catch (Exception ex)
                 {
-                    Log.Information("Unable to connect to the server. " + ex.ToString());
+                    Log.Warning("Unable to connect to the server. " + ex.ToString());
                 }
             }
 
-            Log.Information("Connecting to CnCNet failed!");
+            Log.Error("Connecting to CnCNet failed!");
             // Clear the failed server list in case connecting to all servers has failed
             failedServerIPs.Clear();
             _attemptingConnection = false;
@@ -259,7 +259,7 @@ namespace AvClientViewModel.Online
                     if (errorTimes > MAX_ERROR_COUNT)
                     {
                         const string errorMessage = "Disconnected from CnCNet after not receiving a packet for too long.";
-                        Log.Information(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
+                        Log.Warning(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
                         failedServerIPs.Add(currentConnectedServerIP);
                         connectionManager.OnConnectionLost(errorMessage.L10N("Client:Main:ClientDisconnectedAfterRetries"));
                         break;
@@ -270,7 +270,7 @@ namespace AvClientViewModel.Online
                 catch (Exception ex)
                 {
                     const string errorMessage = "Disconnected from CnCNet due to an internal error.";
-                    Log.Information(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
+                    Log.Warning(errorMessage + Environment.NewLine + "Message: " + ex.ToString());
                     failedServerIPs.Add(currentConnectedServerIP);
                     connectionManager.OnConnectionLost(errorMessage.L10N("Client:Main:ClientDisconnectedAfterException"));
                     break;
@@ -282,7 +282,7 @@ namespace AvClientViewModel.Online
 
                     if (errorTimes > MAX_ERROR_COUNT)
                     {
-                        Log.Information("Disconnected from CnCNet.");
+                        Log.Warning("Disconnected from CnCNet.");
                         failedServerIPs.Add(currentConnectedServerIP);
                         connectionManager.OnConnectionLost("Server disconnected.".L10N("Client:Main:ServerDisconnected"));
                         break;
@@ -316,7 +316,7 @@ namespace AvClientViewModel.Online
 
                 if (reconnectCount > MAX_RECONNECT_COUNT)
                 {
-                    Log.Information("Reconnect attempt count exceeded!");
+                    Log.Warning("Reconnect attempt count exceeded!");
                     return;
                 }
 
@@ -373,7 +373,7 @@ namespace AvClientViewModel.Online
                     }
                     catch (SocketException ex)
                     {
-                        Log.Information($"Caught an exception when DNS resolving {serverName} ({serverHostnameOrIPAddress}) Lobby server: {ex.ToString()}");
+                        Log.Warning($"Caught an exception when DNS resolving {serverName} ({serverHostnameOrIPAddress}) Lobby server: {ex.ToString()}");
                     }
 
                     return _serverInfos;
@@ -457,7 +457,7 @@ namespace AvClientViewModel.Online
                             }
                             else
                             {
-                                Log.Information($"Failed to ping the server {serverNames} ({serverIPAddress}): " +
+                                Log.Warning($"Failed to ping the server {serverNames} ({serverIPAddress}): " +
                                     $"{Enum.GetName(typeof(IPStatus), pingReply.Status)}.");
 
                                 return new Tuple<Server, long>(server, long.MaxValue);
@@ -465,7 +465,7 @@ namespace AvClientViewModel.Online
                         }
                         catch (PingException ex)
                         {
-                            Log.Information($"Caught an exception when pinging {serverNames} ({serverIPAddress}) Lobby server: {ex.ToString()}");
+                            Log.Warning($"Caught an exception when pinging {serverNames} ({serverIPAddress}) Lobby server: {ex.ToString()}");
 
                             return new Tuple<Server, long>(server, long.MaxValue);
                         }
@@ -792,7 +792,7 @@ namespace AvClientViewModel.Online
             }
             catch
             {
-                Log.Information("Warning: Failed to parse command " + message);
+                Log.Warning("Warning: Failed to parse command " + message);
             }
         }
 
@@ -846,7 +846,7 @@ namespace AvClientViewModel.Online
             if (commandAndParameters.Length == 0)
             {
                 command = String.Empty;
-                Log.Information("Nonexistant command!");
+                Log.Warning("Nonexistant command!");
                 return;
             }
 
@@ -992,7 +992,7 @@ namespace AvClientViewModel.Online
                 }
                 catch (IOException ex)
                 {
-                    Log.Information("Sending message to the server failed! Reason: " + ex.ToString());
+                    Log.Warning("Sending message to the server failed! Reason: " + ex.ToString());
                 }
             }
         }

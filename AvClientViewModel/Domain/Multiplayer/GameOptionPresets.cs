@@ -50,7 +50,7 @@ namespace AvClientViewModel.Domain.Multiplayer
                 string[] splitValue = value.Split(':');
                 if (splitValue.Length != 2)
                 {
-                    Log.Information($"Failed to parse game option preset value ({ProfileName}, {keyName})");
+                    Log.Warning($"Failed to parse game option preset value ({ProfileName}, {keyName})");
                     continue;
                 }
 
