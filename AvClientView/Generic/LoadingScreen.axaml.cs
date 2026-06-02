@@ -18,6 +18,8 @@ public partial class LoadingScreen : UserControl
 {
     public event EventHandler Completed;
 
+    private bool backgroundApplied;
+
     public LoadingScreen()
     {
         InitializeComponent();
@@ -26,9 +28,14 @@ public partial class LoadingScreen : UserControl
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        TryApplyIniOverlay();
+    }
+
+    private void TryApplyIniOverlay()
+    {
         ApplyDefaultBackground("loadingscreen.png");
 
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = ViewConstants.ServiceProvider?.GetService<IIniLayoutOverlayService>();
         iniOverlay?.ApplyLayout(this, "LoadingScreen");
     }
 
@@ -36,13 +43,14 @@ public partial class LoadingScreen : UserControl
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = ViewConstants.ServiceProvider?.GetService<IIniLayoutOverlayService>();
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)
             {
                 var bitmap = new Bitmap(fullPath);
                 Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
+                backgroundApplied = true;
             }
         }
         catch { }
@@ -73,7 +81,14 @@ public partial class LoadingScreen : UserControl
             DataContext = value;
 
             if (field != null)
+            {
                 field.PropertyChanged += OnViewModelPropertyChanged;
+
+                // ServiceProvider is now available — apply INI overlay
+                // if it wasn't applied in OnLoaded (when SP was null).
+                if (!backgroundApplied)
+                    TryApplyIniOverlay();
+            }
         }
     }
 }

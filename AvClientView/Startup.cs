@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
+using System.Linq;
 
 using Avalonia;
 using Avalonia.Headless;
@@ -12,10 +10,19 @@ namespace AvClientView;
 
 public class Startup
 {
+    /// <summary>
+    /// Starts the Avalonia application.
+    /// </summary>
+    /// <param name="args">Command line arguments.</param>
+    /// <param name="initServices">
+    /// Optional factory that builds the ServiceProvider on a background thread.
+    /// When null, the loading screen will stay visible until
+    /// ViewConstants.ServiceProvider is assigned externally.
+    /// </param>
     [STAThread]
-    public static void Run(ServiceProvider serviceProvider, string[] args)
+    public static void Run(string[] args, Func<ServiceProvider>? initServices = null)
     {
-        ViewConstants.ServiceProvider = serviceProvider;
+        ViewConstants.InitializeServices = initServices;
 
         bool headless = args.Contains("--headless");
 

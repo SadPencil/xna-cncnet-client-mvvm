@@ -9,18 +9,21 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        AvClientViewModel.PreStartup.Initialize();
-        AvClientView.Startup.Run(BuildServiceProvider(), args);
+        // The Avalonia window starts immediately so the loading screen appears
+        // as early as possible. PreStartup.Initialize() and ServiceProvider
+        // building run on a background thread, triggered from MainWindow
+        // after the loading screen is visible.
+        AvClientView.Startup.Run(args, BuildServiceProvider);
     }
 
     private static ServiceProvider BuildServiceProvider()
     {
-        var services = new ServiceCollection();
+        AvClientViewModel.PreStartup.Initialize();
 
+        var services = new ServiceCollection();
         AvClientViewModel.PreStartup.ConfigureServices(services);
         AvClientView.PreStartup.ConfigureServices(services);
 
         return services.BuildServiceProvider();
     }
-
 }

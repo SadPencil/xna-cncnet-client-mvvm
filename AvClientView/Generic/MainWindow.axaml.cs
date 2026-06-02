@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -25,24 +26,58 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
-        loadingScreen = GetLoadingScreen();
-        MainContent.Content = loadingScreen;
-
-        mainMenu = GetMainMenu();
-    }
-
-    private LoadingScreen GetLoadingScreen()
-    {
-        var loadingScreenVM = ViewConstants.ServiceProvider.GetRequiredService<ILoadingScreenViewModel>();
+        // Show the loading screen immediately without a ViewModel.
+        // The ServiceProvider is not ready yet — it will be built on a
+        // background thread and assigned when done.
         loadingScreen = new LoadingScreen();
-        loadingScreen.ViewModel = loadingScreenVM;
-
         loadingScreen.Width = 800;
         loadingScreen.Height = 600;
-
         loadingScreen.Completed += OnLoadingCompleted;
+        MainContent.Content = loadingScreen;
 
-        return loadingScreen;
+        // Pre-create MainMenu (will be connected later after ServiceProvider is ready)
+        mainMenu = new MainMenu();
+
+        // Start heavy initialization on a background thread.
+        // The loading screen is already visible while this runs.
+        _ = InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        if (ViewConstants.InitializeServices != null)
+        {
+            var init = ViewConstants.InitializeServices;
+            await Task.Run(() =>
+            {
+                ViewConstants.ServiceProvider = init();
+            });
+        }
+
+        // Back on UI thread — connect ViewModel to loading screen
+        await Dispatcher.UIThread.InvokeAsync(ConnectAfterInit);
+    }
+
+    private void ConnectAfterInit()
+    {
+        var sp = ViewConstants.ServiceProvider!;
+
+        // Connect LoadingScreen ViewModel
+        var loadingScreenVM = sp.GetRequiredService<ILoadingScreenViewModel>();
+        loadingScreen!.ViewModel = loadingScreenVM;
+
+        // Connect MainMenu ViewModel
+        var mainMenuVM = sp.GetRequiredService<IMainMenuViewModel>();
+        mainMenu!.ViewModel = mainMenuVM;
+        mainMenu.SetCampaignSelectorViewModel(sp.GetRequiredService<ICampaignSelectorViewModel>());
+        mainMenu.SetOptionsWindowViewModel(sp.GetRequiredService<IOptionsWindowViewModel>());
+        mainMenu.SetExtrasWindowViewModel(sp.GetRequiredService<IExtrasWindowViewModel>());
+        mainMenu.SetStatisticsWindowViewModel(sp.GetRequiredService<IStatisticsWindowViewModel>());
+        mainMenu.SetGameLoadingWindowViewModel(sp.GetRequiredService<IGameLoadingWindowViewModel>());
+        mainMenu.SetSkirmishLobbyViewModel(sp.GetRequiredService<ISkirmishLobbyViewModel>());
+        mainMenu.SetCnCNetLobbyViewModel(sp.GetRequiredService<ICnCNetLobbyViewModel>());
+        mainMenu.SetLANLobbyViewModel(sp.GetRequiredService<ILANLobbyViewModel>());
+        mainMenu.SetPrivateMessagingWindowViewModel(sp.GetRequiredService<IPrivateMessagingWindowViewModel>());
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)
@@ -50,34 +85,6 @@ public partial class MainWindow : Window
         ((LoadingScreen)sender!).Completed -= OnLoadingCompleted;
         // TODO: should I fire loadingScreen.Completed in UIThread and therefore remove this Dispatcher call?
         Dispatcher.UIThread.Post(TransitionToMainMenu);
-    }
-
-    private MainMenu GetMainMenu()
-    {
-        var mainMenuVM = ViewConstants.ServiceProvider.GetRequiredService<IMainMenuViewModel>();
-        var campaignSelectorVM = ViewConstants.ServiceProvider.GetRequiredService<ICampaignSelectorViewModel>();
-        var optionsWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IOptionsWindowViewModel>();
-        var extrasWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IExtrasWindowViewModel>();
-        var statisticsWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IStatisticsWindowViewModel>();
-        var gameLoadingWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IGameLoadingWindowViewModel>();
-        var skirmishLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ISkirmishLobbyViewModel>();
-        var cncNetLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ICnCNetLobbyViewModel>();
-        var lanLobbyVM = ViewConstants.ServiceProvider.GetRequiredService<ILANLobbyViewModel>();
-        var privateMessagingVM = ViewConstants.ServiceProvider.GetRequiredService<IPrivateMessagingWindowViewModel>();
-
-        var mainMenu = new MainMenu();
-        mainMenu.ViewModel = mainMenuVM;
-        mainMenu.SetCampaignSelectorViewModel(campaignSelectorVM);
-        mainMenu.SetOptionsWindowViewModel(optionsWindowVM);
-        mainMenu.SetExtrasWindowViewModel(extrasWindowVM);
-        mainMenu.SetStatisticsWindowViewModel(statisticsWindowVM);
-        mainMenu.SetGameLoadingWindowViewModel(gameLoadingWindowVM);
-        mainMenu.SetSkirmishLobbyViewModel(skirmishLobbyVM);
-        mainMenu.SetCnCNetLobbyViewModel(cncNetLobbyVM);
-        mainMenu.SetLANLobbyViewModel(lanLobbyVM);
-        mainMenu.SetPrivateMessagingWindowViewModel(privateMessagingVM);
-
-        return mainMenu;
     }
 
     private void TransitionToMainMenu()
