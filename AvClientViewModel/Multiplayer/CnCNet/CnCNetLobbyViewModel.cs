@@ -151,7 +151,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private List<string> channelOptions = new();
     public IReadOnlyList<string> ChannelOptions => channelOptions;
 
-    public ICnCNetLoginWindowViewModel LoginWindowViewModel { get; }
+    private readonly CnCNetLoginWindowViewModel _loginWindowViewModel;
+    public ICnCNetLoginWindowViewModel LoginWindowViewModel => _loginWindowViewModel;
 
     public CnCNetLobbyViewModel(
         CnCNetManager connectionManager,
@@ -170,7 +171,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         this.gameProcessService = gameProcessService;
         this.random = random;
 
-        LoginWindowViewModel = new CnCNetLoginWindowViewModel(
+        _loginWindowViewModel = new CnCNetLoginWindowViewModel(
             UserINISettings.Instance,
             onConnectRequested: () =>
             {
@@ -264,7 +265,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         {
             IsLoginWindowVisible = true;
             LoginWindowViewModel.IsVisible = true;
-            LoginWindowViewModel.LoadSettings();
+            _loginWindowViewModel.LoadSettings();
         }
 
         UpdateLogoutButtonText();
