@@ -19,6 +19,9 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     bool ShowVersionInfo { get; }
     bool IsMusicPlaying { get; }
 
+    // Child ViewModels
+    ITopBarViewModel TopBarViewModel { get; }
+
     // Dialog state
     bool IsMessageBoxVisible { get; }
     string MessageBoxTitle { get; }

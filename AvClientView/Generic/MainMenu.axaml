@@ -51,9 +51,11 @@
     <!-- ========== Labels (positions from MainMenu.ini, INI overlay applies) ========== -->
     <TextBlock x:Name="lblCnCNetStatus"
                Text="Players Online:"
+               IsVisible="{Binding TopBarViewModel.IsPlayerCountVisible}"
                Foreground="#2DE4FF" />
     <TextBlock x:Name="lblCnCNetPlayerCount"
                Text="{Binding CnCNetPlayerCountText}"
+               IsVisible="{Binding TopBarViewModel.IsPlayerCountVisible}"
                Foreground="#2DE4FF" />
     <Button x:Name="lblVersion"
             Content="{Binding VersionText}"
@@ -247,6 +249,7 @@
     <!-- TopBar (last in Canvas = top z-order, always above DarkeningPanels) -->
     <!-- TODO: how to sync the width of topbar with the window width? -->         
     <local:TopBar x:Name="topBar"
+                  DataContext="{Binding TopBarViewModel}"
                   Width="1280"
                   Canvas.Left="0" Canvas.Top="0" />
 

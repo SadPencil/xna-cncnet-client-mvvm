@@ -1,5 +1,7 @@
 using System.ComponentModel;
 
+using AvClientMvvmContract.Generic.OptionPanels;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Generic;
@@ -9,6 +11,14 @@ public interface IOptionsWindowViewModel : INotifyPropertyChanged
     int SelectedPanelIndex { get; set; }
     bool IsComponentsPanelVisible { get; }
     bool IsUpdaterPanelVisible { get; }
+
+    // Sub-panel ViewModels (exposed so axaml can set DataContext)
+    IDisplayOptionsPanelViewModel DisplayOptions { get; }
+    IAudioOptionsPanelViewModel AudioOptions { get; }
+    IGameOptionsPanelViewModel GameOptions { get; }
+    ICnCNetOptionsPanelViewModel CnCNetOptions { get; }
+    IUpdaterOptionsPanelViewModel UpdaterOptions { get; }
+    IComponentsPanelViewModel ComponentsOptions { get; }
 
     // Panel visibility (derived from SelectedPanelIndex)
     bool IsDisplayPanelVisible { get; }

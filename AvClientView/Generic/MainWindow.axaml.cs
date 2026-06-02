@@ -56,7 +56,6 @@ public partial class MainWindow : Window
     private MainMenu GetMainMenu()
     {
         var mainMenuVM = ViewConstants.ServiceProvider.GetRequiredService<IMainMenuViewModel>();
-        var topBarVM = ViewConstants.ServiceProvider.GetRequiredService<ITopBarViewModel>();
         var campaignSelectorVM = ViewConstants.ServiceProvider.GetRequiredService<ICampaignSelectorViewModel>();
         var optionsWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IOptionsWindowViewModel>();
         var extrasWindowVM = ViewConstants.ServiceProvider.GetRequiredService<IExtrasWindowViewModel>();
@@ -69,7 +68,6 @@ public partial class MainWindow : Window
 
         var mainMenu = new MainMenu();
         mainMenu.ViewModel = mainMenuVM;
-        mainMenu.SetTopBarViewModel(topBarVM);
         mainMenu.SetCampaignSelectorViewModel(campaignSelectorVM);
         mainMenu.SetOptionsWindowViewModel(optionsWindowVM);
         mainMenu.SetExtrasWindowViewModel(extrasWindowVM);

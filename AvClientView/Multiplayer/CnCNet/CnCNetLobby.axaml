@@ -260,7 +260,7 @@
             Background="#80000000"
             Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
-      <Panel>
+      <Panel DataContext="{Binding PendingYesNoDialog}">
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
                 BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                 BorderThickness="1"
@@ -269,10 +269,10 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
           <StackPanel Spacing="12">
-            <TextBlock Text="{Binding PendingYesNoDialog.Title}"
+            <TextBlock Text="{Binding Title}"
                        FontWeight="Bold"
                        Foreground="{DynamicResource XnaTextBrush}" />
-            <TextBlock Text="{Binding PendingYesNoDialog.Text}"
+            <TextBlock Text="{Binding Text}"
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaAltBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
@@ -295,7 +295,7 @@
             Background="#80000000"
             Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
-      <Panel>
+      <Panel DataContext="{Binding PendingGameInvite}">
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
                 BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                 BorderThickness="1"
@@ -309,9 +309,9 @@
                        Foreground="{DynamicResource XnaTextBrush}" />
             <TextBlock TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaAltBrush}">
-              <Run Text="{Binding PendingGameInvite.Sender}" />
+              <Run Text="{Binding Sender}" />
               <Run Text=" has invited you to " />
-              <Run Text="{Binding PendingGameInvite.GameName}" />
+              <Run Text="{Binding GameName}" />
             </TextBlock>
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
               <Button Content="Accept"

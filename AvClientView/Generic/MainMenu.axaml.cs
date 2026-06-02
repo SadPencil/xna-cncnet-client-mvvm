@@ -5,8 +5,6 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
-using System.ComponentModel;
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -22,14 +20,10 @@ namespace AvClientView.Generic;
 
 public partial class MainMenu : UserControl
 {
-    private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
-    private ITopBarViewModel? _topBarViewModel;
-
     public MainMenu()
     {
         InitializeComponent();
         Loaded += OnLoaded;
-        PointerMoved += OnPointerMoved;
         KeyDown += OnKeyDown;
         Focusable = true;
     }
@@ -124,44 +118,6 @@ public partial class MainMenu : UserControl
     {
         get => DataContext as IMainMenuViewModel;
         set => DataContext = value;
-    }
-
-    /// <summary>
-    /// Sets the TopBar's ViewModel. Must be called before the control is shown.
-    /// </summary>
-    public void SetTopBarViewModel(ITopBarViewModel topBarViewModel)
-    {
-        _topBarViewModel = topBarViewModel;
-        topBar.ViewModel = topBarViewModel;
-        topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
-        UpdatePlayerCountVisibility(topBarViewModel.IsPlayerCountVisible);
-    }
-
-    private void OnPointerMoved(object? sender, PointerEventArgs e)
-    {
-        if (_topBarViewModel == null)
-            return;
-
-        var pos = e.GetPosition(this);
-        if (pos.Y < APPEAR_CURSOR_THRESHOLD_Y)
-            _topBarViewModel.ExpandCommand.Execute(null);
-    }
-
-    private void OnTopBarPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ITopBarViewModel.IsPlayerCountVisible))
-        {
-            var topBarVM = (ITopBarViewModel)sender!;
-            Dispatcher.UIThread.Post(() => UpdatePlayerCountVisibility(topBarVM.IsPlayerCountVisible));
-        }
-    }
-
-    private void UpdatePlayerCountVisibility(bool isVisible)
-    {
-        if (lblCnCNetStatus != null)
-            lblCnCNetStatus.IsVisible = isVisible;
-        if (lblCnCNetPlayerCount != null)
-            lblCnCNetPlayerCount.IsVisible = isVisible;
     }
 
     // --- Child window wiring (all are UserControls with IsVisible="{Binding IsVisible}") ---

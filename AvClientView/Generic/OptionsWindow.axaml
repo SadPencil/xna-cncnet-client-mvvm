@@ -37,6 +37,7 @@
             Width="552" Height="389">
       <ScrollViewer>
         <Grid x:Name="displayPanel" Margin="12" ColumnDefinitions="*,*"
+              DataContext="{Binding DisplayOptions}"
               x:DataType="vmcOpt:IDisplayOptionsPanelViewModel">
           <!-- Left Column: In-game settings -->
           <StackPanel Grid.Column="0" Spacing="6" Margin="0,0,12,0">
@@ -152,6 +153,7 @@
             Width="552" Height="389">
       <ScrollViewer>
         <StackPanel x:Name="audioPanel" Margin="12" Spacing="6"
+                    DataContext="{Binding AudioOptions}"
                     x:DataType="vmcOpt:IAudioOptionsPanelViewModel">
           <TextBlock Text="Music Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <Grid ColumnDefinitions="*,Auto">
@@ -219,6 +221,7 @@
             Width="552" Height="389">
       <ScrollViewer>
         <StackPanel x:Name="gamePanel" Margin="12" Spacing="6"
+                    DataContext="{Binding GameOptions}"
                     x:DataType="vmcOpt:IGameOptionsPanelViewModel">
           <TextBlock Text="Scroll Rate:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <Grid ColumnDefinitions="*,Auto">
@@ -273,6 +276,7 @@
             Width="552" Height="389">
       <ScrollViewer>
         <StackPanel x:Name="cncnetPanel" Margin="12" Spacing="8"
+                    DataContext="{Binding CnCNetOptions}"
                     x:DataType="vmcOpt:ICnCNetOptionsPanelViewModel">
           <!-- Two columns of checkboxes -->
           <Grid ColumnDefinitions="*,*">
@@ -368,6 +372,7 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <StackPanel x:Name="updaterPanel" Margin="12" Spacing="6"
+                  DataContext="{Binding UpdaterOptions}"
                   x:DataType="vmcOpt:IUpdaterOptionsPanelViewModel">
         <TextBlock Text="Update Server Priority"
                    FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
@@ -430,6 +435,7 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <Panel x:Name="componentsPanel"
+             DataContext="{Binding ComponentsOptions}"
              x:DataType="vmcOpt:IComponentsPanelViewModel">
         <StackPanel Margin="12" Spacing="6">
           <TextBlock Text="Optional Components"

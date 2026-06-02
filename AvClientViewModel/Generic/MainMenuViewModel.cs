@@ -137,6 +137,8 @@ namespace AvClientViewModel.Generic
         /// </summary>
         public event Action? OptionsWindowClosed;
 
+        public ITopBarViewModel TopBarViewModel => topBarViewModel;
+
         public MainMenuViewModel(
             IUpdateService updateService,
             IGameProcessService gameProcessService,

@@ -1,4 +1,5 @@
 using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.Generic.OptionPanels;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -30,6 +31,13 @@ namespace AvClientViewModel.Generic
         private readonly CnCNetOptionsPanelViewModel cncnetOptionsPanel;
         private readonly UpdaterOptionsPanelViewModel updaterOptionsPanel;
         private readonly ComponentsPanelViewModel componentsPanel;
+
+        public IDisplayOptionsPanelViewModel DisplayOptions => displayOptionsPanel;
+        public IAudioOptionsPanelViewModel AudioOptions => audioOptionsPanel;
+        public IGameOptionsPanelViewModel GameOptions => gameOptionsPanel;
+        public ICnCNetOptionsPanelViewModel CnCNetOptions => cncnetOptionsPanel;
+        public IUpdaterOptionsPanelViewModel UpdaterOptions => updaterOptionsPanel;
+        public IComponentsPanelViewModel ComponentsOptions => componentsPanel;
 
         private Action<bool>? yesNoDialogCallback;
 
