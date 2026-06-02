@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.Enums;
+
 using ClientUpdater;
 
 using Rampastring.Tools;

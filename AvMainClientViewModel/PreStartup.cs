@@ -5,18 +5,22 @@ using AvMainClientMvvmContract.Multiplayer;
 using AvMainClientMvvmContract.Multiplayer.CnCNet;
 using AvMainClientMvvmContract.Multiplayer.GameLobby;
 using AvMainClientMvvmContract.ViewServices;
+
 using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+
 using ClientCore;
 using ClientCore.Enums;
 using ClientCore.I18N;
 using ClientCore.INIProcessing;
 using ClientCore.Settings;
+
 using ClientUpdater;
+
 using AvMainClientViewModel.Domain;
 using AvMainClientViewModel.Domain.Multiplayer;
 using AvMainClientViewModel.Domain.Multiplayer.CnCNet;
@@ -29,7 +33,9 @@ using AvMainClientViewModel.Multiplayer.CnCNet;
 using AvMainClientViewModel.Multiplayer.GameLobby;
 using AvMainClientViewModel.Online;
 using AvMainClientViewModel.Services;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using Rampastring.Tools;
 
 namespace AvMainClientViewModel;
