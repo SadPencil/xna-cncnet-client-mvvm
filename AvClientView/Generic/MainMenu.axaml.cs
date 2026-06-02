@@ -16,6 +16,8 @@ using AvClientView.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Serilog;
+
 namespace AvClientView.Generic;
 
 public partial class MainMenu : UserControl
@@ -55,6 +57,14 @@ public partial class MainMenu : UserControl
         Width = 1280;
         Height = 720;
 
+        // Center the panel when it's smaller than the full UserControl.
+        // Must use Stretch in AXAML (not Center) so Canvas sizes correctly.
+        if (menuWidth < 1280 || menuHeight < 720)
+        {
+            MainMenuPanel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            MainMenuPanel.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+        }
+
         // Resize message box and yes/no dialog to cover the full menu panel
         messageBoxOverlay.Width = menuWidth;
         messageBoxOverlay.Height = menuHeight;
@@ -71,6 +81,11 @@ public partial class MainMenu : UserControl
 
         // Ensure we can receive keyboard input
         Focus();
+
+        Serilog.Log.Debug($"[DEBUG] MainMenu.OnLoaded done: this.Width={Width}, this.Height={Height}, this.Bounds={Bounds}");
+        Serilog.Log.Debug($"[DEBUG]   MainMenuPanel: Width={MainMenuPanel.Width}, Height={MainMenuPanel.Height}, Bounds={MainMenuPanel.Bounds}");
+        Serilog.Log.Debug($"[DEBUG]   OverlayCanvas: Width={OverlayCanvas.Width}, Height={OverlayCanvas.Height}, Bounds={OverlayCanvas.Bounds}");
+        Serilog.Log.Debug($"[DEBUG]   TopBar: Width={topBar.Width}, Height={topBar.Height}, Bounds={topBar.Bounds}, DataContext={topBar.DataContext?.GetType().Name}");
     }
 
 

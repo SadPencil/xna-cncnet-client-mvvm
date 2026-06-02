@@ -12,10 +12,13 @@
              Width="1280" Height="720"
              Background="Transparent">
   <Grid>
-    <!-- Layer 0: Centered canvas for main menu items at INI size (behind overlays) -->
+    <!-- Layer 0: Canvas for main menu items at INI size (behind overlays).
+         Alignment is set in code-behind after INI size is known:
+         Stretch when 1280x720, Center when smaller (e.g. 800x600). -->
     <Canvas x:Name="MainMenuPanel"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+            Width="1280" Height="720"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
 
       <!-- ========== Menu buttons (INI overlay applies all visual properties) ========== -->
       <Button x:Name="btnNewCampaign"
