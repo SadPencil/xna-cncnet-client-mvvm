@@ -414,6 +414,8 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
                 waypoint, x, y, true, isOccupied, tintColor,
                 playerList ?? new List<IIndicatorPlayerInfo>()));
         }
+
+        OnPropertyChanged(nameof(StartingLocationIndicators));
     }
 }
 

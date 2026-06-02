@@ -50,7 +50,8 @@
               BorderThickness="1"
               Width="415" Height="390"
               Canvas.Left="12" Canvas.Top="69">
-        <ListBox ItemsSource="{Binding MapListItems}"
+        <ListBox x:Name="mapListBox"
+                 ItemsSource="{Binding MapListItems}"
                  SelectedIndex="{Binding SelectedMapIndex}"
                  Background="Transparent"
                  ToolTip.Tip="{Binding MapListTooltipText}">
@@ -85,43 +86,10 @@
               BorderThickness="1"
               Width="400" Height="300"
               Canvas.Left="437" Canvas.Top="285">
-        <Panel x:Name="mapPreviewPanel">
+        <Canvas x:Name="mapPreviewPanel">
           <Image x:Name="mapPreviewImage" Stretch="Uniform" />
-          <ItemsControl x:Name="startingLocationIndicators"
-                        ItemsSource="{Binding MapPreviewBox.StartingLocationIndicators}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Canvas />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-              <DataTemplate x:DataType="vmc:IStartingLocationIndicatorData">
-                <Canvas Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"
-                        IsVisible="{Binding IsVisible}">
-                  <!-- Indicator number -->
-                  <TextBlock Text="{Binding WaypointNumber}"
-                             Foreground="White" FontWeight="Bold" FontSize="10"
-                             HorizontalAlignment="Center" VerticalAlignment="Center"
-                             Margin="0,0,0,0" />
-                  <!-- Player names -->
-                  <ItemsControl ItemsSource="{Binding Players}" Margin="16,0,0,0">
-                    <ItemsControl.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" />
-                      </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate x:DataType="vmc:IIndicatorPlayerInfo">
-                        <TextBlock Text="{Binding Name}" FontSize="9"
-                                   Foreground="White" />
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </Canvas>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </Panel>
+          <Canvas x:Name="indicatorsCanvas" />
+        </Canvas>
       </Border>
 
       <!-- Map Name Label (centered above preview) -->

@@ -48,7 +48,8 @@
               IsVisible="{Binding IsMapListVisible}"
               Width="415" Height="390"
               Canvas.Left="12" Canvas.Top="69">
-        <ListBox ItemsSource="{Binding MapListItems}"
+        <ListBox x:Name="mapListBox"
+                 ItemsSource="{Binding MapListItems}"
                  SelectedIndex="{Binding SelectedMapIndex}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
@@ -78,12 +79,10 @@
               BorderThickness="1"
               Width="400" Height="300"
               Canvas.Left="437" Canvas.Top="285">
-        <Panel>
-          <TextBlock Text="[Map Preview]"
-                     Foreground="{DynamicResource XnaSubtleTextBrush}"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center" />
-        </Panel>
+        <Canvas x:Name="mapPreviewPanel">
+          <Image x:Name="mapPreviewImage" Stretch="Uniform" />
+          <Canvas x:Name="indicatorsCanvas" />
+        </Canvas>
       </Border>
 
       <TextBlock x:Name="lblMapName"
