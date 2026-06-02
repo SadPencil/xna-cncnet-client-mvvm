@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -201,7 +202,10 @@ public class LANBroadcastManagerService : ILANBroadcastManagerService
         lock (socketLock)
         {
             if (socket == null || !socket.IsBound)
+            {
+                Debugger.Break();
                 return false;
+            }
 
             byte[] buffer = encoding.GetBytes(message);
 
