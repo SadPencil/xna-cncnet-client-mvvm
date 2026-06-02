@@ -86,7 +86,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         string basePath = FindBaseIniFile(sectionName);
         if (basePath != null && !string.Equals(basePath, iniPath, StringComparison.OrdinalIgnoreCase))
         {
-            Log.Information($"INI Layout: Merging base {sectionName}.ini from {basePath}");
+            Log.Debug($"INI Layout: Merging base {sectionName}.ini from {basePath}");
             var baseIni = new CCIniFile(basePath);
             MergeMissingKeys(baseIni, iniFile);
         }
@@ -97,7 +97,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (themeGwPath != null && baseGwPath != null &&
             !string.Equals(themeGwPath, baseGwPath, StringComparison.OrdinalIgnoreCase))
         {
-            Log.Information($"INI Layout: Merging GenericWindow.ini (base={baseGwPath}, theme={themeGwPath})");
+            Log.Debug($"INI Layout: Merging GenericWindow.ini (base={baseGwPath}, theme={themeGwPath})");
             var baseGwIni = new CCIniFile(baseGwPath);
             var themeGwIni = new CCIniFile(themeGwPath);
             IniFile.ConsolidateIniFiles(baseGwIni, themeGwIni); // theme overrides base
@@ -108,7 +108,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string gwPath = baseGwPath ?? themeGwPath;
             if (gwPath != null)
             {
-                Log.Information($"INI Layout: Merging GenericWindow.ini from {gwPath}");
+                Log.Debug($"INI Layout: Merging GenericWindow.ini from {gwPath}");
                 var gwIni = new CCIniFile(gwPath);
                 MergeMissingKeys(gwIni, iniFile);
             }
@@ -161,7 +161,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Matches XNADropDown/XNATextBox drawing with BackColor, BorderColor, TextColor.
         ApplyInputControlStyles(control);
 
-        Log.Information($"INI Layout: Applied layout for '{sectionName}'");
+        Log.Debug($"INI Layout: Applied layout for '{sectionName}'");
     }
 
 
@@ -322,7 +322,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string hoverPath = DeriveHoverTexturePath(idleTexturePath);
             if (hoverPath != null)
             {
-                Log.Information($"INI Layout: Auto-derived HoverTexture '{hoverPath}' for '{controlName}'");
+                Log.Debug($"INI Layout: Auto-derived HoverTexture '{hoverPath}' for '{controlName}'");
                 ApplyButtonTexture(control, hoverPath, isHover: true);
             }
         }
@@ -394,11 +394,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                             if (_urlService != null)
                                 _urlService.OpenUrl(url);
                             else
-                                Log.Information($"INI Layout: IUrlService not available, cannot open '{url}'");
+                                Log.Warning($"INI Layout: IUrlService not available, cannot open '{url}'");
                         }
                         catch (Exception ex)
                         {
-                            Log.Information($"INI Layout: Failed to open URL '{url}': {ex.Message}");
+                            Log.Warning($"INI Layout: Failed to open URL '{url}': {ex.Message}");
                         }
                     };
                 }
@@ -1050,11 +1050,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
             {
-                Log.Information($"INI Layout: Texture not found: '{texturePath}'");
+                Log.Warning($"INI Layout: Texture not found: '{texturePath}'");
                 return;
             }
 
-            Log.Information($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
+            Log.Debug($"INI Layout: Loading texture '{texturePath}' from {fullPath}");
             var bitmap = new Bitmap(fullPath);
 
             // Determine stretch mode from hardcoded mapping or default to Fill
@@ -1091,7 +1091,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
         catch (Exception ex)
         {
-            Log.Information($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
+            Log.Warning($"INI Layout: Failed to load texture '{texturePath}': {ex.Message}");
         }
     }
 
@@ -1475,7 +1475,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             string fullPath = FindTextureFileStatic(texturePath);
             if (fullPath == null)
             {
-                Log.Information($"INI Layout: Button texture not found: '{texturePath}'");
+                Log.Warning($"INI Layout: Button texture not found: '{texturePath}'");
                 return;
             }
 
@@ -1512,7 +1512,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
         catch (Exception ex)
         {
-            Log.Information($"INI Layout: Failed to load button texture '{texturePath}': {ex.Message}");
+            Log.Warning($"INI Layout: Failed to load button texture '{texturePath}': {ex.Message}");
         }
     }
 
