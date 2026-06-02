@@ -45,13 +45,13 @@ jobs:
 
       - name: Restore NuGet packages
         # Restore from the solution file so that SecondStageUpdater is included.
-        # SecondStageUpdater is not a ProjectReference of DXMainClient, but it is
+        # SecondStageUpdater is not a ProjectReference of AvClientExe, but it is
         # always built via the BuildUpdater MSBuild target; omitting it from the
         # restore causes NETSDK1127/NETSDK1004 on subsequent agent builds.
-        run: dotnet restore DXClient.slnx -p:Configuration=UniversalGLRelease
+        run: dotnet restore AvClient.slnx
 
       - name: Build
         # --no-restore is required: the implicit restore triggered by 'dotnet build'
-        # only walks DXMainClient's ProjectReference graph and therefore skips
+        # only walks AvClientExe's ProjectReference graph and therefore skips
         # SecondStageUpdater, leaving its restore assets stale.
-        run: dotnet build DXMainClient/DXMainClient.csproj -p:Configuration=UniversalGLRelease -f net8.0 --no-restore
+        run: dotnet build AvClientExe/AvClientExe.csproj -f net8.0 --no-restore

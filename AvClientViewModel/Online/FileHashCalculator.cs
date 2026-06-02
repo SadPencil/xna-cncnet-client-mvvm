@@ -87,6 +87,7 @@ namespace AvClientViewModel.Online
 
         public void CalculateHashes()
         {
+            // TODO: now there is only clientav.exe
             FileHashes fh = new()
             {
                 ClientDefinitionsHash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), ClientConfiguration.CLIENT_DEFS)),
