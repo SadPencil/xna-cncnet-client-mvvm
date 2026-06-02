@@ -57,9 +57,14 @@
                  ToolTip.Tip="{Binding MapListTooltipText}">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="vmc:IMapListItem">
-              <TextBlock Text="{Binding MapName}"
-                         Foreground="{DynamicResource XnaTextBrush}"
-                         />
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding RankStar}"
+                           Foreground="Gold"
+                           FontWeight="Bold"
+                           FontSize="10" />
+                <TextBlock Text="{Binding MapName}"
+                           Foreground="{DynamicResource XnaTextBrush}" />
+              </StackPanel>
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>

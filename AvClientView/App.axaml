@@ -24,6 +24,8 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource XnaTextBrush}" />
             <!--
             Override Button template: use a minimal template without FluentTheme hover styling.
             This game client uses image-based buttons (IdleTexture/HoverTexture from INI).
