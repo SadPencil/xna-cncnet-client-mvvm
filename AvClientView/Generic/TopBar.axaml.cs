@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -22,6 +23,15 @@ public partial class TopBar : UserControl, ITopBarView
         InitializeComponent();
 
         _slideTransform = new TranslateTransform(0, -39);
+        _slideTransform.Transitions = new Transitions
+        {
+            new DoubleTransition
+            {
+                Property = TranslateTransform.YProperty,
+                Duration = TimeSpan.FromMilliseconds(200),
+                Easing = new Avalonia.Animation.Easings.CubicEaseInOut()
+            }
+        };
         RenderTransform = _slideTransform;
 
         PointerMoved += OnPointerMoved;
