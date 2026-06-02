@@ -29,7 +29,7 @@ public class Startup
         var app = AppBuilder.Configure<App>();
 
         if (headless)
-            app = app.UseHeadless(new AvaloniaHeadlessPlatformOptions { });
+            app = app.UseHeadless(new AvaloniaHeadlessPlatformOptions());
         else
             app = app.UsePlatformDetect();
 
