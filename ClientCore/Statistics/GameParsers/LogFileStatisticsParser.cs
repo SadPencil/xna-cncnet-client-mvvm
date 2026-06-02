@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
 using Rampastring.Tools;
+
 using Serilog;
 
 namespace ClientCore.Statistics.GameParsers

@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Reflection;
-using Rampastring.Tools;
+using System.Text;
+
 using ClientCore.Extensions;
 using ClientCore.PlatformShim;
+
+using Rampastring.Tools;
 
 namespace ClientCore
 {

@@ -15,8 +15,6 @@
 
 namespace ClientUpdater;
 
-using ClientCore.Extensions;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,9 +24,12 @@ using System.Net.Http.Handlers;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ClientCore.Extensions;
+
 using ClientUpdater.Compression;
 
 using Rampastring.Tools;
+
 using Serilog;
 
 /// <summary>

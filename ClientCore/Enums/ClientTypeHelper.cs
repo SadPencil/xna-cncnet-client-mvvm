@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using ClientCore.Extensions;
 
 namespace ClientCore.Enums

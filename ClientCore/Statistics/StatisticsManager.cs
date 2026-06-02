@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+
 using Rampastring.Tools;
+
 using Serilog;
-using System.Diagnostics;
 
 namespace ClientCore.Statistics
 {

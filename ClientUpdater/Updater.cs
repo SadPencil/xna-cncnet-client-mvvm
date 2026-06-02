@@ -31,11 +31,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ClientUpdater.Compression;
-
 using ClientCore.Extensions;
 
+using ClientUpdater.Compression;
+
 using Rampastring.Tools;
+
 using Serilog;
 
 public static class Updater
@@ -1655,8 +1656,8 @@ public static class Updater
     {
         if (ContainsAnyMask(fileInfoFilename))
             return null;
-        
-        string identifier;  identifier = GetUniqueIdForFile(localFilename);
+
+        string identifier; identifier = GetUniqueIdForFile(localFilename);
         return fileInfoIdentifier == identifier ? null : identifier;
     }
 

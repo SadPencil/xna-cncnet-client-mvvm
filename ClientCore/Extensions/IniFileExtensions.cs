@@ -62,7 +62,7 @@ namespace ClientCore.Extensions
                 foreach (KeyValuePair<string, string> iniSectionKey in keys)
                     iniSection.RemoveKey(iniSectionKey.Key);
             }
-            
+
             public string? GetStringValueOrNull(string key) =>
                 iniSection.KeyExists(key) ? iniSection.GetStringValue(key, string.Empty) : null;
 

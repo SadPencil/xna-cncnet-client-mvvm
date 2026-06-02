@@ -64,7 +64,7 @@ namespace ClientCore
         public ProfanityFilter(IEnumerable<string> censoredWords)
         {
             if (censoredWords == null)
-               throw new ArgumentNullException(nameof(censoredWords));
+                throw new ArgumentNullException(nameof(censoredWords));
             CensoredWords = new List<string>(censoredWords);
         }
 
@@ -73,7 +73,7 @@ namespace ClientCore
             foreach (string censoredWord in CensoredWords)
             {
                 string regularExpression = ToRegexPattern(censoredWord);
-                 if (Regex.IsMatch(text, regularExpression, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+                if (Regex.IsMatch(text, regularExpression, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
                     return true;
             }
             return false;

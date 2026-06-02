@@ -1,5 +1,7 @@
-﻿using Rampastring.Tools;
-using System.IO;
+﻿using System.IO;
+
+using Rampastring.Tools;
+
 using Serilog;
 
 namespace ClientCore

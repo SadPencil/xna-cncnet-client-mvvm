@@ -3,9 +3,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
-using Rampastring.Tools;
-using Serilog;
+
 using ClientCore.PlatformShim;
+
+using Rampastring.Tools;
+
+using Serilog;
 
 namespace ClientCore.Extensions;
 

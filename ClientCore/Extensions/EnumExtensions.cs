@@ -12,13 +12,13 @@ namespace ClientCore.Extensions
             return values[(Array.IndexOf(values, src) + 1) % values.Length];
         }
 
-        public static T First<T>() where T : Enum 
+        public static T First<T>() where T : Enum
             => EnumExtensions.GetValues<T>()[0];
 
         public static string GetNames<T>() where T : Enum
             => string.Join(", ", EnumExtensions.GetValues<T>().Select(e => e.ToString()));
 
-        private static T[] GetValues<T>() where T : Enum 
+        private static T[] GetValues<T>() where T : Enum
             => (T[])Enum.GetValues(typeof(T));
     }
 }

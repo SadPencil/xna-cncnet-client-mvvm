@@ -5,12 +5,12 @@ using System.Linq;
 
 using ClientCore.Enums;
 using ClientCore.Extensions;
-using ClientCore.Settings;
 
 using Rampastring.Tools;
+
 using Serilog;
 
-namespace ClientCore
+namespace ClientCore.Settings
 {
     public class UserINISettings
     {
