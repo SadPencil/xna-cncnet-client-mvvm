@@ -8,6 +8,10 @@
         CanResize="True"
         Background="#000000">
   <Viewbox Stretch="Uniform" ClipToBounds="False">
-    <ContentControl x:Name="MainContent" />
+    <Grid Width="1280" Height="720">
+      <ContentControl x:Name="MainContent"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+    </Grid>
   </Viewbox>
 </Window>
