@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
+             x:Class="AvClientView.Multiplayer.LANGameLoadingLobby"
+             x:DataType="vmc:ILANGameLoadingLobbyViewModel"
+             IsVisible="{Binding IsVisible}"
+             Width="590" Height="510">
+  <Canvas x:Name="MainCanvas">
+
+    <!-- Description -->
+    <TextBlock x:Name="lblDescription"
+               Text="Wait for all players to join and get ready, then click Load Game to load the saved multiplayer game."
+               Foreground="{DynamicResource XnaTextBrush}"
+               FontSize="11"
+               Canvas.Left="12" Canvas.Top="12" />
+
+    <!-- Player Panel -->
+    <Border x:Name="panelPlayers"
+            Background="#80000000"
+            BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+            BorderThickness="1"
+            Width="373" Height="125"
+            Canvas.Left="12" Canvas.Top="32">
+      <ItemsControl ItemsSource="{Binding PlayerDisplayInfo}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel Width="370" Margin="6,6,0,0" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vmc:IPlayerDisplayInfo">
+            <Border Width="180" Height="30" Margin="0,0,3,0">
+              <TextBlock Text="{Binding DisplayName}"
+                         Foreground="{DynamicResource XnaTextBrush}"
+                         FontSize="10"
+                         VerticalAlignment="Center" />
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </Border>
+
+    <!-- Map / Game Mode Info -->
+    <TextBlock x:Name="lblMapName"
+               Text="MAP:"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="397" Canvas.Top="32" />
+    <TextBlock x:Name="lblMapNameValue"
+               Text="{Binding MapName}"
+               Foreground="{DynamicResource XnaAltBrush}"
+               Canvas.Left="397" Canvas.Top="50" />
+
+    <TextBlock x:Name="lblGameMode"
+               Text="GAME MODE:"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="397" Canvas.Top="72" />
+    <TextBlock x:Name="lblGameModeValue"
+               Text="{Binding GameMode}"
+               Foreground="{DynamicResource XnaAltBrush}"
+               Canvas.Left="397" Canvas.Top="90" />
+
+    <TextBlock x:Name="lblSavedGameTime"
+               Text="SAVED GAME:"
+               FontWeight="Bold"
+               Foreground="{DynamicResource XnaTextBrush}"
+               Canvas.Left="397" Canvas.Top="125" />
+    <ComboBox x:Name="ddSavedGame"
+              ItemsSource="{Binding SavedGameNames}"
+              SelectedIndex="{Binding SelectedSavedGameIndex}"
+              IsEnabled="{Binding IsHost}"
+              Width="181" Height="21"
+              Canvas.Left="397" Canvas.Top="145" />
+
+    <!-- Chat Messages -->
+    <Border x:Name="lbChatMessages"
+            Background="#80000000"
+            BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+            BorderThickness="1"
+            Width="566" Height="290"
+            Canvas.Left="12" Canvas.Top="169">
+      <ListBox ItemsSource="{Binding ChatMessages}"
+               Background="Transparent">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="x:String">
+            <TextBlock Text="{Binding .}"
+                       Foreground="{DynamicResource XnaTextBrush}"
+                       TextWrapping="Wrap" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+
+    <!-- Chat Input -->
+    <TextBox x:Name="tbChatInput"
+             Text="{Binding DraftMessage}"
+             Watermark="Type a message..."
+             Width="566" Height="19"
+             Canvas.Left="12" Canvas.Top="462" />
+
+    <!-- Load Game Button -->
+    <Button x:Name="btnLoadGame"
+            Content="{Binding LoadGameButtonText}"
+            Command="{Binding LoadGameCommand}"
+            IsEnabled="{Binding CanLoadGame}"
+            Width="133" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="12" Canvas.Top="485" />
+
+    <!-- Leave Game Button -->
+    <Button x:Name="btnLeaveGame"
+            Content="Leave Game"
+            Command="{Binding LeaveGameCommand}"
+            Width="133" Height="23"
+            FontWeight="Bold"
+            Canvas.Left="445" Canvas.Top="485" />
+
+  </Canvas>
+</UserControl>

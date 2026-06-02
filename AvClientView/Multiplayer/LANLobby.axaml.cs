@@ -32,6 +32,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
         // Wire up child overlay visibility
         WireOverlayVisibility(gameCreationWindow, gameCreationOverlay);
         WireOverlayVisibility(gameLobby, gameLobbyOverlay);
+        WireOverlayVisibility(gameLoadingLobby, gameLoadingLobbyOverlay);
     }
 
     private void ApplyDefaultBackground(string texturePath)

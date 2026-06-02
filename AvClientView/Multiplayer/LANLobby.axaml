@@ -157,5 +157,15 @@
         </controls:DarkeningPanel.ChildContent>
       </controls:DarkeningPanel>
 
+      <!-- LANGameLoadingLobby (centered popup for loading saved games) -->
+      <controls:DarkeningPanel x:Name="gameLoadingLobbyOverlay"
+                               Width="1220" Height="728"
+                               Canvas.Left="0" Canvas.Top="0">
+        <controls:DarkeningPanel.ChildContent>
+          <mp:LANGameLoadingLobby x:Name="gameLoadingLobby"
+                                  DataContext="{Binding GameLoadingLobby}" />
+        </controls:DarkeningPanel.ChildContent>
+      </controls:DarkeningPanel>
+
   </Canvas>
 </UserControl>

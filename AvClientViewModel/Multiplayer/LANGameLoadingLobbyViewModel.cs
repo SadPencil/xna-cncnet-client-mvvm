@@ -76,6 +76,9 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     // --- Observable state ---
 
     [ObservableProperty]
+    private bool _isVisible;
+
+    [ObservableProperty]
     private string _localAddressText = string.Empty;
 
     [ObservableProperty]

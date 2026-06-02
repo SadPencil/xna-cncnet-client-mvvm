@@ -246,6 +246,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 int loadedGameId = spawnSGIni.GetIntValue("Settings", "GameID", -1);
 
                 lanGameLoadingLobby.SetUp(false, hg.EndPoint, client, loadedGameId);
+                lanGameLoadingLobby.IsVisible = true;
 
                 buffer = encoding.GetBytes("JOIN" + ProgramConstants.LAN_DATA_SEPARATOR +
                     ProgramConstants.PLAYERNAME + ProgramConstants.LAN_DATA_SEPARATOR +
@@ -352,6 +353,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 lanGameLoadingLobby.SetUp(true,
                     new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT),
                     null, e.LoadedGameID);
+                lanGameLoadingLobby.IsVisible = true;
                 IsEnabled = false;
             });
 
@@ -420,6 +422,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void LanGameLoadingLobby_GameLeft(object? sender, EventArgs e)
     {
+        lanGameLoadingLobby.IsVisible = false;
         IsEnabled = true;
     }
 
