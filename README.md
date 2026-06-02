@@ -18,24 +18,24 @@ flowchart TD
     RampastringTools["Rampastring.Tools"]
     ClientCore["ClientCore"]
     ClientUpdater["ClientUpdater"]
-    AxClientMvvmContract["AxClientMvvmContract"]
-    AxClientView["AxClientView"]
-    AxClientViewModel["AxClientViewModel"]
-    AxClientExe["AxClientExe"]
+    AvClientMvvmContract["AvClientMvvmContract"]
+    AvClientView["AvClientView"]
+    AvClientViewModel["AvClientViewModel"]
+    AvClientExe["AvClientExe"]
 
     %% Dependencies
-    AxClientExe --> AxClientMvvmContract
-    AxClientExe --> AxClientView
-    AxClientExe --> AxClientViewModel
+    AvClientExe --> AvClientMvvmContract
+    AvClientExe --> AvClientView
+    AvClientExe --> AvClientViewModel
 
-    AxClientMvvmContract --> RampastringTools
+    AvClientMvvmContract --> RampastringTools
 
-    AxClientView --> AxClientMvvmContract
-    AxClientView --> ClientCore
+    AvClientView --> AvClientMvvmContract
+    AvClientView --> ClientCore
 
-    AxClientViewModel --> ClientCore
-    AxClientViewModel --> ClientUpdater
-    AxClientViewModel --> AxClientMvvmContract
+    AvClientViewModel --> ClientCore
+    AvClientViewModel --> ClientUpdater
+    AvClientViewModel --> AvClientMvvmContract
 
     ClientCore --> RampastringTools
     ClientUpdater --> ClientCore
