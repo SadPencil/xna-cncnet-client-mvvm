@@ -1035,12 +1035,14 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     protected override void AddNotice(string message)
     {
-        NoticePosted?.Invoke(this, new NoticeEventArgs(message, NoticeSeverity.Info));
+        chatMessagesList.Add(message);
+        ChatMessages = chatMessagesList.ToList();
     }
 
     protected void AddNotice(string message, NoticeSeverity severity)
     {
-        NoticePosted?.Invoke(this, new NoticeEventArgs(message, severity));
+        chatMessagesList.Add(message);
+        ChatMessages = chatMessagesList.ToList();
     }
 
     // --- Map preview box enabled status ---
