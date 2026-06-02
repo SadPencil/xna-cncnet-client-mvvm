@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>CnCNet Client Core Library</Description>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Text.Encoding.CodePages" />

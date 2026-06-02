@@ -7,7 +7,6 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>AvMainClientExe</RootNamespace>
     <AssemblyName>AvMainClientExe</AssemblyName>
   </PropertyGroup>

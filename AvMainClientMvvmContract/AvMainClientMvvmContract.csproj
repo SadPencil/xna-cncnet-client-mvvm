@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Platforms>AnyCPU</Platforms>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>AvMainClientMvvmContract</RootNamespace>
     <AssemblyName>AvMainClientMvvmContract</AssemblyName>
   </PropertyGroup>

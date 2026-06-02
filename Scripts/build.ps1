@@ -44,54 +44,41 @@ param(
   $NoMove
 )
 
-$Script:ConfigurationSuffix = 'Release'
+$Script:Configuration = 'Release'
 if ($IsDebug) {
-  $Script:ConfigurationSuffix = 'Debug'
+  $Script:Configuration = 'Debug'
 }
 
 $Script:RepoRoot = Split-Path $PSScriptRoot
-$Script:ProjectPath = Join-Path $RepoRoot 'DXMainClient' 'DXMainClient.csproj'
+$Script:ProjectPath = Join-Path $RepoRoot 'AvMainClientExe' 'AvMainClientExe.csproj'
 $Script:CompiledRoot = Join-Path $RepoRoot 'Compiled'
-$Script:EngineSubFolderMap = @{
-  'UniversalGL' = 'UniversalGL'
-  'WindowsDX'   = 'Windows'
-  'WindowsGL'   = 'OpenGL'
-  'WindowsXNA'  = 'XNA'
-}
 $Script:FrameworkBinariesFolderMap = @{
   'net48'          = 'Binaries'
   'net8.0'         = 'BinariesNET8'
-  'net8.0-windows' = 'BinariesNET8'
+  # 'net8.0-windows' = 'BinariesNET8'
 }
 
 if (!$NoClean -AND (Test-Path $Script:CompiledRoot)) {
   Remove-Item -Recurse -Force -LiteralPath $Script:CompiledRoot
 }
 
-if ($null -EQ $IsWindows -AND 'Desktop' -EQ $PSEdition) {
-  $Script:IsWindows = $true
-}
-
 function Script:Invoke-BuildProject {
   [CmdletBinding(DefaultParameterSetName = 'ByGame')]
   param (
-    [Parameter(Mandatory, ParameterSetName = 'Detail', Position = 0)]
-    [string]
-    $Engine,
     [Parameter(Mandatory, ParameterSetName = 'Detail')]
     [string]
     $Framework
   )
   
   process {
-    if ($Engine) {
-      $Output = Join-Path $CompiledRoot 'Resources' ($FrameworkBinariesFolderMap[$Framework]) ($EngineSubFolderMap[$Engine])
+    if ($Framework) {
+      $Output = Join-Path $CompiledRoot 'Resources' ($FrameworkBinariesFolderMap[$Framework])
 
       $Private:ArgumentList = [System.Collections.Generic.List[string]]::new(11)
       $Private:ArgumentList.Add('publish')
       $Private:ArgumentList.Add("$ProjectPath")
       $Private:ArgumentList.Add('--graph')
-      $Private:ArgumentList.Add("--configuration:${Engine}$Script:ConfigurationSuffix")
+      $Private:ArgumentList.Add("--configuration:$Script:Configuration")
       $Private:ArgumentList.Add("--framework:$Framework")
       $Private:ArgumentList.Add("--output:$Output")
       $Private:ArgumentList.Add('-property:SatelliteResourceLanguages=en')
@@ -105,27 +92,15 @@ function Script:Invoke-BuildProject {
       # $Private:ArgumentList.Add("-property:FileVersion=$AssemblySemFileVer")
       # $Private:ArgumentList.Add("-property:InformationalVersion=$InformationalVersion")
   
-      # if ($Engine -eq 'WindowsXNA') {
-      #   $Private:ArgumentList.Add('--arch=x86')
-      # }
-  
       & 'dotnet' $Private:ArgumentList
       if ($LASTEXITCODE) {
-        throw "Build failed for ${Engine}$Script:ConfigurationSuffix $Framework (exit code $LASTEXITCODE)"
+        throw "Build failed for $Script:Configuration $Framework (exit code $LASTEXITCODE)"
       }
     }
     else {
-      Invoke-BuildProject -Engine 'UniversalGL' -Framework 'net8.0'
-      if ($IsWindows) {
-        @('WindowsDX', 'WindowsGL', 'WindowsXNA') | ForEach-Object {
-          $Private:Engine = $PSItem
-  
-          @('net48', 'net8.0-windows') | ForEach-Object {
-            $Private:Framework = $PSItem
-  
-            Invoke-BuildProject -Engine $Private:Engine -Framework $Private:Framework
-          }
-        }
+      Write-Host "Building for all frameworks..." -ForegroundColor Cyan
+      foreach ($Framework in $FrameworkBinariesFolderMap.Keys) {
+        Script:Invoke-BuildProject -Framework $Framework
       }
     }
   }

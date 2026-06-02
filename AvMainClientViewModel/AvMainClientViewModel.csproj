@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>AvMainClientViewModel</RootNamespace>
     <AssemblyName>AvMainClientViewModel</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
