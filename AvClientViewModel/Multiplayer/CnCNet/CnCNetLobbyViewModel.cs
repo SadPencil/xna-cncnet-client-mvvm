@@ -283,9 +283,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         foreach (IRCColor color in chatColors)
         {
             if (color.Selectable)
+            {
                 colorOptions.Add(color);
+                Log.Information("[LOG-VM] ColorOptions added: idx={Idx}, Name={Name}, Selectable={Sel}, R={R}, G={G}, B={B}, IrcColorId={Id}, concreteType={Type}",
+                    colorOptions.Count - 1, color.Name, color.Selectable, color.R, color.G, color.B, color.IrcColorId, color.GetType().FullName);
+            }
         }
-        Log.Information("[LOG] CnCNetLobbyVM: ColorOptions populated, count={Count}", colorOptions.Count);
+        Log.Information("[LOG-VM] ColorOptions total count={Count}, ObservableCollection type={CollType}",
+            colorOptions.Count, colorOptions.GetType().FullName);
 
         // Set initial color from settings
         int savedColor = UserINISettings.Instance.ChatColor;
@@ -923,8 +928,11 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else
         {
             chatMessages.Add(message);
-            Log.Information("[LOG] CnCNetLobbyVM: chatMessage added, sender={Sender}, Color=({R},{G},{B})",
-                message.SenderName, message.Color.R, message.Color.G, message.Color.B);
+            Log.Information("[LOG-VM] ChatMessage added to ObservableCollection: SenderName={Sender}, SenderIdent={Ident}, IsAdmin={Admin}, Color.R={R}, Color.G={G}, Color.B={B}, Message={Msg}, DateTime={Time}, concreteType={Type}, collectionCount={Count}",
+                message.SenderName, message.SenderIdent, message.SenderIsAdmin,
+                message.Color.R, message.Color.G, message.Color.B,
+                message.Message?.Substring(0, Math.Min(message.Message?.Length ?? 0, 60)),
+                message.DateTime, message.GetType().FullName, chatMessages.Count);
         }
     }
 

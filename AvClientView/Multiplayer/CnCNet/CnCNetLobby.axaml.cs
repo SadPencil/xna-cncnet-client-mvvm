@@ -73,42 +73,68 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        Log.Information("[LOG] ColorDropdown ItemTemplate setup");
+        Log.Information("[LOG-View] ddColor.ItemTemplate setup START");
         var template = new FuncDataTemplate<object>((item, _) =>
         {
+            Log.Information("[LOG-View] ddColor.FuncDataTemplate called: itemType={Type}, itemToString={Str}",
+                item?.GetType().FullName ?? "null",
+                item?.ToString() ?? "null");
+
             var tb = new TextBlock();
             if (item is IIRCColor color)
             {
                 tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
+                Log.Information("[LOG-View] ddColor.FuncDataTemplate IIRCColor match: Name={Name}, R={R}, G={G}, B={B}, TextBlock.Text={TbText}",
+                    color.Name, color.R, color.G, color.B, tb.Text);
             }
             else
             {
-                tb.Text = item?.ToString() ?? string.Empty;
-                Log.Warning("[LOG] ColorDropdown item NOT IIRCColor: type={Type}", item?.GetType().FullName);
+                tb.Text = item?.ToString() ?? "null";
+                Log.Warning("[LOG-View] ddColor.FuncDataTemplate NOT IIRCColor: fullType={Type}",
+                    item?.GetType().FullName ?? "null");
             }
             return tb;
         }, supportsRecycling: true);
 
         ddColor.ItemTemplate = template;
         ddColor.SelectionBoxItemTemplate = template;
+        Log.Information("[LOG-View] ddColor.ItemTemplate and SelectionBoxItemTemplate SET");
     }
 
     private void SetupChatMessageTemplate()
     {
-        if (lbChatList == null) return;
-        Log.Information("[LOG] ChatMessage ItemTemplate setup");
+        if (lbChatList == null)
+        {
+            Log.Warning("[LOG-View] lbChatList is null, cannot setup ChatMessage template");
+            return;
+        }
+        Log.Information("[LOG-View] lbChatList.ItemTemplate setup START, ChatMessages.Count will be logged at VM side");
 
         lbChatList.ItemTemplate = new FuncDataTemplate<IChatMessage>((msg, _) =>
         {
+            Log.Information("[LOG-View] ChatMessage.FuncDataTemplate called: msgType={Type}, SenderName={Sender}, Color=({R},{G},{B}), Message={Msg}",
+                msg?.GetType().FullName ?? "null",
+                msg?.SenderName ?? "null",
+                msg?.Color.R ?? 0, msg?.Color.G ?? 0, msg?.Color.B ?? 0,
+                msg?.Message?.Substring(0, Math.Min(msg?.Message?.Length ?? 0, 40)) ?? "null");
+
             var tb = new TextBlock { TextWrapping = TextWrapping.Wrap };
             if (msg != null)
             {
                 tb.Text = FormatChatMessage(msg);
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, msg.Color.R, msg.Color.G, msg.Color.B));
+                Log.Information("[LOG-View] ChatMessage.FuncDataTemplate rendered: TextBlock.Text={TbText}, Foreground.Color=({R},{G},{B})",
+                    tb.Text, msg.Color.R, msg.Color.G, msg.Color.B);
+            }
+            else
+            {
+                tb.Text = "(null message)";
+                Log.Warning("[LOG-View] ChatMessage.FuncDataTemplate: msg is null");
             }
             return tb;
         });
+        Log.Information("[LOG-View] lbChatList.ItemTemplate SET");
     }
 
     private static string FormatChatMessage(IChatMessage msg)
@@ -179,7 +205,19 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     public ICnCNetLobbyViewModel? ViewModel
     {
         get => DataContext as ICnCNetLobbyViewModel;
-        set => DataContext = value;
+        set
+        {
+            DataContext = value;
+            if (value != null)
+            {
+                Log.Information("[LOG-View] ViewModel set: ColorOptions.Count={ColorCount}, ChatMessages.Count={ChatCount}, Games.Count={GameCount}, ChannelOptions.Count={ChanCount}",
+                    value.ColorOptions?.Count ?? -1,
+                    value.ChatMessages?.Count ?? -1,
+                    value.Games?.Count ?? -1,
+                    value.ChannelOptions?.Count ?? -1);
+                Log.Information("[LOG-View] ViewModel.set: concreteType={Type}", value.GetType().FullName);
+            }
+        }
     }
 
     void ISwitchableView.Show() => IsVisible = true;

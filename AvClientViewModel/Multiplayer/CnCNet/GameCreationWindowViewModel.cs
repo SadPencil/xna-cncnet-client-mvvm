@@ -110,14 +110,16 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
 
         // Initialize tunnel list
         RefreshTunnelList();
-        Log.Information("[LOG] GameCreationWindowVM: ctor, tunnels={Count}, CanCreateGame={CanCreate}",
-            tunnelHandler.Tunnels.Count, CanCreateGame);
+        Log.Information("[LOG-VM-GCW] Constructor: tunnelHandler.Tunnels.Count={Tunnels}, TunnelNames.ObservableCollection.Count={Names}, CanCreateGame={CanCreate}, CanLoadGame={CanLoad}",
+            tunnelHandler.Tunnels.Count, _tunnelNames.Count, CanCreateGame, CanLoadGame);
 
         // Subscribe to tunnel refreshes so the list updates when tunnels are loaded
         tunnelHandler.TunnelsRefreshed += (_, _) =>
         {
-            Log.Information("[LOG] GameCreationWindowVM: TunnelsRefreshed, tunnels={Count}", tunnelHandler.Tunnels.Count);
+            Log.Information("[LOG-VM-GCW] TunnelsRefreshed FIRED: tunnelHandler.Tunnels.Count={Tunnels}", tunnelHandler.Tunnels.Count);
             RefreshTunnelList();
+            Log.Information("[LOG-VM-GCW] After RefreshTunnelList: TunnelNames.Count={Names}, CanCreateGame={CanCreate}",
+                _tunnelNames.Count, CanCreateGame);
         };
 
         // Check if loading game is allowed

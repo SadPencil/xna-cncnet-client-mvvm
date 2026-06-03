@@ -51,6 +51,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
             connectionManager.Connected += ConnectionManager_Connected;
             connectionManager.Disconnected += ConnectionManager_Disconnected;
             connectionManager.ConnectionLost += ConnectionManager_ConnectionLost;
+            Log.Information("[LOG-TunnelHandler] Constructor: subscribed to CnCNetManager events, timer created with Timeout.Infinite");
         }
 
         public List<CnCNetTunnel> Tunnels { get; private set; } = new List<CnCNetTunnel>();
@@ -74,6 +75,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
         private void ConnectionManager_Connected(object sender, EventArgs e)
         {
+            Log.Information("[LOG-TunnelHandler] Connected event fired, calling Start()");
             Start();
         }
 
@@ -130,6 +132,7 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 
         private void HandleRefreshedTunnels(List<CnCNetTunnel> newTunnels)
         {
+            Log.Information("[LOG-TunnelHandler] HandleRefreshedTunnels: received {Count} tunnels, will fire TunnelsRefreshed", newTunnels.Count);
             if (newTunnels.Count == 0)
             {
                 TunnelsRefreshed?.Invoke(this, EventArgs.Empty);
