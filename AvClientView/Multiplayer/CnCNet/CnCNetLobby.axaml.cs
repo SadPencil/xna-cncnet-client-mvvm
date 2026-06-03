@@ -2,18 +2,13 @@ using System;
 
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
-using AvClientMvvmContract.Online;
 
 using AvClientView.Services;
-
-using Serilog;
 
 namespace AvClientView.Multiplayer.CnCNet;
 
@@ -27,8 +22,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         Loaded += OnLoaded;
         SetupChatInputEnterKey();
         SetupGameListHover();
-        SetupColorDropdownTemplate();
-        SetupChatMessageTemplate();
     }
 
     private bool _infoPanelPositioned;
@@ -52,13 +45,11 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         var bounds = lbGameList.Bounds;
         if (bounds.Width <= 0 || bounds.Height <= 0) return;
 
-        // Position to the right of the game list (which may have been moved/resized by INI layout).
-        // Matches the old client: panelGameInformation.X = gameList.Right, .Y = gameList.Y
         Canvas.SetLeft(panelGameInfo, bounds.Right);
         Canvas.SetTop(panelGameInfo, bounds.Top);
         panelGameInfo.MaxHeight = bounds.Height;
         panelGameInfo.Width = bounds.Width;
-        // Compute ZIndex to float above all other content in the Canvas
+
         int maxZ = 0;
         foreach (var child in MainCanvas.Children)
         {
@@ -69,58 +60,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
         _infoPanelPositioned = true;
         LayoutUpdated -= PositionInfoPanel;
-    }
-
-    private void SetupColorDropdownTemplate()
-    {
-        // ItemsSource/SelectedIndex via code-behind reflection Bind()
-        // to avoid compiled-binding blocking DataTemplate on ComboBox.
-        ddColor.Bind(ComboBox.ItemsSourceProperty, new Binding("ColorOptions"));
-        ddColor.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedColorIndex"));
-        Log.Information("[LOG-View] ddColor Bind done, ItemCount={Count}", ddColor.ItemCount);
-    }
-
-    private void SetupChatMessageTemplate()
-    {
-        if (lbChatList == null)
-        {
-            Log.Warning("[LOG-View] lbChatList is null, cannot setup ChatMessage template");
-            return;
-        }
-        Log.Information("[LOG-View] lbChatList.ItemTemplate setup START, ChatMessages.Count will be logged at VM side");
-
-        lbChatList.ItemTemplate = new FuncDataTemplate<IChatMessage>((msg, _) =>
-        {
-            Log.Information("[LOG-View] ChatMessage.FuncDataTemplate called: msgType={Type}, SenderName={Sender}, Color=({R},{G},{B}), Message={Msg}",
-                msg?.GetType().FullName ?? "null",
-                msg?.SenderName ?? "null",
-                msg?.Color.R ?? 0, msg?.Color.G ?? 0, msg?.Color.B ?? 0,
-                msg?.Message?.Substring(0, Math.Min(msg?.Message?.Length ?? 0, 40)) ?? "null");
-
-            var tb = new TextBlock { TextWrapping = TextWrapping.Wrap };
-            if (msg != null)
-            {
-                tb.Text = FormatChatMessage(msg);
-                tb.Foreground = new SolidColorBrush(Color.FromArgb(255, msg.Color.R, msg.Color.G, msg.Color.B));
-                Log.Information("[LOG-View] ChatMessage.FuncDataTemplate rendered: TextBlock.Text={TbText}, Foreground.Color=({R},{G},{B})",
-                    tb.Text, msg.Color.R, msg.Color.G, msg.Color.B);
-            }
-            else
-            {
-                tb.Text = "(null message)";
-                Log.Warning("[LOG-View] ChatMessage.FuncDataTemplate: msg is null");
-            }
-            return tb;
-        });
-        Log.Information("[LOG-View] lbChatList.ItemTemplate SET");
-    }
-
-    private static string FormatChatMessage(IChatMessage msg)
-    {
-        string timestamp = msg.DateTime.ToShortTimeString();
-        if (string.IsNullOrEmpty(msg.SenderName))
-            return $"[{timestamp}] {msg.Message}";
-        return $"[{timestamp}] {msg.SenderName}: {msg.Message}";
     }
 
     private void ApplyDefaultBackground(string texturePath)
@@ -154,13 +93,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             if (index < 0 || index >= vm.Games.Count)
                 vm.HoveredGameIndex = -1;
             else
-            {
                 vm.HoveredGameIndex = index;
-                Log.Information("[LOG-View] Hover: index={Idx}, Game={Game}, MapHash={Hash}",
-                    index,
-                    vm.Games[index]?.RoomName ?? "null",
-                    vm.Games[index]?.MapHash ?? "null");
-            }
         }, handledEventsToo: true);
 
         lbGames.AddHandler(PointerExitedEvent, (s, e) =>
@@ -189,36 +122,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     public ICnCNetLobbyViewModel? ViewModel
     {
         get => DataContext as ICnCNetLobbyViewModel;
-        set
-        {
-            DataContext = value;
-            if (value != null)
-            {
-                Log.Information("[LOG-View] ViewModel set: ColorOptions.Count={ColorCount}, ChatMessages.Count={ChatCount}, Games.Count={GameCount}, ChannelOptions.Count={ChanCount}, concreteType={Type}",
-                    value.ColorOptions?.Count ?? -1,
-                    value.ChatMessages?.Count ?? -1,
-                    value.Games?.Count ?? -1,
-                    value.ChannelOptions?.Count ?? -1,
-                    value.GetType().FullName);
-                // Log first 3 ColorOptions items to verify data types
-                var co = value.ColorOptions;
-                if (co != null)
-                {
-                    for (int i = 0; i < co.Count && i < 3; i++)
-                    {
-                        var item = co[i];
-                        Log.Information("[LOG-View] ViewModel ColorOptions[{Idx}]: type={Type}, name={Name}",
-                            i, item?.GetType().FullName ?? "null",
-                            item?.Name ?? "null");
-                    }
-                }
-                // Log ddColor Items after binding
-                if (ddColor.Items != null)
-                    Log.Information("[LOG-View] ddColor.Items.Count={Count}", ddColor.Items.Count);
-                else
-                    Log.Information("[LOG-View] ddColor.Items is null");
-            }
-        }
+        set => DataContext = value;
     }
 
     void ISwitchableView.Show() => IsVisible = true;
