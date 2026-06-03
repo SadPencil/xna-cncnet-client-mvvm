@@ -1691,8 +1691,25 @@ public enum SortDirection
 public record PendingGameInviteData(string Sender, string GameName, string ChannelName, string Password) : IPendingGameInviteData;
 
 /// <summary>
-/// Data for a pending yes/no dialog.
+/// Data for a pending yes/no dialog. Exposes YesCommand/NoCommand for the View to bind to.
 /// </summary>
-public record PendingYesNoDialogData(string Title, string Text, Action<bool> Callback) : IPendingYesNoDialogData;
+public record PendingYesNoDialogData : IPendingYesNoDialogData
+{
+    private readonly Action<bool> _callback;
+
+    public PendingYesNoDialogData(string Title, string Text, Action<bool> callback)
+    {
+        this.Title = Title;
+        this.Text = Text;
+        _callback = callback;
+        YesCommand = new RelayCommand(() => _callback(true));
+        NoCommand = new RelayCommand(() => _callback(false));
+    }
+
+    public string Title { get; }
+    public string Text { get; }
+    public IRelayCommand YesCommand { get; }
+    public IRelayCommand NoCommand { get; }
+}
 
 

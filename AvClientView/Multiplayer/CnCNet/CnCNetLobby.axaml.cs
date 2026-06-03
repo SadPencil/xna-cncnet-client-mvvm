@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -59,9 +57,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             if (vm == null) return;
 
             var point = e.GetPosition(lbGames);
-            // ItemContainerGenerator is not available in Avalonia ListBox.
-            // Use a simple height-based calculation.
-            // Each game item is approximately 18px tall (font height + margin).
             const double itemHeight = 18.0;
             int index = (int)(point.Y / itemHeight);
             if (index < 0 || index >= vm.Games.Count)
@@ -97,23 +92,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     {
         get => DataContext as ICnCNetLobbyViewModel;
         set => DataContext = value;
-    }
-
-    private void OnYesNoDialogYes(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        // TODO: implement it in an MVVM way
-        Debugger.Break();
-    }
-
-    private void OnYesNoDialogNo(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        // TODO: implement it in an MVVM way
-        Debugger.Break();
-    }
-
-    private void OnDismissMessage(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        ViewModel?.DismissMessageCommand.Execute(null);
     }
 
     void ISwitchableView.Show() => IsVisible = true;

@@ -323,7 +323,7 @@
                   HorizontalAlignment="Center"
                   Width="100" Height="23"
                   FontWeight="Bold"
-                  Click="OnDismissMessage" />
+                  Command="{Binding DismissMessageCommand}" />
         </StackPanel>
       </Border>
       </Panel>
@@ -353,11 +353,11 @@
               <Button Content="Yes"
                       Width="100" Height="23"
                       FontWeight="Bold"
-                      Click="OnYesNoDialogYes" />
+                      Command="{Binding YesCommand}" />
               <Button Content="No"
                       Width="100" Height="23"
                       FontWeight="Bold"
-                      Click="OnYesNoDialogNo" />
+                      Command="{Binding NoCommand}" />
             </StackPanel>
           </StackPanel>
         </Border>
