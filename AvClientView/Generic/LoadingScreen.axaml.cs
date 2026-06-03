@@ -77,7 +77,7 @@ public partial class LoadingScreen : UserControl
             var loadingScreenVM = (ILoadingScreenViewModel)sender!;
             if (!loadingScreenVM.IsLoading)
             {
-                // TODO: should I wrap it in UIThread?
+                // Guarantee Completed fires on the UI thread — ViewModel PropertyChanged may arrive on any thread
                 Dispatcher.UIThread.Post(() => Completed?.Invoke(this, EventArgs.Empty));
             }
         }

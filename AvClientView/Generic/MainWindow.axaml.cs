@@ -84,8 +84,7 @@ public partial class MainWindow : Window
     private void OnLoadingCompleted(object? sender, EventArgs e)
     {
         ((LoadingScreen)sender!).Completed -= OnLoadingCompleted;
-        // TODO: should I fire loadingScreen.Completed in UIThread and therefore remove this Dispatcher call?
-        Dispatcher.UIThread.Post(TransitionToMainMenu);
+        TransitionToMainMenu();
     }
 
     private void TransitionToMainMenu()
