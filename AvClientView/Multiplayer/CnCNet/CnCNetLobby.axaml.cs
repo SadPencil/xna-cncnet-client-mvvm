@@ -26,6 +26,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         SetupChatInputEnterKey();
         SetupGameListHover();
         SetupColorDropdownTemplate();
+        SetupChannelDropdown();
         SetupChatMessageTemplate();
     }
 
@@ -71,7 +72,11 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        // Use untyped FuncDataTemplate to avoid Avalonia generic type-matching issues.
+        // Use reflection Bind() to avoid compiled-binding issues with ComboBox
+        // (parent x:DataType causes compiled bindings to resolve against the wrong type).
+        ddColor.Bind(ComboBox.ItemsSourceProperty, new Binding("ColorOptions"));
+        ddColor.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedColorIndex"));
+
         var template = new FuncDataTemplate<object>((item, _) =>
         {
             var tb = new TextBlock();
@@ -89,6 +94,13 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
         ddColor.ItemTemplate = template;
         ddColor.SelectionBoxItemTemplate = template;
+    }
+
+    private void SetupChannelDropdown()
+    {
+        ddCurrentChannel.Bind(ComboBox.ItemsSourceProperty, new Binding("ChannelOptions"));
+        ddCurrentChannel.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedChannelIndex"));
+        ddCurrentChannel.Bind(ComboBox.IsEnabledProperty, new Binding("IsChannelDropdownEnabled"));
     }
 
     private void SetupChatMessageTemplate()
