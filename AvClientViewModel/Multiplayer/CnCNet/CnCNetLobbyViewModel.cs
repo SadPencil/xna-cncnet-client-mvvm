@@ -214,8 +214,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (!string.IsNullOrEmpty(HoveredGame.MapHash))
         {
             Log.Information("[LOG-VM] LoadMapPreview: looking up map by hash={Hash}", HoveredGame.MapHash);
-        {
             var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
+            Log.Information("[LOG-VM] LoadMapPreview: FindMapByHash result={Result}", map != null ? map.Name : "null");
             if (map != null)
             {
                 try
