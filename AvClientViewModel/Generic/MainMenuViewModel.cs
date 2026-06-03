@@ -262,9 +262,8 @@ namespace AvClientViewModel.Generic
 
         partial void OnIsLanModeChanged(bool value)
         {
-            // TODO: removed to match the original behavior. But what's the expected behavior here?
-            //if (value)
-            //    connectionManager.Disconnect();
+            if (value && connectionManager.IsConnected)
+                connectionManager.Disconnect();
         }
 
         #region Commands

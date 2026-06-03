@@ -48,6 +48,9 @@ namespace AvClientViewModel.Generic
         private int selectedGameClassIndex;
 
         [ObservableProperty]
+        private bool showingTotalStats;
+
+        [ObservableProperty]
         private bool includeSpectatedGames = true;
 
         [ObservableProperty]
@@ -154,6 +157,18 @@ namespace AvClientViewModel.Generic
         private void Return()
         {
             IsVisible = false;
+        }
+
+        [RelayCommand]
+        private void ShowGameStats()
+        {
+            ShowingTotalStats = false;
+        }
+
+        [RelayCommand]
+        private void ShowTotalStats()
+        {
+            ShowingTotalStats = true;
         }
 
         /// <summary>

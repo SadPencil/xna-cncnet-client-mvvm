@@ -11,9 +11,9 @@
     <StackPanel Orientation="Horizontal" Spacing="2"
                 Canvas.Left="12" Canvas.Top="12">
       <Button x:Name="tabGameStatistics" Content="Game Statistics" Width="120" Height="23"
-              FontWeight="Bold" />
+              FontWeight="Bold" Command="{Binding ShowGameStatsCommand}" />
       <Button x:Name="tabTotalStatistics" Content="Total Statistics" Width="120" Height="23"
-              FontWeight="Bold" />
+              FontWeight="Bold" Command="{Binding ShowTotalStatsCommand}" />
     </StackPanel>
 
     <!-- ========== Filters ========== -->
@@ -44,6 +44,7 @@
 
     <!-- ========== Game Statistics Panel ========== -->
     <Border x:Name="panelGameStatistics"
+            IsVisible="{Binding ShowingTotalStats, Converter={x:Static BoolConverters.Not}}"
             Background="#C8000000"
             BorderBrush="{DynamicResource XnaPanelBorderBrush}"
             BorderThickness="1"
@@ -98,10 +99,10 @@
 
     <!-- ========== Total Statistics Panel (same position, toggled) ========== -->
     <Border x:Name="panelTotalStatistics"
+            IsVisible="{Binding ShowingTotalStats}"
             Background="#C8000000"
             BorderBrush="{DynamicResource XnaPanelBorderBrush}"
             BorderThickness="1"
-            IsVisible="False"
             Width="776" Height="500"
             Canvas.Left="12" Canvas.Top="44">
       <ScrollViewer Margin="12">

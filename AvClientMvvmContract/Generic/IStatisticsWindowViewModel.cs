@@ -20,8 +20,11 @@ public interface IStatisticsWindowViewModel : INotifyPropertyChanged
 
     IRelayCommand RefreshCommand { get; }
     IRelayCommand ClearStatisticsCommand { get; }
+    bool ShowingTotalStats { get; set; }
     IRelayCommand ReturnCommand { get; }
     IRelayCommand<int> SelectGameCommand { get; }
     IRelayCommand ConfirmClearCommand { get; }
     IRelayCommand CancelClearCommand { get; }
+    IRelayCommand ShowGameStatsCommand { get; }
+    IRelayCommand ShowTotalStatsCommand { get; }
 }

@@ -89,7 +89,6 @@ namespace AvClientViewModel.Online
 
         public void CalculateHashes()
         {
-            // TODO: now there is only clientav.exe
             FileHashes fh = new()
             {
                 ClientDefinitionsHash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), ClientConfiguration.CLIENT_DEFS)),
@@ -97,6 +96,7 @@ namespace AvClientViewModel.Online
                 ClientDXHash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clientdx.exe")),
                 ClientXNAHash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clientxna.exe")),
                 ClientOGLHash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clientogl.exe")),
+                ClientAvHash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clientav.dll")),
                 ClientDXNET8Hash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "BinariesNET8", "Windows", "clientdx.dll")),
                 ClientXNANET8Hash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "BinariesNET8", "XNA", "clientxna.dll")),
                 ClientOGLNET8Hash = CalculateSHA1ForFile(SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "BinariesNET8", "OpenGL", "clientogl.dll")),
@@ -267,6 +267,7 @@ namespace AvClientViewModel.Online
             public string ClientDXHash;
             public string ClientXNAHash;
             public string ClientOGLHash;
+            public string ClientAvHash;
             public string ClientDXNET8Hash;
             public string ClientXNANET8Hash;
             public string ClientOGLNET8Hash;
@@ -305,6 +306,7 @@ namespace AvClientViewModel.Online
                 sb.Append(ClientDXHash);
                 sb.Append(ClientXNAHash);
                 sb.Append(ClientOGLHash);
+                sb.Append(ClientAvHash);
                 sb.Append(ClientDXNET8Hash);
                 sb.Append(ClientXNANET8Hash);
                 sb.Append(ClientOGLNET8Hash);

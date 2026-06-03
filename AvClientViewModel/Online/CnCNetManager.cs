@@ -40,6 +40,8 @@ namespace AvClientViewModel.Online
         public event EventHandler<CnCNetPrivateMessageEventArgs> PrivateMessageReceived;
         public event EventHandler<PrivateCTCPEventArgs> PrivateCTCPReceived;
         public event EventHandler<ChannelEventArgs> BannedFromChannel;
+        public event EventHandler<ChannelEventArgs>? ChannelFull;
+        public event EventHandler<ChannelEventArgs>? IncorrectChannelPassword;
 
         public event EventHandler<AttemptedServerEventArgs> AttemptedServerChanged;
         public event EventHandler ConnectAttemptFailed;
@@ -221,6 +223,8 @@ namespace AvClientViewModel.Online
 
             if (channel != null)
                 channel.OnChannelFull();
+
+            ChannelFull?.Invoke(this, new ChannelEventArgs(channelName));
         }
 
         public void OnTargetChangeTooFast(string channelName, string message)
@@ -559,6 +563,8 @@ namespace AvClientViewModel.Online
             var channel = FindChannel(channelName);
             if (channel != null)
                 channel.OnInvalidJoinPassword();
+
+            IncorrectChannelPassword?.Invoke(this, new ChannelEventArgs(channelName));
         }
 
         public void OnNoticeMessageParsed(string notice, string userName)

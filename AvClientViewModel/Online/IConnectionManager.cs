@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+
+using AvClientViewModel.Online.EventArguments;
 
 namespace AvClientViewModel.Online
 {
     /// <summary>
-    /// An interface for handling IRC messages.
+    /// An interface for handling IRC messages and connection state changes.
     /// </summary>
     public interface IConnectionManager
     {
@@ -55,10 +58,7 @@ namespace AvClientViewModel.Online
 
         void OnUserNicknameChange(string oldNickname, string newNickname);
 
-        // **********************
         // Connection-related methods
-        // **********************
-
         void OnAttemptedServerChanged(string serverName);
 
         void OnConnectAttemptFailed();
@@ -75,18 +75,15 @@ namespace AvClientViewModel.Online
 
         void OnServerLatencyTested(int candidateCount, int closerCount);
 
-        //public EventHandler<ServerMessageEventArgs> WelcomeMessageReceived;
-        //public EventHandler<ServerMessageEventArgs> GenericServerMessageReceived;
-        //public EventHandler<UserAwayEventArgs> AwayMessageReceived;
-        //public EventHandler<ChannelTopicEventArgs> ChannelTopicReceived;
-        //public EventHandler<UserListEventArgs> UserListReceived;
-        //public EventHandler<WhoEventArgs> WhoReplyReceived;
-        //public EventHandler<ChannelEventArgs> ChannelFull;
-        //public EventHandler<ChannelEventArgs> IncorrectChannelPassword;
-
-        //public event EventHandler<AttemptedServerEventArgs> AttemptedServerChanged;
-        //public event EventHandler ConnectAttemptFailed;
-        //public event EventHandler<ConnectionLostEventArgs> ConnectionLost;
-        //public event EventHandler ReconnectAttempt;
+        // Events exposed on CnCNetManager for ViewModel subscriptions
+        event EventHandler<ServerMessageEventArgs>? WelcomeMessageReceived;
+        event EventHandler<UserAwayEventArgs>? AwayMessageReceived;
+        event EventHandler<WhoEventArgs>? WhoReplyReceived;
+        event EventHandler<ChannelEventArgs>? ChannelFull;
+        event EventHandler<ChannelEventArgs>? IncorrectChannelPassword;
+        event EventHandler<AttemptedServerEventArgs>? AttemptedServerChanged;
+        event EventHandler? ConnectAttemptFailed;
+        event EventHandler<ConnectionLostEventArgs>? ConnectionLost;
+        event EventHandler? ReconnectAttempt;
     }
 }

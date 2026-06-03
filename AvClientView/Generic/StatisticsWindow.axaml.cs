@@ -13,13 +13,10 @@ public partial class StatisticsWindow : UserControl, IStatisticsWindowView
 {
     public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
 
-    private bool _showingTotalStats;
-
     public StatisticsWindow()
     {
         InitializeComponent();
         Loaded += OnLoaded;
-        SetupTabButtons();
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -28,19 +25,6 @@ public partial class StatisticsWindow : UserControl, IStatisticsWindowView
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "StatisticsWindow");
-    }
-
-    private void SetupTabButtons()
-    {
-        tabGameStatistics.Click += (_, _) => SwitchTab(false);
-        tabTotalStatistics.Click += (_, _) => SwitchTab(true);
-    }
-
-    private void SwitchTab(bool showTotal)
-    {
-        _showingTotalStats = showTotal;
-        panelGameStatistics.IsVisible = !showTotal;
-        panelTotalStatistics.IsVisible = showTotal;
     }
 
     private void ApplyDefaultBackground(string texturePath)

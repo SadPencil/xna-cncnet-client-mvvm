@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
+             x:Class="AvClientView.Multiplayer.GameInformationPanel"
+             x:DataType="vmc:IGameInformationPanelViewModel"
+             IsVisible="{Binding HasGameInfo}"
+             Width="278">
+  <Border Background="#E0000000"
+          BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+          BorderThickness="1"
+          Padding="8">
+    <StackPanel Spacing="3">
+      <TextBlock Text="GAME INFORMATION"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 Margin="0,0,0,4" />
+
+      <!-- Basic info -->
+      <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                 Text="{Binding HostName, StringFormat='Host: {0}'}"
+                 TextTrimming="CharacterEllipsis" />
+      <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                 Text="{Binding Ping, StringFormat='Ping: {0} ms'}"
+                 TextTrimming="CharacterEllipsis" />
+      <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                 Text="{Binding GameVersion, StringFormat='Game version: {0}'}"
+                 TextTrimming="CharacterEllipsis" />
+      <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                 Text="{Binding GameModeName, StringFormat='Game mode: {0}'}"
+                 TextTrimming="CharacterEllipsis" />
+      <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                 Text="{Binding MapName, StringFormat='Map: {0}'}"
+                 TextTrimming="CharacterEllipsis"
+                 TextWrapping="Wrap" />
+      <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                 Text="{Binding SkillLevelName, StringFormat='Skill: {0}'}"
+                 TextTrimming="CharacterEllipsis" />
+      <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                 Text="{Binding PlayerCount, StringFormat='Players: {0} / {1}'}"
+                 TextTrimming="CharacterEllipsis" />
+
+      <!-- Status icons -->
+      <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+        <TextBlock Text="Locked"
+                   IsVisible="{Binding IsLocked}"
+                   Foreground="Gray" />
+        <TextBlock Text="Passworded"
+                   IsVisible="{Binding IsPasswordProtected}"
+                   Foreground="{DynamicResource XnaAltBrush}" />
+        <TextBlock Text="Incompatible"
+                   IsVisible="{Binding IsCompatible, Converter={x:Static BoolConverters.Not}}"
+                   Foreground="Gray" />
+      </StackPanel>
+
+      <!-- Player names -->
+      <TextBlock Text="Players:"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 Margin="0,4,0,0"
+                 IsVisible="{Binding PlayerNames.Count, Converter={x:Static ObjectConverters.IsNotNull}}" />
+      <ItemsControl ItemsSource="{Binding PlayerNames}"
+                    Margin="4,0,0,0"
+                    IsVisible="{Binding PlayerNames.Count, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="x:String">
+            <TextBlock Text="{Binding .}"
+                       Foreground="{DynamicResource XnaAltBrush}"
+                       Margin="0,0,8,0" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+  </Border>
+</UserControl>
