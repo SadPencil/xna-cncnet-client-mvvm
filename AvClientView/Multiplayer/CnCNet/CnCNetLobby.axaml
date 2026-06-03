@@ -6,7 +6,6 @@
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
              xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLobby"
-             x:DataType="vmc:ICnCNetLobbyViewModel"
              IsVisible="{Binding IsVisible}"
              Width="1220" Height="728">
   <Canvas x:Name="MainCanvas">

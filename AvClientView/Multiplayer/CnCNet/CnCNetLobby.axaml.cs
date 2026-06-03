@@ -28,6 +28,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         SetupChatInputEnterKey();
         SetupGameListHover();
         SetupColorDropdownTemplate();
+        SetupChannelDropdown();
         SetupChatMessageTemplate();
     }
 
@@ -81,22 +82,22 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             {
                 tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
-                Log.Debug("[DEBUG-View] ColorDropdown item: Name={Name}, R={R}, G={G}, B={B}", color.Name, color.R, color.G, color.B);
-            }
-            else
-            {
-                tb.Text = "(null)";
-                Log.Warning("[DEBUG-View] ColorDropdown item is null");
+                Log.Debug("[DEBUG-View] ColorDropdown item matched: Name={Name}", color.Name);
             }
             return tb;
         }, supportsRecycling: true);
-        Log.Debug("[DEBUG-View] ColorDropdown ItemTemplate set. Items count later via ViewModel.");
+        Log.Debug("[DEBUG-View] ColorDropdown ItemTemplate set.");
+    }
+
+    private void SetupChannelDropdown()
+    {
+        // Channel dropdown uses reflection bindings from AXAML (no x:DataType on parent)
     }
 
     private void SetupChatMessageTemplate()
     {
         if (lbChatList == null) return;
-        Log.Debug("[DEBUG-View] SetupChatMessageTemplate called, lbChatList found");
+        Log.Debug("[DEBUG-View] SetupChatMessageTemplate called");
 
         lbChatList.ItemTemplate = new FuncDataTemplate<IChatMessage>((msg, _) =>
         {
@@ -105,7 +106,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             {
                 tb.Text = FormatChatMessage(msg);
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, msg.Color.R, msg.Color.G, msg.Color.B));
-                Log.Debug("[DEBUG-View] ChatMessage: text='{Text}', R={R}, G={G}, B={B}", tb.Text, msg.Color.R, msg.Color.G, msg.Color.B);
+                Log.Debug("[DEBUG-View] ChatMessage matched: text='{Text}'", tb.Text);
             }
             return tb;
         });
