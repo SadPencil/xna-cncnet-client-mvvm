@@ -17,6 +17,8 @@ using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
 
+using Serilog;
+
 namespace AvClientViewModel.Multiplayer.CnCNet;
 
 
@@ -108,9 +110,15 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
 
         // Initialize tunnel list
         RefreshTunnelList();
+        Log.Information("[LOG] GameCreationWindowVM: ctor, tunnels={Count}, CanCreateGame={CanCreate}",
+            tunnelHandler.Tunnels.Count, CanCreateGame);
 
         // Subscribe to tunnel refreshes so the list updates when tunnels are loaded
-        tunnelHandler.TunnelsRefreshed += (_, _) => RefreshTunnelList();
+        tunnelHandler.TunnelsRefreshed += (_, _) =>
+        {
+            Log.Information("[LOG] GameCreationWindowVM: TunnelsRefreshed, tunnels={Count}", tunnelHandler.Tunnels.Count);
+            RefreshTunnelList();
+        };
 
         // Check if loading game is allowed
         CanLoadGame = AllowLoadingGame();

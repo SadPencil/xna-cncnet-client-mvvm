@@ -285,6 +285,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             if (color.Selectable)
                 colorOptions.Add(color);
         }
+        Log.Information("[LOG] CnCNetLobbyVM: ColorOptions populated, count={Count}", colorOptions.Count);
 
         // Set initial color from settings
         int savedColor = UserINISettings.Instance.ChatColor;
@@ -922,6 +923,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else
         {
             chatMessages.Add(message);
+            Log.Information("[LOG] CnCNetLobbyVM: chatMessage added, sender={Sender}, Color=({R},{G},{B})",
+                message.SenderName, message.Color.R, message.Color.G, message.Color.B);
         }
     }
 

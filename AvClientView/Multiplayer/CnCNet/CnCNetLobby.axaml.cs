@@ -13,6 +13,8 @@ using AvClientMvvmContract.Online;
 
 using AvClientView.Services;
 
+using Serilog;
+
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
@@ -71,7 +73,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        // Use untyped FuncDataTemplate to avoid Avalonia generic type-matching issues.
+        Log.Information("[LOG] ColorDropdown ItemTemplate setup");
         var template = new FuncDataTemplate<object>((item, _) =>
         {
             var tb = new TextBlock();
@@ -83,6 +85,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             else
             {
                 tb.Text = item?.ToString() ?? string.Empty;
+                Log.Warning("[LOG] ColorDropdown item NOT IIRCColor: type={Type}", item?.GetType().FullName);
             }
             return tb;
         }, supportsRecycling: true);
@@ -94,6 +97,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     private void SetupChatMessageTemplate()
     {
         if (lbChatList == null) return;
+        Log.Information("[LOG] ChatMessage ItemTemplate setup");
 
         lbChatList.ItemTemplate = new FuncDataTemplate<IChatMessage>((msg, _) =>
         {
