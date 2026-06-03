@@ -35,8 +35,17 @@
                 ItemsSource="{Binding ColorOptions}"
                 SelectedIndex="{Binding SelectedColorIndex}"
                 svc:IniLayoutProperties.SkipForeground="True"
+                Classes="skip-foreground"
                 Width="150" Height="21"
-                Canvas.Left="545" Canvas.Top="12" />
+                Canvas.Left="545" Canvas.Top="12">
+        <ComboBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Name}"
+                       Foreground="{Binding Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}"
+                       VerticalAlignment="Center" />
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
 
       <!-- Current Channel Label + Dropdown -->
       <TextBlock x:Name="lblCurrentChannel"

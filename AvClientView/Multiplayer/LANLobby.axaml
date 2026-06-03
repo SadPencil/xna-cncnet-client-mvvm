@@ -25,6 +25,7 @@
                 SelectedIndex="{Binding SelectedColorIndex}"
                 IsEnabled="{Binding IsEnabled}"
                 svc:IniLayoutProperties.SkipForeground="True"
+                Classes="skip-foreground"
                 Width="150" Height="21"
 
                 Canvas.Left="395" Canvas.Top="12" />

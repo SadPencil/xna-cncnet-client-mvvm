@@ -1,18 +1,13 @@
 using System;
-using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
-using AvClientMvvmContract.Online;
 
-using AvClientView.Converters;
 using AvClientView.Services;
 
 using Serilog;
@@ -29,8 +24,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         Loaded += OnLoaded;
         SetupChatInputEnterKey();
         SetupGameListHover();
-
-        Log.Information("[LOG-View-CNC] Constructor");
     }
 
     private bool _infoPanelPositioned;
@@ -44,29 +37,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         if (!_infoPanelPositioned)
         {
             LayoutUpdated += PositionInfoPanel;
-        }
-
-        // Wire ddColor: set ItemTemplate in code-behind to avoid all XAML binding issues.
-        // The global ComboBox style sets Foreground={DynamicResource XnaAltBrush} (yellow)
-        // and the ComboBoxItem template TextBlock has no Foreground, meaning dropdown items
-        // can't inherit per-item colours.  A code-based ItemTemplate sets Text and Foreground
-        // directly on each TextBlock without any binding/converter.
-        if (ddColor != null)
-        {
-            Log.Information("[LOG-View-CNC] ddColor found, setting code-behind ItemTemplate");
-            ddColor.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<IIRCColor>((item, _) =>
-            {
-                var tb = new TextBlock();
-                if (item != null)
-                {
-                    tb.Text = item.Name;
-                    tb.Foreground = new SolidColorBrush(Color.FromArgb(255, item.R, item.G, item.B));
-                    Log.Information("[LOG-View-CNC] ItemTemplate building: Name={Name}, R={R}, G={G}, B={B}",
-                        item.Name, item.R, item.G, item.B);
-                }
-                tb.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-                return tb;
-            });
         }
     }
 
