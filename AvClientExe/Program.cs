@@ -21,8 +21,8 @@ internal class Program
         AvClientViewModel.PreStartup.Initialize();
 
         var services = new ServiceCollection();
-        AvClientViewModel.PreStartup.ConfigureServices(services);
         AvClientView.PreStartup.ConfigureServices(services);
+        AvClientViewModel.PreStartup.ConfigureServices(services);
 
         return services.BuildServiceProvider();
     }
