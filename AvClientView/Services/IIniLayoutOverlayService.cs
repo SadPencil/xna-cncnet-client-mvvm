@@ -28,4 +28,11 @@ public interface IIniLayoutOverlayService
     /// Returns the full path, or null if not found.
     /// </summary>
     string FindTextureFile(string texturePath);
+
+    /// <summary>
+    /// Applies standard button textures and styling to a control and all its
+    /// Button descendants (without the full ApplyLayout processing that adds
+    /// ExtraControls / window chrome).
+    /// </summary>
+    void ApplyStandardButtonStyling(Control control);
 }

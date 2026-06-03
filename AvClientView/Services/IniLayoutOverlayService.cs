@@ -1112,6 +1112,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     public string FindTextureFile(string texturePath) => FindTextureFileStatic(texturePath);
 
+    /// <inheritdoc/>
+    public void ApplyStandardButtonStyling(Control control)
+        => ApplyStandardButtonTextures(control);
+
     private static string FindTextureFileStatic(string texturePath)
     {
         // Search in resource paths (theme first, then base)
