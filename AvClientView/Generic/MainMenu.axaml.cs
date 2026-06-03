@@ -24,8 +24,6 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Serilog;
-
 namespace AvClientView.Generic;
 
 public partial class MainMenu : UserControl
@@ -133,15 +131,9 @@ public partial class MainMenu : UserControl
 
         // Drain any pending dialogs that arrived before the panels were sized
         _isLoaded = true;
-        Log.Debug($"[DEBUG] MainMenu.OnLoaded: draining {_pendingDialogs.Count} pending dialogs");
         foreach (var show in _pendingDialogs)
             show();
         _pendingDialogs.Clear();
-
-        Serilog.Log.Debug($"[DEBUG] MainMenu.OnLoaded done: this.Width={Width}, this.Height={Height}, this.Bounds={Bounds}");
-        Serilog.Log.Debug($"[DEBUG]   MainMenuPanel: Width={MainMenuPanel.Width}, Height={MainMenuPanel.Height}, Bounds={MainMenuPanel.Bounds}");
-        Serilog.Log.Debug($"[DEBUG]   OverlayCanvas: Width={OverlayCanvas.Width}, Height={OverlayCanvas.Height}, Bounds={OverlayCanvas.Bounds}");
-        Serilog.Log.Debug($"[DEBUG]   TopBar: Width={topBar.Width}, Height={topBar.Height}, Bounds={topBar.Bounds}, DataContext={topBar.DataContext?.GetType().Name}");
     }
 
 
@@ -440,14 +432,16 @@ public partial class MainMenu : UserControl
         {
             Name = $"btnYes_{id}",
             Content = "Yes",
-            Width = 80
+            Width = 80,
+            Height = 23,
         };
 
         var noButton = new Button
         {
             Name = $"btnNo_{id}",
             Content = "No",
-            Width = 80
+            Width = 80,
+            Height = 23,
         };
 
         var buttonStack = new StackPanel
