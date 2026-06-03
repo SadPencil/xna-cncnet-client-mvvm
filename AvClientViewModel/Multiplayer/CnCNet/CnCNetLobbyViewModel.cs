@@ -164,8 +164,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     // Used by SwitchToChannel to avoid index mismatch with the unfiltered GameList.
     private List<Channel> channelOptionChannels = new();
 
-    private GameCreationWindowViewModel? _gameCreationWindowViewModel;
-    public IGameCreationWindowViewModel? GameCreationWindowViewModel => _gameCreationWindowViewModel;
+    private GameCreationWindowViewModel? gameCreationWindowViewModel;
+    public IGameCreationWindowViewModel? GameCreationWindowViewModel => gameCreationWindowViewModel;
 
     private readonly CnCNetLoginWindowViewModel _loginWindowViewModel;
     public ICnCNetLoginWindowViewModel LoginWindowViewModel => _loginWindowViewModel;
@@ -265,12 +265,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             if (color.Selectable)
             {
                 colorOptions.Add(color);
-                Log.Information("[LOG-VM] ColorOptions added: idx={Idx}, Name={Name}, Selectable={Sel}, R={R}, G={G}, B={B}, IrcColorId={Id}, concreteType={Type}",
-                    colorOptions.Count - 1, color.Name, color.Selectable, color.R, color.G, color.B, color.IrcColorId, color.GetType().FullName);
             }
         }
-        Log.Information("[LOG-VM] ColorOptions total count={Count}, ObservableCollection type={CollType}",
-            colorOptions.Count, colorOptions.GetType().FullName);
 
         // Set initial color from settings
         int savedColor = UserINISettings.Instance.ChatColor;
@@ -370,9 +366,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             return;
 
         // Create the GameCreationWindow VM on first use with callbacks
-        if (_gameCreationWindowViewModel == null)
+        if (gameCreationWindowViewModel == null)
         {
-            _gameCreationWindowViewModel = new GameCreationWindowViewModel(
+            gameCreationWindowViewModel = new GameCreationWindowViewModel(
                 tunnelHandler,
                 onGameCreated: e =>
                 {
@@ -387,12 +383,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 onCancelled: () =>
                 {
                     IsGameCreationPanelVisible = false;
-                    _gameCreationWindowViewModel.IsWindowVisible = false;
+                    gameCreationWindowViewModel!.IsWindowVisible = false;
                 });
+            OnPropertyChanged(nameof(GameCreationWindowViewModel));
         }
 
-        _gameCreationWindowViewModel.Refresh();
-        _gameCreationWindowViewModel.IsWindowVisible = true;
+        gameCreationWindowViewModel.Refresh();
+        gameCreationWindowViewModel.IsWindowVisible = true;
         IsGameCreationPanelVisible = true;
     }
 
@@ -525,8 +522,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
         IsGameCreationPanelVisible = false;
-        if (_gameCreationWindowViewModel != null)
-            _gameCreationWindowViewModel.IsWindowVisible = false;
+        if (gameCreationWindowViewModel != null)
+            gameCreationWindowViewModel.IsWindowVisible = false;
 
         (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
@@ -552,8 +549,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
         IsGameCreationPanelVisible = false;
-        if (_gameCreationWindowViewModel != null)
-            _gameCreationWindowViewModel.IsWindowVisible = false;
+        if (gameCreationWindowViewModel != null)
+            gameCreationWindowViewModel.IsWindowVisible = false;
 
         (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }

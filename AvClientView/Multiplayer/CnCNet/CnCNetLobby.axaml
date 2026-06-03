@@ -32,6 +32,7 @@
                  Canvas.Left="450" Canvas.Top="14" />
       <ComboBox x:Name="ddColor"
                 ItemsSource="{Binding ColorOptions}"
+                DisplayMemberBinding="{Binding Name}"
                 SelectedIndex="{Binding SelectedColorIndex}"
                 Width="150" Height="21"
                 Canvas.Left="545" Canvas.Top="12" />
