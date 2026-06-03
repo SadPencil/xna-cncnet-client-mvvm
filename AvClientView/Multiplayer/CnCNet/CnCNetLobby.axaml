@@ -36,21 +36,10 @@
                 Width="150" Height="21"
                 Canvas.Left="545" Canvas.Top="12">
         <ComboBox.ItemTemplate>
-          <DataTemplate x:DataType="onl:IIRCColor">
-            <Panel>
-              <!-- Colored rect swatch -->
-              <Border Width="12" Height="12"
-                      CornerRadius="2"
-                      Margin="0,0,4,0"
-                      Background="{Binding ., Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Center" />
-              <!-- Color name text -->
-              <TextBlock Text="{Binding Name}"
-                         Foreground="{DynamicResource XnaTextBrush}"
-                         Margin="16,0,0,0"
-                         VerticalAlignment="Center" />
-            </Panel>
+          <DataTemplate>
+            <TextBlock Text="{Binding Name}"
+                       Foreground="{Binding Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}"
+                       VerticalAlignment="Center" />
           </DataTemplate>
         </ComboBox.ItemTemplate>
       </ComboBox>
