@@ -13,6 +13,8 @@ using ClientCore.Extensions;
 using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+
+using Serilog;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
@@ -108,9 +110,17 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
 
         // Initialize tunnel list
         RefreshTunnelList();
+        Log.Debug("[DEBUG-VM-GCW] Constructor: TunnelCount={TunnelCount}, CanCreateGame={CanCreate}",
+            tunnelHandler.Tunnels.Count, CanCreateGame);
 
         // Subscribe to tunnel refreshes so the list updates when tunnels are loaded
-        tunnelHandler.TunnelsRefreshed += (_, _) => RefreshTunnelList();
+        tunnelHandler.TunnelsRefreshed += (_, _) =>
+        {
+            Log.Debug("[DEBUG-VM-GCW] TunnelsRefreshed: TunnelCount={TunnelCount}", tunnelHandler.Tunnels.Count);
+            RefreshTunnelList();
+            Log.Debug("[DEBUG-VM-GCW] After RefreshTunnelList: TunnelNamesCount={Count}, CanCreateGame={CanCreate}",
+                _tunnelNames.Count, CanCreateGame);
+        };
 
         // Check if loading game is allowed
         CanLoadGame = AllowLoadingGame();

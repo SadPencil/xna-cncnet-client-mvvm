@@ -13,6 +13,8 @@ using AvClientMvvmContract.Online;
 
 using AvClientView.Services;
 
+using Serilog;
+
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
@@ -71,7 +73,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        // Use ItemTemplate for both dropdown items and selected-item display.
+        Log.Debug("[DEBUG-View] SetupColorDropdownTemplate called");
         ddColor.ItemTemplate = new FuncDataTemplate<IIRCColor>((color, _) =>
         {
             var tb = new TextBlock();
@@ -79,14 +81,22 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             {
                 tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
+                Log.Debug("[DEBUG-View] ColorDropdown item: Name={Name}, R={R}, G={G}, B={B}", color.Name, color.R, color.G, color.B);
+            }
+            else
+            {
+                tb.Text = "(null)";
+                Log.Warning("[DEBUG-View] ColorDropdown item is null");
             }
             return tb;
         }, supportsRecycling: true);
+        Log.Debug("[DEBUG-View] ColorDropdown ItemTemplate set. Items count later via ViewModel.");
     }
 
     private void SetupChatMessageTemplate()
     {
         if (lbChatList == null) return;
+        Log.Debug("[DEBUG-View] SetupChatMessageTemplate called, lbChatList found");
 
         lbChatList.ItemTemplate = new FuncDataTemplate<IChatMessage>((msg, _) =>
         {
@@ -95,9 +105,11 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             {
                 tb.Text = FormatChatMessage(msg);
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, msg.Color.R, msg.Color.G, msg.Color.B));
+                Log.Debug("[DEBUG-View] ChatMessage: text='{Text}', R={R}, G={G}, B={B}", tb.Text, msg.Color.R, msg.Color.G, msg.Color.B);
             }
             return tb;
         });
+        Log.Debug("[DEBUG-View] ChatMessage ItemTemplate set");
     }
 
     private static string FormatChatMessage(IChatMessage msg)

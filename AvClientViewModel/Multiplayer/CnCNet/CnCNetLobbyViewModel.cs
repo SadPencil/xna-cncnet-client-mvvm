@@ -201,13 +201,16 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (HoveredGame == null)
         {
+            Log.Debug("[DEBUG-VM] LoadMapPreview: HoveredGame is null, loading fallback");
             HoveredGameMapPreview = LoadFallbackPreview();
             return;
         }
 
+        Log.Debug("[DEBUG-VM] LoadMapPreview: MapHash={MapHash}", HoveredGame.MapHash);
         if (!string.IsNullOrEmpty(HoveredGame.MapHash))
         {
             var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
+            Log.Debug("[DEBUG-VM] LoadMapPreview: FindMapByHash returned {Result}", map != null ? map.Name : "null");
             if (map != null)
             {
                 try
@@ -217,15 +220,21 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                     {
                         _mapPreviewLease = lease;
                         HoveredGameMapPreview = lease.Value;
+                        Log.Debug("[DEBUG-VM] LoadMapPreview: got preview image {W}x{H}", lease.Value.Width, lease.Value.Height);
                         return;
                     }
+                    Log.Debug("[DEBUG-VM] LoadMapPreview: GetCachedPreviewImageFromMap returned null lease/value");
                     lease?.Dispose();
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Log.Debug("[DEBUG-VM] LoadMapPreview: exception: {Ex}", ex.Message);
+                }
             }
         }
 
         // Fallback: show "no preview" image
+        Log.Debug("[DEBUG-VM] LoadMapPreview: loading fallback noMapPreview.png");
         HoveredGameMapPreview = LoadFallbackPreview();
     }
 
@@ -234,10 +243,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         try
         {
             string path = System.IO.Path.Combine(ProgramConstants.GetResourcePath(), "noMapPreview.png");
+            Log.Debug("[DEBUG-VM] LoadFallbackPreview: path={Path}, exists={Exists}", path, System.IO.File.Exists(path));
             if (System.IO.File.Exists(path))
                 return Image.Load(path);
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Log.Debug("[DEBUG-VM] LoadFallbackPreview: exception: {Ex}", ex.Message);
+        }
         return null;
     }
 
@@ -283,8 +296,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         foreach (IRCColor color in chatColors)
         {
             if (color.Selectable)
+            {
                 colorOptions.Add(color);
+                Log.Debug("[DEBUG-VM] ColorOptions added: Name={Name}, R={R}, G={G}, B={B}, type={Type}",
+                    color.Name, color.R, color.G, color.B, color.GetType().FullName);
+            }
         }
+        Log.Debug("[DEBUG-VM] ColorOptions total count: {Count}", colorOptions.Count);
 
         // Set initial color from settings
         int savedColor = UserINISettings.Instance.ChatColor;
@@ -922,7 +940,11 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else
         {
             chatMessages.Add(message);
+            Log.Debug("[DEBUG-VM] ChatMessage added: sender='{Sender}', msg='{Msg}', Color.R={R}, G={G}, B={B}, type={Type}",
+                message.SenderName, message.Message?.Substring(0, Math.Min(message.Message?.Length ?? 0, 50)),
+                message.Color.R, message.Color.G, message.Color.B, message.GetType().FullName);
         }
+        Log.Debug("[DEBUG-VM] ChatMessages total count: {Count}", chatMessages.Count);
     }
 
     private void CurrentChatChannel_MessageAdded(object sender, IRCMessageEventArgs e)
