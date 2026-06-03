@@ -19,5 +19,6 @@ namespace AvClientViewModel.Online
         public byte G { get; private set; }
         public byte B { get; private set; }
         public int IrcColorId { get; private set; }
+        public override string ToString() => Name;
     }
 }
