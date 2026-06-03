@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -10,6 +11,7 @@ using Avalonia.Threading;
 using AvClientMvvmContract.Campaign;
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.Messages;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
@@ -17,6 +19,7 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientView.Services;
 
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,22 +40,26 @@ public partial class MainMenu : UserControl
         Focusable = true;
 
         // Register as recipient for dialog messages from ViewModels
-        WeakReferenceMessenger.Default.Register<MainMenu, IOKDialogMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<OKDialogAsyncRequestMessage>(this, async (r, m) =>
         {
-            Dispatcher.UIThread.Post(() =>
+            m.Reply(Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var overlay = CreateOKDialogOverlay(m.Title, m.Message);
+                var tcs = new TaskCompletionSource<OKDialogResult>();
+                var overlay = CreateOKDialogOverlay(m.Title, m.Message, () => tcs.SetResult(new OKDialogResult()));
                 OKDialogsPanel.Children.Add(overlay);
-            });
+                return tcs.Task;
+            }));
         });
 
-        WeakReferenceMessenger.Default.Register<MainMenu, IYesNoDialogMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<YesNoDialogAsyncRequestMessage>(this, async (r, m) =>
         {
-            Dispatcher.UIThread.Post(() =>
+            m.Reply(Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var overlay = CreateYesNoDialogOverlay(m.Title, m.Message, yes => m.Reply(yes));
+                var tcs = new TaskCompletionSource<YesNoDialogResult>();
+                var overlay = CreateYesNoDialogOverlay(m.Title, m.Message, yes => tcs.SetResult(new YesNoDialogResult { Result = yes }));
                 YesNoDialogsPanel.Children.Add(overlay);
-            });
+                return tcs.Task;
+            }));
         });
     }
 
@@ -286,7 +293,7 @@ public partial class MainMenu : UserControl
     /// <summary>
     /// Creates an OK dialog overlay matching the XNA message box visual style.
     /// </summary>
-    private Border CreateOKDialogOverlay(string title, string message)
+    private Border CreateOKDialogOverlay(string title, string message, Action onResult)
     {
         var titleText = new TextBlock
         {
@@ -335,11 +342,16 @@ public partial class MainMenu : UserControl
             Child = centerPanel
         };
 
-        okButton.Click += (_, _) =>
+        bool handled = false;
+        EventHandler onDismiss = (_, _) =>
         {
+            if (handled) return;
+            handled = true;
             if (overlay.Parent is Panel parent)
                 parent.Children.Remove(overlay);
         };
+
+        okButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(); };
 
         return overlay;
     }

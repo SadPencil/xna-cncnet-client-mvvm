@@ -2,6 +2,7 @@ using System;
 
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.Messages;
 
 using AvClientViewModel.Generic.OptionPanels;
 
@@ -347,15 +348,15 @@ namespace AvClientViewModel.Generic
 
         private void ShowMessageBox(string title, string message)
         {
-            WeakReferenceMessenger.Default.Send(new OKDialogMessage(title, message));
+            WeakReferenceMessenger.Default.Send(new OKDialogAsyncRequestMessage(title, message));
         }
 
         private async void ShowYesNoDialog(string title, string message, Action<bool> callback)
         {
-            var msg = new YesNoDialogMessage(title, message);
+            var msg = new YesNoDialogAsyncRequestMessage(title, message);
             WeakReferenceMessenger.Default.Send(msg);
             var result = await msg.Response;
-            callback(result);
+            callback(result.Result);
         }
 
         #endregion

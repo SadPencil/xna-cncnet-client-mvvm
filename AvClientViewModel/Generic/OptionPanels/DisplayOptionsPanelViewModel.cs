@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.Messages;
 
 using AvClientViewModel.Domain;
 using AvClientViewModel.Services;
@@ -566,7 +567,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
 
     private void ShowMessageBox(string title, string message)
     {
-        WeakReferenceMessenger.Default.Send(new OKDialogMessage(title, message));
+        WeakReferenceMessenger.Default.Send(new OKDialogAsyncRequestMessage(title, message));
     }
 }
 

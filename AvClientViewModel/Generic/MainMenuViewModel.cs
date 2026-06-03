@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 
 using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.Messages;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
@@ -832,15 +833,15 @@ namespace AvClientViewModel.Generic
 
         private void ShowMessageBox(string title, string message)
         {
-            WeakReferenceMessenger.Default.Send(new OKDialogMessage(title, message));
+            WeakReferenceMessenger.Default.Send(new OKDialogAsyncRequestMessage(title, message));
         }
 
         private async void ShowYesNoDialog(string title, string message, Action<bool> callback)
         {
-            var msg = new YesNoDialogMessage(title, message);
+            var msg = new YesNoDialogAsyncRequestMessage(title, message);
             WeakReferenceMessenger.Default.Send(msg);
             var result = await msg.Response;
-            callback(result);
+            callback(result.Result);
         }
 
         #endregion
