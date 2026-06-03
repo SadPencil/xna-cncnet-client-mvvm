@@ -34,9 +34,8 @@ public partial class GameCreationWindow : UserControl, IGameCreationWindowView
     {
         if (DataContext is IGameCreationWindowViewModel vm)
         {
-            Log.Information("[LOG-View-GCW] VM state: TunnelNames.Count={T}, SkillLevelOptions.Count={S}, CanCreateGame={C}, cmbTunnel.Items.Count={I}",
-                vm.TunnelNames?.Count ?? -1, vm.SkillLevelOptions?.Count ?? -1, vm.CanCreateGame,
-                cmbTunnel?.ItemCount ?? -1);
+            Log.Information("[LOG-View-GCW] VM state: TunnelNames.Count={T}, SkillLevelOptions.Count={S}, CanCreateGame={C}",
+                vm.TunnelNames?.Count ?? -1, vm.SkillLevelOptions?.Count ?? -1, vm.CanCreateGame);
             if (vm.TunnelNames != null)
                 for (int i = 0; i < vm.TunnelNames.Count && i < 3; i++)
                     Log.Information("[LOG-View-GCW] TunnelNames[{Idx}]={Name}", i, vm.TunnelNames[i]);
