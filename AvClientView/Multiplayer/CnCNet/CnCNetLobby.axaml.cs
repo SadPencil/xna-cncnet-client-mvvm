@@ -7,6 +7,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Online;
@@ -58,24 +59,24 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         if (ddColor == null) return;
         Log.Information("[LOG-View-CNC] ddColor DropDownOpened, ItemCount={IC}", ddColor.ItemCount);
 
-        // Walk popup visual tree to find TextBlocks inside ComboBoxItems and color them
+        // Try immediately, then retry after layout if items not ready
+        TryColorItems();
+        Avalonia.Threading.Dispatcher.UIThread.Post(TryColorItems, Avalonia.Threading.DispatcherPriority.Loaded);
+        Avalonia.Threading.Dispatcher.UIThread.Post(TryColorItems, Avalonia.Threading.DispatcherPriority.Background);
+    }
+
+    private void TryColorItems()
+    {
+        if (ddColor == null) return;
+
         var popup = ddColor.FindControl<Popup>("PART_Popup");
-        if (popup == null)
-        {
-            Log.Information("[LOG-View-CNC] Popup PART_Popup not found, trying logical children");
-            // Fallback: walk ComboBox visual children looking for ComboBoxItems
-            int colored = 0;
-            WalkAndColorItems(ddColor, ref colored);
-            Log.Information("[LOG-View-CNC] Colored {Count} items from ComboBox tree", colored);
-            return;
-        }
+        var root = popup ?? (Control)ddColor;
 
-        Log.Information("[LOG-View-CNC] Popup found, Child={CC}", popup.Child?.GetType().FullName ?? "null");
-
-        // Walk all ComboBoxItem children and set Foreground on their TextBlocks
-        int popupColored = 0;
-        WalkAndColorItems(popup, ref popupColored);
-        Log.Information("[LOG-View-CNC] Colored {Count} items from popup tree", popupColored);
+        int colored = 0;
+        WalkAndColorItems(root, ref colored);
+        if (colored > 0)
+            Log.Information("[LOG-View-CNC] TryColorItems: colored {Count} items from {Source}",
+                colored, popup != null ? "popup" : "combo");
     }
 
     private static T? FindVisualChild<T>(Control parent) where T : Control
