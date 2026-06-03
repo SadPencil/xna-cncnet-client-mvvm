@@ -199,30 +199,46 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         _mapPreviewLease = null;
         HoveredGameMapPreview = null;
 
-        if (HoveredGame == null || string.IsNullOrEmpty(HoveredGame.MapHash))
+        if (HoveredGame == null)
+        {
+            HoveredGameMapPreview = LoadFallbackPreview();
             return;
+        }
 
-        var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
-        if (map == null)
-            return;
+        if (!string.IsNullOrEmpty(HoveredGame.MapHash))
+        {
+            var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
+            if (map != null)
+            {
+                try
+                {
+                    var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
+                    if (lease?.Value != null)
+                    {
+                        _mapPreviewLease = lease;
+                        HoveredGameMapPreview = lease.Value;
+                        return;
+                    }
+                    lease?.Dispose();
+                }
+                catch { }
+            }
+        }
 
+        // Fallback: show "no preview" image
+        HoveredGameMapPreview = LoadFallbackPreview();
+    }
+
+    private Image? LoadFallbackPreview()
+    {
         try
         {
-            var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
-            if (lease?.Value != null)
-            {
-                _mapPreviewLease = lease;
-                HoveredGameMapPreview = lease.Value;
-            }
-            else
-            {
-                lease?.Dispose();
-            }
+            string path = System.IO.Path.Combine(ProgramConstants.GetResourcePath(), "noMapPreview.png");
+            if (System.IO.File.Exists(path))
+                return Image.Load(path);
         }
-        catch
-        {
-            HoveredGameMapPreview = null;
-        }
+        catch { }
+        return null;
     }
 
     public CnCNetLobbyViewModel(
