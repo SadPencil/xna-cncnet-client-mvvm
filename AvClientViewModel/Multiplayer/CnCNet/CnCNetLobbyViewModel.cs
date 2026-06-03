@@ -362,6 +362,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     public void SwitchOn()
     {
+        Log.Information("[LOG-VM] SwitchOn START: IsConnected={C}, IsAttempting={A}",
+            connectionManager.IsConnected, connectionManager.IsAttemptingConnection);
         IsVisible = true;
 
         if (!connectionManager.IsConnected && !connectionManager.IsAttemptingConnection)
@@ -369,9 +371,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsLoginWindowVisible = true;
             LoginWindowViewModel.IsVisible = true;
             _loginWindowViewModel.LoadSettings();
+            Log.Information("[LOG-VM] SwitchOn: showing login window");
         }
 
         UpdateLogoutButtonText();
+        Log.Information("[LOG-VM] SwitchOn DONE: ColorOptions.Count={C}, Games.Count={G}, ChatMessages.Count={M}",
+            colorOptions.Count, games.Count, chatMessages.Count);
     }
 
     public void SwitchOff()
