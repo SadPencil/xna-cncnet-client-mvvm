@@ -5,6 +5,7 @@
              xmlns:onl="using:AvClientMvvmContract.Online"
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
              xmlns:converters="using:AvClientView.Converters"
+             xmlns:svc="using:AvClientView.Services"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLobby"
              x:DataType="vmc:ICnCNetLobbyViewModel"
              IsVisible="{Binding IsVisible}"
@@ -33,6 +34,7 @@
       <ComboBox x:Name="ddColor"
                 ItemsSource="{Binding ColorOptions}"
                 SelectedIndex="{Binding SelectedColorIndex}"
+                svc:IniLayoutProperties.SkipForeground="True"
                 Width="150" Height="21"
                 Canvas.Left="545" Canvas.Top="12" />
 

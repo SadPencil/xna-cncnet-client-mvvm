@@ -4,6 +4,7 @@
              xmlns:mp="using:AvClientView.Multiplayer"
              xmlns:gamelobby="using:AvClientView.Multiplayer.GameLobby"
              xmlns:controls="using:AvClientView.Controls"
+             xmlns:svc="using:AvClientView.Services"
              x:Class="AvClientView.Multiplayer.LANLobby"
              x:DataType="vmc:ILANLobbyViewModel"
              IsVisible="{Binding IsVisible}"
@@ -23,8 +24,9 @@
                 ItemsSource="{Binding ColorOptions}"
                 SelectedIndex="{Binding SelectedColorIndex}"
                 IsEnabled="{Binding IsEnabled}"
+                svc:IniLayoutProperties.SkipForeground="True"
                 Width="150" Height="21"
-               
+
                 Canvas.Left="395" Canvas.Top="12" />
 
       <!-- ========== LEFT COLUMN: Game List ========== -->

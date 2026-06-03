@@ -440,7 +440,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 break;
 
             case "TextColor":
-                if (control is TextBlock tb && ParseColor(value) is Color tc)
+                if (control is TextBlock tb && ParseColor(value) is Color tc
+                    && !IniLayoutProperties.GetSkipForeground(tb))
                     tb.Foreground = new SolidColorBrush(tc);
                 break;
 
@@ -454,9 +455,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
             case "ForeColor":
             case "TextColorIdle":
-                if (control is Button btn && ParseColor(value) is Color fc)
+                if (control is Button btn && ParseColor(value) is Color fc
+                    && !IniLayoutProperties.GetSkipForeground(btn))
                     btn.Foreground = new SolidColorBrush(fc);
-                else if (control is TextBlock tbf && ParseColor(value) is Color tfc)
+                else if (control is TextBlock tbf && ParseColor(value) is Color tfc
+                    && !IniLayoutProperties.GetSkipForeground(tbf))
                     tbf.Foreground = new SolidColorBrush(tfc);
                 break;
 
@@ -1462,11 +1465,17 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
     {
         var bgColor = ParseColorFromConfig("AltUIBackgroundColor") ?? Color.Parse("#000000");
         var borderColor = ParseColorFromConfig("PanelBorderColor") ?? Color.Parse("#C4C4C4");
-        var textColor = ParseColorFromConfig("AltUIColor") ?? Color.Parse("#FFFFFF");
 
         comboBox.Background = new SolidColorBrush(bgColor);
         comboBox.BorderBrush = new SolidColorBrush(borderColor);
-        comboBox.Foreground = new SolidColorBrush(textColor);
+
+        // Skip inherited Foreground when the control opted out (e.g. colour pickers
+        // where each item has its own colour).
+        if (!IniLayoutProperties.GetSkipForeground(comboBox))
+        {
+            var textColor = ParseColorFromConfig("AltUIColor") ?? Color.Parse("#FFFFFF");
+            comboBox.Foreground = new SolidColorBrush(textColor);
+        }
     }
 
     /// <summary>

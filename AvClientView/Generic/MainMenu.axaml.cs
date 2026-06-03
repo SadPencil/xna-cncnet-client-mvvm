@@ -252,6 +252,7 @@ public partial class MainMenu : UserControl
             Width = 200, Height = 21,
             IsVisible = true,
         };
+        IniLayoutProperties.SetSkipForeground(testCombo, true);
         Canvas.SetLeft(testCombo, 10);
         Canvas.SetTop(testCombo, 10);
 
