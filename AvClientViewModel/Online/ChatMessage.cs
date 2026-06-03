@@ -77,5 +77,13 @@ namespace AvClientViewModel.Online
         public bool SenderIsAdmin { get; private set; }
 
         public bool IsUser => SenderIdent != null;
+
+        public override string ToString()
+        {
+            string timestamp = DateTime.ToShortTimeString();
+            if (string.IsNullOrEmpty(SenderName))
+                return $"[{timestamp}] {Message}";
+            return $"[{timestamp}] {SenderName}: {Message}";
+        }
     }
 }

@@ -1,7 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
+             xmlns:dom="using:AvClientMvvmContract.Domain.Multiplayer"
+             xmlns:onl="using:AvClientMvvmContract.Online"
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
+             xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLobby"
              x:DataType="vmc:ICnCNetLobbyViewModel"
              IsVisible="{Binding IsVisible}"
@@ -15,41 +18,42 @@
                  Text="Online:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                
                  Canvas.Left="300" Canvas.Top="14" />
       <TextBlock x:Name="lblOnlineCount"
                  Text="{Binding OnlinePlayerCountText}"
                  Foreground="{DynamicResource XnaTextBrush}"
-                
                  Canvas.Left="360" Canvas.Top="14" />
 
-      <!-- Color Label + Dropdown -->
+      <!-- Color Label + Dropdown (each item rendered in its own color) -->
       <TextBlock x:Name="lblColor"
                  Text="YOUR COLOR:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                
                  Canvas.Left="450" Canvas.Top="14" />
       <ComboBox x:Name="ddColor"
                 ItemsSource="{Binding ColorOptions}"
                 SelectedIndex="{Binding SelectedColorIndex}"
                 Width="150" Height="21"
-               
-                Canvas.Left="545" Canvas.Top="12" />
+                Canvas.Left="545" Canvas.Top="12">
+        <ComboBox.ItemTemplate>
+          <DataTemplate x:DataType="onl:IIRCColor">
+            <TextBlock Text="{Binding Name}"
+                       Foreground="{Binding ., Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}" />
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
 
       <!-- Current Channel Label + Dropdown -->
       <TextBlock x:Name="lblCurrentChannel"
                  Text="CURRENT CHANNEL:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                
                  Canvas.Left="720" Canvas.Top="14" />
       <ComboBox x:Name="ddCurrentChannel"
                 ItemsSource="{Binding ChannelOptions}"
                 SelectedIndex="{Binding SelectedChannelIndex}"
                 IsEnabled="{Binding IsChannelDropdownEnabled}"
                 Width="200" Height="21"
-               
                 Canvas.Left="870" Canvas.Top="12" />
 
       <!-- ========== LEFT COLUMN: Game List ========== -->
@@ -60,7 +64,6 @@
                Watermark="Filter by name, map, game mode, player..."
                IsEnabled="{Binding IsGameSearchEnabled}"
                Width="216" Height="21"
-              
                Canvas.Left="12" Canvas.Top="12" />
 
       <!-- Sort Button -->
@@ -68,7 +71,6 @@
               Content="&#x2195;"
               Command="{Binding CycleSortDirectionCommand}"
               Width="21" Height="21"
-             
               Canvas.Left="238" Canvas.Top="12" />
 
       <!-- Game Filter Button -->
@@ -76,27 +78,102 @@
               Content="&#x2699;"
               Command="{Binding ToggleGameFiltersCommand}"
               Width="21" Height="21"
-             
               Canvas.Left="269" Canvas.Top="12" />
 
-      <!-- Game List -->
+      <!-- Game List (rich item template with status icons and coloring) -->
       <Border x:Name="lbGameList"
               Background="#C8000000"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
               Width="278" Height="590"
               Canvas.Left="12" Canvas.Top="43">
-        <ListBox ItemsSource="{Binding GameNames}"
+        <ListBox ItemsSource="{Binding Games}"
                  SelectedIndex="{Binding SelectedGameIndex}"
-                 Background="Transparent">
+                 Background="Transparent"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
           <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="x:String">
-              <TextBlock Text="{Binding .}"
-                         Foreground="{DynamicResource XnaTextBrush}"
-                         />
+            <DataTemplate x:DataType="dom:IHostedCnCNetGame">
+              <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+                    Margin="2,1">
+                <!-- Room name - gray if Locked or Incompatible -->
+                <TextBlock Text="{Binding RoomName}"
+                           Foreground="{Binding ., Converter={x:Static converters:GameStateToBrushConverter.Instance}}"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" />
+
+                <!-- Password icon indicator -->
+                <TextBlock Grid.Column="1"
+                           Text="&#x1F512;"
+                           IsVisible="{Binding Passworded}"
+                           VerticalAlignment="Center"
+                           Margin="2,0,0,0" />
+
+                <!-- Locked indicator -->
+                <TextBlock Grid.Column="2"
+                           Text="&#x274C;"
+                           IsVisible="{Binding Locked}"
+                           VerticalAlignment="Center"
+                           Margin="2,0,0,0" />
+
+                <!-- Incompatible indicator -->
+                <TextBlock Grid.Column="3"
+                           Text="&#x26D4;"
+                           IsVisible="{Binding Incompatible}"
+                           VerticalAlignment="Center"
+                           Margin="2,0,0,0" />
+              </Grid>
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
+      </Border>
+
+      <!-- Game Information Panel (shown when a game is selected) -->
+      <Border x:Name="panelGameInfo"
+              IsVisible="{Binding SelectedGame, Converter={x:Static ObjectConverters.IsNotNull}}"
+              Background="#E0000000"
+              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+              BorderThickness="1"
+              Padding="8"
+              Width="278"
+              Canvas.Left="12" Canvas.Top="640">
+        <StackPanel DataContext="{Binding SelectedGame}"
+                    Spacing="3">
+          <TextBlock Text="GAME INFORMATION"
+                     FontWeight="Bold"
+                     Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                     Text="{Binding HostName, StringFormat='Host: {0}'}"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                     Text="{Binding Ping, StringFormat='Ping: {0} ms'}"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                     Text="{Binding GameMode, StringFormat='Game mode: {0}'}"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                     Text="{Binding Map, StringFormat='Map: {0}'}"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                     Text="{Binding GameVersion, StringFormat='Version: {0}'}"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                     Text="{Binding MaxPlayers, StringFormat='Max players: {0}'}" />
+          <ItemsControl ItemsSource="{Binding Players}"
+                        Margin="0,4,0,0">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="x:String">
+                <TextBlock Text="{Binding .}"
+                           Foreground="{DynamicResource XnaAltBrush}"
+                           Margin="0,0,8,0" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
       </Border>
 
       <!-- ========== MIDDLE COLUMN: Chat ========== -->
@@ -114,7 +191,6 @@
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                        
                          TextWrapping="Wrap" />
             </DataTemplate>
           </ListBox.ItemTemplate>
@@ -128,25 +204,42 @@
                IsEnabled="{Binding IsChatInputEnabled}"
                MaxLength="200"
                Width="630" Height="23"
-              
                Canvas.Left="300" Canvas.Top="693" />
 
       <!-- ========== RIGHT COLUMN: Player List ========== -->
 
-      <!-- Player List -->
+      <!-- Player List (rich template with admin/friend/ignore indicators) -->
       <Border x:Name="lbPlayerList"
               Background="#C8000000"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
               Width="278" Height="590"
               Canvas.Left="930" Canvas.Top="43">
-        <ListBox ItemsSource="{Binding PlayerNames}"
+        <ListBox ItemsSource="{Binding Players}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="x:String">
-              <TextBlock Text="{Binding .}"
-                         Foreground="{DynamicResource XnaTextBrush}"
-                         />
+            <DataTemplate x:DataType="vmc:IPlayerListItem">
+              <StackPanel Orientation="Horizontal"
+                          Spacing="3"
+                          Margin="2,1">
+                <!-- Friend indicator -->
+                <TextBlock Text="&#x2B50;"
+                           IsVisible="{Binding IsFriend}"
+                           VerticalAlignment="Center" />
+                <!-- Ignore indicator -->
+                <TextBlock Text="&#x1F6AB;"
+                           IsVisible="{Binding IsIgnored}"
+                           VerticalAlignment="Center" />
+                <!-- Player name -->
+                <TextBlock Text="{Binding Name}"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource XnaTextBrush}" />
+                <!-- Admin suffix in red -->
+                <TextBlock Text="(Admin)"
+                           IsVisible="{Binding IsAdmin}"
+                           VerticalAlignment="Center"
+                           Foreground="Red" />
+              </StackPanel>
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -161,7 +254,6 @@
               IsEnabled="{Binding IsNewGameButtonEnabled}"
               Width="133" Height="23"
               FontWeight="Bold"
-             
               Canvas.Left="12" Canvas.Top="693" />
 
       <!-- Join Game Button -->
@@ -171,7 +263,6 @@
               IsEnabled="{Binding IsJoinGameButtonEnabled}"
               Width="133" Height="23"
               FontWeight="Bold"
-             
               Canvas.Left="157" Canvas.Top="693" />
 
       <!-- Private Messages Button -->
@@ -180,7 +271,6 @@
               Command="{Binding OpenPrivateMessagesCommand}"
               Width="50" Height="23"
               FontWeight="Bold"
-             
               Canvas.Left="870" Canvas.Top="693" />
 
       <!-- Logout Button -->
@@ -189,7 +279,6 @@
               Command="{Binding LogoutCommand}"
               Width="133" Height="23"
               FontWeight="Bold"
-             
               Canvas.Left="1075" Canvas.Top="693" />
 
     <!-- ========== LOGIN WINDOW OVERLAY ========== -->

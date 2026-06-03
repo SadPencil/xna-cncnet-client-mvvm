@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
+using AvClientMvvmContract.Domain.Multiplayer;
+using AvClientMvvmContract.Online;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Multiplayer.CnCNet;
@@ -11,9 +14,10 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     string OnlinePlayerCountText { get; }
     string PlayerName { get; }
     string DraftMessage { get; set; }
-    IReadOnlyList<string> GameNames { get; }
-    IReadOnlyList<string> PlayerNames { get; }
+    IReadOnlyList<IHostedCnCNetGame> Games { get; }
+    IReadOnlyList<IPlayerListItem> Players { get; }
     IReadOnlyList<string> ChatMessages { get; }
+    IHostedCnCNetGame? SelectedGame { get; }
     int SelectedGameIndex { get; set; }
     int SelectedColorIndex { get; set; }
     int SelectedChannelIndex { get; set; }
@@ -26,7 +30,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     bool IsGameSearchEnabled { get; }
     bool IsConnected { get; }
     bool IsVisible { get; }
-    IReadOnlyList<string> ColorOptions { get; }
+    IReadOnlyList<IIRCColor> ColorOptions { get; }
     IReadOnlyList<string> ChannelOptions { get; }
 
     // View-reactive state

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading;
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.Online;
 using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain.Multiplayer;
@@ -143,18 +145,19 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     private string? soundToPlay;
 
-    // The lists exposed to the View
-    private List<string> gameNames = new();
-    public IReadOnlyList<string> GameNames => gameNames;
+    // The lists exposed to the View - use ObservableCollection so Avalonia
+    // ListBox detects in-place modifications without needing OnPropertyChanged.
+    private readonly ObservableCollection<IHostedCnCNetGame> games = new();
+    public IReadOnlyList<IHostedCnCNetGame> Games => games;
 
-    private List<string> playerNames = new();
-    public IReadOnlyList<string> PlayerNames => playerNames;
+    private readonly ObservableCollection<IPlayerListItem> players = new();
+    public IReadOnlyList<IPlayerListItem> Players => players;
 
-    private List<string> chatMessages = new();
+    private readonly ObservableCollection<string> chatMessages = new();
     public IReadOnlyList<string> ChatMessages => chatMessages;
 
-    private List<string> colorOptions = new();
-    public IReadOnlyList<string> ColorOptions => colorOptions;
+    private readonly ObservableCollection<IIRCColor> colorOptions = new();
+    public IReadOnlyList<IIRCColor> ColorOptions => colorOptions;
 
     private List<string> channelOptions = new();
     public IReadOnlyList<string> ChannelOptions => channelOptions;
@@ -165,6 +168,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private readonly CnCNetLoginWindowViewModel _loginWindowViewModel;
     public ICnCNetLoginWindowViewModel LoginWindowViewModel => _loginWindowViewModel;
+
+    // Computed observable for the currently selected game in the list.
+    [ObservableProperty]
+    private IHostedCnCNetGame? selectedGame;
 
     public CnCNetLobbyViewModel(
         CnCNetManager connectionManager,
@@ -206,7 +213,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         foreach (IRCColor color in chatColors)
         {
             if (color.Selectable)
-                colorOptions.Add(color.Name);
+                colorOptions.Add(color);
         }
 
         // Set initial color from settings
@@ -774,9 +781,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         {
             currentChatChannel.Join();
         }
-
-        OnPropertyChanged(nameof(ChatMessages));
-        OnPropertyChanged(nameof(PlayerNames));
     }
 
     private void RefreshPlayerList(object sender, EventArgs e)
@@ -784,7 +788,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (currentChatChannel == null)
             return;
 
-        playerNames.Clear();
+        players.Clear();
 
         var current = currentChatChannel.Users.GetFirst();
         while (current != null)
@@ -792,11 +796,15 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             var user = current.Value;
             user.IRCUser.IsFriend = cncnetUserData.IsFriend(user.IRCUser.Name);
             user.IRCUser.IsIgnored = cncnetUserData.IsIgnored(user.IRCUser.Ident);
-            playerNames.Add(user.IRCUser.Name);
+            players.Add(new PlayerListItem(
+                user.IRCUser.Name,
+                user.IsAdmin,
+                user.IRCUser.IsFriend,
+                user.IRCUser.IsIgnored,
+                user.HasVoice,
+                user.IRCUser.GameID));
             current = current.Next;
         }
-
-        OnPropertyChanged(nameof(PlayerNames));
     }
 
     private void OnUserDataChanged(object sender, EventArgs e)
@@ -823,17 +831,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         uiThreadMarshaller.AddCallback(new Action(() =>
         {
             AddMessageToChat(e.Message);
-            OnPropertyChanged(nameof(ChatMessages));
         }));
     }
 
     private void CurrentChatChannel_UserGameIndexUpdated(object sender, ChannelUserEventArgs e)
     {
         // View handles icon display - we just notify that player list may need refresh
-        uiThreadMarshaller.AddCallback(new Action(() =>
-        {
-            OnPropertyChanged(nameof(PlayerNames));
-        }));
+        // ObservableCollection auto-notifies the View; no manual OnPropertyChanged needed.
+        uiThreadMarshaller.AddCallback(new Action(() => { }));
     }
 
     private void SortAndRefreshHostedGames()
@@ -847,8 +852,15 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else if (sortDir == SortDirection.Desc)
             filtered = filtered.OrderByDescending(g => g.RoomName).ToList();
 
-        gameNames = filtered.Select(g => g.RoomName).ToList();
-        OnPropertyChanged(nameof(GameNames));
+        games.Clear();
+        foreach (var g in filtered)
+            games.Add(g);
+
+        // Update SelectedGame if the selection is still valid
+        if (SelectedGameIndex >= 0 && SelectedGameIndex < games.Count)
+            SelectedGame = games[SelectedGameIndex];
+        else
+            SelectedGame = null;
     }
 
     private void UpdateOnlineCount(int playerCount)
@@ -1172,8 +1184,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsGameSearchEnabled = false;
             IsConnected = false;
 
-            playerNames.Clear();
-            gameNames.Clear();
+            players.Clear();
+            games.Clear();
             hostedGames.Clear();
             followedGames.Clear();
 
@@ -1189,9 +1201,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
             if (gameCheckCancellation != null)
                 gameCheckCancellation.Cancel();
-
-            OnPropertyChanged(nameof(PlayerNames));
-            OnPropertyChanged(nameof(GameNames));
         }));
     }
 
@@ -1590,7 +1599,35 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         return hostedGames.FirstOrDefault(g => g.Players.Contains(user.Name));
     }
 
+    partial void OnSelectedGameIndexChanged(int value)
+    {
+        SelectedGame = value >= 0 && value < games.Count ? games[value] : null;
+    }
+
     #endregion
+}
+
+/// <summary>
+/// Simple DTO implementing IPlayerListItem for the View's player list binding.
+/// </summary>
+internal record PlayerListItem : IPlayerListItem
+{
+    public PlayerListItem(string name, bool isAdmin, bool isFriend, bool isIgnored, bool hasVoice, int gameId)
+    {
+        Name = name;
+        IsAdmin = isAdmin;
+        IsFriend = isFriend;
+        IsIgnored = isIgnored;
+        HasVoice = hasVoice;
+        GameId = gameId;
+    }
+
+    public string Name { get; }
+    public bool IsAdmin { get; }
+    public bool IsFriend { get; }
+    public bool IsIgnored { get; }
+    public bool HasVoice { get; }
+    public int GameId { get; }
 }
 
 
