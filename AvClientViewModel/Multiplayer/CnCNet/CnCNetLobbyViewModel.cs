@@ -166,6 +166,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     // Used by SwitchToChannel to avoid index mismatch with the unfiltered GameList.
     private List<Channel> channelOptionChannels = new();
 
+    private GameCreationWindowViewModel? _gameCreationWindowViewModel;
+    public IGameCreationWindowViewModel? GameCreationWindowViewModel => _gameCreationWindowViewModel;
+
     private readonly CnCNetLoginWindowViewModel _loginWindowViewModel;
     public ICnCNetLoginWindowViewModel LoginWindowViewModel => _loginWindowViewModel;
 
@@ -320,6 +323,30 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (isInGameRoom)
             return;
 
+        // Create the GameCreationWindow VM on first use with callbacks
+        if (_gameCreationWindowViewModel == null)
+        {
+            _gameCreationWindowViewModel = new GameCreationWindowViewModel(
+                tunnelHandler,
+                onGameCreated: e =>
+                {
+                    string channelName = RandomizeChannelName();
+                    OnGameCreated(e.GameRoomName, channelName, e.Password, e.MaxPlayers, e.Tunnel, e.SkillLevel);
+                },
+                onLoadedGameCreated: e =>
+                {
+                    string channelName = RandomizeChannelName();
+                    OnLoadedGameCreated(e.GameRoomName, channelName, e.Password, e.Tunnel);
+                },
+                onCancelled: () =>
+                {
+                    IsGameCreationPanelVisible = false;
+                    _gameCreationWindowViewModel.IsWindowVisible = false;
+                });
+        }
+
+        _gameCreationWindowViewModel.Refresh();
+        _gameCreationWindowViewModel.IsWindowVisible = true;
         IsGameCreationPanelVisible = true;
     }
 
@@ -452,6 +479,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
         IsGameCreationPanelVisible = false;
+        if (_gameCreationWindowViewModel != null)
+            _gameCreationWindowViewModel.IsWindowVisible = false;
 
         (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
@@ -477,6 +506,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             string.Format("Creating a game named {0} ...".L10N("Client:Main:CreateGameNamed"), gameRoomName)));
 
         IsGameCreationPanelVisible = false;
+        if (_gameCreationWindowViewModel != null)
+            _gameCreationWindowViewModel.IsWindowVisible = false;
 
         (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }

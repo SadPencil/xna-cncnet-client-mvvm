@@ -7,6 +7,7 @@ namespace AvClientMvvmContract.Multiplayer.CnCNet;
 
 public interface IGameCreationWindowViewModel : INotifyPropertyChanged
 {
+    bool IsWindowVisible { get; set; }
     string GameName { get; set; }
     string Password { get; set; }
     int MaxPlayers { get; set; }

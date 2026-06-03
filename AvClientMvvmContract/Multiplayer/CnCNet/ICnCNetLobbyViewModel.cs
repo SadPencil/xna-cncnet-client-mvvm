@@ -32,6 +32,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     bool IsGameSearchEnabled { get; }
     bool IsConnected { get; }
     bool IsVisible { get; }
+    IGameCreationWindowViewModel? GameCreationWindowViewModel { get; }
     IReadOnlyList<IIRCColor> ColorOptions { get; }
     IReadOnlyList<string> ChannelOptions { get; }
 

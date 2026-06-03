@@ -31,6 +31,9 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     // --- Observable state ---
 
     [ObservableProperty]
+    private bool _isWindowVisible;
+
+    [ObservableProperty]
     private string _gameName = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
 
     [ObservableProperty]
