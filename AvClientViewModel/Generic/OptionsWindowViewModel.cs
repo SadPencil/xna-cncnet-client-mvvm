@@ -14,6 +14,7 @@ using ClientUpdater;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 using Rampastring.Tools;
 
@@ -41,8 +42,6 @@ namespace AvClientViewModel.Generic
         public ICnCNetOptionsPanelViewModel CnCNetOptions => cncnetOptionsPanel;
         public IUpdaterOptionsPanelViewModel UpdaterOptions => updaterOptionsPanel;
         public IComponentsPanelViewModel ComponentsOptions => componentsPanel;
-
-        private Action<bool>? yesNoDialogCallback;
 
         [ObservableProperty]
         private int selectedPanelIndex;
@@ -88,25 +87,6 @@ namespace AvClientViewModel.Generic
         [ObservableProperty]
         private bool isComponentsPanelVisibleInner;
 
-        // Dialog state
-        [ObservableProperty]
-        private bool isMessageBoxVisible;
-
-        [ObservableProperty]
-        private string messageBoxTitle = string.Empty;
-
-        [ObservableProperty]
-        private string messageBoxMessage = string.Empty;
-
-        [ObservableProperty]
-        private bool isYesNoDialogVisible;
-
-        [ObservableProperty]
-        private string yesNoDialogTitle = string.Empty;
-
-        [ObservableProperty]
-        private string yesNoDialogMessage = string.Empty;
-
         // Domain events (for MainMenu to subscribe, not on interface)
         public event EventHandler? RestartRequested;
         public event EventHandler? ForceUpdateRequested;
@@ -144,25 +124,6 @@ namespace AvClientViewModel.Generic
             {
                 IsUpdaterPanelVisible = true;
                 IsComponentsPanelVisible = true;
-            }
-        }
-
-        partial void OnIsMessageBoxVisibleChanged(bool value)
-        {
-            if (!value)
-            {
-                MessageBoxTitle = string.Empty;
-                MessageBoxMessage = string.Empty;
-            }
-        }
-
-        partial void OnIsYesNoDialogVisibleChanged(bool value)
-        {
-            if (!value)
-            {
-                YesNoDialogTitle = string.Empty;
-                YesNoDialogMessage = string.Empty;
-                yesNoDialogCallback = null;
             }
         }
 
@@ -241,26 +202,6 @@ namespace AvClientViewModel.Generic
         {
             IsVisible = false;
             ForceUpdateRequested?.Invoke(this, EventArgs.Empty);
-        }
-
-        [RelayCommand]
-        private void DismissMessageBox()
-        {
-            IsMessageBoxVisible = false;
-        }
-
-        [RelayCommand]
-        private void YesNoDialogYes()
-        {
-            IsYesNoDialogVisible = false;
-            yesNoDialogCallback?.Invoke(true);
-        }
-
-        [RelayCommand]
-        private void YesNoDialogNo()
-        {
-            IsYesNoDialogVisible = false;
-            yesNoDialogCallback?.Invoke(false);
         }
 
         #endregion
@@ -406,17 +347,15 @@ namespace AvClientViewModel.Generic
 
         private void ShowMessageBox(string title, string message)
         {
-            MessageBoxTitle = title;
-            MessageBoxMessage = message;
-            IsMessageBoxVisible = true;
+            WeakReferenceMessenger.Default.Send(new OKDialogMessage(title, message));
         }
 
-        private void ShowYesNoDialog(string title, string message, Action<bool> callback)
+        private async void ShowYesNoDialog(string title, string message, Action<bool> callback)
         {
-            yesNoDialogCallback = callback;
-            YesNoDialogTitle = title;
-            YesNoDialogMessage = message;
-            IsYesNoDialogVisible = true;
+            var msg = new YesNoDialogMessage(title, message);
+            WeakReferenceMessenger.Default.Send(msg);
+            var result = await msg.Response;
+            callback(result);
         }
 
         #endregion

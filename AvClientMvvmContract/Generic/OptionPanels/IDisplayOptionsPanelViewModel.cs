@@ -28,13 +28,9 @@ public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
     bool IsGameCompatFixAvailable { get; }
     bool IsFinalSunCompatFixAvailable { get; }
     bool IsRestartRequired { get; }
-    bool IsMessageBoxVisible { get; }
-    string MessageBoxTitle { get; }
-    string MessageBoxMessage { get; }
 
     IRelayCommand InstallGameCompatibilityFixCommand { get; }
     IRelayCommand InstallMapEditorCompatibilityFixCommand { get; }
     IRelayCommand LoadSettingsCommand { get; }
     IRelayCommand SaveSettingsCommand { get; }
-    IRelayCommand DismissMessageBoxCommand { get; }
 }

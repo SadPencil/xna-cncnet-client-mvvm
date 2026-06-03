@@ -22,14 +22,6 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     // Child ViewModels
     ITopBarViewModel TopBarViewModel { get; }
 
-    // Dialog state
-    bool IsMessageBoxVisible { get; }
-    string MessageBoxTitle { get; }
-    string MessageBoxMessage { get; }
-    bool IsYesNoDialogVisible { get; }
-    string YesNoDialogTitle { get; }
-    string YesNoDialogMessage { get; }
-
     // Navigation state
     MainMenuPanel ActivePanel { get; }
     bool IsLanMode { get; }
@@ -52,9 +44,6 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     IRelayCommand DeclineUpdateCommand { get; }
     IRelayCommand AcceptUpdateCommand { get; }
     IRelayCommand ForceUpdateCommandCommand { get; }
-    IRelayCommand DismissMessageBoxCommand { get; }
-    IRelayCommand YesNoDialogYesCommand { get; }
-    IRelayCommand YesNoDialogNoCommand { get; }
 }
 
 /// <summary>

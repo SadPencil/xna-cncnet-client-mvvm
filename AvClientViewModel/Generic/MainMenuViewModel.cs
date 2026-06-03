@@ -27,6 +27,7 @@ using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 using Rampastring.Tools;
 
@@ -67,8 +68,6 @@ namespace AvClientViewModel.Generic
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
-        private bool customComponentDialogQueued;
-        private Action<bool>? yesNoDialogCallback;
 
         [ObservableProperty]
         private string versionText = string.Empty;
@@ -105,24 +104,6 @@ namespace AvClientViewModel.Generic
 
         [ObservableProperty]
         private bool isMusicPlaying;
-
-        [ObservableProperty]
-        private bool isMessageBoxVisible;
-
-        [ObservableProperty]
-        private string messageBoxTitle = string.Empty;
-
-        [ObservableProperty]
-        private string messageBoxMessage = string.Empty;
-
-        [ObservableProperty]
-        private bool isYesNoDialogVisible;
-
-        [ObservableProperty]
-        private string yesNoDialogTitle = string.Empty;
-
-        [ObservableProperty]
-        private string yesNoDialogMessage = string.Empty;
 
         [ObservableProperty]
         private bool isLanMode;
@@ -279,25 +260,6 @@ namespace AvClientViewModel.Generic
             // TODO: removed to match the original behavior. But what's the expected behavior here?
             //if (value)
             //    connectionManager.Disconnect();
-        }
-
-        partial void OnIsMessageBoxVisibleChanged(bool value)
-        {
-            if (!value)
-            {
-                MessageBoxTitle = string.Empty;
-                MessageBoxMessage = string.Empty;
-            }
-        }
-
-        partial void OnIsYesNoDialogVisibleChanged(bool value)
-        {
-            if (!value)
-            {
-                YesNoDialogTitle = string.Empty;
-                YesNoDialogMessage = string.Empty;
-                yesNoDialogCallback = null;
-            }
         }
 
         #region Commands
@@ -457,26 +419,6 @@ namespace AvClientViewModel.Generic
             UpdateStatusText = "Force updating...".L10N("Client:Main:ForceUpdating");
         }
 
-        [RelayCommand]
-        private void DismissMessageBox()
-        {
-            IsMessageBoxVisible = false;
-        }
-
-        [RelayCommand]
-        private void YesNoDialogYes()
-        {
-            IsYesNoDialogVisible = false;
-            yesNoDialogCallback?.Invoke(true);
-        }
-
-        [RelayCommand]
-        private void YesNoDialogNo()
-        {
-            IsYesNoDialogVisible = false;
-            yesNoDialogCallback?.Invoke(false);
-        }
-
         #endregion
 
         #region Lifecycle (called by MainMenu on concrete class)
@@ -504,9 +446,6 @@ namespace AvClientViewModel.Generic
 
         public void OnOptionsWindowClosed()
         {
-            if (customComponentDialogQueued)
-                OnCustomComponentsOutdated();
-
             OptionsWindowClosed?.Invoke();
         }
 
@@ -699,18 +638,8 @@ namespace AvClientViewModel.Generic
             if (IsUpdateNotificationVisible)
                 return;
 
-            // Original checks: UpdateInProgress (mapped to !AreButtonsEnabled)
             if (!AreButtonsEnabled)
                 return;
-
-            // Original checks: firstRunMessageBox visible OR optionsWindow.Enabled
-            if (IsYesNoDialogVisible || optionsWindowViewModel.IsVisible)
-            {
-                customComponentDialogQueued = true;
-                return;
-            }
-
-            customComponentDialogQueued = false;
 
             ShowYesNoDialog(
                 "Custom Component Updates Available".L10N("Client:Main:CustomUpdateAvailableTitle"),
@@ -870,8 +799,6 @@ namespace AvClientViewModel.Generic
                     {
                         if (yes)
                             optionsWindowViewModel.Open();
-                        else if (customComponentDialogQueued)
-                            OnCustomComponentsOutdated();
                     });
             }
 
@@ -905,17 +832,15 @@ namespace AvClientViewModel.Generic
 
         private void ShowMessageBox(string title, string message)
         {
-            MessageBoxTitle = title;
-            MessageBoxMessage = message;
-            IsMessageBoxVisible = true;
+            WeakReferenceMessenger.Default.Send(new OKDialogMessage(title, message));
         }
 
-        private void ShowYesNoDialog(string title, string message, Action<bool> callback)
+        private async void ShowYesNoDialog(string title, string message, Action<bool> callback)
         {
-            yesNoDialogCallback = callback;
-            YesNoDialogTitle = title;
-            YesNoDialogMessage = message;
-            IsYesNoDialogVisible = true;
+            var msg = new YesNoDialogMessage(title, message);
+            WeakReferenceMessenger.Default.Send(msg);
+            var result = await msg.Response;
+            callback(result);
         }
 
         #endregion

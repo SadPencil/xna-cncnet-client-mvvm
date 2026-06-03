@@ -1,3 +1,5 @@
+using System;
+
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -13,6 +15,8 @@ using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Services;
+
+using CommunityToolkit.Mvvm.Messaging;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +35,25 @@ public partial class MainMenu : UserControl
         KeyDown += OnKeyDown;
         PointerMoved += OnPointerMoved;
         Focusable = true;
+
+        // Register as recipient for dialog messages from ViewModels
+        WeakReferenceMessenger.Default.Register<MainMenu, IOKDialogMessage>(this, (r, m) =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                var overlay = CreateOKDialogOverlay(m.Title, m.Message);
+                OKDialogsPanel.Children.Add(overlay);
+            });
+        });
+
+        WeakReferenceMessenger.Default.Register<MainMenu, IYesNoDialogMessage>(this, (r, m) =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                var overlay = CreateYesNoDialogOverlay(m.Title, m.Message, yes => m.Reply(yes));
+                YesNoDialogsPanel.Children.Add(overlay);
+            });
+        });
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -64,12 +87,6 @@ public partial class MainMenu : UserControl
             MainMenuPanel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             MainMenuPanel.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
         }
-
-        // Resize message box and yes/no dialog to cover the full menu panel
-        messageBoxOverlay.Width = menuWidth;
-        messageBoxOverlay.Height = menuHeight;
-        yesNoDialogOverlay.Width = menuWidth;
-        yesNoDialogOverlay.Height = menuHeight;
 
         // Apply INI BackgroundTexture to MainMenuPanel (it was applied to the
         // UserControl by ApplyLayout, but we want it on the content panel).
@@ -263,4 +280,166 @@ public partial class MainMenu : UserControl
         };
         overlay.IsPanelVisible = child.IsVisible;
     }
+
+    #region Dialog Overlay Helpers
+
+    /// <summary>
+    /// Creates an OK dialog overlay matching the XNA message box visual style.
+    /// </summary>
+    private Border CreateOKDialogOverlay(string title, string message)
+    {
+        var titleText = new TextBlock
+        {
+            Text = title,
+            FontWeight = FontWeight.Bold,
+            Foreground = GetThemeBrush("XnaTextBrush", Brushes.Lime)
+        };
+
+        var messageText = new TextBlock
+        {
+            Text = message,
+            TextWrapping = TextWrapping.Wrap,
+            Foreground = GetThemeBrush("XnaAltBrush", Brushes.Lime)
+        };
+
+        var okButton = new Button
+        {
+            Content = "OK",
+            Width = 80,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+        };
+
+        var contentStack = new StackPanel { Spacing = 12 };
+        contentStack.Children.Add(titleText);
+        contentStack.Children.Add(messageText);
+        contentStack.Children.Add(okButton);
+
+        var innerBorder = new Border
+        {
+            Background = GetThemeBrush("XnaPanelBackgroundBrush", Brushes.Black),
+            BorderBrush = GetThemeBrush("XnaPanelBorderBrush", Brushes.Cyan),
+            BorderThickness = new Avalonia.Thickness(1),
+            Padding = new Avalonia.Thickness(20),
+            Width = 400,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            Child = contentStack
+        };
+
+        var centerPanel = new Panel();
+        centerPanel.Children.Add(innerBorder);
+
+        var overlay = new Border
+        {
+            Background = new SolidColorBrush(Color.FromArgb(128, 0, 0, 0)),
+            Child = centerPanel
+        };
+
+        okButton.Click += (_, _) =>
+        {
+            if (overlay.Parent is Panel parent)
+                parent.Children.Remove(overlay);
+        };
+
+        return overlay;
+    }
+
+    /// <summary>
+    /// Creates a Yes/No dialog overlay matching the XNA message box visual style.
+    /// </summary>
+    private Border CreateYesNoDialogOverlay(string title, string message, Action<bool> onResult)
+    {
+        var titleText = new TextBlock
+        {
+            Text = title,
+            FontWeight = FontWeight.Bold,
+            Foreground = GetThemeBrush("XnaTextBrush", Brushes.Lime)
+        };
+
+        var messageText = new TextBlock
+        {
+            Text = message,
+            TextWrapping = TextWrapping.Wrap,
+            Foreground = GetThemeBrush("XnaAltBrush", Brushes.Lime)
+        };
+
+        var yesButton = new Button
+        {
+            Content = "Yes",
+            Width = 80
+        };
+
+        var noButton = new Button
+        {
+            Content = "No",
+            Width = 80
+        };
+
+        var buttonStack = new StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Horizontal,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            Spacing = 12
+        };
+        buttonStack.Children.Add(yesButton);
+        buttonStack.Children.Add(noButton);
+
+        var contentStack = new StackPanel { Spacing = 12 };
+        contentStack.Children.Add(titleText);
+        contentStack.Children.Add(messageText);
+        contentStack.Children.Add(buttonStack);
+
+        var innerBorder = new Border
+        {
+            Background = GetThemeBrush("XnaPanelBackgroundBrush", Brushes.Black),
+            BorderBrush = GetThemeBrush("XnaPanelBorderBrush", Brushes.Cyan),
+            BorderThickness = new Avalonia.Thickness(1),
+            Padding = new Avalonia.Thickness(20),
+            Width = 400,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            Child = contentStack
+        };
+
+        var centerPanel = new Panel();
+        centerPanel.Children.Add(innerBorder);
+
+        var overlay = new Border
+        {
+            Background = new SolidColorBrush(Color.FromArgb(128, 0, 0, 0)),
+            Child = centerPanel
+        };
+
+        bool handled = false;
+        EventHandler onDismiss = (_, _) =>
+        {
+            if (handled) return;
+            handled = true;
+            if (overlay.Parent is Panel parent)
+                parent.Children.Remove(overlay);
+        };
+
+        yesButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(true); };
+        noButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(false); };
+
+        return overlay;
+    }
+
+    /// <summary>
+    /// Safely looks up a theme resource, falling back to a default brush.
+    /// </summary>
+    private IBrush GetThemeBrush(string key, IBrush fallback)
+    {
+        try
+        {
+            if (this.FindResource(key) is IBrush brush)
+                return brush;
+        }
+        catch
+        {
+        }
+        return fallback;
+    }
+
+    #endregion
 }

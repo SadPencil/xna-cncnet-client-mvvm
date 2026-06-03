@@ -15,6 +15,7 @@ using ClientUpdater;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 using Rampastring.Tools;
 
@@ -48,17 +49,6 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
 
     [ObservableProperty]
     private string _confirmationMessage = string.Empty;
-
-    // --- Message box state ---
-
-    [ObservableProperty]
-    private bool _isMessageBoxVisible;
-
-    [ObservableProperty]
-    private string _messageBoxTitle = string.Empty;
-
-    [ObservableProperty]
-    private string _messageBoxMessage = string.Empty;
 
     // --- Observable collections ---
 
@@ -193,12 +183,6 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     {
         IsConfirmationVisible = false;
         pendingInstallComponent = null;
-    }
-
-    [RelayCommand]
-    private void DismissMessageBox()
-    {
-        IsMessageBoxVisible = false;
     }
 
     // --- Public methods ---
@@ -338,9 +322,7 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
 
     private void ShowMessageBox(string title, string message)
     {
-        MessageBoxTitle = title;
-        MessageBoxMessage = message;
-        IsMessageBoxVisible = true;
+        WeakReferenceMessenger.Default.Send(new OKDialogMessage(title, message));
     }
 }
 

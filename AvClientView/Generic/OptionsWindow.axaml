@@ -493,24 +493,6 @@
             </StackPanel>
           </Border>
         </Border>
-        <!-- Message box within panel -->
-        <Border IsVisible="{Binding IsMessageBoxVisible}"
-                Background="#80000000"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-          <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
-                  BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-                  BorderThickness="1" Padding="16" Width="350"
-                  HorizontalAlignment="Center" VerticalAlignment="Center">
-            <StackPanel Spacing="12">
-              <TextBlock Text="{Binding MessageBoxTitle}" FontWeight="Bold"
-                         Foreground="{DynamicResource XnaTextBrush}" />
-              <TextBlock Text="{Binding MessageBoxMessage}" TextWrapping="Wrap"
-                         Foreground="{DynamicResource XnaAltBrush}" />
-              <Button Content="OK" Command="{Binding DismissMessageBoxCommand}"
-                      HorizontalAlignment="Right" Width="75" Height="23" />
-            </StackPanel>
-          </Border>
-        </Border>
       </Panel>
     </Border>
 
@@ -530,51 +512,5 @@
             FontWeight="Bold"
             Canvas.Left="472" Canvas.Top="440" />
 
-    <!-- Message box overlay -->
-    <Border IsVisible="{Binding IsMessageBoxVisible}"
-            Background="#80000000"
-            Canvas.Left="0" Canvas.Top="0"
-            Width="576" Height="475">
-      <Panel>
-        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
-                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-                BorderThickness="1"
-                Padding="16"
-                Width="400"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-          <StackPanel Spacing="12">
-            <TextBlock Text="{Binding MessageBoxTitle}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-            <TextBlock Text="{Binding MessageBoxMessage}" TextWrapping="Wrap" Foreground="{DynamicResource XnaAltBrush}" />
-            <Button Content="OK" Command="{Binding DismissMessageBoxCommand}" HorizontalAlignment="Right" Width="75" Height="23" />
-          </StackPanel>
-        </Border>
-      </Panel>
-    </Border>
-
-    <!-- Yes/No dialog overlay -->
-    <Border IsVisible="{Binding IsYesNoDialogVisible}"
-            Background="#80000000"
-            Canvas.Left="0" Canvas.Top="0"
-            Width="576" Height="475">
-      <Panel>
-        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
-                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-                BorderThickness="1"
-                Padding="16"
-                Width="400"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-          <StackPanel Spacing="12">
-            <TextBlock Text="{Binding YesNoDialogTitle}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-            <TextBlock Text="{Binding YesNoDialogMessage}" TextWrapping="Wrap" Foreground="{DynamicResource XnaAltBrush}" />
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-              <Button Content="Yes" Command="{Binding YesNoDialogYesCommand}" Width="75" Height="23" />
-              <Button Content="No" Command="{Binding YesNoDialogNoCommand}" Width="75" Height="23" />
-            </StackPanel>
-          </StackPanel>
-        </Border>
-      </Panel>
-    </Border>
   </Canvas>
 </UserControl>

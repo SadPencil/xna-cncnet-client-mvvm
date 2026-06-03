@@ -19,6 +19,7 @@ using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 using Rampastring.Tools;
 
@@ -93,15 +94,6 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
 
     [ObservableProperty]
     private bool _isRestartRequired;
-
-    [ObservableProperty]
-    private bool _isMessageBoxVisible;
-
-    [ObservableProperty]
-    private string _messageBoxTitle = string.Empty;
-
-    [ObservableProperty]
-    private string _messageBoxMessage = string.Empty;
 
     [ObservableProperty]
     private bool _isDirectDrawCompatFixRequired;
@@ -451,12 +443,6 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     }
 
     [RelayCommand]
-    private void DismissMessageBox()
-    {
-        IsMessageBoxVisible = false;
-    }
-
-    [RelayCommand]
     private void ApplyDirectDrawCompatFix()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -580,9 +566,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
 
     private void ShowMessageBox(string title, string message)
     {
-        MessageBoxTitle = title;
-        MessageBoxMessage = message;
-        IsMessageBoxVisible = true;
+        WeakReferenceMessenger.Default.Send(new OKDialogMessage(title, message));
     }
 }
 
