@@ -194,59 +194,31 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void LoadMapPreview()
     {
-        // Release previous lease before replacing the image
         _mapPreviewLease?.Dispose();
         _mapPreviewLease = null;
         HoveredGameMapPreview = null;
 
-        Log.Information("[LOG-VM] LoadMapPreview called: HoveredGame={Game}, MapHash={Hash}",
-            HoveredGame?.RoomName ?? "null",
-            HoveredGame?.MapHash ?? "null");
-
-        if (HoveredGame == null)
-        {
-            HoveredGameMapPreview = LoadFallbackPreview();
-            Log.Information("[LOG-VM] LoadMapPreview: HoveredGame is null, fallback result={Result}",
-                HoveredGameMapPreview != null ? "loaded" : "null");
+        if (HoveredGame == null || string.IsNullOrEmpty(HoveredGame.MapHash))
             return;
-        }
 
-        if (!string.IsNullOrEmpty(HoveredGame.MapHash))
-        {
-            Log.Information("[LOG-VM] LoadMapPreview: looking up map by hash={Hash}", HoveredGame.MapHash);
-            var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
-            Log.Information("[LOG-VM] LoadMapPreview: FindMapByHash result={Result}", map != null ? map.Name : "null");
-            if (map != null)
-            {
-                try
-                {
-                    var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
-                    if (lease?.Value != null)
-                    {
-                        _mapPreviewLease = lease;
-                        HoveredGameMapPreview = lease.Value;
-                        return;
-                    }
-                    lease?.Dispose();
-                }
-                catch { }
-            }
-        }
+        var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
+        if (map == null)
+            return;
 
-        // Fallback: show "no preview" image
-        HoveredGameMapPreview = LoadFallbackPreview();
-    }
-
-    private Image? LoadFallbackPreview()
-    {
         try
         {
-            string path = System.IO.Path.Combine(ProgramConstants.GetBaseResourcePath(), "noMapPreview.png");
-            if (System.IO.File.Exists(path))
-                return Image.Load(path);
+            var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
+            if (lease?.Value != null)
+            {
+                _mapPreviewLease = lease;
+                HoveredGameMapPreview = lease.Value;
+            }
+            else
+            {
+                lease?.Dispose();
+            }
         }
         catch { }
-        return null;
     }
 
     public CnCNetLobbyViewModel(

@@ -73,48 +73,10 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        Log.Information("[LOG-View] SetupColorDropdownTemplate START, ddColor.DataContext at this point={DC}",
-            ddColor.DataContext?.GetType().FullName ?? "null");
-
+        Log.Information("[LOG-View] ddColor: Bind ItemsSource+SelectedIndex via code-behind");
         ddColor.Bind(ComboBox.ItemsSourceProperty, new Binding("ColorOptions"));
         ddColor.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedColorIndex"));
-        Log.Information("[LOG-View] ddColor.Bind() done, ddColor.ItemCount={Count}", ddColor.ItemCount);
-
-        ddColor.ItemTemplate = new LoggingFuncDataTemplate();
-        ddColor.SelectionBoxItemTemplate = new LoggingFuncDataTemplate();
-        Log.Information("[LOG-View] ddColor.ItemTemplate and SelectionBoxItemTemplate set");
-    }
-
-    private class LoggingFuncDataTemplate : Avalonia.Controls.Templates.IDataTemplate
-    {
-        public bool Match(object? data)
-        {
-            Log.Information("[LOG-View] ddColor.MATCH: type={Type}, ToString={Str}",
-                data?.GetType().FullName ?? "NULL",
-                data?.ToString() ?? "NULL");
-            return true;
-        }
-
-        public Control? Build(object? data)
-        {
-            Log.Information("[LOG-View] ddColor.BUILD: type={Type}, ToString={Str}",
-                data?.GetType().FullName ?? "NULL",
-                data?.ToString() ?? "NULL");
-
-            if (data is IIRCColor color)
-            {
-                var tb = new TextBlock
-                {
-                    Text = color.Name,
-                    Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B))
-                };
-                Log.Information("[LOG-View] ddColor.BUILD OK: Text={Text}", tb.Text);
-                return tb;
-            }
-
-            Log.Warning("[LOG-View] ddColor.BUILD FAIL: data is not IIRCColor");
-            return new TextBlock { Text = data?.ToString() ?? "NULL" };
-        }
+        Log.Information("[LOG-View] ddColor.Bind() done, ItemCount={Count}", ddColor.ItemCount);
     }
 
     private void SetupChatMessageTemplate()

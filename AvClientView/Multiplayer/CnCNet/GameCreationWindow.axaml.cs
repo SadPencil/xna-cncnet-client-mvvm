@@ -9,54 +9,47 @@ namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class GameCreationWindow : UserControl, IGameCreationWindowView
 {
+    private bool _bindingsWired;
+
     public GameCreationWindow()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
     }
 
-    private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    protected override void OnDataContextChanged(System.EventArgs e)
     {
-        Log.Information("[LOG-View-GCW] OnLoaded: cmbTunnel={T}, cmbSkillLevel={S}",
-            cmbTunnel != null ? "present" : "null",
-            cmbSkillLevel != null ? "present" : "null");
+        base.OnDataContextChanged(e);
+        Log.Information("[LOG-View-GCW] OnDataContextChanged: new DC type={Type}",
+            DataContext?.GetType().FullName ?? "null");
 
-        // Wire ComboBoxes via code-behind Bind() because Avalonia ComboBox
-        // ignores ItemTemplate when ItemsSource uses compiled {Binding} in AXAML.
-        if (cmbTunnel != null)
+        if (!_bindingsWired && DataContext != null)
         {
-            cmbTunnel.Bind(ComboBox.ItemsSourceProperty, new Binding("TunnelNames"));
-            cmbTunnel.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedTunnelIndex"));
-            Log.Information("[LOG-View-GCW] cmbTunnel Bind() done");
-        }
-        if (cmbSkillLevel != null)
-        {
-            cmbSkillLevel.Bind(ComboBox.ItemsSourceProperty, new Binding("SkillLevelOptions"));
-            cmbSkillLevel.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedSkillLevel"));
-            Log.Information("[LOG-View-GCW] cmbSkillLevel Bind() done");
-        }
+            if (cmbTunnel != null)
+            {
+                cmbTunnel.Bind(ComboBox.ItemsSourceProperty, new Binding("TunnelNames"));
+                cmbTunnel.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedTunnelIndex"));
+            }
+            if (cmbSkillLevel != null)
+            {
+                cmbSkillLevel.Bind(ComboBox.ItemsSourceProperty, new Binding("SkillLevelOptions"));
+                cmbSkillLevel.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedSkillLevel"));
+            }
+            _bindingsWired = true;
+            Log.Information("[LOG-View-GCW] ComboBox Bind() done on DataContext change");
 
-        // Log VM state
-        var vm = DataContext as IGameCreationWindowViewModel;
-        if (vm != null)
-        {
-            Log.Information("[LOG-View-GCW] VM: TunnelNames.Count={T}, SkillLevelOptions.Count={S}, CanCreateGame={C}",
-                vm.TunnelNames?.Count ?? -1,
-                vm.SkillLevelOptions?.Count ?? -1,
-                vm.CanCreateGame);
-            if (vm.TunnelNames != null)
-                for (int i = 0; i < vm.TunnelNames.Count && i < 3; i++)
-                    Log.Information("[LOG-View-GCW] TunnelNames[{Idx}]={Name}", i, vm.TunnelNames[i]);
+            if (DataContext is IGameCreationWindowViewModel vm)
+            {
+                Log.Information("[LOG-View-GCW] VM state: TunnelNames.Count={T}, SkillLevelOptions.Count={S}, CanCreateGame={C}",
+                    vm.TunnelNames?.Count ?? -1, vm.SkillLevelOptions?.Count ?? -1, vm.CanCreateGame);
+                for (int i = 0; i < (vm.TunnelNames?.Count ?? 0) && i < 3; i++)
+                    Log.Information("[LOG-View-GCW] TunnelNames[{Idx}]={Name}", i, vm.TunnelNames![i]);
+            }
         }
     }
 
     public IGameCreationWindowViewModel? ViewModel
     {
         get => DataContext as IGameCreationWindowViewModel;
-        set
-        {
-            DataContext = value;
-            Log.Information("[LOG-View-GCW] ViewModel set: type={Type}", value?.GetType().FullName ?? "null");
-        }
+        set => DataContext = value;
     }
 }
