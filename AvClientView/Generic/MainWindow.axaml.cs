@@ -51,7 +51,7 @@ public partial class MainWindow : Window
         });
 
         // Back on UI thread — connect ViewModels
-        await Dispatcher.UIThread.InvokeAsync(ConnectAfterInit);
+        await Dispatcher.UIThread.InvokeAsync(ConnectAfterInit, DispatcherPriority.Background);
     }
 
     private void ConnectAfterInit()
