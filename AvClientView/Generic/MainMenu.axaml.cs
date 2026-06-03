@@ -31,6 +31,10 @@ public partial class MainMenu : UserControl
 {
     private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
 
+    private double _menuWidth;
+    private double _menuHeight;
+    private static int _dialogCounter;
+
     public MainMenu()
     {
         InitializeComponent();
@@ -82,6 +86,9 @@ public partial class MainMenu : UserControl
         // Steal the INI Size for MainMenuPanel and keep the UserControl at 1280x720.
         var menuWidth = Width;
         var menuHeight = Height;
+        _menuWidth = menuWidth;
+        _menuHeight = menuHeight;
+
         MainMenuPanel.Width = menuWidth;
         MainMenuPanel.Height = menuHeight;
         Width = 1280;
@@ -298,11 +305,15 @@ public partial class MainMenu : UserControl
 
     /// <summary>
     /// Creates an OK dialog overlay matching the XNA message box visual style.
+    /// INI layout is applied for theme colors, fonts, and button styling.
     /// </summary>
     private Border CreateOKDialogOverlay(string title, string message, Action onResult)
     {
+        int id = System.Threading.Interlocked.Increment(ref _dialogCounter);
+
         var titleText = new TextBlock
         {
+            Name = $"lblCaption_{id}",
             Text = title,
             FontWeight = FontWeight.Bold,
             Foreground = GetThemeBrush("XnaTextBrush", Brushes.Lime)
@@ -310,6 +321,7 @@ public partial class MainMenu : UserControl
 
         var messageText = new TextBlock
         {
+            Name = $"lblDescription_{id}",
             Text = message,
             TextWrapping = TextWrapping.Wrap,
             Foreground = GetThemeBrush("XnaAltBrush", Brushes.Lime)
@@ -317,6 +329,7 @@ public partial class MainMenu : UserControl
 
         var okButton = new Button
         {
+            Name = $"btnOK_{id}",
             Content = "OK",
             Width = 80,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
@@ -361,16 +374,22 @@ public partial class MainMenu : UserControl
 
         okButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(); };
 
+        ApplyIniLayout(overlay);
+
         return overlay;
     }
 
     /// <summary>
     /// Creates a Yes/No dialog overlay matching the XNA message box visual style.
+    /// INI layout is applied for theme colors, fonts, and button styling.
     /// </summary>
     private Border CreateYesNoDialogOverlay(string title, string message, Action<bool> onResult)
     {
+        int id = System.Threading.Interlocked.Increment(ref _dialogCounter);
+
         var titleText = new TextBlock
         {
+            Name = $"lblCaption_{id}",
             Text = title,
             FontWeight = FontWeight.Bold,
             Foreground = GetThemeBrush("XnaTextBrush", Brushes.Lime)
@@ -378,6 +397,7 @@ public partial class MainMenu : UserControl
 
         var messageText = new TextBlock
         {
+            Name = $"lblDescription_{id}",
             Text = message,
             TextWrapping = TextWrapping.Wrap,
             Foreground = GetThemeBrush("XnaAltBrush", Brushes.Lime)
@@ -385,12 +405,14 @@ public partial class MainMenu : UserControl
 
         var yesButton = new Button
         {
+            Name = $"btnYes_{id}",
             Content = "Yes",
             Width = 80
         };
 
         var noButton = new Button
         {
+            Name = $"btnNo_{id}",
             Content = "No",
             Width = 80
         };
@@ -444,7 +466,26 @@ public partial class MainMenu : UserControl
         yesButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(true); };
         noButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(false); };
 
+        ApplyIniLayout(overlay);
+
         return overlay;
+    }
+
+    /// <summary>
+    /// Applies INI layout (theme colors, fonts, button sizing, positioning)
+    /// to a dialog overlay using the "MessageBox" section.
+    /// </summary>
+    private void ApplyIniLayout(Border overlay)
+    {
+        try
+        {
+            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            iniOverlay?.ApplyLayout(overlay, "MessageBox", _menuWidth, _menuHeight);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Debug($"[DEBUG] ApplyIniLayout for MessageBox failed: {ex.Message}");
+        }
     }
 
     /// <summary>
