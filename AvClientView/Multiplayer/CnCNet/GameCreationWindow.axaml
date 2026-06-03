@@ -42,7 +42,8 @@
       <!-- Tunnel selection -->
       <StackPanel Spacing="4">
         <TextBlock Text="Tunnel Server:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
-        <ComboBox x:Name="cmbTunnel" />
+        <ComboBox ItemsSource="{Binding TunnelNames}"
+                  SelectedIndex="{Binding SelectedTunnelIndex}" />
       </StackPanel>
 
       <!-- Advanced options toggle -->
@@ -59,7 +60,8 @@
       <StackPanel IsVisible="{Binding IsAdvancedOptionsVisible}" Spacing="8">
         <StackPanel Spacing="4">
           <TextBlock Text="Skill Level:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
-          <ComboBox x:Name="cmbSkillLevel" />
+          <ComboBox ItemsSource="{Binding SkillLevelOptions}"
+                    SelectedIndex="{Binding SelectedSkillLevel}" />
         </StackPanel>
       </StackPanel>
 
@@ -70,9 +72,9 @@
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-        <Button x:Name="btnCreate"
-                Content="Create"
+        <Button Content="Create"
                 Command="{Binding CreateGameCommand}"
+                IsEnabled="{Binding CanCreateGame}"
                 Width="92" Height="23" />
         <Button Content="Load Game"
                 Command="{Binding CreateLoadedGameCommand}"

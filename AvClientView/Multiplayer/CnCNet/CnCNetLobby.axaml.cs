@@ -71,24 +71,17 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        // Use untyped FuncDataTemplate to avoid Avalonia generic type-matching issues.
-        var template = new FuncDataTemplate<object>((item, _) =>
+        // Use ItemTemplate for both dropdown items and selected-item display.
+        ddColor.ItemTemplate = new FuncDataTemplate<IIRCColor>((color, _) =>
         {
             var tb = new TextBlock();
-            if (item is IIRCColor color)
+            if (color != null)
             {
                 tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
             }
-            else
-            {
-                tb.Text = item?.ToString() ?? string.Empty;
-            }
             return tb;
         }, supportsRecycling: true);
-
-        ddColor.ItemTemplate = template;
-        ddColor.SelectionBoxItemTemplate = template;
     }
 
     private void SetupChatMessageTemplate()
