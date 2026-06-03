@@ -29,11 +29,12 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
+        // LoadingScreen fills the Grid (1280x720). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
 
-        // LoadingScreen shows immediately with null INI service —
-        // it uses a hardcoded background until DI is ready.
+        // LoadingScreen is the only view that tolerates a null INI service —
+        // it shows a hardcoded background until DI is ready.
         _loadingScreen = new LoadingScreen(iniOverlay: null);
         _loadingScreen.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         _loadingScreen.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
@@ -51,13 +52,14 @@ public partial class MainWindow : Window
             _serviceProvider = init();
         });
 
+        // Back on UI thread — connect ViewModels
         await Dispatcher.UIThread.InvokeAsync(ConnectAfterInit);
     }
 
     private void ConnectAfterInit()
     {
         var sp = _serviceProvider!;
-        var iniOverlay = sp.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = sp.GetRequiredService<IIniLayoutOverlayService>();
 
         // Re-apply INI layout on LoadingScreen now that DI is ready
         _loadingScreen!.IniOverlayService = iniOverlay;
@@ -67,7 +69,7 @@ public partial class MainWindow : Window
         var loadingScreenVM = sp.GetRequiredService<ILoadingScreenViewModel>();
         _loadingScreen.ViewModel = loadingScreenVM;
 
-        // Create MainMenu with INI service injected
+        // MainMenu is created after DI is ready, so it receives a non-null INI service
         _mainMenu = new MainMenu(iniOverlay);
 
         // Connect MainMenu ViewModel and all child ViewModels
@@ -88,6 +90,7 @@ public partial class MainWindow : Window
     private void OnLoadingCompleted(object? sender, EventArgs e)
     {
         ((LoadingScreen)sender!).Completed -= OnLoadingCompleted;
+        // TODO: should I fire loadingScreen.Completed in UIThread and therefore remove this Dispatcher call?
         Dispatcher.UIThread.Post(TransitionToMainMenu);
     }
 

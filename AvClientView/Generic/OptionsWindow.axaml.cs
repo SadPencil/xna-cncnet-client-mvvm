@@ -20,10 +20,13 @@ public partial class OptionsWindow : UserControl, IOptionsWindowView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        // Apply default background (matching original: AssetLoader.LoadTextureUncached("optionsbg.png"))
         ApplyDefaultBackground("optionsbg.png");
 
+        // Apply INI layout overrides (OptionsWindow.ini if it exists)
         IniOverlayService?.ApplyLayout(this, "OptionsWindow");
 
+        // Wire up child panel DataContexts from DI
         SetupPanelDataContexts();
     }
 

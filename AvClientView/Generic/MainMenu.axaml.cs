@@ -29,16 +29,14 @@ public partial class MainMenu : UserControl
 {
     private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
 
-    private readonly IIniLayoutOverlayService? _iniOverlay;
+    private readonly IIniLayoutOverlayService _iniOverlay;
     private double _menuWidth = 1280;
     private double _menuHeight = 720;
     private bool _isLoaded;
     private static int _dialogCounter;
     private readonly List<Action> _pendingDialogs = new();
 
-    public MainMenu() : this(null) { }
-
-    public MainMenu(IIniLayoutOverlayService? iniOverlay)
+    public MainMenu(IIniLayoutOverlayService iniOverlay)
     {
         _iniOverlay = iniOverlay;
         InitializeComponent();
@@ -93,8 +91,7 @@ public partial class MainMenu : UserControl
         // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini).
         // The [MainMenu] section's Size is meant for the main menu content area,
         // not the full UserControl which must stay at 1280x720 for overlays.
-        var iniOverlay = _iniOverlay;
-        iniOverlay?.ApplyLayout(this, "MainMenu");
+        _iniOverlay.ApplyLayout(this, "MainMenu");
 
         // Steal the INI Size for MainMenuPanel and keep the UserControl at 1280x720.
         var menuWidth = Width;
@@ -233,9 +230,7 @@ public partial class MainMenu : UserControl
     {
         try
         {
-            var iniOverlay = _iniOverlay;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
+            var fullPath = _iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)
             {
                 var bitmap = new Bitmap(fullPath);
@@ -524,7 +519,7 @@ public partial class MainMenu : UserControl
     /// </summary>
     private void ApplyButtonStyling(Control control)
     {
-        _iniOverlay?.ApplyStandardButtonStyling(control);
+        _iniOverlay.ApplyStandardButtonStyling(control);
     }
 
     /// <summary>

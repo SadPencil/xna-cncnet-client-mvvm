@@ -20,6 +20,11 @@ public partial class LoadingScreen : UserControl
 
     public LoadingScreen() : this(null) { }
 
+    /// <summary>
+    /// LoadingScreen is the only view that tolerates a null iniOverlay —
+    /// it shows immediately with a hardcoded background while DI is built
+    /// on a background thread. See MainWindow.ShowMainWindow().
+    /// </summary>
     public LoadingScreen(IIniLayoutOverlayService? iniOverlay)
     {
         IniOverlayService = iniOverlay;
@@ -40,8 +45,13 @@ public partial class LoadingScreen : UserControl
     {
         ApplyDefaultBackground("loadingscreen.png");
 
+        // Pass the design space size (1280x720) so deferred properties
+        // (DistanceFrom*, FillWidth/FillHeight) calculate positions
+        // relative to the actual visible area, not the INI Size.
         IniOverlayService?.ApplyLayout(this, "LoadingScreen", effectiveWidth: 1280, effectiveHeight: 720);
 
+        // Reset explicit size so Stretch fills the Grid regardless of
+        // the INI Size (e.g. YRResources uses 1920x1080).
         Width = double.NaN;
         Height = double.NaN;
     }
@@ -95,6 +105,8 @@ public partial class LoadingScreen : UserControl
             {
                 field.PropertyChanged += OnViewModelPropertyChanged;
 
+                // ServiceProvider is now available — apply INI overlay
+                // if it wasn't applied in OnLoaded (when SP was null).
                 if (!_backgroundApplied)
                     TryApplyIniOverlay();
             }
