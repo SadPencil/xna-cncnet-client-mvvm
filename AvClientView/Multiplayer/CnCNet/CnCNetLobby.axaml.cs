@@ -56,7 +56,14 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         Canvas.SetTop(panelGameInfo, bounds.Top);
         panelGameInfo.MaxHeight = bounds.Height;
         panelGameInfo.Width = bounds.Width;
-        panelGameInfo.ZIndex = 10;
+        // Compute ZIndex to float above all other content in the Canvas
+        int maxZ = 0;
+        foreach (var child in MainCanvas.Children)
+        {
+            if (child.ZIndex > maxZ)
+                maxZ = child.ZIndex;
+        }
+        panelGameInfo.ZIndex = maxZ + 1;
 
         _infoPanelPositioned = true;
         LayoutUpdated -= PositionInfoPanel;
@@ -64,19 +71,17 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        // Use DisplayMemberBinding for the closed (selected item) display.
-        // Using DataBinding with a relative source avoids compiled binding type issues.
-        ddColor.DisplayMemberBinding = new Binding("Name");
-
-        // Use ItemTemplate for the dropdown list items with colored text.
+        // Use ItemTemplate for both dropdown items and selected-item display.
         ddColor.ItemTemplate = new FuncDataTemplate<IIRCColor>((color, _) =>
         {
             var tb = new TextBlock();
-            tb.Bind(TextBlock.TextProperty, new Binding("Name"));
             if (color != null)
+            {
+                tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
+            }
             return tb;
-        });
+        }, supportsRecycling: true);
     }
 
     private void SetupChatMessageTemplate()
