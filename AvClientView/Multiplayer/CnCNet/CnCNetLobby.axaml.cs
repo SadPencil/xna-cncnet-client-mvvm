@@ -1,13 +1,17 @@
 using System;
+using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Online;
 
+using AvClientView.Converters;
 using AvClientView.Services;
 
 using Serilog;
@@ -26,15 +30,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         SetupGameListHover();
 
         Log.Information("[LOG-View-CNC] Constructor");
-        PropertyChanged += (s, e) =>
-        {
-            if (e.Property == DataContextProperty)
-            {
-                Log.Information("[LOG-View-CNC] DataContext changed: new={NewType}, old={OldType}",
-                    e.NewValue?.GetType().FullName ?? "null",
-                    e.OldValue?.GetType().FullName ?? "null");
-            }
-        };
     }
 
     private bool _infoPanelPositioned;
@@ -50,47 +45,82 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             LayoutUpdated += PositionInfoPanel;
         }
 
-        Log.Information("[LOG-View-CNC] OnLoaded: ddColor={ddColor}, IsNull={IsNull}",
-            ddColor?.GetType().FullName ?? "null", ddColor == null);
-
+        // Wire ddColor: create colored items in dropdown via code-behind
         if (ddColor != null)
         {
-            Log.Information("[LOG-View-CNC] ddColor state: ItemCount={IC}, ItemsSourceType={IST}, DisplayMemberBindingType={DMB}",
-                ddColor.ItemCount,
-                ddColor.ItemsSource?.GetType().FullName ?? "null",
-                ddColor.DisplayMemberBinding?.GetType().FullName ?? "null");
+            Log.Information("[LOG-View-CNC] ddColor found, wiring color items");
+            ddColor.DropDownOpened += OnColorDropDownOpened;
+        }
+    }
 
-            // Dump first 3 items
-            for (int i = 0; i < ddColor.ItemCount && i < 3; i++)
-            {
-                var item = ddColor.Items[i];
-                Log.Information("[LOG-View-CNC] ddColor.Item[{I}]: type={T}, ToString()='{TS}', is IIRCColor={IsC}",
-                    i, item?.GetType().FullName ?? "null",
-                    item?.ToString() ?? "null",
-                    item is AvClientMvvmContract.Online.IIRCColor);
-                if (item is AvClientMvvmContract.Online.IIRCColor c)
-                    Log.Information("[LOG-View-CNC]   -> Name='{N}', R={R}, G={G}, B={B}", c.Name, c.R, c.G, c.B);
-            }
+    private void OnColorDropDownOpened(object? sender, EventArgs e)
+    {
+        if (ddColor == null) return;
+        Log.Information("[LOG-View-CNC] ddColor DropDownOpened, ItemCount={IC}", ddColor.ItemCount);
 
-            // Check DataContext
-            Log.Information("[LOG-View-CNC] DataContext={DC}, Is VM={IsVM}",
-                DataContext?.GetType().FullName ?? "null",
-                DataContext is ICnCNetLobbyViewModel);
+        // Walk popup visual tree to find TextBlocks inside ComboBoxItems and color them
+        var popup = ddColor.FindControl<Popup>("PART_Popup");
+        if (popup == null)
+        {
+            Log.Information("[LOG-View-CNC] Popup PART_Popup not found, trying logical children");
+            // Fallback: walk ComboBox visual children looking for ComboBoxItems
+            int colored = 0;
+            WalkAndColorItems(ddColor, ref colored);
+            Log.Information("[LOG-View-CNC] Colored {Count} items from ComboBox tree", colored);
+            return;
         }
 
-        // Second pass: after layout, items may be populated
-        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        Log.Information("[LOG-View-CNC] Popup found, Child={CC}", popup.Child?.GetType().FullName ?? "null");
+
+        // Walk all ComboBoxItem children and set Foreground on their TextBlocks
+        int popupColored = 0;
+        WalkAndColorItems(popup, ref popupColored);
+        Log.Information("[LOG-View-CNC] Colored {Count} items from popup tree", popupColored);
+    }
+
+    private static T? FindVisualChild<T>(Control parent) where T : Control
+    {
+        if (parent is T t) return t;
+        if (parent is Panel panel)
         {
-            if (ddColor != null)
+            foreach (var child in panel.Children)
             {
-                Log.Information("[LOG-View-CNC] POST-OnLoaded: ddColor.ItemCount={IC}", ddColor.ItemCount);
-                for (int i = 0; i < ddColor.ItemCount && i < 3; i++)
+                var result = FindVisualChild<T>(child);
+                if (result != null) return result;
+            }
+        }
+        if (parent is ContentControl cc && cc.Content is Control content)
+            return FindVisualChild<T>(content);
+        return null;
+    }
+
+    private void WalkAndColorItems(Control parent, ref int colored)
+    {
+        if (parent is ComboBoxItem cbi)
+        {
+            // Find the TextBlock inside this ComboBoxItem and set its Foreground
+            var tb = FindVisualChild<TextBlock>(cbi);
+            if (tb != null && cbi.DataContext is IIRCColor irc)
+            {
+                var brush = Rgb24ToBrushConverter.Instance.Convert(irc, typeof(IBrush), null,
+                    System.Globalization.CultureInfo.CurrentCulture) as IBrush;
+                if (brush != null)
                 {
-                    var item = ddColor.Items[i];
-                    Log.Information("[LOG-View-CNC] POST Item[{I}]: ToString()='{TS}'", i, item?.ToString() ?? "null");
+                    tb.Foreground = brush;
+                    colored++;
+                    Log.Information("[LOG-View-CNC] Colored '{Name}' -> #{R:X2}{G:X2}{B:X2}",
+                        irc.Name, irc.R, irc.G, irc.B);
                 }
             }
-        }, Avalonia.Threading.DispatcherPriority.Loaded);
+        }
+
+        if (parent is Panel panel)
+        {
+            foreach (var child in panel.Children)
+                WalkAndColorItems(child, ref colored);
+        }
+        if (parent is ContentControl cc && cc.Content is Control content)
+            WalkAndColorItems(content, ref colored);
     }
 
     private void PositionInfoPanel(object? sender, EventArgs e)
