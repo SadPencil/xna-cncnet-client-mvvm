@@ -39,9 +39,9 @@
                 Width="150" Height="21"
                 Canvas.Left="545" Canvas.Top="12">
         <ComboBox.ItemTemplate>
-          <DataTemplate>
+          <DataTemplate x:DataType="onl:IIRCColor">
             <TextBlock Text="{Binding Name}"
-                       Foreground="{Binding Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}"
+                       Foreground="{Binding ., Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}"
                        VerticalAlignment="Center" />
           </DataTemplate>
         </ComboBox.ItemTemplate>
