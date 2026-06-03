@@ -22,7 +22,6 @@ using AvClientView.Services;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Generic;
 
@@ -30,14 +29,18 @@ public partial class MainMenu : UserControl
 {
     private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
 
+    private readonly IIniLayoutOverlayService? _iniOverlay;
     private double _menuWidth = 1280;
     private double _menuHeight = 720;
     private bool _isLoaded;
     private static int _dialogCounter;
     private readonly List<Action> _pendingDialogs = new();
 
-    public MainMenu()
+    public MainMenu() : this(null) { }
+
+    public MainMenu(IIniLayoutOverlayService? iniOverlay)
     {
+        _iniOverlay = iniOverlay;
         InitializeComponent();
         Loaded += OnLoaded;
         KeyDown += OnKeyDown;
@@ -90,7 +93,7 @@ public partial class MainMenu : UserControl
         // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini).
         // The [MainMenu] section's Size is meant for the main menu content area,
         // not the full UserControl which must stay at 1280x720 for overlays.
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = _iniOverlay;
         iniOverlay?.ApplyLayout(this, "MainMenu");
 
         // Steal the INI Size for MainMenuPanel and keep the UserControl at 1280x720.
@@ -109,6 +112,17 @@ public partial class MainMenu : UserControl
         OKDialogsPanel.Height = menuHeight;
         YesNoDialogsPanel.Width = menuWidth;
         YesNoDialogsPanel.Height = menuHeight;
+
+        // Pass INI service to child views
+        campaignSelector.IniOverlayService = _iniOverlay;
+        extrasWindow.IniOverlayService = _iniOverlay;
+        statisticsWindow.IniOverlayService = _iniOverlay;
+        gameLoadingWindow.IniOverlayService = _iniOverlay;
+        skirmishLobby.IniOverlayService = _iniOverlay;
+        cncNetLobby.IniOverlayService = _iniOverlay;
+        lanLobby.IniOverlayService = _iniOverlay;
+        privateMessagingWindow.IniOverlayService = _iniOverlay;
+        optionsWindow.IniOverlayService = _iniOverlay;
 
         // Center the panel when it's smaller than the full UserControl.
         // Must use Stretch in AXAML (not Center) so Canvas sizes correctly.
@@ -203,7 +217,7 @@ public partial class MainMenu : UserControl
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = _iniOverlay;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)
@@ -215,11 +229,11 @@ public partial class MainMenu : UserControl
         catch { }
     }
 
-    private static void ApplyDefaultBackgroundToPanel(Panel target, string texturePath)
+    private void ApplyDefaultBackgroundToPanel(Panel target, string texturePath)
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = _iniOverlay;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)
@@ -510,8 +524,7 @@ public partial class MainMenu : UserControl
     /// </summary>
     private void ApplyButtonStyling(Control control)
     {
-        ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>()
-            ?.ApplyStandardButtonStyling(control);
+        _iniOverlay?.ApplyStandardButtonStyling(control);
     }
 
     /// <summary>

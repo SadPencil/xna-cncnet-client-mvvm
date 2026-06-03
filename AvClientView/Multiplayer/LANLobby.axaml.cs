@@ -9,12 +9,13 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientView.Controls;
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Multiplayer;
 
 public partial class LANLobby : UserControl, ILANLobbyView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public LANLobby()
     {
         InitializeComponent();
@@ -26,7 +27,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
     {
         ApplyDefaultBackground("cncnetlobbybg.png");
 
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "LANLobby");
 
         // Wire up child overlay visibility
@@ -39,7 +40,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

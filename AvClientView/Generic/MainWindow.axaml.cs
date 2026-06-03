@@ -10,14 +10,17 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
+using AvClientView.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Generic;
 
 public partial class MainWindow : Window
 {
-    private LoadingScreen? loadingScreen;
-    private MainMenu? mainMenu;
+    private ServiceProvider? _serviceProvider;
+    private LoadingScreen? _loadingScreen;
+    private MainMenu? _mainMenu;
 
     public MainWindow()
     {
@@ -26,75 +29,73 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
-        // LoadingScreen fills the Grid (1280x720). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
 
-        loadingScreen = new LoadingScreen();
-        loadingScreen.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-        loadingScreen.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-        loadingScreen.Completed += OnLoadingCompleted;
-        loadingScreen.Loaded += (s, e) =>
-        {
-            var ls = (LoadingScreen)s!;
-            Serilog.Log.Debug($"[DEBUG] LoadingScreen Loaded: Bounds={ls.Bounds}, DesiredSize={ls.DesiredSize}, Width={ls.Width}, Height={ls.Height}");
-        };
-        MainContent.Content = loadingScreen;
+        // LoadingScreen shows immediately with null INI service —
+        // it uses a hardcoded background until DI is ready.
+        _loadingScreen = new LoadingScreen(iniOverlay: null);
+        _loadingScreen.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+        _loadingScreen.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+        _loadingScreen.Completed += OnLoadingCompleted;
+        MainContent.Content = _loadingScreen;
 
-        mainMenu = new MainMenu();
         _ = InitializeAsync();
     }
 
     private async Task InitializeAsync()
     {
-        if (ViewConstants.InitializeServices != null)
+        var init = Startup.InitializeServices;
+        await Task.Run(() =>
         {
-            var init = ViewConstants.InitializeServices;
-            await Task.Run(() =>
-            {
-                ViewConstants.ServiceProvider = init();
-            });
-        }
+            _serviceProvider = init();
+        });
 
-        // Back on UI thread — connect ViewModels
         await Dispatcher.UIThread.InvokeAsync(ConnectAfterInit);
     }
 
     private void ConnectAfterInit()
     {
-        var sp = ViewConstants.ServiceProvider!;
+        var sp = _serviceProvider!;
+        var iniOverlay = sp.GetService<IIniLayoutOverlayService>();
+
+        // Re-apply INI layout on LoadingScreen now that DI is ready
+        _loadingScreen!.IniOverlayService = iniOverlay;
+        _loadingScreen.TryApplyIniOverlay();
 
         // Connect LoadingScreen ViewModel
         var loadingScreenVM = sp.GetRequiredService<ILoadingScreenViewModel>();
-        loadingScreen!.ViewModel = loadingScreenVM;
+        _loadingScreen.ViewModel = loadingScreenVM;
+
+        // Create MainMenu with INI service injected
+        _mainMenu = new MainMenu(iniOverlay);
 
         // Connect MainMenu ViewModel and all child ViewModels
         var mainMenuVM = sp.GetRequiredService<IMainMenuViewModel>();
-        mainMenu!.ViewModel = mainMenuVM;
-        mainMenu.SetCampaignSelectorViewModel(sp.GetRequiredService<ICampaignSelectorViewModel>());
-        mainMenu.SetOptionsWindowViewModel(sp.GetRequiredService<IOptionsWindowViewModel>());
-        mainMenu.SetExtrasWindowViewModel(sp.GetRequiredService<IExtrasWindowViewModel>());
-        mainMenu.SetStatisticsWindowViewModel(sp.GetRequiredService<IStatisticsWindowViewModel>());
-        mainMenu.SetGameLoadingWindowViewModel(sp.GetRequiredService<IGameLoadingWindowViewModel>());
-        mainMenu.SetSkirmishLobbyViewModel(sp.GetRequiredService<ISkirmishLobbyViewModel>());
-        mainMenu.SetCnCNetLobbyViewModel(sp.GetRequiredService<ICnCNetLobbyViewModel>());
-        mainMenu.SetLANLobbyViewModel(sp.GetRequiredService<ILANLobbyViewModel>());
-        mainMenu.SetPrivateMessagingWindowViewModel(sp.GetRequiredService<IPrivateMessagingWindowViewModel>());
-        mainMenu.SetPrivacyNotificationViewModel(sp.GetRequiredService<IPrivacyNotificationViewModel>());
+        _mainMenu.ViewModel = mainMenuVM;
+        _mainMenu.SetCampaignSelectorViewModel(sp.GetRequiredService<ICampaignSelectorViewModel>());
+        _mainMenu.SetOptionsWindowViewModel(sp.GetRequiredService<IOptionsWindowViewModel>());
+        _mainMenu.SetExtrasWindowViewModel(sp.GetRequiredService<IExtrasWindowViewModel>());
+        _mainMenu.SetStatisticsWindowViewModel(sp.GetRequiredService<IStatisticsWindowViewModel>());
+        _mainMenu.SetGameLoadingWindowViewModel(sp.GetRequiredService<IGameLoadingWindowViewModel>());
+        _mainMenu.SetSkirmishLobbyViewModel(sp.GetRequiredService<ISkirmishLobbyViewModel>());
+        _mainMenu.SetCnCNetLobbyViewModel(sp.GetRequiredService<ICnCNetLobbyViewModel>());
+        _mainMenu.SetLANLobbyViewModel(sp.GetRequiredService<ILANLobbyViewModel>());
+        _mainMenu.SetPrivateMessagingWindowViewModel(sp.GetRequiredService<IPrivateMessagingWindowViewModel>());
+        _mainMenu.SetPrivacyNotificationViewModel(sp.GetRequiredService<IPrivacyNotificationViewModel>());
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)
     {
         ((LoadingScreen)sender!).Completed -= OnLoadingCompleted;
-        // TODO: should I fire loadingScreen.Completed in UIThread and therefore remove this Dispatcher call?
         Dispatcher.UIThread.Post(TransitionToMainMenu);
     }
 
     private void TransitionToMainMenu()
     {
-        loadingScreen = null;
+        _loadingScreen = null;
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-        MainContent.Content = mainMenu;
+        MainContent.Content = _mainMenu;
     }
 }

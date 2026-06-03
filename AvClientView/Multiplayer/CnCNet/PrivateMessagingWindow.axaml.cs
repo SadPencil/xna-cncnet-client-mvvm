@@ -7,12 +7,13 @@ using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWindowView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public PrivateMessagingWindow()
     {
         InitializeComponent();
@@ -22,7 +23,7 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "PrivateMessagingWindow");
     }
 

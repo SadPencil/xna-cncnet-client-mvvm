@@ -14,12 +14,13 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Multiplayer.GameLobby;
 
 public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     private IMapPreviewBoxViewModel? currentMapPreview;
     private IGameLobbyViewModel? lobbyViewModel;
     private readonly List<Border> indicatorElements = new();
@@ -53,7 +54,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
     {
         ApplyDefaultBackground("gamelobbybg.png");
 
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "SkirmishLobby");
 
         SetupMapListContextMenu();
@@ -68,7 +69,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

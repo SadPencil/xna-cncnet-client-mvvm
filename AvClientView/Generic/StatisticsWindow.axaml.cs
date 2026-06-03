@@ -6,12 +6,13 @@ using AvClientMvvmContract.Generic;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Generic;
 
 public partial class StatisticsWindow : UserControl, IStatisticsWindowView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     private bool _showingTotalStats;
 
     public StatisticsWindow()
@@ -25,7 +26,7 @@ public partial class StatisticsWindow : UserControl, IStatisticsWindowView
     {
         ApplyDefaultBackground("scoreviewerbg.png");
 
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "StatisticsWindow");
     }
 
@@ -46,7 +47,7 @@ public partial class StatisticsWindow : UserControl, IStatisticsWindowView
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

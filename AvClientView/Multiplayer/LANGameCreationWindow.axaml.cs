@@ -6,12 +6,13 @@ using AvClientMvvmContract.Multiplayer;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Multiplayer;
 
 public partial class LANGameCreationWindow : UserControl, ILANGameCreationWindowView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public LANGameCreationWindow()
     {
         InitializeComponent();
@@ -22,7 +23,7 @@ public partial class LANGameCreationWindow : UserControl, ILANGameCreationWindow
     {
         ApplyDefaultBackground("genericwindowbg.png");
 
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "GenericWindow");
     }
 
@@ -30,7 +31,7 @@ public partial class LANGameCreationWindow : UserControl, ILANGameCreationWindow
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

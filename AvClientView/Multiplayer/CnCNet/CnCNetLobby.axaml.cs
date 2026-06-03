@@ -9,12 +9,13 @@ using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public CnCNetLobby()
     {
         InitializeComponent();
@@ -26,7 +27,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     {
         ApplyDefaultBackground("cncnetlobbybg.png");
 
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "CnCNetLobby");
     }
 
@@ -34,7 +35,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

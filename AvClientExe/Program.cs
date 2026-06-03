@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,10 +9,6 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        // The Avalonia window starts immediately so the loading screen appears
-        // as early as possible. PreStartup.Initialize() and ServiceProvider
-        // building run on a background thread, triggered from MainWindow
-        // after the loading screen is visible.
         AvClientView.Startup.Run(args, BuildServiceProvider);
     }
 

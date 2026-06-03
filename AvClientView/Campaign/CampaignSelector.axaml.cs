@@ -6,12 +6,13 @@ using AvClientMvvmContract.Campaign;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Campaign;
 
 public partial class CampaignSelector : UserControl
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public CampaignSelector()
     {
         InitializeComponent();
@@ -24,7 +25,7 @@ public partial class CampaignSelector : UserControl
         ApplyDefaultBackground("MainMenu/dbak.png");
 
         // Apply INI layout overrides (CampaignSelector.ini -> GenericWindow.ini)
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "CampaignSelector");
     }
 
@@ -32,7 +33,7 @@ public partial class CampaignSelector : UserControl
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

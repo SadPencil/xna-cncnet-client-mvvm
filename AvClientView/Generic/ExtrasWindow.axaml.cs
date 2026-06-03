@@ -6,12 +6,13 @@ using AvClientMvvmContract.Generic;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Generic;
 
 public partial class ExtrasWindow : UserControl, IExtrasWindowView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public ExtrasWindow()
     {
         InitializeComponent();
@@ -24,7 +25,7 @@ public partial class ExtrasWindow : UserControl, IExtrasWindowView
         ApplyDefaultBackground("MainMenu/mainmenuebg.png");
 
         // Apply INI layout overrides
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "ExtrasWindow");
     }
 
@@ -32,7 +33,7 @@ public partial class ExtrasWindow : UserControl, IExtrasWindowView
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

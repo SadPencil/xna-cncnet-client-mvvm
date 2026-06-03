@@ -7,12 +7,13 @@ using AvClientMvvmContract.Multiplayer;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Multiplayer;
 
 public partial class LANGameLoadingLobby : UserControl, ILANGameLoadingLobbyView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public LANGameLoadingLobby()
     {
         InitializeComponent();
@@ -24,7 +25,7 @@ public partial class LANGameLoadingLobby : UserControl, ILANGameLoadingLobbyView
     {
         ApplyDefaultBackground("loadmpsavebg.png");
 
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "GameLoadingLobby");
     }
 
@@ -32,7 +33,7 @@ public partial class LANGameLoadingLobby : UserControl, ILANGameLoadingLobbyView
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

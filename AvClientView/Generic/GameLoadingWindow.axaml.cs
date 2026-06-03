@@ -6,12 +6,13 @@ using AvClientMvvmContract.Generic;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Generic;
 
 public partial class GameLoadingWindow : UserControl, IGameLoadingWindowView
 {
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+
     public GameLoadingWindow()
     {
         InitializeComponent();
@@ -24,7 +25,7 @@ public partial class GameLoadingWindow : UserControl, IGameLoadingWindowView
         ApplyDefaultBackground("loadmissionbg.png");
 
         // Apply INI layout overrides
-        var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+        var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "GameLoadingWindow");
     }
 
@@ -32,7 +33,7 @@ public partial class GameLoadingWindow : UserControl, IGameLoadingWindowView
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            var iniOverlay = IniOverlayService;
             if (iniOverlay == null) return;
             var fullPath = iniOverlay.FindTextureFile(texturePath);
             if (fullPath != null)

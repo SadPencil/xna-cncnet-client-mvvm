@@ -10,20 +10,40 @@ using AvClientMvvmContract.Generic;
 
 using AvClientView.Services;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace AvClientView.Generic;
 
 public partial class LoadingScreen : UserControl
 {
-    public event EventHandler Completed;
+    private bool _backgroundApplied;
 
-    private bool backgroundApplied;
+    public event EventHandler? Completed;
 
-    public LoadingScreen()
+    public LoadingScreen() : this(null) { }
+
+    public LoadingScreen(IIniLayoutOverlayService? iniOverlay)
     {
+        IniOverlayService = iniOverlay;
         InitializeComponent();
         Loaded += OnLoaded;
+    }
+
+    /// <summary>
+    /// Set by MainWindow after DI is ready to re-apply INI layout.
+    /// </summary>
+    internal IIniLayoutOverlayService? IniOverlayService { get; set; }
+
+    /// <summary>
+    /// Called by MainWindow after DI is ready to apply INI layout
+    /// if it wasn't applied in OnLoaded.
+    /// </summary>
+    internal void TryApplyIniOverlay()
+    {
+        ApplyDefaultBackground("loadingscreen.png");
+
+        IniOverlayService?.ApplyLayout(this, "LoadingScreen", effectiveWidth: 1280, effectiveHeight: 720);
+
+        Width = double.NaN;
+        Height = double.NaN;
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -31,34 +51,17 @@ public partial class LoadingScreen : UserControl
         TryApplyIniOverlay();
     }
 
-    private void TryApplyIniOverlay()
-    {
-        ApplyDefaultBackground("loadingscreen.png");
-
-        var iniOverlay = ViewConstants.ServiceProvider?.GetService<IIniLayoutOverlayService>();
-        // Pass the design space size (1280x720) so deferred properties
-        // (DistanceFrom*, FillWidth/FillHeight) calculate positions
-        // relative to the actual visible area, not the INI Size.
-        iniOverlay?.ApplyLayout(this, "LoadingScreen", effectiveWidth: 1280, effectiveHeight: 720);
-
-        // Reset explicit size so Stretch fills the Grid regardless of
-        // the INI Size (e.g. YRResources uses 1920x1080).
-        Width = double.NaN;
-        Height = double.NaN;
-    }
-
     private void ApplyDefaultBackground(string texturePath)
     {
         try
         {
-            var iniOverlay = ViewConstants.ServiceProvider?.GetService<IIniLayoutOverlayService>();
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
+            if (IniOverlayService == null) return;
+            var fullPath = IniOverlayService.FindTextureFile(texturePath);
             if (fullPath != null)
             {
                 var bitmap = new Bitmap(fullPath);
                 Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-                backgroundApplied = true;
+                _backgroundApplied = true;
             }
         }
         catch { }
@@ -92,9 +95,7 @@ public partial class LoadingScreen : UserControl
             {
                 field.PropertyChanged += OnViewModelPropertyChanged;
 
-                // ServiceProvider is now available — apply INI overlay
-                // if it wasn't applied in OnLoaded (when SP was null).
-                if (!backgroundApplied)
+                if (!_backgroundApplied)
                     TryApplyIniOverlay();
             }
         }
