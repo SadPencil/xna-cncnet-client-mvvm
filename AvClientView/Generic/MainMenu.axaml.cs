@@ -366,12 +366,19 @@ public partial class MainMenu : UserControl
             BorderThickness = new Avalonia.Thickness(1),
             Padding = new Avalonia.Thickness(20),
             Width = 400,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
             Child = contentStack
         };
 
+        // Use Grid rows to reliably center the dialog vertically and horizontally
         var centerGrid = new Grid();
+        centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+        centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        centerGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+        centerGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        centerGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+        Grid.SetColumn(innerBorder, 1);
+        Grid.SetRow(innerBorder, 1);
         centerGrid.Children.Add(innerBorder);
 
         var overlay = new Border
@@ -394,8 +401,6 @@ public partial class MainMenu : UserControl
         okButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(); };
 
         ApplyIniLayout(overlay);
-
-        Log.Debug($"[DEBUG] OKDialog_{id} created. innerBorder.Width={innerBorder.Width}, overlay.HAlign={overlay.HorizontalAlignment}");
 
         return overlay;
     }
@@ -459,12 +464,19 @@ public partial class MainMenu : UserControl
             BorderThickness = new Avalonia.Thickness(1),
             Padding = new Avalonia.Thickness(20),
             Width = 400,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
             Child = contentStack
         };
 
+        // Use Grid rows to reliably center the dialog vertically and horizontally
         var centerGrid = new Grid();
+        centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+        centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        centerGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+        centerGrid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        centerGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+        Grid.SetColumn(innerBorder, 1);
+        Grid.SetRow(innerBorder, 1);
         centerGrid.Children.Add(innerBorder);
 
         var overlay = new Border
@@ -488,8 +500,6 @@ public partial class MainMenu : UserControl
         noButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(false); };
 
         ApplyIniLayout(overlay);
-
-        Log.Debug($"[DEBUG] YesNoDialog_{id} created. innerBorder.Width={innerBorder.Width}, overlay.HAlign={overlay.HorizontalAlignment}");
 
         return overlay;
     }
