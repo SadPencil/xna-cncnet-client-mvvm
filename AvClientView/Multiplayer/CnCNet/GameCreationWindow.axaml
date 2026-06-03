@@ -42,8 +42,7 @@
       <!-- Tunnel selection -->
       <StackPanel Spacing="4">
         <TextBlock Text="Tunnel Server:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
-        <ComboBox ItemsSource="{Binding TunnelNames}"
-                  SelectedIndex="{Binding SelectedTunnelIndex}" />
+        <ComboBox x:Name="cmbTunnel" />
       </StackPanel>
 
       <!-- Advanced options toggle -->
@@ -60,8 +59,7 @@
       <StackPanel IsVisible="{Binding IsAdvancedOptionsVisible}" Spacing="8">
         <StackPanel Spacing="4">
           <TextBlock Text="Skill Level:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
-          <ComboBox ItemsSource="{Binding SkillLevelOptions}"
-                    SelectedIndex="{Binding SelectedSkillLevel}" />
+          <ComboBox x:Name="cmbSkillLevel" />
         </StackPanel>
       </StackPanel>
 

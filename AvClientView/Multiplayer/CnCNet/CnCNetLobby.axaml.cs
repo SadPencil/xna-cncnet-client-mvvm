@@ -73,36 +73,22 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        Log.Information("[LOG-View] ddColor wiring ItemsSource+SelectedIndex via code-behind Bind()");
-        // Use code-behind Bind() instead of AXAML {Binding} to break the compiled binding chain.
-        // Avalonia ComboBox.ItemTemplate is blocked when ItemsSource uses compiled binding.
+        // Wire ItemsSource+SelectedIndex via code-behind Bind() instead of AXAML {Binding}
+        // because Avalonia ComboBox blocks ItemTemplate when ItemsSource uses compiled binding.
         ddColor.Bind(ComboBox.ItemsSourceProperty, new Binding("ColorOptions"));
         ddColor.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedColorIndex"));
 
-        var template = new FuncDataTemplate<object>((item, _) =>
+        ddColor.ItemTemplate = new FuncDataTemplate<object>((item, _) =>
         {
-            Log.Information("[LOG-View] ddColor.FuncDataTemplate called: itemType={Type}, itemToString={Str}",
-                item?.GetType().FullName ?? "null",
-                item?.ToString() ?? "null");
-
             var tb = new TextBlock();
             if (item is IIRCColor color)
             {
                 tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
-                Log.Information("[LOG-View] ddColor.FuncDataTemplate IIRCColor match: Name={Name}", color.Name);
-            }
-            else
-            {
-                tb.Text = item?.ToString() ?? "null";
-                Log.Warning("[LOG-View] ddColor.FuncDataTemplate NOT IIRCColor: fullType={Type}",
-                    item?.GetType().FullName ?? "null");
+                Log.Information("[LOG-View] ddColor template: Name={Name}", color.Name);
             }
             return tb;
         }, supportsRecycling: true);
-
-        ddColor.ItemTemplate = template;
-        Log.Information("[LOG-View] ddColor.ItemTemplate SET via code-behind");
     }
 
     private void SetupChatMessageTemplate()
