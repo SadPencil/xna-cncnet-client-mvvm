@@ -121,7 +121,7 @@
         </ListBox>
       </Border>
 
-      <!-- Game Information Panel (shown on hover) -->
+      <!-- Game Information Panel (shown on hover, floats above other content) -->
       <Border x:Name="panelGameInfo"
               IsVisible="{Binding HoveredGame, Converter={x:Static ObjectConverters.IsNotNull}}"
               Background="#E0000000"
@@ -142,9 +142,14 @@
                      Foreground="{DynamicResource XnaTextBrush}" />
 
           <StackPanel DataContext="{Binding HoveredGame}" Spacing="3">
+            <!-- Room name / title -->
+            <TextBlock Text="{Binding RoomName}"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}"
+                       TextTrimming="CharacterEllipsis" />
             <TextBlock Foreground="{DynamicResource XnaAltBrush}"
                        Text="{Binding HostName, StringFormat='Host: {0}'}"
-                     TextTrimming="CharacterEllipsis" />
+                       TextTrimming="CharacterEllipsis" />
           <TextBlock Foreground="{DynamicResource XnaAltBrush}"
                      Text="{Binding Ping, StringFormat='Ping: {0} ms'}"
                      TextTrimming="CharacterEllipsis" />

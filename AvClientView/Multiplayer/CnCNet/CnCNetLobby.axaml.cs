@@ -56,6 +56,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         Canvas.SetTop(panelGameInfo, bounds.Top);
         panelGameInfo.MaxHeight = bounds.Height;
         panelGameInfo.Width = bounds.Width;
+        panelGameInfo.ZIndex = 10;
 
         _infoPanelPositioned = true;
         LayoutUpdated -= PositionInfoPanel;
@@ -63,6 +64,11 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
+        // Use DisplayMemberBinding for the closed (selected item) display.
+        // Using DataBinding with a relative source avoids compiled binding type issues.
+        ddColor.DisplayMemberBinding = new Binding("Name");
+
+        // Use ItemTemplate for the dropdown list items with colored text.
         ddColor.ItemTemplate = new FuncDataTemplate<IIRCColor>((color, _) =>
         {
             var tb = new TextBlock();
