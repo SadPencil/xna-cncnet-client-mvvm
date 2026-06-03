@@ -32,7 +32,7 @@ public class AvaloniaSerilogSink : ILogSink
         {
             LogEventLevel.Verbose => Serilog.Events.LogEventLevel.Verbose,
             LogEventLevel.Debug => Serilog.Events.LogEventLevel.Debug,
-            LogEventLevel.Information => Serilog.Events.LogEventLevel.Information,
+            LogEventLevel.Information => Serilog.Events.LogEventLevel.Debug, // Intended
             LogEventLevel.Warning => Serilog.Events.LogEventLevel.Warning,
             LogEventLevel.Error => Serilog.Events.LogEventLevel.Error,
             LogEventLevel.Fatal => Serilog.Events.LogEventLevel.Fatal,
