@@ -13,8 +13,6 @@ using AvClientMvvmContract.Online;
 
 using AvClientView.Services;
 
-using Serilog;
-
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
@@ -28,7 +26,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         SetupChatInputEnterKey();
         SetupGameListHover();
         SetupColorDropdownTemplate();
-        SetupChannelDropdown();
         SetupChatMessageTemplate();
     }
 
@@ -74,30 +71,29 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        Log.Debug("[DEBUG-View] SetupColorDropdownTemplate called");
-        ddColor.ItemTemplate = new FuncDataTemplate<IIRCColor>((color, _) =>
+        // Use untyped FuncDataTemplate to avoid Avalonia generic type-matching issues.
+        var template = new FuncDataTemplate<object>((item, _) =>
         {
             var tb = new TextBlock();
-            if (color != null)
+            if (item is IIRCColor color)
             {
                 tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
-                Log.Debug("[DEBUG-View] ColorDropdown item matched: Name={Name}", color.Name);
+            }
+            else
+            {
+                tb.Text = item?.ToString() ?? string.Empty;
             }
             return tb;
         }, supportsRecycling: true);
-        Log.Debug("[DEBUG-View] ColorDropdown ItemTemplate set.");
-    }
 
-    private void SetupChannelDropdown()
-    {
-        // Channel dropdown uses reflection bindings from AXAML (no x:DataType on parent)
+        ddColor.ItemTemplate = template;
+        ddColor.SelectionBoxItemTemplate = template;
     }
 
     private void SetupChatMessageTemplate()
     {
         if (lbChatList == null) return;
-        Log.Debug("[DEBUG-View] SetupChatMessageTemplate called");
 
         lbChatList.ItemTemplate = new FuncDataTemplate<IChatMessage>((msg, _) =>
         {
@@ -106,11 +102,9 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             {
                 tb.Text = FormatChatMessage(msg);
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, msg.Color.R, msg.Color.G, msg.Color.B));
-                Log.Debug("[DEBUG-View] ChatMessage matched: text='{Text}'", tb.Text);
             }
             return tb;
         });
-        Log.Debug("[DEBUG-View] ChatMessage ItemTemplate set");
     }
 
     private static string FormatChatMessage(IChatMessage msg)
