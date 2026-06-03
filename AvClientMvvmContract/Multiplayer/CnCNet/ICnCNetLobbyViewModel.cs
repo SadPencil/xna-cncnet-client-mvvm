@@ -6,6 +6,8 @@ using AvClientMvvmContract.Online;
 
 using CommunityToolkit.Mvvm.Input;
 
+using SixLabors.ImageSharp;
+
 namespace AvClientMvvmContract.Multiplayer.CnCNet;
 
 public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
@@ -19,7 +21,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IReadOnlyList<IChatMessage> ChatMessages { get; }
     IHostedCnCNetGame? SelectedGame { get; }
     IHostedCnCNetGame? HoveredGame { get; }
-    byte[]? HoveredGameMapPreview { get; }
+    Image? HoveredGameMapPreview { get; }
     int HoveredGameIndex { get; set; }
     int SelectedGameIndex { get; set; }
     int SelectedColorIndex { get; set; }

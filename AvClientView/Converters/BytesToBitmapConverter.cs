@@ -5,22 +5,27 @@ using System.IO;
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 
+using SixLabors.ImageSharp;
+
 namespace AvClientView.Converters;
 
 /// <summary>
-/// Converts a byte array (PNG image data) to an Avalonia Bitmap.
+/// Converts a SixLabors.ImageSharp Image to an Avalonia Bitmap.
+/// Renders the image to a PNG stream and loads it as a Bitmap.
 /// </summary>
-public class BytesToBitmapConverter : IValueConverter
+public class ImageSharpToBitmapConverter : IValueConverter
 {
-    public static readonly BytesToBitmapConverter Instance = new();
+    public static readonly ImageSharpToBitmapConverter Instance = new();
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is byte[] bytes && bytes.Length > 0)
+        if (value is SixLabors.ImageSharp.Image image)
         {
             try
             {
-                using var ms = new MemoryStream(bytes);
+                using var ms = new MemoryStream();
+                image.SaveAsPng(ms);
+                ms.Position = 0;
                 return new Bitmap(ms);
             }
             catch

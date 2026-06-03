@@ -182,7 +182,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private IHostedCnCNetGame? hoveredGame;
 
     [ObservableProperty]
-    private byte[]? hoveredGameMapPreview;
+    private Image? hoveredGameMapPreview;
+
+    private IDisposable? _mapPreviewLease;
 
     partial void OnHoveredGameIndexChanged(int value)
     {
@@ -192,6 +194,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void LoadMapPreview()
     {
+        // Release previous lease before replacing the image
+        _mapPreviewLease?.Dispose();
+        _mapPreviewLease = null;
         HoveredGameMapPreview = null;
 
         if (HoveredGame == null || string.IsNullOrEmpty(HoveredGame.MapHash))
@@ -203,12 +208,15 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         try
         {
-            using var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
+            var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
             if (lease?.Value != null)
             {
-                using var ms = new System.IO.MemoryStream();
-                lease.Value.SaveAsPng(ms);
-                HoveredGameMapPreview = ms.ToArray();
+                _mapPreviewLease = lease;
+                HoveredGameMapPreview = lease.Value;
+            }
+            else
+            {
+                lease?.Dispose();
             }
         }
         catch

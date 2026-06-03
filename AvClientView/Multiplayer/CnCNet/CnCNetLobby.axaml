@@ -131,7 +131,7 @@
               Width="278">
         <StackPanel Spacing="4">
           <!-- Map preview image -->
-          <Image Source="{Binding HoveredGameMapPreview, Converter={x:Static converters:BytesToBitmapConverter.Instance}}"
+          <Image Source="{Binding HoveredGameMapPreview, Converter={x:Static converters:ImageSharpToBitmapConverter.Instance}}"
                  IsVisible="{Binding HoveredGameMapPreview, Converter={x:Static ObjectConverters.IsNotNull}}"
                  Stretch="Uniform"
                  MaxHeight="150"
