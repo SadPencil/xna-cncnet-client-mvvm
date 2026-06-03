@@ -614,7 +614,7 @@ namespace AvClientViewModel.Online
                             break;
                         case 301: // AWAY message
                             string awayTarget = parameters[0];
-                            if (awayTarget != ProgramConstants.PLAYERNAME)
+                            if (!string.Equals(awayTarget, ProgramConstants.PLAYERNAME, StringComparison.OrdinalIgnoreCase))
                                 break;
                             string awayPlayer = parameters[1];
                             string awayReason = parameters[2];
@@ -622,13 +622,13 @@ namespace AvClientViewModel.Online
                             break;
                         case 332: // Channel topic message
                             string _target = parameters[0];
-                            if (_target != ProgramConstants.PLAYERNAME)
+                            if (!string.Equals(_target, ProgramConstants.PLAYERNAME, StringComparison.OrdinalIgnoreCase))
                                 break;
                             connectionManager.OnChannelTopicReceived(parameters[1], parameters[2]);
                             break;
                         case 353: // User list (reply to NAMES)
                             string target = parameters[0];
-                            if (target != ProgramConstants.PLAYERNAME)
+                            if (!string.Equals(target, ProgramConstants.PLAYERNAME, StringComparison.OrdinalIgnoreCase))
                                 break;
                             string channelName = parameters[2];
                             string[] users = parameters[3].Split(new char[1] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -735,7 +735,7 @@ namespace AvClientViewModel.Online
                         {
                             if (recipient.StartsWith("#"))
                                 connectionManager.OnChatMessageReceived(recipient, pmsgUserName, pmsgIdent, privmsg);
-                            else if (recipient == ProgramConstants.PLAYERNAME)
+                            else if (string.Equals(recipient, ProgramConstants.PLAYERNAME, StringComparison.OrdinalIgnoreCase))
                                 connectionManager.OnPrivateMessageReceived(pmsgUserName, privmsg);
                             //else if (pmsgUserName == ProgramConstants.PLAYERNAME)
                             //{
