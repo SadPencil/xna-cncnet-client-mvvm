@@ -109,6 +109,9 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
         // Initialize tunnel list
         RefreshTunnelList();
 
+        // Subscribe to tunnel refreshes so the list updates when tunnels are loaded
+        tunnelHandler.TunnelsRefreshed += (_, _) => RefreshTunnelList();
+
         // Check if loading game is allowed
         CanLoadGame = AllowLoadingGame();
 

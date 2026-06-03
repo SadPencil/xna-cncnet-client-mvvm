@@ -34,14 +34,7 @@
                 ItemsSource="{Binding ColorOptions}"
                 SelectedIndex="{Binding SelectedColorIndex}"
                 Width="150" Height="21"
-                Canvas.Left="545" Canvas.Top="12">
-        <ComboBox.ItemTemplate>
-          <DataTemplate>
-            <TextBlock Text="{Binding Name}"
-                       Foreground="{Binding ., Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}" />
-          </DataTemplate>
-        </ComboBox.ItemTemplate>
-      </ComboBox>
+                Canvas.Left="545" Canvas.Top="12" />
 
       <!-- Current Channel Label + Dropdown -->
       <TextBlock x:Name="lblCurrentChannel"
@@ -135,8 +128,8 @@
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
               Padding="8"
-              Width="278"
-              Canvas.Left="12" Canvas.Top="640">
+              Width="278" MaxHeight="590"
+              Canvas.Left="300" Canvas.Top="43">
         <StackPanel DataContext="{Binding HoveredGame}"
                     Spacing="3">
           <TextBlock Text="GAME INFORMATION"
@@ -186,17 +179,10 @@
               BorderThickness="1"
               Width="630" Height="590"
               Canvas.Left="300" Canvas.Top="43">
-        <ListBox ItemsSource="{Binding ChatMessages}"
+        <ListBox x:Name="lbChatList"
+                 ItemsSource="{Binding ChatMessages}"
                  Background="Transparent"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-          <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="onl:IChatMessage">
-              <TextBlock Text="{Binding ., Converter={x:Static converters:ChatMessageFormatterConverter.Instance}}"
-                         Foreground="{Binding Color, Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}"
-                         TextWrapping="Wrap" />
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-        </ListBox>
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
       </Border>
 
       <!-- Chat Input -->

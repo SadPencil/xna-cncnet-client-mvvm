@@ -1,19 +1,21 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Online;
 
 using AvClientView.Services;
-
 
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 {
-    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+    public IIniLayoutOverlayService? IniOverlayService { get; set; }
 
     public CnCNetLobby()
     {
@@ -21,14 +23,51 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         Loaded += OnLoaded;
         SetupChatInputEnterKey();
         SetupGameListHover();
+        SetupColorDropdownTemplate();
+        SetupChatMessageTemplate();
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         ApplyDefaultBackground("cncnetlobbybg.png");
-
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "CnCNetLobby");
+    }
+
+    private void SetupColorDropdownTemplate()
+    {
+        ddColor.ItemTemplate = new FuncDataTemplate<IIRCColor>((color, _) =>
+        {
+            var tb = new TextBlock();
+            tb.Bind(TextBlock.TextProperty, new Binding("Name"));
+            if (color != null)
+                tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
+            return tb;
+        });
+    }
+
+    private void SetupChatMessageTemplate()
+    {
+        if (lbChatList == null) return;
+
+        lbChatList.ItemTemplate = new FuncDataTemplate<IChatMessage>((msg, _) =>
+        {
+            var tb = new TextBlock { TextWrapping = TextWrapping.Wrap };
+            if (msg != null)
+            {
+                tb.Text = FormatChatMessage(msg);
+                tb.Foreground = new SolidColorBrush(Color.FromArgb(255, msg.Color.R, msg.Color.G, msg.Color.B));
+            }
+            return tb;
+        });
+    }
+
+    private static string FormatChatMessage(IChatMessage msg)
+    {
+        string timestamp = msg.DateTime.ToShortTimeString();
+        if (string.IsNullOrEmpty(msg.SenderName))
+            return $"[{timestamp}] {msg.Message}";
+        return $"[{timestamp}] {msg.SenderName}: {msg.Message}";
     }
 
     private void ApplyDefaultBackground(string texturePath)
