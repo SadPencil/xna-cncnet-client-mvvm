@@ -1,3 +1,5 @@
+using System;
+
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -27,11 +29,36 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         SetupChatMessageTemplate();
     }
 
+    private bool _infoPanelPositioned;
+
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         ApplyDefaultBackground("cncnetlobbybg.png");
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "CnCNetLobby");
+
+        if (!_infoPanelPositioned)
+        {
+            LayoutUpdated += PositionInfoPanel;
+        }
+    }
+
+    private void PositionInfoPanel(object? sender, EventArgs e)
+    {
+        if (lbGameList == null || panelGameInfo == null) return;
+
+        var bounds = lbGameList.Bounds;
+        if (bounds.Width <= 0 || bounds.Height <= 0) return;
+
+        // Position to the right of the game list (which may have been moved/resized by INI layout).
+        // Matches the old client: panelGameInformation.X = gameList.Right, .Y = gameList.Y
+        Canvas.SetLeft(panelGameInfo, bounds.Right);
+        Canvas.SetTop(panelGameInfo, bounds.Top);
+        panelGameInfo.MaxHeight = bounds.Height;
+        panelGameInfo.Width = bounds.Width;
+
+        _infoPanelPositioned = true;
+        LayoutUpdated -= PositionInfoPanel;
     }
 
     private void SetupColorDropdownTemplate()

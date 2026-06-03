@@ -128,8 +128,7 @@
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
               Padding="8"
-              Width="278" MaxHeight="590"
-              Canvas.Left="300" Canvas.Top="43">
+              Width="278">
         <StackPanel DataContext="{Binding HoveredGame}"
                     Spacing="3">
           <TextBlock Text="GAME INFORMATION"
