@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using AvClientViewModel.Online;
+
 using ClientCore;
 using ClientCore.Settings;
 
@@ -39,10 +41,16 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
         private bool _refreshInProgress = false;
         private Timer refreshTimer;
         private bool disposed = false;
+        private readonly CnCNetManager connectionManager;
 
-        public TunnelHandler()
+        public TunnelHandler(CnCNetManager connectionManager)
         {
+            this.connectionManager = connectionManager;
             refreshTimer = new Timer(OnTimerTick, null, Timeout.Infinite, Timeout.Infinite);
+
+            connectionManager.Connected += ConnectionManager_Connected;
+            connectionManager.Disconnected += ConnectionManager_Disconnected;
+            connectionManager.ConnectionLost += ConnectionManager_ConnectionLost;
         }
 
         public List<CnCNetTunnel> Tunnels { get; private set; } = new List<CnCNetTunnel>();
@@ -62,6 +70,21 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
         public void Stop()
         {
             refreshTimer.Change(Timeout.Infinite, Timeout.Infinite);
+        }
+
+        private void ConnectionManager_Connected(object sender, EventArgs e)
+        {
+            Start();
+        }
+
+        private void ConnectionManager_Disconnected(object sender, EventArgs e)
+        {
+            Stop();
+        }
+
+        private void ConnectionManager_ConnectionLost(object sender, EventArgs e)
+        {
+            Stop();
         }
 
         private void OnTimerTick(object state)

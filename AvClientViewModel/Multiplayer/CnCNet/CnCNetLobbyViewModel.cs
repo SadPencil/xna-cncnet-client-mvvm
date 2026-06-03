@@ -159,6 +159,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private List<string> channelOptions = new();
     public IReadOnlyList<string> ChannelOptions => channelOptions;
 
+    // Parallel list mapping channelOptions index to the actual channel reference.
+    // Used by SwitchToChannel to avoid index mismatch with the unfiltered GameList.
+    private List<Channel> channelOptionChannels = new();
+
     private readonly CnCNetLoginWindowViewModel _loginWindowViewModel;
     public ICnCNetLoginWindowViewModel LoginWindowViewModel => _loginWindowViewModel;
 
@@ -672,6 +676,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 connectionManager.AddChannel(chatChannel);
             }
 
+            channelOptionChannels.Add(chatChannel);
+
             if (!string.IsNullOrEmpty(game.GameBroadcastChannel))
             {
                 var gameBroadcastChannel = connectionManager.FindChannel(game.GameBroadcastChannel);
@@ -730,14 +736,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             }
         }
 
-        // Find the channel for the selected game
-        var game = gameCollection.GameList[channelIndex];
-        currentChatChannel = connectionManager.FindChannel(game.ChatChannel);
+        // Find the channel for the selected game using the parallel channel list
+        // (avoids index mismatch between filtered channelOptions and unfiltered GameList)
+        currentChatChannel = channelOptionChannels[channelIndex];
 
         if (currentChatChannel == null)
             return;
 
-        CurrentChannelName = game.UIName;
+        CurrentChannelName = currentChatChannel.UIName;
 
         // Subscribe to new channel events
         currentChatChannel.UserAdded += RefreshPlayerList;
