@@ -121,7 +121,7 @@
         </ListBox>
       </Border>
 
-      <!-- Game Information Panel (shown on hover or when selected) -->
+      <!-- Game Information Panel (shown on hover) -->
       <Border x:Name="panelGameInfo"
               IsVisible="{Binding HoveredGame, Converter={x:Static ObjectConverters.IsNotNull}}"
               Background="#E0000000"
@@ -129,13 +129,21 @@
               BorderThickness="1"
               Padding="8"
               Width="278">
-        <StackPanel DataContext="{Binding HoveredGame}"
-                    Spacing="3">
+        <StackPanel Spacing="4">
+          <!-- Map preview image -->
+          <Image Source="{Binding HoveredGameMapPreview, Converter={x:Static converters:BytesToBitmapConverter.Instance}}"
+                 IsVisible="{Binding HoveredGameMapPreview, Converter={x:Static ObjectConverters.IsNotNull}}"
+                 Stretch="Uniform"
+                 MaxHeight="150"
+                 HorizontalAlignment="Center" />
+
           <TextBlock Text="GAME INFORMATION"
                      FontWeight="Bold"
                      Foreground="{DynamicResource XnaTextBrush}" />
-          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                     Text="{Binding HostName, StringFormat='Host: {0}'}"
+
+          <StackPanel DataContext="{Binding HoveredGame}" Spacing="3">
+            <TextBlock Foreground="{DynamicResource XnaAltBrush}"
+                       Text="{Binding HostName, StringFormat='Host: {0}'}"
                      TextTrimming="CharacterEllipsis" />
           <TextBlock Foreground="{DynamicResource XnaAltBrush}"
                      Text="{Binding Ping, StringFormat='Ping: {0} ms'}"
@@ -166,6 +174,7 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
+          </StackPanel>
         </StackPanel>
       </Border>
 

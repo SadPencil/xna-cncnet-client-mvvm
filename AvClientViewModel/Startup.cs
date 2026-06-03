@@ -216,6 +216,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<TunnelHandler>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
                 sp.GetRequiredService<IGameProcessService>(),
+                sp.GetRequiredService<MapLoader>(),
                 sp.GetRequiredService<Random>()));
             services.AddSingleton<ICnCNetLobbyViewModel>(sp =>
                 sp.GetRequiredService<CnCNetLobbyViewModel>());

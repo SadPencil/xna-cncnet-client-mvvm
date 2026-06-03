@@ -47,6 +47,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private readonly TunnelHandler tunnelHandler;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private readonly IGameProcessService gameProcessService;
+    private readonly MapLoader mapLoader;
     private readonly Random random;
 
     // Services that the lobby interacts with but does not own
@@ -180,9 +181,40 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     private IHostedCnCNetGame? hoveredGame;
 
+    [ObservableProperty]
+    private byte[]? hoveredGameMapPreview;
+
     partial void OnHoveredGameIndexChanged(int value)
     {
         HoveredGame = value >= 0 && value < games.Count ? games[value] : null;
+        LoadMapPreview();
+    }
+
+    private void LoadMapPreview()
+    {
+        HoveredGameMapPreview = null;
+
+        if (HoveredGame == null || string.IsNullOrEmpty(HoveredGame.MapHash))
+            return;
+
+        var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
+        if (map == null)
+            return;
+
+        try
+        {
+            using var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
+            if (lease?.Value != null)
+            {
+                using var ms = new System.IO.MemoryStream();
+                lease.Value.SaveAsPng(ms);
+                HoveredGameMapPreview = ms.ToArray();
+            }
+        }
+        catch
+        {
+            HoveredGameMapPreview = null;
+        }
     }
 
     public CnCNetLobbyViewModel(
@@ -192,6 +224,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         TunnelHandler tunnelHandler,
         IUIThreadMarshaller uiThreadMarshaller,
         IGameProcessService gameProcessService,
+        MapLoader mapLoader,
         Random random)
     {
         this.connectionManager = connectionManager;
@@ -200,6 +233,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         this.tunnelHandler = tunnelHandler;
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.gameProcessService = gameProcessService;
+        this.mapLoader = mapLoader;
         this.random = random;
 
         _loginWindowViewModel = new CnCNetLoginWindowViewModel(
