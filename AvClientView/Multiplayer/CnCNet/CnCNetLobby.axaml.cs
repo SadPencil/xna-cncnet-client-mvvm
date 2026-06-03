@@ -46,82 +46,28 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             LayoutUpdated += PositionInfoPanel;
         }
 
-        // Wire ddColor: create colored items in dropdown via code-behind
+        // Wire ddColor: set ItemTemplate in code-behind to avoid all XAML binding issues.
+        // The global ComboBox style sets Foreground={DynamicResource XnaAltBrush} (yellow)
+        // and the ComboBoxItem template TextBlock has no Foreground, meaning dropdown items
+        // can't inherit per-item colours.  A code-based ItemTemplate sets Text and Foreground
+        // directly on each TextBlock without any binding/converter.
         if (ddColor != null)
         {
-            Log.Information("[LOG-View-CNC] ddColor found, wiring color items");
-            ddColor.DropDownOpened += OnColorDropDownOpened;
-        }
-    }
-
-    private void OnColorDropDownOpened(object? sender, EventArgs e)
-    {
-        if (ddColor == null) return;
-        Log.Information("[LOG-View-CNC] ddColor DropDownOpened, ItemCount={IC}", ddColor.ItemCount);
-
-        // Try immediately, then retry after layout if items not ready
-        TryColorItems();
-        Avalonia.Threading.Dispatcher.UIThread.Post(TryColorItems, Avalonia.Threading.DispatcherPriority.Loaded);
-        Avalonia.Threading.Dispatcher.UIThread.Post(TryColorItems, Avalonia.Threading.DispatcherPriority.Background);
-    }
-
-    private void TryColorItems()
-    {
-        if (ddColor == null) return;
-
-        var popup = ddColor.FindControl<Popup>("PART_Popup");
-        var root = popup ?? (Control)ddColor;
-
-        int colored = 0;
-        WalkAndColorItems(root, ref colored);
-        if (colored > 0)
-            Log.Information("[LOG-View-CNC] TryColorItems: colored {Count} items from {Source}",
-                colored, popup != null ? "popup" : "combo");
-    }
-
-    private static T? FindVisualChild<T>(Control parent) where T : Control
-    {
-        if (parent is T t) return t;
-        if (parent is Panel panel)
-        {
-            foreach (var child in panel.Children)
+            Log.Information("[LOG-View-CNC] ddColor found, setting code-behind ItemTemplate");
+            ddColor.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<IIRCColor>((item, _) =>
             {
-                var result = FindVisualChild<T>(child);
-                if (result != null) return result;
-            }
-        }
-        if (parent is ContentControl cc && cc.Content is Control content)
-            return FindVisualChild<T>(content);
-        return null;
-    }
-
-    private void WalkAndColorItems(Control parent, ref int colored)
-    {
-        if (parent is ComboBoxItem cbi)
-        {
-            // Find the TextBlock inside this ComboBoxItem and set its Foreground
-            var tb = FindVisualChild<TextBlock>(cbi);
-            if (tb != null && cbi.DataContext is IIRCColor irc)
-            {
-                var brush = Rgb24ToBrushConverter.Instance.Convert(irc, typeof(IBrush), null,
-                    System.Globalization.CultureInfo.CurrentCulture) as IBrush;
-                if (brush != null)
+                var tb = new TextBlock();
+                if (item != null)
                 {
-                    tb.Foreground = brush;
-                    colored++;
-                    Log.Information("[LOG-View-CNC] Colored '{Name}' -> #{R:X2}{G:X2}{B:X2}",
-                        irc.Name, irc.R, irc.G, irc.B);
+                    tb.Text = item.Name;
+                    tb.Foreground = new SolidColorBrush(Color.FromArgb(255, item.R, item.G, item.B));
+                    Log.Information("[LOG-View-CNC] ItemTemplate building: Name={Name}, R={R}, G={G}, B={B}",
+                        item.Name, item.R, item.G, item.B);
                 }
-            }
+                tb.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+                return tb;
+            });
         }
-
-        if (parent is Panel panel)
-        {
-            foreach (var child in panel.Children)
-                WalkAndColorItems(child, ref colored);
-        }
-        if (parent is ContentControl cc && cc.Content is Control content)
-            WalkAndColorItems(content, ref colored);
     }
 
     private void PositionInfoPanel(object? sender, EventArgs e)

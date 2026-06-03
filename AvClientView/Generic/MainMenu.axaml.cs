@@ -259,6 +259,25 @@ public partial class MainMenu : UserControl
         // Add to MainMenuPanel so it renders
         MainMenuPanel.Children.Add(testCombo);
 
+        // Dump Foreground inheritance chain
+        Log.Information("[LOG-CONV-TEST] --- Foreground chain ---");
+        Log.Information("[LOG-CONV-TEST] testCombo.Foreground={FG}",
+            testCombo.Foreground is ISolidColorBrush fgPb ? $"#{fgPb.Color.R:X2}{fgPb.Color.G:X2}{fgPb.Color.B:X2}" : testCombo.Foreground?.ToString() ?? "null");
+        Log.Information("[LOG-CONV-TEST] this.Foreground (UserControl)={FG}",
+            this.Foreground is ISolidColorBrush fgThis ? $"#{fgThis.Color.R:X2}{fgThis.Color.G:X2}{fgThis.Color.B:X2}" : this.Foreground?.ToString() ?? "null");
+
+        // Check XnaTextBrush DynamicResource on this control
+        if (this.FindResource("XnaTextBrush") is IBrush xnaB)
+            Log.Information("[LOG-CONV-TEST] this.FindResource XnaTextBrush={FG}",
+                xnaB is ISolidColorBrush fgXna ? $"#{fgXna.Color.R:X2}{fgXna.Color.G:X2}{fgXna.Color.B:X2}" : xnaB.ToString());
+        else
+            Log.Information("[LOG-CONV-TEST] XnaTextBrush NOT FOUND on this");
+
+        // Check App resources
+        if (Application.Current?.FindResource("XnaTextBrush") is IBrush appB)
+            Log.Information("[LOG-CONV-TEST] App XnaTextBrush={FG}",
+                appB is ISolidColorBrush fgApp ? $"#{fgApp.Color.R:X2}{fgApp.Color.G:X2}{fgApp.Color.B:X2}" : appB.ToString());
+
         // Open the dropdown programmatically to force item rendering
         Log.Information("[LOG-CONV-TEST] ComboBox added, IsVisible={IV}, ItemCount={IC}",
             testCombo.IsVisible, testCombo.ItemCount);
