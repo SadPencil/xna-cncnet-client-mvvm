@@ -104,11 +104,12 @@
 
       <!-- ========== Dialog Overlay Panels ==========
            OK and Yes/No dialogs are created dynamically in code-behind
-           via WeakReferenceMessenger and added to these panels. -->
-      <Panel x:Name="OKDialogsPanel"
-             Canvas.Left="0" Canvas.Top="0" />
-      <Panel x:Name="YesNoDialogsPanel"
-             Canvas.Left="0" Canvas.Top="0" />
+           via WeakReferenceMessenger and added to these panels.
+           Grid is used so children stretch to fill for centering. -->
+      <Grid x:Name="OKDialogsPanel"
+            Canvas.Left="0" Canvas.Top="0" />
+      <Grid x:Name="YesNoDialogsPanel"
+            Canvas.Left="0" Canvas.Top="0" />
 
     </Canvas>
 

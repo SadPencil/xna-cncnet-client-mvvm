@@ -87,6 +87,12 @@ public partial class MainMenu : UserControl
         Width = 1280;
         Height = 720;
 
+        // Size dialog overlay panels to cover the full menu panel
+        OKDialogsPanel.Width = menuWidth;
+        OKDialogsPanel.Height = menuHeight;
+        YesNoDialogsPanel.Width = menuWidth;
+        YesNoDialogsPanel.Height = menuHeight;
+
         // Center the panel when it's smaller than the full UserControl.
         // Must use Stretch in AXAML (not Center) so Canvas sizes correctly.
         if (menuWidth < 1280 || menuHeight < 720)
@@ -333,13 +339,15 @@ public partial class MainMenu : UserControl
             Child = contentStack
         };
 
-        var centerPanel = new Panel();
-        centerPanel.Children.Add(innerBorder);
+        var centerGrid = new Grid();
+        centerGrid.Children.Add(innerBorder);
 
         var overlay = new Border
         {
             Background = new SolidColorBrush(Color.FromArgb(128, 0, 0, 0)),
-            Child = centerPanel
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            Child = centerGrid
         };
 
         bool handled = false;
@@ -413,13 +421,15 @@ public partial class MainMenu : UserControl
             Child = contentStack
         };
 
-        var centerPanel = new Panel();
-        centerPanel.Children.Add(innerBorder);
+        var centerGrid = new Grid();
+        centerGrid.Children.Add(innerBorder);
 
         var overlay = new Border
         {
             Background = new SolidColorBrush(Color.FromArgb(128, 0, 0, 0)),
-            Child = centerPanel
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            Child = centerGrid
         };
 
         bool handled = false;
