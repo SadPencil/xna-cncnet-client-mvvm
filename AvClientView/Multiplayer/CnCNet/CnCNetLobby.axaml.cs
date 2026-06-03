@@ -73,8 +73,11 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        Log.Information("[LOG-View] ddColor: DisplayMemberBinding=Name");
-        ddColor.DisplayMemberBinding = new Binding("Name");
+        // ItemsSource/SelectedIndex via code-behind reflection Bind()
+        // to avoid compiled-binding blocking DataTemplate on ComboBox.
+        ddColor.Bind(ComboBox.ItemsSourceProperty, new Binding("ColorOptions"));
+        ddColor.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedColorIndex"));
+        Log.Information("[LOG-View] ddColor Bind done, ItemCount={Count}", ddColor.ItemCount);
     }
 
     private void SetupChatMessageTemplate()

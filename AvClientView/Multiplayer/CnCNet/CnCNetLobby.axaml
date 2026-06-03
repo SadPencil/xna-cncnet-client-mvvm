@@ -31,10 +31,17 @@
                  Foreground="{DynamicResource XnaTextBrush}"
                  Canvas.Left="450" Canvas.Top="14" />
       <ComboBox x:Name="ddColor"
-                ItemsSource="{Binding ColorOptions}"
-                SelectedIndex="{Binding SelectedColorIndex}"
+                x:DataType="onl:IIRCColor"
                 Width="150" Height="21"
-                Canvas.Left="545" Canvas.Top="12" />
+                Canvas.Left="545" Canvas.Top="12">
+        <ComboBox.ItemTemplate>
+          <DataTemplate x:DataType="onl:IIRCColor">
+            <Panel>
+              <TextBlock Text="{Binding Name}" />
+            </Panel>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
 
       <!-- Current Channel Label + Dropdown -->
       <TextBlock x:Name="lblCurrentChannel"
