@@ -10,6 +10,8 @@ using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using AvClientView.Services;
 
+using Serilog;
+
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
@@ -22,6 +24,17 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         Loaded += OnLoaded;
         SetupChatInputEnterKey();
         SetupGameListHover();
+
+        Log.Information("[LOG-View-CNC] Constructor");
+        PropertyChanged += (s, e) =>
+        {
+            if (e.Property == DataContextProperty)
+            {
+                Log.Information("[LOG-View-CNC] DataContext changed: new={NewType}, old={OldType}",
+                    e.NewValue?.GetType().FullName ?? "null",
+                    e.OldValue?.GetType().FullName ?? "null");
+            }
+        };
     }
 
     private bool _infoPanelPositioned;
@@ -36,6 +49,48 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         {
             LayoutUpdated += PositionInfoPanel;
         }
+
+        Log.Information("[LOG-View-CNC] OnLoaded: ddColor={ddColor}, IsNull={IsNull}",
+            ddColor?.GetType().FullName ?? "null", ddColor == null);
+
+        if (ddColor != null)
+        {
+            Log.Information("[LOG-View-CNC] ddColor state: ItemCount={IC}, ItemsSourceType={IST}, DisplayMemberBindingType={DMB}",
+                ddColor.ItemCount,
+                ddColor.ItemsSource?.GetType().FullName ?? "null",
+                ddColor.DisplayMemberBinding?.GetType().FullName ?? "null");
+
+            // Dump first 3 items
+            for (int i = 0; i < ddColor.ItemCount && i < 3; i++)
+            {
+                var item = ddColor.Items[i];
+                Log.Information("[LOG-View-CNC] ddColor.Item[{I}]: type={T}, ToString()='{TS}', is IIRCColor={IsC}",
+                    i, item?.GetType().FullName ?? "null",
+                    item?.ToString() ?? "null",
+                    item is AvClientMvvmContract.Online.IIRCColor);
+                if (item is AvClientMvvmContract.Online.IIRCColor c)
+                    Log.Information("[LOG-View-CNC]   -> Name='{N}', R={R}, G={G}, B={B}", c.Name, c.R, c.G, c.B);
+            }
+
+            // Check DataContext
+            Log.Information("[LOG-View-CNC] DataContext={DC}, Is VM={IsVM}",
+                DataContext?.GetType().FullName ?? "null",
+                DataContext is ICnCNetLobbyViewModel);
+        }
+
+        // Second pass: after layout, items may be populated
+        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            if (ddColor != null)
+            {
+                Log.Information("[LOG-View-CNC] POST-OnLoaded: ddColor.ItemCount={IC}", ddColor.ItemCount);
+                for (int i = 0; i < ddColor.ItemCount && i < 3; i++)
+                {
+                    var item = ddColor.Items[i];
+                    Log.Information("[LOG-View-CNC] POST Item[{I}]: ToString()='{TS}'", i, item?.ToString() ?? "null");
+                }
+            }
+        }, Avalonia.Threading.DispatcherPriority.Loaded);
     }
 
     private void PositionInfoPanel(object? sender, EventArgs e)
