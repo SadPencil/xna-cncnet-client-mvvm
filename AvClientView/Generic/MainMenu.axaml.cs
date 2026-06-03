@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -31,9 +32,11 @@ public partial class MainMenu : UserControl
 {
     private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
 
-    private double _menuWidth;
-    private double _menuHeight;
+    private double _menuWidth = 1280;
+    private double _menuHeight = 720;
+    private bool _isLoaded;
     private static int _dialogCounter;
+    private readonly List<Action> _pendingDialogs = new();
 
     public MainMenu()
     {
@@ -43,14 +46,19 @@ public partial class MainMenu : UserControl
         PointerMoved += OnPointerMoved;
         Focusable = true;
 
-        // Register as recipient for dialog messages from ViewModels
+        // Register as recipient for dialog messages from ViewModels.
+        // Dialogs arriving before OnLoaded are queued and shown after the panels are sized.
         WeakReferenceMessenger.Default.Register<OKDialogAsyncRequestMessage>(this, async (r, m) =>
         {
             m.Reply(Dispatcher.UIThread.InvokeAsync(() =>
             {
                 var tcs = new TaskCompletionSource<OKDialogResult>();
-                var overlay = CreateOKDialogOverlay(m.Title, m.Message, () => tcs.SetResult(new OKDialogResult()));
-                OKDialogsPanel.Children.Add(overlay);
+                Action show = () =>
+                {
+                    var overlay = CreateOKDialogOverlay(m.Title, m.Message, () => tcs.SetResult(new OKDialogResult()));
+                    OKDialogsPanel.Children.Add(overlay);
+                };
+                if (_isLoaded) show(); else _pendingDialogs.Add(show);
                 return tcs.Task;
             }));
         });
@@ -60,8 +68,12 @@ public partial class MainMenu : UserControl
             m.Reply(Dispatcher.UIThread.InvokeAsync(() =>
             {
                 var tcs = new TaskCompletionSource<YesNoDialogResult>();
-                var overlay = CreateYesNoDialogOverlay(m.Title, m.Message, yes => tcs.SetResult(new YesNoDialogResult { Result = yes }));
-                YesNoDialogsPanel.Children.Add(overlay);
+                Action show = () =>
+                {
+                    var overlay = CreateYesNoDialogOverlay(m.Title, m.Message, yes => tcs.SetResult(new YesNoDialogResult { Result = yes }));
+                    YesNoDialogsPanel.Children.Add(overlay);
+                };
+                if (_isLoaded) show(); else _pendingDialogs.Add(show);
                 return tcs.Task;
             }));
         });
@@ -118,6 +130,13 @@ public partial class MainMenu : UserControl
 
         // Ensure we can receive keyboard input
         Focus();
+
+        // Drain any pending dialogs that arrived before the panels were sized
+        _isLoaded = true;
+        Log.Debug($"[DEBUG] MainMenu.OnLoaded: draining {_pendingDialogs.Count} pending dialogs");
+        foreach (var show in _pendingDialogs)
+            show();
+        _pendingDialogs.Clear();
 
         Serilog.Log.Debug($"[DEBUG] MainMenu.OnLoaded done: this.Width={Width}, this.Height={Height}, this.Bounds={Bounds}");
         Serilog.Log.Debug($"[DEBUG]   MainMenuPanel: Width={MainMenuPanel.Width}, Height={MainMenuPanel.Height}, Bounds={MainMenuPanel.Bounds}");
@@ -376,6 +395,8 @@ public partial class MainMenu : UserControl
 
         ApplyIniLayout(overlay);
 
+        Log.Debug($"[DEBUG] OKDialog_{id} created. innerBorder.Width={innerBorder.Width}, overlay.HAlign={overlay.HorizontalAlignment}");
+
         return overlay;
     }
 
@@ -468,6 +489,8 @@ public partial class MainMenu : UserControl
 
         ApplyIniLayout(overlay);
 
+        Log.Debug($"[DEBUG] YesNoDialog_{id} created. innerBorder.Width={innerBorder.Width}, overlay.HAlign={overlay.HorizontalAlignment}");
+
         return overlay;
     }
 
@@ -484,7 +507,7 @@ public partial class MainMenu : UserControl
         }
         catch (Exception ex)
         {
-            Serilog.Log.Debug($"[DEBUG] ApplyIniLayout for MessageBox failed: {ex.Message}");
+            Log.Debug($"[DEBUG] ApplyIniLayout for MessageBox failed: {ex.Message}");
         }
     }
 
