@@ -335,7 +335,8 @@ public partial class MainMenu : UserControl
             Name = $"lblCaption_{id}",
             Text = title,
             FontWeight = FontWeight.Bold,
-            Foreground = GetThemeBrush("XnaTextBrush", Brushes.Lime)
+            Foreground = GetThemeBrush("XnaTextBrush", Brushes.Lime),
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
         };
 
         var messageText = new TextBlock
@@ -343,7 +344,8 @@ public partial class MainMenu : UserControl
             Name = $"lblDescription_{id}",
             Text = message,
             TextWrapping = TextWrapping.Wrap,
-            Foreground = GetThemeBrush("XnaAltBrush", Brushes.Lime)
+            Foreground = GetThemeBrush("XnaAltBrush", Brushes.Lime),
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
         };
 
         var okButton = new Button
@@ -351,13 +353,19 @@ public partial class MainMenu : UserControl
             Name = $"btnOK_{id}",
             Content = "OK",
             Width = 80,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+            Height = 23,
         };
 
         var contentStack = new StackPanel { Spacing = 12 };
         contentStack.Children.Add(titleText);
         contentStack.Children.Add(messageText);
         contentStack.Children.Add(okButton);
+
+        // Force the content panel width so text wrapping is measured correctly.
+        // 400 (innerBorder) - 2*1 (border) - 2*20 (padding) = 358
+        contentStack.Width = 358;
 
         var innerBorder = new Border
         {
@@ -400,14 +408,11 @@ public partial class MainMenu : UserControl
 
         okButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(); };
 
-        ApplyIniLayout(overlay);
-
         return overlay;
     }
 
     /// <summary>
     /// Creates a Yes/No dialog overlay matching the XNA message box visual style.
-    /// INI layout is applied for theme colors, fonts, and button styling.
     /// </summary>
     private Border CreateYesNoDialogOverlay(string title, string message, Action<bool> onResult)
     {
@@ -467,7 +472,7 @@ public partial class MainMenu : UserControl
             Child = contentStack
         };
 
-        // Use Grid rows to reliably center the dialog vertically and horizontally
+        // Use Grid rows/columns to reliably center the dialog in the overlay
         var centerGrid = new Grid();
         centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
         centerGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
@@ -499,26 +504,7 @@ public partial class MainMenu : UserControl
         yesButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(true); };
         noButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(false); };
 
-        ApplyIniLayout(overlay);
-
         return overlay;
-    }
-
-    /// <summary>
-    /// Applies INI layout (theme colors, fonts, button sizing, positioning)
-    /// to a dialog overlay using the "MessageBox" section.
-    /// </summary>
-    private void ApplyIniLayout(Border overlay)
-    {
-        try
-        {
-            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
-            iniOverlay?.ApplyLayout(overlay, "MessageBox", _menuWidth, _menuHeight);
-        }
-        catch (Exception ex)
-        {
-            Log.Debug($"[DEBUG] ApplyIniLayout for MessageBox failed: {ex.Message}");
-        }
     }
 
     /// <summary>
