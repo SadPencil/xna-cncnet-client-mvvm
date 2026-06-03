@@ -73,7 +73,12 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void SetupColorDropdownTemplate()
     {
-        Log.Information("[LOG-View] ddColor.ItemTemplate setup START");
+        Log.Information("[LOG-View] ddColor wiring ItemsSource+SelectedIndex via code-behind Bind()");
+        // Use code-behind Bind() instead of AXAML {Binding} to break the compiled binding chain.
+        // Avalonia ComboBox.ItemTemplate is blocked when ItemsSource uses compiled binding.
+        ddColor.Bind(ComboBox.ItemsSourceProperty, new Binding("ColorOptions"));
+        ddColor.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedColorIndex"));
+
         var template = new FuncDataTemplate<object>((item, _) =>
         {
             Log.Information("[LOG-View] ddColor.FuncDataTemplate called: itemType={Type}, itemToString={Str}",
@@ -85,8 +90,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             {
                 tb.Text = color.Name;
                 tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
-                Log.Information("[LOG-View] ddColor.FuncDataTemplate IIRCColor match: Name={Name}, R={R}, G={G}, B={B}, TextBlock.Text={TbText}",
-                    color.Name, color.R, color.G, color.B, tb.Text);
+                Log.Information("[LOG-View] ddColor.FuncDataTemplate IIRCColor match: Name={Name}", color.Name);
             }
             else
             {
@@ -98,8 +102,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         }, supportsRecycling: true);
 
         ddColor.ItemTemplate = template;
-        ddColor.SelectionBoxItemTemplate = template;
-        Log.Information("[LOG-View] ddColor.ItemTemplate and SelectionBoxItemTemplate SET");
+        Log.Information("[LOG-View] ddColor.ItemTemplate SET via code-behind");
     }
 
     private void SetupChatMessageTemplate()
