@@ -9,6 +9,8 @@ using AvClientMvvmContract.Generic.OptionPanels;
 using AvClientMvvmContract.Messages;
 using AvClientMvvmContract.ViewServices;
 
+using AvClientViewModel.Services;
+
 using ClientCore;
 using ClientCore.Extensions;
 
@@ -32,6 +34,8 @@ namespace AvClientViewModel.Generic.OptionPanels;
 public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPanelViewModel
 {
     private readonly IUIThreadMarshaller uiThreadMarshaller;
+    private readonly DialogService dialogService;
+
     private bool downloadCancelled;
     private CustomComponent? pendingInstallComponent;
 
@@ -64,9 +68,11 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
 
     // --- Constructor ---
 
-    public ComponentsPanelViewModel(IUIThreadMarshaller uiThreadMarshaller)
+    public ComponentsPanelViewModel(IUIThreadMarshaller uiThreadMarshaller,
+        DialogService dialogService)
     {
         this.uiThreadMarshaller = uiThreadMarshaller;
+        this.dialogService = dialogService;
 
         Updater.FileIdentifiersUpdated += () => UpdateInstallationButtons();
     }
@@ -261,21 +267,21 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         {
             if (!downloadCancelled)
             {
-                ShowMessageBox(
-                    "Optional Component Download Failed".L10N("Client:DTAConfig:OptionalComponentDownloadFailedTitle"),
-                    string.Format(("Download of optional component {0} failed.\n" +
-                    "See client.log for details.\n\n" +
-                    "If this problem continues, please contact your mod's authors for support.").L10N("Client:DTAConfig:OptionalComponentDownloadFailedText"),
-                    cc.GUIName));
+                _ = dialogService.ShowOKDialog(
+                     "Optional Component Download Failed".L10N("Client:DTAConfig:OptionalComponentDownloadFailedTitle"),
+                     string.Format(("Download of optional component {0} failed.\n" +
+                     "See client.log for details.\n\n" +
+                     "If this problem continues, please contact your mod's authors for support.").L10N("Client:DTAConfig:OptionalComponentDownloadFailedText"),
+                     cc.GUIName));
             }
 
             _componentActionTexts[index] = GetActionText(cc);
         }
         else
         {
-            ShowMessageBox(
-                "Download Completed".L10N("Client:DTAConfig:DownloadCompleteTitle"),
-                string.Format("Download of optional component {0} completed succesfully.".L10N("Client:DTAConfig:DownloadCompleteText"), cc.GUIName));
+            _ = dialogService.ShowOKDialog(
+                  "Download Completed".L10N("Client:DTAConfig:DownloadCompleteTitle"),
+                  string.Format("Download of optional component {0} completed succesfully.".L10N("Client:DTAConfig:DownloadCompleteText"), cc.GUIName));
             _componentActionTexts[index] = "Uninstall".L10N("Client:DTAConfig:Uninstall");
         }
     }
@@ -321,10 +327,6 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
         return (size / 1048576) + " MB";
     }
 
-    private void ShowMessageBox(string title, string message)
-    {
-        WeakReferenceMessenger.Default.Send(new OKDialogAsyncRequestMessage(title, message));
-    }
 }
 
 

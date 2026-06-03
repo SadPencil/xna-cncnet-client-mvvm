@@ -41,6 +41,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     private readonly UserINISettings iniSettings;
     private readonly DirectDrawWrapperManager directDrawWrapperManager;
     private readonly IResolutionProvider resolutionProvider;
+    private readonly DialogService dialogService;
 
     // --- State ---
 
@@ -134,11 +135,13 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     public DisplayOptionsPanelViewModel(
         UserINISettings iniSettings,
         DirectDrawWrapperManager directDrawWrapperManager,
-        IResolutionProvider resolutionProvider)
+        IResolutionProvider resolutionProvider,
+        DialogService dialogService)
     {
         this.iniSettings = iniSettings;
         this.directDrawWrapperManager = directDrawWrapperManager;
         this.resolutionProvider = resolutionProvider;
+        this.dialogService = dialogService;
 
         PopulateOptions();
         CheckCompatibilityFixes();
@@ -161,9 +164,9 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             sdbinst.WaitForExit();
 
             Log.Information("DTA/TI/TS Compatibility Fix succesfully uninstalled.");
-            ShowMessageBox(
-                "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFixUninstallTitle"),
-                "The DTA/TI/TS Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFixUninstallText"));
+            _ = dialogService.ShowOKDialog(
+                   "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFixUninstallTitle"),
+                   "The DTA/TI/TS Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFixUninstallText"));
 
             using var regKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE", true);
             using var subKey = regKey.CreateSubKey("Tiberian Sun Client");
@@ -178,9 +181,9 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         catch (Exception ex)
         {
             Log.Warning("Uninstalling DTA/TI/TS Compatibility Fix failed. Error message: " + ex.ToString());
-            ShowMessageBox(
-                "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFixUninstallFailTitle"),
-                "Uninstalling DTA/TI/TS Compatibility Fix failed. Returned error:".L10N("Client:DTAConfig:TSFixUninstallFailText") + " " + ex.Message);
+            _ = dialogService.ShowOKDialog(
+                 "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFixUninstallFailTitle"),
+                 "Uninstalling DTA/TI/TS Compatibility Fix failed. Returned error:".L10N("Client:DTAConfig:TSFixUninstallFailText") + " " + ex.Message);
         }
     }
 
@@ -203,9 +206,9 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             subKey.SetValue("FSCompatFixInstalled", "No");
 
             Log.Information("FinalSun Compatibility Fix succesfully uninstalled.");
-            ShowMessageBox(
-                "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFinalSunFixUninstallTitle"),
-                "The FinalSun Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFinalSunFixUninstallText"));
+            _ = dialogService.ShowOKDialog(
+                  "Compatibility Fix Uninstalled".L10N("Client:DTAConfig:TSFinalSunFixUninstallTitle"),
+                  "The FinalSun Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFinalSunFixUninstallText"));
 
             finalSunCompatFixInstalled = false;
             IsFinalSunCompatFixAvailable = false;
@@ -216,7 +219,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         catch (Exception ex)
         {
             Log.Warning("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.ToString());
-            ShowMessageBox(
+           _ = dialogService.ShowOKDialog(
                 "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedTitle"),
                 "Uninstalling FinalSun Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedText") + " " + ex.Message);
         }
@@ -563,11 +566,6 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         {
             Log.Warning("Error checking compatibility fixes: " + ex.Message);
         }
-    }
-
-    private void ShowMessageBox(string title, string message)
-    {
-        WeakReferenceMessenger.Default.Send(new OKDialogAsyncRequestMessage(title, message));
     }
 }
 

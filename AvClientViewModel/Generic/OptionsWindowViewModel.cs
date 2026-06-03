@@ -5,6 +5,7 @@ using AvClientMvvmContract.Generic.OptionPanels;
 using AvClientMvvmContract.Messages;
 
 using AvClientViewModel.Generic.OptionPanels;
+using AvClientViewModel.Services;
 
 using ClientCore;
 using ClientCore.Enums;
@@ -36,6 +37,7 @@ namespace AvClientViewModel.Generic
         private readonly CnCNetOptionsPanelViewModel cncnetOptionsPanel;
         private readonly UpdaterOptionsPanelViewModel updaterOptionsPanel;
         private readonly ComponentsPanelViewModel componentsPanel;
+        private readonly DialogService dialogService;
 
         public IDisplayOptionsPanelViewModel DisplayOptions => displayOptionsPanel;
         public IAudioOptionsPanelViewModel AudioOptions => audioOptionsPanel;
@@ -98,7 +100,8 @@ namespace AvClientViewModel.Generic
             GameOptionsPanelViewModel gameOptionsPanel,
             CnCNetOptionsPanelViewModel cncnetOptionsPanel,
             UpdaterOptionsPanelViewModel updaterOptionsPanel,
-            ComponentsPanelViewModel componentsPanel)
+            ComponentsPanelViewModel componentsPanel,
+            DialogService dialogService)
         {
             this.displayOptionsPanel = displayOptionsPanel;
             this.audioOptionsPanel = audioOptionsPanel;
@@ -106,6 +109,7 @@ namespace AvClientViewModel.Generic
             this.cncnetOptionsPanel = cncnetOptionsPanel;
             this.updaterOptionsPanel = updaterOptionsPanel;
             this.componentsPanel = componentsPanel;
+            this.dialogService = dialogService;
 
             componentsPanel.Initialize();
 
@@ -135,17 +139,18 @@ namespace AvClientViewModel.Generic
         {
             if (IsComponentDownloadInProgress)
             {
-                ShowYesNoDialog(
+                dialogService.ShowYesNoDialog(
                     "Downloads in progress".L10N("Client:DTAConfig:DownloadingTitle"),
-                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu.\n\nAre you sure you want to continue?".L10N("Client:DTAConfig:DownloadingText"),
-                    yes =>
+                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu.\n\nAre you sure you want to continue?".L10N("Client:DTAConfig:DownloadingText"))
+                    .ContinueWith(task =>
                     {
-                        if (yes)
+                        bool yes = task.Result; if (yes)
                         {
                             componentsPanel.CancelDownloadsCommand.Execute(null);
                             SaveSettings();
                         }
                     });
+
                 return;
             }
 
@@ -157,17 +162,19 @@ namespace AvClientViewModel.Generic
         {
             if (IsComponentDownloadInProgress)
             {
-                ShowYesNoDialog(
+                dialogService.ShowYesNoDialog(
                     "Downloads in progress".L10N("Client:DTAConfig:DownloadingTitle"),
-                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu.\n\nAre you sure you want to continue?".L10N("Client:DTAConfig:DownloadingText"),
-                    yes =>
+                    "Optional component downloads are in progress. The downloads will be cancelled if you exit the Options menu.\n\nAre you sure you want to continue?".L10N("Client:DTAConfig:DownloadingText"))
+                    .ContinueWith(task =>
                     {
+                        bool yes = task.Result;
                         if (yes)
                         {
                             componentsPanel.CancelDownloadsCommand.Execute(null);
                             IsVisible = false;
                         }
                     });
+
                 return;
             }
 
@@ -325,38 +332,27 @@ namespace AvClientViewModel.Generic
             catch (Exception ex)
             {
                 Log.Warning("Saving settings failed! Error message: " + ex.ToString());
-                ShowMessageBox(
-                    "Saving Settings Failed".L10N("Client:DTAConfig:SaveSettingFailTitle"),
-                    "Saving settings failed! Error message:".L10N("Client:DTAConfig:SaveSettingFailText") + " " + ex.Message);
+                _ = dialogService.ShowOKDialog(
+                      "Saving Settings Failed".L10N("Client:DTAConfig:SaveSettingFailTitle"),
+                      "Saving settings failed! Error message:".L10N("Client:DTAConfig:SaveSettingFailText") + " " + ex.Message);
             }
 
             IsVisible = false;
 
             if (restartRequired)
             {
-                ShowYesNoDialog(
+                dialogService.ShowYesNoDialog(
                     "Restart Required".L10N("Client:DTAConfig:RestartClientTitle"),
                     ("The client needs to be restarted for some of the changes to take effect.\n\n" +
-                    "Do you want to restart now?").L10N("Client:DTAConfig:RestartClientText"),
-                    yes =>
+                    "Do you want to restart now?").L10N("Client:DTAConfig:RestartClientText"))
+                    .ContinueWith(task =>
                     {
+                        bool yes = task.Result;
+
                         if (yes)
                             RestartRequested?.Invoke(this, EventArgs.Empty);
                     });
             }
-        }
-
-        private void ShowMessageBox(string title, string message)
-        {
-            WeakReferenceMessenger.Default.Send(new OKDialogAsyncRequestMessage(title, message));
-        }
-
-        private async void ShowYesNoDialog(string title, string message, Action<bool> callback)
-        {
-            var msg = new YesNoDialogAsyncRequestMessage(title, message);
-            WeakReferenceMessenger.Default.Send(msg);
-            var result = await msg.Response;
-            callback(result.Result);
         }
 
         #endregion

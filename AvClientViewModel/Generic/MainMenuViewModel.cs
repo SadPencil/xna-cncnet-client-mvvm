@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Messages;
@@ -66,6 +67,7 @@ namespace AvClientViewModel.Generic
         private readonly CnCNetLobbyViewModel cncNetLobbyViewModel;
         private readonly LANLobbyViewModel lanLobbyViewModel;
         private readonly PrivateMessagingWindowViewModel privateMessagingWindowViewModel;
+        private readonly DialogService dialogService;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -151,7 +153,8 @@ namespace AvClientViewModel.Generic
             LANLobbyViewModel lanLobbyViewModel,
             PrivateMessagingWindowViewModel privateMessagingWindowViewModel,
             CnCNetGameLobbyViewModel cncNetGameLobbyViewModel,
-            CnCNetGameLoadingLobbyViewModel cncNetGameLoadingLobbyViewModel)
+            CnCNetGameLoadingLobbyViewModel cncNetGameLoadingLobbyViewModel,
+            DialogService dialogService)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -173,6 +176,7 @@ namespace AvClientViewModel.Generic
             this.cncNetLobbyViewModel = cncNetLobbyViewModel;
             this.lanLobbyViewModel = lanLobbyViewModel;
             this.privateMessagingWindowViewModel = privateMessagingWindowViewModel;
+            this.dialogService = dialogService;
 
             AppDomain.CurrentDomain.ProcessExit += (_, _) => Clean();
 
@@ -642,12 +646,12 @@ namespace AvClientViewModel.Generic
             if (!AreButtonsEnabled)
                 return;
 
-            ShowYesNoDialog(
+            dialogService.ShowYesNoDialog(
                 "Custom Component Updates Available".L10N("Client:Main:CustomUpdateAvailableTitle"),
-                "Updates for custom components are available. Do you want to open\nthe Options menu where you can update the custom components?".L10N("Client:Main:CustomUpdateAvailableText"),
-                yes =>
+                "Updates for custom components are available. Do you want to open\nthe Options menu where you can update the custom components?".L10N("Client:Main:CustomUpdateAvailableText"))
+                .ContinueWith(task =>
                 {
-                    if (yes)
+                    bool yes = task.Result; if (yes)
                     {
                         optionsWindowViewModel.Open();
                         optionsWindowViewModel.SwitchToCustomComponentsPanel();
@@ -682,10 +686,10 @@ namespace AvClientViewModel.Generic
             IsUpdateStatusUnderlined = true;
             IsUpdateStatusEnabled = true;
 
-            ShowMessageBox(
-                "Update failed".L10N("Client:Main:UpdateFailedTitle"),
-                string.Format(("An error occured while updating. Returned error was: {0}\n\nIf you are connected to the Internet and your firewall isn't blocking\n{1}, and the issue is reproducible, contact us at\n{2} for support.").L10N("Client:Main:UpdateFailedText"),
-                    e.Reason, Path.GetFileName(ProgramConstants.StartupExecutable), MainClientConstants.SUPPORT_URL_SHORT));
+            _ = dialogService.ShowOKDialog(
+                    "Update failed".L10N("Client:Main:UpdateFailedTitle"),
+                    string.Format(("An error occured while updating. Returned error was: {0}\n\nIf you are connected to the Internet and your firewall isn't blocking\n{1}, and the issue is reproducible, contact us at\n{2} for support.").L10N("Client:Main:UpdateFailedText"),
+                        e.Reason, Path.GetFileName(ProgramConstants.StartupExecutable), MainClientConstants.SUPPORT_URL_SHORT));
         }
 
         #endregion
@@ -750,7 +754,7 @@ namespace AvClientViewModel.Generic
                     Environment.NewLine + Environment.NewLine +
                     "You won't be able to play without those files.".L10N("Client:Main:MissingFilesText2");
 
-                ShowMessageBox("Missing Files".L10N("Client:Main:MissingFilesTitle"), description);
+                _ = dialogService.ShowOKDialog("Missing Files".L10N("Client:Main:MissingFilesTitle"), description);
             }
         }
 
@@ -779,7 +783,7 @@ namespace AvClientViewModel.Generic
                     "The mod won't work correctly without those files removed.".L10N("Client:Main:InterferingFilesDetectedTextNonTS2");
                 }
 
-                ShowMessageBox("Interfering Files Detected".L10N("Client:Main:InterferingFilesDetectedTitle"), description);
+                _ = dialogService.ShowOKDialog("Interfering Files Detected".L10N("Client:Main:InterferingFilesDetectedTitle"), description);
             }
         }
 
@@ -790,14 +794,16 @@ namespace AvClientViewModel.Generic
                 UserINISettings.Instance.IsFirstRun.Value = false;
                 UserINISettings.Instance.SaveSettings();
 
-                ShowYesNoDialog(
+                dialogService.ShowYesNoDialog(
                     "Initial Installation".L10N("Client:Main:InitialInstallationTitle"),
                     string.Format(("You have just installed {0}.\n" +
                         "It's highly recommended that you configure your settings before playing.\n" +
                         "Do you want to configure them now?").L10N("Client:Main:InitialInstallationText"),
-                        ClientConfiguration.Instance.LocalGame),
-                    yes =>
+                        ClientConfiguration.Instance.LocalGame))
+                    .ContinueWith(task =>
                     {
+                        bool yes = task.Result;
+
                         if (yes)
                             optionsWindowViewModel.Open();
                     });
@@ -821,27 +827,10 @@ namespace AvClientViewModel.Generic
             catch (Exception ex)
             {
                 Log.Warning("Failed to apply translation game files. " + ex.ToString());
-                ShowMessageBox(
+                _ = dialogService.ShowOKDialog(
                     "Applying Translation Files Failed".L10N("Client:Main:ApplyTranslationFilesFailTitle"),
                     "Applying translation files failed! Error message:".L10N("Client:Main:ApplyTranslationFilesFailText") + " " + ex.Message);
             }
-        }
-
-        #endregion
-
-        #region Dialog Helpers
-
-        private void ShowMessageBox(string title, string message)
-        {
-            WeakReferenceMessenger.Default.Send(new OKDialogAsyncRequestMessage(title, message));
-        }
-
-        private async void ShowYesNoDialog(string title, string message, Action<bool> callback)
-        {
-            var msg = new YesNoDialogAsyncRequestMessage(title, message);
-            WeakReferenceMessenger.Default.Send(msg);
-            var result = await msg.Response;
-            callback(result.Result);
         }
 
         #endregion

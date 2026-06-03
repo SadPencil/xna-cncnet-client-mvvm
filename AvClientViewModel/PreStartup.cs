@@ -392,7 +392,8 @@ public static class PreStartup
     public static void ConfigureServices(ServiceCollection services)
     {
         // Core services
-        services.AddSingleton<Random>(_ => new Random());
+        services.AddSingleton<Random>(_ => new Random()); // TODO: the old client creates the Random instance with a customized method.
+        services.AddSingleton<DialogService>();
 
         // Domain services
         services.AddSingleton<GameCollection>();
@@ -428,7 +429,8 @@ public static class PreStartup
             new DisplayOptionsPanelViewModel(
                 UserINISettings.Instance,
                 sp.GetRequiredService<DirectDrawWrapperManager>(),
-                sp.GetRequiredService<IResolutionProvider>()));
+                sp.GetRequiredService<IResolutionProvider>(),
+                sp.GetRequiredService<DialogService>()));
         services.AddSingleton<IDisplayOptionsPanelViewModel>(sp =>
             sp.GetRequiredService<DisplayOptionsPanelViewModel>());
 
@@ -453,7 +455,9 @@ public static class PreStartup
             sp.GetRequiredService<UpdaterOptionsPanelViewModel>());
 
         services.AddSingleton<ComponentsPanelViewModel>(sp =>
-            new ComponentsPanelViewModel(sp.GetRequiredService<IUIThreadMarshaller>()));
+            new ComponentsPanelViewModel(sp.GetRequiredService<IUIThreadMarshaller>(),
+                sp.GetRequiredService<DialogService>()));
+
         services.AddSingleton<IComponentsPanelViewModel>(sp =>
             sp.GetRequiredService<ComponentsPanelViewModel>());
 
@@ -464,7 +468,9 @@ public static class PreStartup
             sp.GetRequiredService<GameOptionsPanelViewModel>(),
             sp.GetRequiredService<CnCNetOptionsPanelViewModel>(),
             sp.GetRequiredService<UpdaterOptionsPanelViewModel>(),
-            sp.GetRequiredService<ComponentsPanelViewModel>()));
+            sp.GetRequiredService<ComponentsPanelViewModel>(),
+            sp.GetRequiredService<DialogService>()));
+
         services.AddSingleton<IOptionsWindowViewModel>(sp =>
             sp.GetRequiredService<OptionsWindowViewModel>());
 
@@ -601,7 +607,9 @@ public static class PreStartup
             sp.GetRequiredService<LANLobbyViewModel>(),
             sp.GetRequiredService<PrivateMessagingWindowViewModel>(),
             sp.GetRequiredService<CnCNetGameLobbyViewModel>(),
-            sp.GetRequiredService<CnCNetGameLoadingLobbyViewModel>()));
+            sp.GetRequiredService<CnCNetGameLoadingLobbyViewModel>(),
+            sp.GetRequiredService<DialogService>()));
+
         services.AddSingleton<IMainMenuViewModel>(sp =>
             sp.GetRequiredService<MainMenuViewModel>());
 
