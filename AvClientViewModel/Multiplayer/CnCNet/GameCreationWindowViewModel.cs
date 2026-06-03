@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
-using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
@@ -78,7 +77,6 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     private readonly ObservableCollection<string> _skillLevelOptions = new();
     public IReadOnlyList<string> SkillLevelOptions => _skillLevelOptions;
 
-    private readonly IUIThreadMarshaller uiThreadMarshaller;
     private readonly Action<GameCreationEventArgs>? onGameCreated;
     private readonly Action<GameCreationEventArgs>? onLoadedGameCreated;
     private readonly Action? onCancelled;
@@ -86,12 +84,10 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     // --- Constructor ---
 
     public GameCreationWindowViewModel(TunnelHandler tunnelHandler,
-        IUIThreadMarshaller uiThreadMarshaller,
         Action<GameCreationEventArgs>? onGameCreated = null, Action<GameCreationEventArgs>? onLoadedGameCreated = null,
         Action? onCancelled = null)
     {
         this.tunnelHandler = tunnelHandler;
-        this.uiThreadMarshaller = uiThreadMarshaller;
         this.onGameCreated = onGameCreated;
         this.onLoadedGameCreated = onLoadedGameCreated;
         this.onCancelled = onCancelled;
@@ -113,9 +109,8 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
         // Initialize tunnel list
         RefreshTunnelList();
 
-        // Subscribe to tunnel refreshes (marshal to UI thread since tunnel events fire on background threads)
-        tunnelHandler.TunnelsRefreshed += (_, _) =>
-            uiThreadMarshaller.AddCallback(new Action(RefreshTunnelList));
+        // Subscribe to tunnel refreshes so the list updates when tunnels are loaded
+        tunnelHandler.TunnelsRefreshed += (_, _) => RefreshTunnelList();
 
         // Check if loading game is allowed
         CanLoadGame = AllowLoadingGame();

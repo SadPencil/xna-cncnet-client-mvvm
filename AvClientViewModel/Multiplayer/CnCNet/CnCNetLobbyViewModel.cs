@@ -383,7 +383,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         {
             _gameCreationWindowViewModel = new GameCreationWindowViewModel(
                 tunnelHandler,
-                uiThreadMarshaller,
                 onGameCreated: e =>
                 {
                     string channelName = RandomizeChannelName();
