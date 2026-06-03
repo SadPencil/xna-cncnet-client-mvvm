@@ -2,18 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using System.Collections.ObjectModel;
-
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 
-using AvClientMvvmContract;
 using AvClientMvvmContract.Campaign;
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Generic.OptionPanels;
@@ -22,10 +17,7 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
-using AvClientView.Converters;
 using AvClientView.Services;
-
-using Serilog;
 
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
@@ -153,151 +145,6 @@ public partial class MainMenu : UserControl
         foreach (var show in _pendingDialogs)
             show();
         _pendingDialogs.Clear();
-
-        // ===== CONVERTER TEST: Direct test + visible ComboBox =====
-        RunConverterTest();
-    }
-
-    private void RunConverterTest()
-    {
-        // Test 1: Direct converter call
-        Log.Information("[LOG-CONV-TEST] === Direct converter test ===");
-        var testColors = new (string Name, byte R, byte G, byte B)[]
-        {
-            ("Red", 255, 0, 0),
-            ("Green", 0, 255, 0),
-            ("Blue", 0, 0, 255),
-            ("Yellow", 255, 255, 0),
-        };
-        foreach (var tc in testColors)
-        {
-            var testColor = new TestRgbColor(tc.Name, tc.R, tc.G, tc.B);
-            var result = Rgb24ToBrushConverter.Instance.Convert(testColor, typeof(IBrush), null, System.Globalization.CultureInfo.CurrentCulture);
-            Log.Information("[LOG-CONV-TEST] Direct: Name={Name}, R={R}, G={G}, B={B} -> Brush={Brush}, type={Type}",
-                tc.Name, tc.R, tc.G, tc.B,
-                result?.GetType().FullName ?? "null",
-                result is ISolidColorBrush sb ? $"#{sb.Color.R:X2}{sb.Color.G:X2}{sb.Color.B:X2}" : "N/A");
-        }
-
-        // Test 2: Test different binding approaches on Foreground
-        Log.Information("[LOG-CONV-TEST] === Binding approach tests ===");
-        foreach (var approach in new[] { "empty-path", "dot-path", "no-converter-reflect" })
-        {
-            var testTb = new TextBlock();
-            testTb.DataContext = new TestRgbColor("TestRed", 255, 0, 0);
-
-            switch (approach)
-            {
-                case "empty-path":
-                    // Approach A: empty path binding with converter
-                    testTb.Bind(TextBlock.ForegroundProperty, new Binding { Converter = Rgb24ToBrushConverter.Instance });
-                    Log.Information("[LOG-CONV-TEST] Approach 'empty-path': Bound with new Binding{{ Converter=... }}");
-                    break;
-                case "dot-path":
-                    // Approach B: explicit "." path binding with converter
-                    testTb.Bind(TextBlock.ForegroundProperty, new Binding(".") { Converter = Rgb24ToBrushConverter.Instance });
-                    Log.Information("[LOG-CONV-TEST] Approach 'dot-path': Bound with new Binding(\".\"){{ Converter=... }}");
-                    break;
-                case "no-converter-reflect":
-                    // Approach C: just set the Foreground directly using the converter
-                    var brush = Rgb24ToBrushConverter.Instance.Convert(new TestRgbColor("TestRed", 255, 0, 0), typeof(IBrush), null, System.Globalization.CultureInfo.CurrentCulture) as IBrush;
-                    testTb.Foreground = brush;
-                    Log.Information("[LOG-CONV-TEST] Approach 'no-converter-reflect': Set Foreground directly to {Brush}", brush?.GetType().FullName ?? "null");
-                    break;
-            }
-
-            Log.Information("[LOG-CONV-TEST] Result '{Name}': Foreground={FG}, type={T}",
-                approach,
-                testTb.Foreground is ISolidColorBrush sb3 ? $"#{sb3.Color.R:X2}{sb3.Color.G:X2}{sb3.Color.B:X2}" : testTb.Foreground?.ToString() ?? "null",
-                testTb.Foreground?.GetType().FullName ?? "null");
-        }
-
-        // Test 3: Create a visible ComboBox with Runtime binding
-        var testItems = new ObservableCollection<TestRgbColor>
-        {
-            new TestRgbColor("Red", 255, 0, 0),
-            new TestRgbColor("Green", 0, 255, 0),
-            new TestRgbColor("Blue", 0, 0, 255),
-        };
-
-        // Use non-generic FuncDataTemplate matching any object
-        var dt = new FuncDataTemplate(typeof(object), (data, _) =>
-        {
-            Log.Information("[LOG-CONV-TEST] FuncDataTemplate BUILD called: data type={Type}, data={Data}",
-                data?.GetType().FullName ?? "null", data?.ToString() ?? "null");
-            var tb = new TextBlock();
-            tb.DataContext = data;
-            tb.Bind(TextBlock.TextProperty, new Binding("Name"));
-            tb.Bind(TextBlock.ForegroundProperty, new Binding(".") { Converter = Rgb24ToBrushConverter.Instance });
-            tb.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
-            tb.DataContextChanged += (s, e) =>
-            {
-                Log.Information("[LOG-CONV-TEST] DataTemplate TB DC set: type={Type}",
-                    tb.DataContext?.GetType().FullName ?? "null");
-            };
-            tb.PropertyChanged += (s, e) =>
-            {
-                if (e.Property == TextBlock.ForegroundProperty)
-                    Log.Information("[LOG-CONV-TEST] TB Foreground changed: val={Val}",
-                        tb.Foreground is ISolidColorBrush sb2 ? $"#{sb2.Color.R:X2}{sb2.Color.G:X2}{sb2.Color.B:X2}" : tb.Foreground?.ToString() ?? "null");
-            };
-            return tb;
-        });
-
-        var testCombo = new ComboBox
-        {
-            Name = "TEST_ColorCombo",
-            ItemsSource = testItems,
-            ItemTemplate = dt,
-            Width = 200, Height = 21,
-            IsVisible = true,
-        };
-        IniLayoutProperties.SetSkipForeground(testCombo, true);
-        Canvas.SetLeft(testCombo, 10);
-        Canvas.SetTop(testCombo, 10);
-
-        // Add to MainMenuPanel so it renders
-        MainMenuPanel.Children.Add(testCombo);
-
-        // Dump Foreground inheritance chain
-        Log.Information("[LOG-CONV-TEST] --- Foreground chain ---");
-        Log.Information("[LOG-CONV-TEST] testCombo.Foreground={FG}",
-            testCombo.Foreground is ISolidColorBrush fgPb ? $"#{fgPb.Color.R:X2}{fgPb.Color.G:X2}{fgPb.Color.B:X2}" : testCombo.Foreground?.ToString() ?? "null");
-        Log.Information("[LOG-CONV-TEST] this.Foreground (UserControl)={FG}",
-            this.Foreground is ISolidColorBrush fgThis ? $"#{fgThis.Color.R:X2}{fgThis.Color.G:X2}{fgThis.Color.B:X2}" : this.Foreground?.ToString() ?? "null");
-
-        // Check XnaTextBrush DynamicResource on this control
-        if (this.FindResource("XnaTextBrush") is IBrush xnaB)
-            Log.Information("[LOG-CONV-TEST] this.FindResource XnaTextBrush={FG}",
-                xnaB is ISolidColorBrush fgXna ? $"#{fgXna.Color.R:X2}{fgXna.Color.G:X2}{fgXna.Color.B:X2}" : xnaB.ToString());
-        else
-            Log.Information("[LOG-CONV-TEST] XnaTextBrush NOT FOUND on this");
-
-        // Check App resources
-        if (Application.Current?.FindResource("XnaTextBrush") is IBrush appB)
-            Log.Information("[LOG-CONV-TEST] App XnaTextBrush={FG}",
-                appB is ISolidColorBrush fgApp ? $"#{fgApp.Color.R:X2}{fgApp.Color.G:X2}{fgApp.Color.B:X2}" : appB.ToString());
-
-        // Open the dropdown programmatically to force item rendering
-        Log.Information("[LOG-CONV-TEST] ComboBox added, IsVisible={IV}, ItemCount={IC}",
-            testCombo.IsVisible, testCombo.ItemCount);
-        testCombo.IsDropDownOpen = true;
-        Log.Information("[LOG-CONV-TEST] IsDropDownOpen set to true");
-        Dispatcher.UIThread.Post(() =>
-        {
-            Log.Information("[LOG-CONV-TEST] POST: IsDropDownOpen={IDO}, ItemCount={IC}",
-                testCombo.IsDropDownOpen, testCombo.ItemCount);
-        }, DispatcherPriority.Loaded);
-    }
-
-    public class TestRgbColor : IRgb24Color
-    {
-        public string Name { get; }
-        public byte R { get; }
-        public byte G { get; }
-        public byte B { get; }
-        public TestRgbColor(string name, byte r, byte g, byte b) { Name = name; R = r; G = g; B = b; }
-        public override string ToString() => Name;
     }
 
 

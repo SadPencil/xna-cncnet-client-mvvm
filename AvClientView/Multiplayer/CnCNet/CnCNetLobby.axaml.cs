@@ -10,8 +10,6 @@ using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using AvClientView.Services;
 
-using Serilog;
-
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
