@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -408,6 +409,8 @@ public partial class MainMenu : UserControl
 
         okButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(); };
 
+        StyleDialogButton(okButton);
+
         return overlay;
     }
 
@@ -504,7 +507,67 @@ public partial class MainMenu : UserControl
         yesButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(true); };
         noButton.Click += (_, _) => { onDismiss(null!, EventArgs.Empty); onResult(false); };
 
+        StyleDialogButton(yesButton);
+        StyleDialogButton(noButton);
+
         return overlay;
+    }
+
+    /// <summary>
+    /// Applies INI-standard button textures and styling matching what
+    /// ApplyStandardButtonTextures does for AXAML buttons.
+    /// </summary>
+    private void StyleDialogButton(Button button)
+    {
+        try
+        {
+            var iniOverlay = ViewConstants.ServiceProvider.GetService<IIniLayoutOverlayService>();
+            if (iniOverlay == null) return;
+
+            // Map to nearest standard XNA button width (75, 92, 110, 121, 133, 160)
+            int[] standardWidths = { 75, 92, 110, 121, 133, 160 };
+            int btnW = (int)(button.Width > 0 ? button.Width : 75);
+            int w = standardWidths.OrderBy(sw => Math.Abs(sw - btnW)).First();
+            string idlePath = $"{w}pxbtn.png";
+            string hoverPath = $"{w}pxbtn_c.png";
+
+            var idleFullPath = iniOverlay.FindTextureFile(idlePath);
+            var hoverFullPath = iniOverlay.FindTextureFile(hoverPath);
+
+            if (idleFullPath != null)
+            {
+                var idleBrush = new ImageBrush(new Bitmap(idleFullPath))
+                {
+                    Stretch = Stretch.UniformToFill
+                };
+                button.Background = idleBrush;
+
+                // FontIndex 1 = bold, matching XNAClientButton
+                button.FontWeight = FontWeight.Bold;
+                button.FontSize = 12;
+
+                if (hoverFullPath != null)
+                {
+                    var hoverBrush = new ImageBrush(new Bitmap(hoverFullPath))
+                    {
+                        Stretch = Stretch.UniformToFill
+                    };
+                    button.PointerEntered += (_, _) => button.Background = hoverBrush;
+                    button.PointerExited += (_, _) => button.Background = idleBrush;
+                }
+
+                // Text color from INI theme (via resources set by ApplyThemeColors)
+                var textBrush = GetThemeBrush("XnaAltBrush", Brushes.Lime);
+                var hoverBrushTheme = GetThemeBrush("XnaButtonHoverBrush", Brushes.White);
+                button.Foreground = textBrush;
+                button.PointerEntered += (_, _) => button.Foreground = hoverBrushTheme;
+                button.PointerExited += (_, _) => button.Foreground = textBrush;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Debug($"[DEBUG] StyleDialogButton failed: {ex.Message}");
+        }
     }
 
     /// <summary>
