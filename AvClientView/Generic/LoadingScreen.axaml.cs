@@ -18,14 +18,7 @@ public partial class LoadingScreen : UserControl
 
     public event EventHandler? Completed;
 
-    public LoadingScreen() : this(null) { }
-
-    /// <summary>
-    /// LoadingScreen is the only view that tolerates a null iniOverlay —
-    /// it shows immediately with a hardcoded background while DI is built
-    /// on a background thread. See MainWindow.ShowMainWindow().
-    /// </summary>
-    public LoadingScreen(IIniLayoutOverlayService? iniOverlay)
+    public LoadingScreen(IIniLayoutOverlayService iniOverlay)
     {
         IniOverlayService = iniOverlay;
         InitializeComponent();
@@ -35,7 +28,7 @@ public partial class LoadingScreen : UserControl
     /// <summary>
     /// Set by MainWindow after DI is ready to re-apply INI layout.
     /// </summary>
-    internal IIniLayoutOverlayService? IniOverlayService { get; set; }
+    internal IIniLayoutOverlayService IniOverlayService { get; set; }
 
     /// <summary>
     /// Called by MainWindow after DI is ready to apply INI layout

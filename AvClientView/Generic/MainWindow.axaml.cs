@@ -33,9 +33,7 @@ public partial class MainWindow : Window
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
 
-        // LoadingScreen is the only view that tolerates a null INI service —
-        // it shows a hardcoded background until DI is ready.
-        _loadingScreen = new LoadingScreen(iniOverlay: null);
+        _loadingScreen = new LoadingScreen(iniOverlay: Startup.IniLayoutOverlayService);
         _loadingScreen.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         _loadingScreen.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
         _loadingScreen.Completed += OnLoadingCompleted;
@@ -60,10 +58,6 @@ public partial class MainWindow : Window
     {
         var sp = _serviceProvider!;
         var iniOverlay = sp.GetRequiredService<IIniLayoutOverlayService>();
-
-        // Re-apply INI layout on LoadingScreen now that DI is ready
-        _loadingScreen!.IniOverlayService = iniOverlay;
-        _loadingScreen.TryApplyIniOverlay();
 
         // Connect LoadingScreen ViewModel
         var loadingScreenVM = sp.GetRequiredService<ILoadingScreenViewModel>();

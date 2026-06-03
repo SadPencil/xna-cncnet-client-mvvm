@@ -4,13 +4,20 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Headless;
 
+using AvClientMvvmContract.ViewServices;
+
+using AvClientView.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView;
 
-public class Startup
+public static class Startup
 {
     internal static Func<ServiceProvider> InitializeServices { get; private set; } = null!;
+
+    private static UrlService UrlService => field ??= new UrlService();
+    internal static IniLayoutOverlayService IniLayoutOverlayService => field ??= new IniLayoutOverlayService(UrlService);
 
     [STAThread]
     public static void Run(string[] args, Func<ServiceProvider> initServices)
@@ -37,5 +44,18 @@ public class Startup
         app = app.WithInterFont();
 
         return app;
+    }
+
+    public static void ConfigureServices(ServiceCollection services)
+    {
+        services.AddSingleton(UrlService);
+        services.AddTransient<IUrlService, UrlService>();
+
+        services.AddSingleton(IniLayoutOverlayService);
+        services.AddTransient<IIniLayoutOverlayService, IniLayoutOverlayService>();
+
+        services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
+        services.AddSingleton<IClientSoundService, ClientSoundService>();        
+        services.AddSingleton<IApplicationLifecycleService, ApplicationLifecycleService>();
     }
 }
