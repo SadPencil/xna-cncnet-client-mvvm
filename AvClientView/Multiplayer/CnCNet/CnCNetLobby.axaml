@@ -36,7 +36,7 @@
                 Width="150" Height="21"
                 Canvas.Left="545" Canvas.Top="12">
         <ComboBox.ItemTemplate>
-          <DataTemplate x:DataType="onl:IIRCColor">
+          <DataTemplate>
             <TextBlock Text="{Binding Name}"
                        Foreground="{Binding ., Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}" />
           </DataTemplate>
@@ -87,7 +87,8 @@
               BorderThickness="1"
               Width="278" Height="590"
               Canvas.Left="12" Canvas.Top="43">
-        <ListBox ItemsSource="{Binding Games}"
+        <ListBox x:Name="lbGames"
+                 ItemsSource="{Binding Games}"
                  SelectedIndex="{Binding SelectedGameIndex}"
                  Background="Transparent"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -127,16 +128,16 @@
         </ListBox>
       </Border>
 
-      <!-- Game Information Panel (shown when a game is selected) -->
+      <!-- Game Information Panel (shown on hover or when selected) -->
       <Border x:Name="panelGameInfo"
-              IsVisible="{Binding SelectedGame, Converter={x:Static ObjectConverters.IsNotNull}}"
+              IsVisible="{Binding HoveredGame, Converter={x:Static ObjectConverters.IsNotNull}}"
               Background="#E0000000"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
               Padding="8"
               Width="278"
               Canvas.Left="12" Canvas.Top="640">
-        <StackPanel DataContext="{Binding SelectedGame}"
+        <StackPanel DataContext="{Binding HoveredGame}"
                     Spacing="3">
           <TextBlock Text="GAME INFORMATION"
                      FontWeight="Bold"
@@ -186,11 +187,12 @@
               Width="630" Height="590"
               Canvas.Left="300" Canvas.Top="43">
         <ListBox ItemsSource="{Binding ChatMessages}"
-                 Background="Transparent">
+                 Background="Transparent"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
           <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="x:String">
-              <TextBlock Text="{Binding .}"
-                         Foreground="{DynamicResource XnaTextBrush}"
+            <DataTemplate x:DataType="onl:IChatMessage">
+              <TextBlock Text="{Binding ., Converter={x:Static converters:ChatMessageFormatterConverter.Instance}}"
+                         Foreground="{Binding Color, Converter={x:Static converters:Rgb24ToBrushConverter.Instance}}"
                          TextWrapping="Wrap" />
             </DataTemplate>
           </ListBox.ItemTemplate>

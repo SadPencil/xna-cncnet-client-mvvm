@@ -153,8 +153,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private readonly ObservableCollection<IPlayerListItem> players = new();
     public IReadOnlyList<IPlayerListItem> Players => players;
 
-    private readonly ObservableCollection<string> chatMessages = new();
-    public IReadOnlyList<string> ChatMessages => chatMessages;
+    private readonly ObservableCollection<IChatMessage> chatMessages = new();
+    public IReadOnlyList<IChatMessage> ChatMessages => chatMessages;
 
     private readonly ObservableCollection<IIRCColor> colorOptions = new();
     public IReadOnlyList<IIRCColor> ColorOptions => colorOptions;
@@ -172,6 +172,18 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     // Computed observable for the currently selected game in the list.
     [ObservableProperty]
     private IHostedCnCNetGame? selectedGame;
+
+    // Hover state for the game info panel (driven by View's PointerMoved).
+    [ObservableProperty]
+    private int hoveredGameIndex = -1;
+
+    [ObservableProperty]
+    private IHostedCnCNetGame? hoveredGame;
+
+    partial void OnHoveredGameIndexChanged(int value)
+    {
+        HoveredGame = value >= 0 && value < games.Count ? games[value] : null;
+    }
 
     public CnCNetLobbyViewModel(
         CnCNetManager connectionManager,
@@ -818,11 +830,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             cncnetUserData.IsIgnored(message.SenderIdent) &&
             !message.SenderIsAdmin)
         {
-            chatMessages.Add(string.Format("Message blocked from - {0}".L10N("Client:Main:PMBlockedFrom"), message.SenderName));
+            chatMessages.Add(new ChatMessage(
+                string.Format("Message blocked from - {0}".L10N("Client:Main:PMBlockedFrom"), message.SenderName)));
         }
         else
         {
-            chatMessages.Add(message.ToString());
+            chatMessages.Add(message);
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -21,6 +22,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         InitializeComponent();
         Loaded += OnLoaded;
         SetupChatInputEnterKey();
+        SetupGameListHover();
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -45,6 +47,35 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             }
         }
         catch { }
+    }
+
+    private void SetupGameListHover()
+    {
+        if (lbGames == null) return;
+
+        lbGames.AddHandler(PointerMovedEvent, (s, e) =>
+        {
+            var vm = ViewModel;
+            if (vm == null) return;
+
+            var point = e.GetPosition(lbGames);
+            // ItemContainerGenerator is not available in Avalonia ListBox.
+            // Use a simple height-based calculation.
+            // Each game item is approximately 18px tall (font height + margin).
+            const double itemHeight = 18.0;
+            int index = (int)(point.Y / itemHeight);
+            if (index < 0 || index >= vm.Games.Count)
+                vm.HoveredGameIndex = -1;
+            else
+                vm.HoveredGameIndex = index;
+        }, handledEventsToo: true);
+
+        lbGames.AddHandler(PointerExitedEvent, (s, e) =>
+        {
+            var vm = ViewModel;
+            if (vm != null)
+                vm.HoveredGameIndex = -1;
+        }, handledEventsToo: true);
     }
 
     private void SetupChatInputEnterKey()

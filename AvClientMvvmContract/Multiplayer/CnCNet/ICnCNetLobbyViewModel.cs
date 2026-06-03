@@ -16,8 +16,10 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     string DraftMessage { get; set; }
     IReadOnlyList<IHostedCnCNetGame> Games { get; }
     IReadOnlyList<IPlayerListItem> Players { get; }
-    IReadOnlyList<string> ChatMessages { get; }
+    IReadOnlyList<IChatMessage> ChatMessages { get; }
     IHostedCnCNetGame? SelectedGame { get; }
+    IHostedCnCNetGame? HoveredGame { get; }
+    int HoveredGameIndex { get; set; }
     int SelectedGameIndex { get; set; }
     int SelectedColorIndex { get; set; }
     int SelectedChannelIndex { get; set; }
