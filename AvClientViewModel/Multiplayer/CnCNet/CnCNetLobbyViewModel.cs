@@ -199,13 +199,21 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         _mapPreviewLease = null;
         HoveredGameMapPreview = null;
 
+        Log.Information("[LOG-VM] LoadMapPreview called: HoveredGame={Game}, MapHash={Hash}",
+            HoveredGame?.RoomName ?? "null",
+            HoveredGame?.MapHash ?? "null");
+
         if (HoveredGame == null)
         {
             HoveredGameMapPreview = LoadFallbackPreview();
+            Log.Information("[LOG-VM] LoadMapPreview: HoveredGame is null, fallback result={Result}",
+                HoveredGameMapPreview != null ? "loaded" : "null");
             return;
         }
 
         if (!string.IsNullOrEmpty(HoveredGame.MapHash))
+        {
+            Log.Information("[LOG-VM] LoadMapPreview: looking up map by hash={Hash}", HoveredGame.MapHash);
         {
             var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
             if (map != null)

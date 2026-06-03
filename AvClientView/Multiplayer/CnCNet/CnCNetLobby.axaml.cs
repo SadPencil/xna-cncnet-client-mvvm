@@ -77,18 +77,49 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         // because Avalonia ComboBox blocks ItemTemplate when ItemsSource uses compiled binding.
         ddColor.Bind(ComboBox.ItemsSourceProperty, new Binding("ColorOptions"));
         ddColor.Bind(ComboBox.SelectedIndexProperty, new Binding("SelectedColorIndex"));
+        Log.Information("[LOG-View] ddColor.Bind(ItemsSource) and Bind(SelectedIndex) done");
 
-        ddColor.ItemTemplate = new FuncDataTemplate<object>((item, _) =>
+        ddColor.ItemTemplate = new LoggingFuncDataTemplate();
+        Log.Information("[LOG-View] ddColor.ItemTemplate set to LoggingFuncDataTemplate");
+    }
+
+    /// <summary>
+    /// Custom FuncDataTemplate that logs every Match() and Build() call
+    /// so we can see exactly when Avalonia tries to render ComboBox items.
+    /// </summary>
+    private class LoggingFuncDataTemplate : Avalonia.Controls.Templates.IDataTemplate
+    {
+        public bool Match(object? data)
         {
-            var tb = new TextBlock();
-            if (item is IIRCColor color)
+            bool isMatch = data is IIRCColor;
+            Log.Information("[LOG-View] ddColor.Match called: dataType={Type}, dataToString={Str}, isIIRCColor={Match}",
+                data?.GetType().FullName ?? "null",
+                data?.ToString() ?? "null",
+                isMatch);
+            return true; // match everything
+        }
+
+        public Control? Build(object? data)
+        {
+            Log.Information("[LOG-View] ddColor.Build called: dataType={Type}, dataToString={Str}",
+                data?.GetType().FullName ?? "null",
+                data?.ToString() ?? "null");
+
+            if (data is IIRCColor color)
             {
-                tb.Text = color.Name;
-                tb.Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B));
-                Log.Information("[LOG-View] ddColor template: Name={Name}", color.Name);
+                var tb = new TextBlock
+                {
+                    Text = color.Name,
+                    Foreground = new SolidColorBrush(Color.FromArgb(255, color.R, color.G, color.B))
+                };
+                Log.Information("[LOG-View] ddColor.Build returning TextBlock: Text={Text}", tb.Text);
+                return tb;
             }
-            return tb;
-        }, supportsRecycling: true);
+
+            var fallback = new TextBlock { Text = data?.ToString() ?? "null" };
+            Log.Warning("[LOG-View] ddColor.Build returning fallback: Text={Text}", fallback.Text);
+            return fallback;
+        }
     }
 
     private void SetupChatMessageTemplate()
@@ -165,7 +196,13 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             if (index < 0 || index >= vm.Games.Count)
                 vm.HoveredGameIndex = -1;
             else
+            {
                 vm.HoveredGameIndex = index;
+                Log.Information("[LOG-View] Hover: index={Idx}, Game={Game}, MapHash={Hash}",
+                    index,
+                    vm.Games[index]?.RoomName ?? "null",
+                    vm.Games[index]?.MapHash ?? "null");
+            }
         }, handledEventsToo: true);
 
         lbGames.AddHandler(PointerExitedEvent, (s, e) =>
@@ -199,12 +236,29 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             DataContext = value;
             if (value != null)
             {
-                Log.Information("[LOG-View] ViewModel set: ColorOptions.Count={ColorCount}, ChatMessages.Count={ChatCount}, Games.Count={GameCount}, ChannelOptions.Count={ChanCount}",
+                Log.Information("[LOG-View] ViewModel set: ColorOptions.Count={ColorCount}, ChatMessages.Count={ChatCount}, Games.Count={GameCount}, ChannelOptions.Count={ChanCount}, concreteType={Type}",
                     value.ColorOptions?.Count ?? -1,
                     value.ChatMessages?.Count ?? -1,
                     value.Games?.Count ?? -1,
-                    value.ChannelOptions?.Count ?? -1);
-                Log.Information("[LOG-View] ViewModel.set: concreteType={Type}", value.GetType().FullName);
+                    value.ChannelOptions?.Count ?? -1,
+                    value.GetType().FullName);
+                // Log first 3 ColorOptions items to verify data types
+                var co = value.ColorOptions;
+                if (co != null)
+                {
+                    for (int i = 0; i < co.Count && i < 3; i++)
+                    {
+                        var item = co[i];
+                        Log.Information("[LOG-View] ViewModel ColorOptions[{Idx}]: type={Type}, name={Name}",
+                            i, item?.GetType().FullName ?? "null",
+                            item?.Name ?? "null");
+                    }
+                }
+                // Log ddColor Items after binding
+                if (ddColor.Items != null)
+                    Log.Information("[LOG-View] ddColor.Items.Count={Count}", ddColor.Items.Count);
+                else
+                    Log.Information("[LOG-View] ddColor.Items is null");
             }
         }
     }
