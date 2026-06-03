@@ -23,11 +23,15 @@ namespace AvClientViewModel.Online
     /// Acts as an interface between the CnCNet connection class
     /// and the user-interface's classes.
     /// </summary>
-    public class CnCNetManager : IConnectionManager
+    /// <summary>
+    /// Acts as an interface between the CnCNet connection class
+    /// and the user-interface's classes.
+    /// </summary>
+    public class CnCNetManager
     {
-        // When implementing IConnectionManager functions, pay special attention
+        // When implementing callback functions, pay special attention
         // to thread-safety.
-        // The functions in IConnectionManager are usually called from the networking
+        // The callback functions are usually called from the networking
         // thread, so if they affect anything in the UI or affect data that the
         // UI thread might be reading, use IUIThreadMarshaller.AddCallback to execute a function
         // on the UI thread instead of modifying the data or raising events directly.
@@ -40,8 +44,6 @@ namespace AvClientViewModel.Online
         public event EventHandler<CnCNetPrivateMessageEventArgs> PrivateMessageReceived;
         public event EventHandler<PrivateCTCPEventArgs> PrivateCTCPReceived;
         public event EventHandler<ChannelEventArgs> BannedFromChannel;
-        public event EventHandler<ChannelEventArgs>? ChannelFull;
-        public event EventHandler<ChannelEventArgs>? IncorrectChannelPassword;
 
         public event EventHandler<AttemptedServerEventArgs> AttemptedServerChanged;
         public event EventHandler ConnectAttemptFailed;
@@ -223,8 +225,6 @@ namespace AvClientViewModel.Online
 
             if (channel != null)
                 channel.OnChannelFull();
-
-            ChannelFull?.Invoke(this, new ChannelEventArgs(channelName));
         }
 
         public void OnTargetChangeTooFast(string channelName, string message)
@@ -563,8 +563,6 @@ namespace AvClientViewModel.Online
             var channel = FindChannel(channelName);
             if (channel != null)
                 channel.OnInvalidJoinPassword();
-
-            IncorrectChannelPassword?.Invoke(this, new ChannelEventArgs(channelName));
         }
 
         public void OnNoticeMessageParsed(string notice, string userName)

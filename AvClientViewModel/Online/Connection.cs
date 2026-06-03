@@ -31,13 +31,13 @@ namespace AvClientViewModel.Online
         private const int MAXIMUM_LATENCY = 400;
         private const int BYTE_ARRAY_MSG_LEN = 1024;
 
-        public Connection(IConnectionManager connectionManager, Random random)
+        public Connection(CnCNetManager connectionManager, Random random)
         {
             this.connectionManager = connectionManager;
             this.Rng = random;
         }
 
-        IConnectionManager connectionManager;
+        CnCNetManager connectionManager;
 
         public Random Rng;
 

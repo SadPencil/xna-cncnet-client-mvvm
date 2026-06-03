@@ -329,41 +329,6 @@
       </Panel>
     </Border>
 
-    <!-- ========== YES/NO DIALOG OVERLAY ========== -->
-    <Border IsVisible="{Binding PendingYesNoDialog, Converter={x:Static ObjectConverters.IsNotNull}}"
-            Background="#80000000"
-            Canvas.Left="0" Canvas.Top="0"
-            Width="1220" Height="728">
-      <Panel DataContext="{Binding PendingYesNoDialog}">
-        <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
-                BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-                BorderThickness="1"
-                Padding="16"
-                Width="400"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-          <StackPanel Spacing="12">
-            <TextBlock Text="{Binding Title}"
-                       FontWeight="Bold"
-                       Foreground="{DynamicResource XnaTextBrush}" />
-            <TextBlock Text="{Binding Text}"
-                       TextWrapping="Wrap"
-                       Foreground="{DynamicResource XnaAltBrush}" />
-            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-              <Button Content="Yes"
-                      Width="100" Height="23"
-                      FontWeight="Bold"
-                      Command="{Binding YesCommand}" />
-              <Button Content="No"
-                      Width="100" Height="23"
-                      FontWeight="Bold"
-                      Command="{Binding NoCommand}" />
-            </StackPanel>
-          </StackPanel>
-        </Border>
-      </Panel>
-    </Border>
-
     <!-- ========== GAME INVITE OVERLAY ========== -->
     <Border IsVisible="{Binding PendingGameInvite, Converter={x:Static ObjectConverters.IsNotNull}}"
             Background="#80000000"

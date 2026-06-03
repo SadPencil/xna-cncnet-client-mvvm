@@ -38,7 +38,6 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
 
     // View-reactive state
     string? PendingMessage { get; }
-    IPendingYesNoDialogData? PendingYesNoDialog { get; }
     bool IsUpdateCheckNeeded { get; }
     bool IsLoginWindowVisible { get; }
     ICnCNetLoginWindowViewModel LoginWindowViewModel { get; }
