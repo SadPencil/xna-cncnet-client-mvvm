@@ -241,7 +241,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         try
         {
-            string path = System.IO.Path.Combine(ProgramConstants.GetResourcePath(), "noMapPreview.png");
+            string path = System.IO.Path.Combine(ProgramConstants.GetBaseResourcePath(), "noMapPreview.png");
             if (System.IO.File.Exists(path))
                 return Image.Load(path);
         }
