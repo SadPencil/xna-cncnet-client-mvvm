@@ -174,15 +174,9 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
             new ChatBoxCommand("LOADOPTIONS", "Load game option preset".L10N("Client:Main:ChatboxCommandLoadOptionsHelp"), true,
                 HandleGameOptionPresetLoadCommand)
         };
-    }
 
-    // --- Initialization ---
-
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        // Add Spectator side to all player slots (matches original MultiplayerGameLobby.Initialize)
+        // Add Spectator side to all player slots (must be in constructor to run before SetUp;
+        // matches original MultiplayerGameLobby.Initialize)
         const string spectatorName = "Spectator";
         string spectatorL10N = spectatorName.L10N("Client:Sides:SpectatorSide");
         foreach (PlayerSlotObservable slot in PlayerSlots)
@@ -196,6 +190,13 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         FrameSendRate = ClientConfiguration.Instance.DefaultFrameSendRate;
         ProtocolVersion = ClientConfiguration.Instance.DefaultProtocolVersion;
         MaxAhead = ClientConfiguration.Instance.DefaultMaxAhead;
+    }
+
+    // --- Initialization ---
+
+    public override void Initialize()
+    {
+        base.Initialize();
 
         if (SavedGameManager.AreSavedGamesAvailable())
         {

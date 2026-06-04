@@ -190,12 +190,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         this.random = random;
 
         mapPreviewBox = new MapPreviewBoxViewModel(mapLoader);
-    }
 
-    // --- Lifecycle ---
-
-    public virtual void Initialize()
-    {
+        // Initialize player slots (must be done in constructor, not Initialize, because
+        // CopyPlayerDataToUI can be called from SetUp before Initialize runs)
         MPColors = MultiplayerColor.LoadColors();
         mapPreviewBox.SetMPColors(MPColors);
 
@@ -209,7 +206,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GetRandomSelectors(selectorNames, RandomSelectors);
         RandomSelectorCount = RandomSelectors.Count + 1;
 
-        // Initialize player slots
         var slots = new PlayerSlotObservable[MAX_PLAYER_COUNT];
         for (int i = 0; i < MAX_PLAYER_COUNT; i++)
         {
@@ -219,10 +215,15 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
         PlayerSlots = slots;
 
-        // Initialize observable checkbox/dropdown wrappers from settings
         RefreshGameOptionWrappers();
+    }
 
-        // Initialize game mode filter
+    // --- Lifecycle ---
+
+    public virtual void Initialize()
+    {
+        // Initialize game mode filter (requires StatisticsManager which is not
+        // available during DI construction)
         RefreshGameModeFilter();
 
         // Subscribe to map changes
