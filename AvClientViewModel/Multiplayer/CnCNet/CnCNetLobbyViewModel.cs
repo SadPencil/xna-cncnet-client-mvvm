@@ -304,6 +304,15 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         this.gameLobby = gameLobby;
         this.gameLoadingLobby = gameLoadingLobby;
+
+        // Propagate initial chat color to game lobbies (OnSelectedColorIndexChanged
+        // fired before gameLobby was assigned, so ChatColor never got set)
+        if (SelectedColorIndex >= 0 && SelectedColorIndex < chatColors.Length)
+        {
+            IRCColor color = chatColors[SelectedColorIndex];
+            this.gameLobby.ChatColor = color;
+            this.gameLoadingLobby?.ChangeChatColor(color);
+        }
     }
 
     /// <summary>
