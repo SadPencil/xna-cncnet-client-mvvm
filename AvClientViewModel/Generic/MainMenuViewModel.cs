@@ -152,8 +152,6 @@ namespace AvClientViewModel.Generic
             CnCNetLobbyViewModel cncNetLobbyViewModel,
             LANLobbyViewModel lanLobbyViewModel,
             PrivateMessagingWindowViewModel privateMessagingWindowViewModel,
-            CnCNetGameLobbyViewModel cncNetGameLobbyViewModel,
-            CnCNetGameLoadingLobbyViewModel cncNetGameLoadingLobbyViewModel,
             DialogService dialogService)
         {
             this.updateService = updateService;
@@ -192,7 +190,6 @@ namespace AvClientViewModel.Generic
             cncNetLobbyViewModel.PropertyChanged += OnCnCNetLobbyPropertyChanged;
 
             // Wire CnCNetLobbyViewModel child references
-            cncNetLobbyViewModel.SetGameLobbies(cncNetGameLobbyViewModel, cncNetGameLoadingLobbyViewModel);
             cncNetLobbyViewModel.SetPrivateMessagingWindow(privateMessagingWindowViewModel);
 
             // Initialize child ViewModels (one-time setup)

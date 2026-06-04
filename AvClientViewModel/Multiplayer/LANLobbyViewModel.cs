@@ -69,8 +69,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // Exposed to View via interface
     public ILANGameCreationWindowViewModel? GameCreationWindow => gameCreationWindow;
-    public ILANGameLobbyViewModel? GameLobby => lanGameLobby;
-    public ILANGameLoadingLobbyViewModel? GameLoadingLobby => lanGameLoadingLobby;
+    public ILANGameLobbyViewModel GameLobby => lanGameLobby;
+    public ILANGameLoadingLobbyViewModel GameLoadingLobby => lanGameLoadingLobby;
 
     // --- Domain events (for parent coordination) ---
     public event EventHandler? Exited;

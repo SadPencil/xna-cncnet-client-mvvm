@@ -214,6 +214,8 @@ namespace AvClientViewModel
                 sp.GetRequiredService<CnCNetUserData>(),
                 sp.GetRequiredService<GameCollection>(),
                 sp.GetRequiredService<TunnelHandler>(),
+                sp.GetRequiredService<CnCNetGameLobbyViewModel>(),
+                sp.GetRequiredService<CnCNetGameLoadingLobbyViewModel>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
                 sp.GetRequiredService<IGameProcessService>(),
                 sp.GetRequiredService<MapLoader>(),
@@ -268,8 +270,6 @@ namespace AvClientViewModel
                 sp.GetRequiredService<CnCNetLobbyViewModel>(),
                 sp.GetRequiredService<LANLobbyViewModel>(),
                 sp.GetRequiredService<PrivateMessagingWindowViewModel>(),
-                sp.GetRequiredService<CnCNetGameLobbyViewModel>(),
-                sp.GetRequiredService<CnCNetGameLoadingLobbyViewModel>(),
                 sp.GetRequiredService<DialogService>()));
 
             services.AddSingleton<IMainMenuViewModel>(sp =>

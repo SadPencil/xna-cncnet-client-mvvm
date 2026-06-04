@@ -21,8 +21,8 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     bool IsEnabled { get; }
 
     ILANGameCreationWindowViewModel? GameCreationWindow { get; }
-    ILANGameLobbyViewModel? GameLobby { get; }
-    ILANGameLoadingLobbyViewModel? GameLoadingLobby { get; }
+    ILANGameLobbyViewModel GameLobby { get; }
+    ILANGameLoadingLobbyViewModel GameLoadingLobby { get; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }

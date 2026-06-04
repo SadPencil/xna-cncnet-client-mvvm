@@ -49,8 +49,8 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IPendingGameInviteData? PendingGameInvite { get; }
     string? SoundToPlay { get; }
 
-    ICnCNetGameLobbyViewModel? GameLobby { get; }
-    ICnCNetGameLoadingLobbyViewModel? GameLoadingLobby { get; }
+    ICnCNetGameLobbyViewModel GameLobby { get; }
+    ICnCNetGameLoadingLobbyViewModel GameLoadingLobby { get; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }

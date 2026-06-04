@@ -51,12 +51,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private readonly Random random;
 
     // Services that the lobby interacts with but does not own
-    private CnCNetGameLobbyViewModel? gameLobby;
-    private CnCNetGameLoadingLobbyViewModel? gameLoadingLobby;
+    private readonly CnCNetGameLobbyViewModel gameLobby;
+    private readonly CnCNetGameLoadingLobbyViewModel gameLoadingLobby;
     private PrivateMessagingWindowViewModel? pmWindow;
 
-    public ICnCNetGameLobbyViewModel? GameLobby => gameLobby;
-    public ICnCNetGameLoadingLobbyViewModel? GameLoadingLobby => gameLoadingLobby;
+    public ICnCNetGameLobbyViewModel GameLobby => gameLobby;
+    public ICnCNetGameLoadingLobbyViewModel GameLoadingLobby => gameLoadingLobby;
 
     private Channel? currentChatChannel;
     private string localGameID;
@@ -229,6 +229,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         CnCNetUserData cncnetUserData,
         GameCollection gameCollection,
         TunnelHandler tunnelHandler,
+        CnCNetGameLobbyViewModel gameLobby,
+        CnCNetGameLoadingLobbyViewModel gameLoadingLobby,
         IUIThreadMarshaller uiThreadMarshaller,
         IGameProcessService gameProcessService,
         MapLoader mapLoader,
@@ -238,6 +240,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         this.cncnetUserData = cncnetUserData;
         this.gameCollection = gameCollection;
         this.tunnelHandler = tunnelHandler;
+        this.gameLobby = gameLobby;
+        this.gameLoadingLobby = gameLoadingLobby;
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.gameProcessService = gameProcessService;
         this.mapLoader = mapLoader;
@@ -298,24 +302,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     }
 
     /// <summary>
-    /// Sets the game lobby and loading lobby references for game joining/creation.
-    /// </summary>
-    public void SetGameLobbies(CnCNetGameLobbyViewModel gameLobby, CnCNetGameLoadingLobbyViewModel gameLoadingLobby)
-    {
-        this.gameLobby = gameLobby;
-        this.gameLoadingLobby = gameLoadingLobby;
-
-        // Propagate initial chat color to game lobbies (OnSelectedColorIndexChanged
-        // fired before gameLobby was assigned, so ChatColor never got set)
-        if (SelectedColorIndex >= 0 && SelectedColorIndex < chatColors.Length)
-        {
-            IRCColor color = chatColors[SelectedColorIndex];
-            this.gameLobby.ChatColor = color;
-            this.gameLoadingLobby?.ChangeChatColor(color);
-        }
-    }
-
-    /// <summary>
     /// Sets the private messaging window reference for invite handling.
     /// </summary>
     public void SetPrivateMessagingWindow(PrivateMessagingWindowViewModel pmWindow)
@@ -329,15 +315,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         InitializeChannelList();
 
-        // Subscribe to game lobby leave events
-        if (gameLobby != null)
-        {
-            // gameLobby.GameLeft is handled via the service pattern
-        }
-        if (gameLoadingLobby != null)
-        {
-            // gameLoadingLobby.GameLeft is handled via the service pattern
-        }
+        // gameLobby.GameLeft and gameLoadingLobby.GameLeft
+        // are handled via the service pattern
     }
 
     public void SwitchOn()
@@ -495,9 +474,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (value >= 0 && value < chatColors.Length)
         {
             IRCColor selectedColor = chatColors[value];
-            if (gameLobby != null)
-                gameLobby.ChatColor = selectedColor;
-            gameLoadingLobby?.ChangeChatColor(selectedColor);
+            gameLobby.ChatColor = selectedColor;
+            gameLoadingLobby.ChangeChatColor(selectedColor);
         }
     }
 
@@ -511,9 +489,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// </summary>
     public void OnGameCreated(string gameRoomName, string channelName, string password, int maxPlayers, ICnCNetTunnel tunnel, int skillLevel)
     {
-        if (gameLobby == null || gameLoadingLobby == null)
-            return;
-
         if (gameLobby.IsEnabled || gameLoadingLobby.IsEnabled)
             return;
 
@@ -546,9 +521,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// </summary>
     public void OnLoadedGameCreated(string gameRoomName, string channelName, string password, ICnCNetTunnel tunnel)
     {
-        if (gameLobby == null || gameLoadingLobby == null)
-            return;
-
         if (gameLobby.IsEnabled || gameLoadingLobby.IsEnabled)
             return;
 
@@ -585,8 +557,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (isInGameRoom)
         {
-            gameLobby?.LeaveGameLobby();
-            gameLoadingLobby?.Clear();
+            gameLobby.LeaveGameLobby();
+            gameLoadingLobby.Clear();
         }
 
         var gameIndex = hostedGames.FindIndex(g => g.ChannelName == PendingGameInvite.ChannelName);
@@ -742,7 +714,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (game.BroadcastedGameOptionValues == null)
             return true;
 
-        var broadcastableSettings = gameLobby?.GetBroadcastableSettings();
+        var broadcastableSettings = gameLobby.GetBroadcastableSettings();
         if (broadcastableSettings == null)
             return true;
 
@@ -1097,14 +1069,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (hg.IsLoadedGame)
         {
-            gameLoadingLobby?.SetUp(false, hg.TunnelServer, gameChannel, hg.HostName);
+            gameLoadingLobby.SetUp(false, hg.TunnelServer, gameChannel, hg.HostName);
             gameChannel.UserAdded += GameLoadingChannel_UserAdded;
             gameChannel.InvalidPasswordEntered += GameChannel_InvalidPasswordEntered_LoadedGame;
             isJoiningGame = false;
         }
         else
         {
-            gameLobby?.SetUp(gameChannel, false, hg.MaxPlayers, hg.TunnelServer, hg.HostName, hg.Passworded, hg.SkillLevel);
+            gameLobby.SetUp(gameChannel, false, hg.MaxPlayers, hg.TunnelServer, hg.HostName, hg.Passworded, hg.SkillLevel);
             gameChannel.UserAdded += GameChannel_UserAdded;
             gameChannel.InvalidPasswordEntered += GameChannel_InvalidPasswordEntered_NewGame;
             gameChannel.InviteOnlyErrorOnJoin += GameChannel_InviteOnlyErrorOnJoin;
@@ -1156,7 +1128,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (e.User.IRCUser.Name == ProgramConstants.PLAYERNAME)
         {
             ClearGameChannelEvents(gameChannel);
-            gameLobby?.OnJoined();
+            gameLobby.OnJoined();
             isInGameRoom = true;
             UpdateLogoutButtonText();
         }
@@ -1165,7 +1137,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void ClearGameJoinAttempt(Channel channel)
     {
         ClearGameChannelEvents(channel);
-        gameLobby?.Clear();
+        gameLobby.Clear();
     }
 
     private void ClearGameChannelEvents(Channel channel)
@@ -1183,7 +1155,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         var channel = (Channel)sender;
         channel.UserAdded -= GameLoadingChannel_UserAdded;
         channel.InvalidPasswordEntered -= GameChannel_InvalidPasswordEntered_LoadedGame;
-        gameLoadingLobby?.Clear();
+        gameLoadingLobby.Clear();
         isJoiningGame = false;
     }
 
@@ -1194,7 +1166,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         {
             gameLoadingChannel.UserAdded -= GameLoadingChannel_UserAdded;
             gameLoadingChannel.InvalidPasswordEntered -= GameChannel_InvalidPasswordEntered_LoadedGame;
-            gameLoadingLobby?.OnJoined();
+            gameLoadingLobby.OnJoined();
             isInGameRoom = true;
             isJoiningGame = false;
         }
@@ -1323,9 +1295,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 if (gameOfLastJoinAttempt != null)
                 {
                     if (gameOfLastJoinAttempt.IsLoadedGame)
-                        gameLoadingLobby?.Clear();
+                        gameLoadingLobby.Clear();
                     else
-                        gameLobby?.Clear();
+                        gameLobby.Clear();
                 }
             }
             else
@@ -1403,7 +1375,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         if (isInGameRoom && !ProgramConstants.IsInGame)
         {
-            gameLobby?.AddWarning(
+            gameLobby.AddWarning(
                 string.Format(("{0} could not receive your invitation. They might be in game " +
                 "or only accepting invitations from friends. Ensure your game is " +
                 "unlocked and visible in the lobby before trying again.").L10N("Client:Main:InviteNotDelivered"), sender));
@@ -1559,13 +1531,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
             if (gameVersion == ProgramConstants.GAME_VERSION && channel.ChannelName == localGame?.GameBroadcastChannel)
             {
-                var broadcastableSettings = gameLobby?.GetBroadcastableSettings();
+                var broadcastableSettings = gameLobby.GetBroadcastableSettings();
                 if (broadcastableSettings != null && broadcastableSettings.Count > 0 && !string.IsNullOrEmpty(splitMessage[13]))
                 {
                     gameOptionValues = new int[broadcastableSettings.Count];
                     string[] allValueStrings = splitMessage[13].Split(',');
 
-                    int checkboxCount = gameLobby?.GetBroadcastableCheckboxCount() ?? 0;
+                    int checkboxCount = gameLobby.GetBroadcastableCheckboxCount();
                     int packedCheckboxCount = (checkboxCount + 31) / 32;
 
                     if (checkboxCount > 0 && allValueStrings.Length >= packedCheckboxCount)
@@ -1582,7 +1554,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                         }
                     }
 
-                    int dropdownCount = gameLobby?.GetBroadcastableDropdownCount() ?? 0;
+                    int dropdownCount = gameLobby.GetBroadcastableDropdownCount();
                     if (dropdownCount > 0)
                     {
                         int count = Math.Min(allValueStrings.Length - packedCheckboxCount, dropdownCount);
