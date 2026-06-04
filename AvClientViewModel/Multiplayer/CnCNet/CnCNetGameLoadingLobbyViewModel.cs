@@ -436,15 +436,8 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
 
     protected override void WriteSpawnIniAdditions(IniFile spawnIni)
     {
-        if (tunnelHandler.CurrentTunnel != null)
-        {
-            spawnIni.SetStringValue("Tunnel", "Ip", tunnelHandler.CurrentTunnel.Address);
-            spawnIni.SetIntValue("Tunnel", "Port", tunnelHandler.CurrentTunnel.Port);
-        }
-        else
-        {
-            Log.Warning("WriteSpawnIniAdditions: tunnelHandler.CurrentTunnel is null, skipping tunnel info in spawn.ini");
-        }
+        spawnIni.SetStringValue("Tunnel", "Ip", tunnelHandler.CurrentTunnel!.Address);
+        spawnIni.SetIntValue("Tunnel", "Port", tunnelHandler.CurrentTunnel.Port);
     }
 
     protected override void HandleGameProcessExited()
