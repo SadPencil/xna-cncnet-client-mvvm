@@ -182,10 +182,10 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         string spectatorL10N = spectatorName.L10N("Client:Sides:SpectatorSide");
         foreach (var slot in PlayerSlots)
         {
-            var sideOptions = new ObservableCollection<string>(slot.SideOptions) { spectatorL10N };
-            slot.SideOptions = sideOptions;
-            var sideSelectable = new ObservableCollection<bool>(slot.SideSelectable) { true };
-            slot.SideSelectable = sideSelectable;
+            var sideOptions = new ObservableCollection<string>(slot.Side.Options) { spectatorL10N };
+            slot.Side.Options = sideOptions;
+            var sideSelectable = new ObservableCollection<bool>(slot.Side.Selectable) { true };
+            slot.Side.Selectable = sideSelectable;
         }
 
         FrameSendRate = ClientConfiguration.Instance.DefaultFrameSendRate;
@@ -665,10 +665,10 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
         // Read from PlayerSlots (which the View updates via binding)
         var slot = PlayerSlots[mTopIndex];
-        int requestedSide = slot.SelectedSideIndex;
-        int requestedColor = slot.SelectedColorIndex;
-        int requestedStart = slot.SelectedStartIndex;
-        int requestedTeam = slot.SelectedTeamIndex;
+        int requestedSide = IndexOfOption(slot.Side.Options, slot.Side.SelectedOption);
+        int requestedColor = IndexOfOption(slot.Color.Options, slot.Color.SelectedOption);
+        int requestedStart = IndexOfOption(slot.Start.Options, slot.Start.SelectedOption);
+        int requestedTeam = IndexOfOption(slot.Team.Options, slot.Team.SelectedOption);
 
         RequestPlayerOptions(requestedSide, requestedColor, requestedStart, requestedTeam);
     }

@@ -211,7 +211,12 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         for (int i = 0; i < MAX_PLAYER_COUNT; i++)
         {
             var slot = new PlayerSlotObservable();
-            slot.PropertyChanged += PlayerSlot_PropertyChanged;
+            int slotIdx = i;
+            slot.Name.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
+            slot.Side.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
+            slot.Color.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
+            slot.Start.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
+            slot.Team.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
             InitPlayerSlotOptions(slot, sides, selectorNames);
             slots.Add(slot);
         }
@@ -241,6 +246,27 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GameProcessService.GameProcessExited -= OnGameProcessExited;
     }
 
+    // --- Player slot helpers ---
+
+    /// <summary>
+    /// Returns the option string at the given index, or empty if out of range.
+    /// Used to convert ViewModel int indices to SelectedOption strings for the View.
+    /// </summary>
+    protected static string OptionAtIndex(ObservableCollection<string> options, int index)
+    {
+        return index >= 0 && index < options.Count ? options[index] : string.Empty;
+    }
+
+    /// <summary>
+    /// Returns the index of the selected option, or 0 if not found.
+    /// Used to convert SelectedOption strings back to ViewModel int indices.
+    /// </summary>
+    protected static int IndexOfOption(ObservableCollection<string> options, string selected)
+    {
+        int idx = options.IndexOf(selected);
+        return Math.Max(0, idx);
+    }
+
     // --- Player slot initialization ---
 
     private static ObservableCollection<string> CreateNameOptionsWithFirstPlayerName(string firstPlayerName)
@@ -257,7 +283,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         var nameOptions = new ObservableCollection<string> { string.Empty };
         foreach (var name in ProgramConstants.AI_PLAYER_NAMES)
             nameOptions.Add(name);
-        slot.NameOptions = nameOptions;
+        slot.Name.Options = nameOptions;
 
         // Side options: Random + selectors + sides
         var sideOptions = new ObservableCollection<string> { "Random".L10N("Client:Sides:RandomSide") };
@@ -265,29 +291,29 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             sideOptions.Add(sn);
         foreach (var s in sides.Select(s => s.L10N($"INI:Sides:{s}")))
             sideOptions.Add(s);
-        slot.SideOptions = sideOptions;
-        slot.SideSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, sideOptions.Count));
+        slot.Side.Options = sideOptions;
+        slot.Side.Selectable = new ObservableCollection<bool>(Enumerable.Repeat(true, sideOptions.Count));
 
         // Color options: Random + MPColors
         string randomColor = GameOptionsIni.GetStringValue("General", "RandomColor", "255,255,255");
         var colorOptions = new ObservableCollection<string> { "Random".L10N("Client:Main:RandomColor") };
         foreach (var c in MPColors)
             colorOptions.Add(c.Name);
-        slot.ColorOptions = colorOptions;
-        slot.ColorSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, colorOptions.Count));
+        slot.Color.Options = colorOptions;
+        slot.Color.Selectable = new ObservableCollection<bool>(Enumerable.Repeat(true, colorOptions.Count));
 
         // Start options
         var startOptions = new ObservableCollection<string> { "???" };
         for (int i = 1; i <= MAX_PLAYER_COUNT; i++)
             startOptions.Add(i.ToString());
-        slot.StartOptions = startOptions;
-        slot.StartSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, startOptions.Count));
+        slot.Start.Options = startOptions;
+        slot.Start.Selectable = new ObservableCollection<bool>(Enumerable.Repeat(true, startOptions.Count));
 
         // Team options
         var teamOptions = new ObservableCollection<string> { "-" };
         foreach (var t in ProgramConstants.TEAMS)
             teamOptions.Add(t);
-        slot.TeamOptions = teamOptions;
+        slot.Team.Options = teamOptions;
     }
 
     // --- Game option wrapper refresh ---
@@ -747,8 +773,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         // Enable all sides and colors by default
         foreach (var slot in PlayerSlots)
         {
-            slot.SideSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, slot.SideSelectable.Count));
-            slot.ColorSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, slot.ColorSelectable.Count));
+            slot.Side.Selectable = new ObservableCollection<bool>(Enumerable.Repeat(true, slot.Side.Selectable.Count));
+            slot.Color.Selectable = new ObservableCollection<bool>(Enumerable.Repeat(true, slot.Color.Selectable.Count));
         }
 
         // Update start location options per map
@@ -764,8 +790,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
         foreach (var slot in PlayerSlots)
         {
-            slot.StartOptions = startOptions;
-            slot.StartSelectable = startSelectable;
+            slot.Start.Options = startOptions;
         }
 
         // Check if AI players allowed
@@ -933,9 +958,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             var slot = slots[pId];
 
             slot.PlayerName = pInfo.Name;
-            slot.NameOptions = CreateNameOptionsWithFirstPlayerName(pInfo.Name);
-            slot.SelectedNameIndex = 0;
-            slot.IsNameDropdownEnabled = false;
+            slot.Name.Options = CreateNameOptionsWithFirstPlayerName(pInfo.Name);
+            slot.Name.SelectedOption = string.Empty;
+            slot.Name.IsEnabled = false;
 
             bool allowPlayerOptionsChange = allowOptionsChange || pInfo.Name == ProgramConstants.PLAYERNAME;
 
@@ -943,32 +968,32 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             if (extraOpts.IsForceRandomSides && pInfo.SideId != 0)
                 pInfo.SideId = 0;
 
-            slot.SelectedSideIndex = pInfo.SideId;
-            slot.IsSideDropdownEnabled = !extraOpts.IsForceRandomSides && allowPlayerOptionsChange;
+            slot.Side.SelectedOption = OptionAtIndex(slot.Side.Options, pInfo.SideId);
+            slot.Side.IsEnabled = !extraOpts.IsForceRandomSides && allowPlayerOptionsChange;
 
             // Apply PlayerExtraOptions: force random colors
             if (extraOpts.IsForceRandomColors && pInfo.ColorId != 0)
                 pInfo.ColorId = 0;
 
-            slot.SelectedColorIndex = pInfo.ColorId;
-            slot.IsColorDropdownEnabled = !extraOpts.IsForceRandomColors && allowPlayerOptionsChange;
+            slot.Color.SelectedOption = OptionAtIndex(slot.Color.Options, pInfo.ColorId);
+            slot.Color.IsEnabled = !extraOpts.IsForceRandomColors && allowPlayerOptionsChange;
 
             // Apply PlayerExtraOptions: force random starts
             if (extraOpts.IsForceRandomStarts && pInfo.StartingLocation != 0)
                 pInfo.StartingLocation = 0;
 
-            slot.SelectedStartIndex = pInfo.StartingLocation;
+            slot.Start.SelectedOption = OptionAtIndex(slot.Start.Options, pInfo.StartingLocation);
 
             // Apply PlayerExtraOptions: force no teams
             if (extraOpts.IsForceNoTeams && pInfo.TeamId != 0)
                 pInfo.TeamId = 0;
 
-            slot.SelectedTeamIndex = pInfo.TeamId;
+            slot.Team.SelectedOption = OptionAtIndex(slot.Team.Options, pInfo.TeamId);
 
             if (GameModeMap != null)
             {
-                slot.IsTeamDropdownEnabled = !extraOpts.IsForceNoTeams && allowPlayerOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
-                slot.IsStartDropdownEnabled = !extraOpts.IsForceRandomStarts && allowPlayerOptionsChange && !GameModeMap.ForceRandomStartLocations;
+                slot.Team.IsEnabled = !extraOpts.IsForceNoTeams && allowPlayerOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
+                slot.Start.IsEnabled = !extraOpts.IsForceRandomStarts && allowPlayerOptionsChange && !GameModeMap.ForceRandomStartLocations;
             }
         }
 
@@ -980,40 +1005,40 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             aiInfo.Index = index;
             var slot = slots[index];
 
-            slot.NameOptions = CreateNameOptionsWithFirstPlayerName("-");
-            slot.SelectedNameIndex = 1 + aiInfo.AILevel;
-            slot.IsNameDropdownEnabled = allowOptionsChange;
+            slot.Name.Options = CreateNameOptionsWithFirstPlayerName("-");
+            slot.Name.SelectedOption = ProgramConstants.AI_PLAYER_NAMES[aiInfo.AILevel];
+            slot.Name.IsEnabled = allowOptionsChange;
 
             // Apply PlayerExtraOptions: force random sides
             if (extraOpts.IsForceRandomSides && aiInfo.SideId != 0)
                 aiInfo.SideId = 0;
 
-            slot.SelectedSideIndex = aiInfo.SideId;
-            slot.IsSideDropdownEnabled = !extraOpts.IsForceRandomSides && allowOptionsChange;
+            slot.Side.SelectedOption = OptionAtIndex(slot.Side.Options, aiInfo.SideId);
+            slot.Side.IsEnabled = !extraOpts.IsForceRandomSides && allowOptionsChange;
 
             // Apply PlayerExtraOptions: force random colors
             if (extraOpts.IsForceRandomColors && aiInfo.ColorId != 0)
                 aiInfo.ColorId = 0;
 
-            slot.SelectedColorIndex = aiInfo.ColorId;
-            slot.IsColorDropdownEnabled = !extraOpts.IsForceRandomColors && allowOptionsChange;
+            slot.Color.SelectedOption = OptionAtIndex(slot.Color.Options, aiInfo.ColorId);
+            slot.Color.IsEnabled = !extraOpts.IsForceRandomColors && allowOptionsChange;
 
             // Apply PlayerExtraOptions: force random starts
             if (extraOpts.IsForceRandomStarts && aiInfo.StartingLocation != 0)
                 aiInfo.StartingLocation = 0;
 
-            slot.SelectedStartIndex = aiInfo.StartingLocation;
+            slot.Start.SelectedOption = OptionAtIndex(slot.Start.Options, aiInfo.StartingLocation);
 
             // Apply PlayerExtraOptions: force no teams
             if (extraOpts.IsForceNoTeams && aiInfo.TeamId != 0)
                 aiInfo.TeamId = 0;
 
-            slot.SelectedTeamIndex = aiInfo.TeamId;
+            slot.Team.SelectedOption = OptionAtIndex(slot.Team.Options, aiInfo.TeamId);
 
             if (GameModeMap != null)
             {
-                slot.IsTeamDropdownEnabled = !extraOpts.IsForceNoTeams && allowOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
-                slot.IsStartDropdownEnabled = !extraOpts.IsForceRandomStarts && allowOptionsChange && !GameModeMap.ForceRandomStartLocations;
+                slot.Team.IsEnabled = !extraOpts.IsForceNoTeams && allowOptionsChange && !GameModeMap.IsCoop && !GameModeMap.ForceNoTeams;
+                slot.Start.IsEnabled = !extraOpts.IsForceRandomStarts && allowOptionsChange && !GameModeMap.ForceRandomStartLocations;
             }
         }
 
@@ -1021,21 +1046,21 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         for (int ddIndex = Players.Count + AIPlayers.Count; ddIndex < MAX_PLAYER_COUNT; ddIndex++)
         {
             var slot = slots[ddIndex];
-            slot.SelectedNameIndex = 0;
-            slot.IsNameDropdownEnabled = false;
-            slot.SelectedSideIndex = -1;
-            slot.IsSideDropdownEnabled = false;
-            slot.SelectedColorIndex = -1;
-            slot.IsColorDropdownEnabled = false;
-            slot.SelectedStartIndex = -1;
-            slot.IsStartDropdownEnabled = false;
-            slot.SelectedTeamIndex = -1;
-            slot.IsTeamDropdownEnabled = false;
+            slot.Name.SelectedOption = string.Empty;
+            slot.Name.IsEnabled = false;
+            slot.Side.SelectedOption = string.Empty;
+            slot.Side.IsEnabled = false;
+            slot.Color.SelectedOption = string.Empty;
+            slot.Color.IsEnabled = false;
+            slot.Start.SelectedOption = string.Empty;
+            slot.Start.IsEnabled = false;
+            slot.Team.SelectedOption = string.Empty;
+            slot.Team.IsEnabled = false;
         }
 
         // Enable adding AI to the next slot
         if (allowOptionsChange && Players.Count + AIPlayers.Count < MAX_PLAYER_COUNT)
-            slots[Players.Count + AIPlayers.Count].IsNameDropdownEnabled = true;
+            slots[Players.Count + AIPlayers.Count].Name.IsEnabled = true;
 
         CheckDisallowedSides();
 
@@ -1049,18 +1074,14 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     private static readonly string[] PlayerSlotUserEditableProperties = new[]
     {
-        nameof(PlayerSlotObservable.SelectedSideIndex),
-        nameof(PlayerSlotObservable.SelectedColorIndex),
-        nameof(PlayerSlotObservable.SelectedStartIndex),
-        nameof(PlayerSlotObservable.SelectedTeamIndex),
-        nameof(PlayerSlotObservable.SelectedNameIndex),
+        nameof(PlayerSlotDropdown.SelectedOption),
     };
 
-    private void PlayerSlot_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void PlayerSlotDropdown_PropertyChanged(int slotIdx, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (PlayerUpdatingInProgress)
             return;
-        if (e.PropertyName == null || !Array.Exists(PlayerSlotUserEditableProperties, p => p == e.PropertyName))
+        if (e.PropertyName != nameof(PlayerSlotDropdown.SelectedOption))
             return;
 
         CopyPlayerDataFromUI();
@@ -1085,10 +1106,10 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             PlayerInfo pInfo = Players[pId];
             var slot = slots[pId];
 
-            pInfo.ColorId = slot.SelectedColorIndex;
-            pInfo.SideId = slot.SelectedSideIndex;
-            pInfo.StartingLocation = slot.SelectedStartIndex;
-            pInfo.TeamId = slot.SelectedTeamIndex;
+            pInfo.ColorId = IndexOfOption(slot.Color.Options, slot.Color.SelectedOption);
+            pInfo.SideId = IndexOfOption(slot.Side.Options, slot.Side.SelectedOption);
+            pInfo.StartingLocation = IndexOfOption(slot.Start.Options, slot.Start.SelectedOption);
+            pInfo.TeamId = IndexOfOption(slot.Team.Options, slot.Team.SelectedOption);
 
             if (pInfo.SideId == SideCount + RandomSelectorCount)
                 pInfo.StartingLocation = 0;
@@ -1098,17 +1119,22 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         for (int cmbId = Players.Count; cmbId < MAX_PLAYER_COUNT; cmbId++)
         {
             var slot = slots[cmbId];
-            if (slot.SelectedNameIndex < 1)
+            if (string.IsNullOrEmpty(slot.Name.SelectedOption))
                 continue;
+
+            string aiName = slot.Name.SelectedOption;
+            int aiLevel = ProgramConstants.AI_PLAYER_NAMES.IndexOf(aiName);
+            if (aiLevel < 0)
+                aiLevel = 0;
 
             PlayerInfo aiPlayer = new PlayerInfo
             {
-                Name = ProgramConstants.AI_PLAYER_NAMES[slot.SelectedNameIndex - 1],
-                AILevel = slot.SelectedNameIndex - 1,
-                SideId = Math.Max(slot.SelectedSideIndex, 0),
-                ColorId = Math.Max(slot.SelectedColorIndex, 0),
-                StartingLocation = Math.Max(slot.SelectedStartIndex, 0),
-                TeamId = Map != null && GameModeMap.IsCoop ? 1 : Math.Max(slot.SelectedTeamIndex, 0),
+                Name = aiName,
+                AILevel = aiLevel,
+                SideId = IndexOfOption(slot.Side.Options, slot.Side.SelectedOption),
+                ColorId = IndexOfOption(slot.Color.Options, slot.Color.SelectedOption),
+                StartingLocation = IndexOfOption(slot.Start.Options, slot.Start.SelectedOption),
+                TeamId = Map != null && GameModeMap.IsCoop ? 1 : IndexOfOption(slot.Team.Options, slot.Team.SelectedOption),
                 IsAI = true
             };
             AIPlayers.Add(aiPlayer);
@@ -1148,20 +1174,20 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].Side.Selectable);
                 for (int i = 0; i < RandomSelectorCount; i++)
                     sideSelectable[i] = false;
-                slots[pInfo.Index].SideSelectable = sideSelectable;
+                slots[pInfo.Index].Side.Selectable = sideSelectable;
             }
         }
         else
         {
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].Side.Selectable);
                 for (int i = 0; i < RandomSelectorCount; i++)
                     sideSelectable[i] = true;
-                slots[pInfo.Index].SideSelectable = sideSelectable;
+                slots[pInfo.Index].Side.Selectable = sideSelectable;
             }
         }
 
@@ -1174,9 +1200,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].Side.Selectable);
                 sideSelectable[1 + c] = !disabled;
-                slots[pInfo.Index].SideSelectable = sideSelectable;
+                slots[pInfo.Index].Side.Selectable = sideSelectable;
 
                 if (pInfo.SideId == 1 + c && disabled)
                     pInfo.SideId = defaultSide;
@@ -1192,9 +1218,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 foreach (PlayerInfo pInfo in playerInfos)
                 {
-                    var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
+                    var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].Side.Selectable);
                     sideSelectable[i + RandomSelectorCount] = false;
-                    slots[pInfo.Index].SideSelectable = sideSelectable;
+                    slots[pInfo.Index].Side.Selectable = sideSelectable;
 
                     if (pInfo.SideId == i + RandomSelectorCount)
                         pInfo.SideId = defaultSide;
@@ -1204,9 +1230,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 foreach (PlayerInfo pInfo in playerInfos)
                 {
-                    var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
+                    var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].Side.Selectable);
                     sideSelectable[i + RandomSelectorCount] = true;
-                    slots[pInfo.Index].SideSelectable = sideSelectable;
+                    slots[pInfo.Index].Side.Selectable = sideSelectable;
                 }
             }
         }
@@ -1231,20 +1257,20 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].Side.Selectable);
                 if (sideSelectable.Count > GetSpectatorSideIndex())
                     sideSelectable[GetSpectatorSideIndex()] = false;
-                slots[pInfo.Index].SideSelectable = sideSelectable;
+                slots[pInfo.Index].Side.Selectable = sideSelectable;
             }
         }
         else
         {
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].Side.Selectable);
                 if (sideSelectable.Count > SideCount + RandomSelectorCount)
                     sideSelectable[SideCount + RandomSelectorCount] = true;
-                slots[pInfo.Index].SideSelectable = sideSelectable;
+                slots[pInfo.Index].Side.Selectable = sideSelectable;
             }
         }
     }

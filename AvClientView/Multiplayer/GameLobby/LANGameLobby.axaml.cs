@@ -339,7 +339,7 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
         for (int i = 0; i < lobbyViewModel.PlayerSlots.Count; i++)
         {
             var slot = lobbyViewModel.PlayerSlots[i];
-            if (slot.SelectedNameIndex < 0)
+            if (string.IsNullOrEmpty(slot.Name.SelectedOption))
                 continue;
 
             string playerName;
@@ -348,8 +348,8 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
             else
             {
                 playerName = slot.PlayerName ?? string.Empty;
-                if (slot.SelectedNameIndex > 0 && slot.SelectedNameIndex < slot.NameOptions.Count)
-                    playerName = slot.NameOptions[slot.SelectedNameIndex];
+                if (!string.IsNullOrEmpty(slot.Name.SelectedOption))
+                    playerName = slot.Name.SelectedOption;
             }
 
             if (string.IsNullOrEmpty(playerName))
