@@ -84,7 +84,7 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
 
     // --- Lifecycle ---
 
-    public void Initialize()
+    public override void Initialize()
     {
         base.Initialize();
         RandomSeed = random.Next();
