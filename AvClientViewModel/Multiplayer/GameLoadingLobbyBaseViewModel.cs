@@ -312,7 +312,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     private void OnGameProcessExited()
     {
-        // Do file I/O on the current (threadpool) thread, not the UI thread
+        // Do file I/O and Discord RPC on the current (threadpool) thread, not the UI thread
         if (fsw != null)
             fsw.EnableRaisingEvents = false;
 
@@ -331,13 +331,15 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
             StatisticsManager.Instance.SaveDatabase();
         }
 
+        UpdateDiscordPresence(true);
+
         // Only marshal UI state updates
         UIThreadMarshaller.AddCallback(new Action(HandleGameProcessExited));
     }
 
     protected virtual void HandleGameProcessExited()
     {
-        UpdateDiscordPresence(true);
+        // Subclasses override this to add UI cleanup (LeaveGame, Clear, etc.)
     }
 
     // --- Saved game file system watcher ---
