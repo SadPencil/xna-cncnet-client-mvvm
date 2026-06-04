@@ -301,6 +301,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         this.gameLobby = gameLobby;
         this.gameLoadingLobby = gameLoadingLobby;
+        this.gameLobby.Initialize();
+        this.gameLoadingLobby.Initialize();
     }
 
     /// <summary>
