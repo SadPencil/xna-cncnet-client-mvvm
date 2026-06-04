@@ -6,6 +6,7 @@
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
              xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLobby"
+             x:Name="Root"
              x:DataType="vmc:ICnCNetLobbyViewModel"
              IsVisible="{Binding IsVisible}"
              Width="1220" Height="728">
@@ -91,7 +92,7 @@
                     Margin="2,1">
                 <!-- Room name - gray if Locked or Incompatible -->
                 <TextBlock Text="{Binding RoomName}"
-                           Foreground="{Binding ., Converter={x:Static converters:GameStateToBrushConverter.Instance}}"
+                           Foreground="{Binding ., Converter={StaticResource GameStateToBrushConverter}}"
                            VerticalAlignment="Center"
                            TextTrimming="CharacterEllipsis" />
 
@@ -123,7 +124,7 @@
 
       <!-- Game Information Panel (shown on hover, floats above other content) -->
       <Border x:Name="panelGameInfo"
-              IsVisible="{Binding HoveredGame, Converter={x:Static ObjectConverters.IsNotNull}}"
+              IsVisible="{Binding HoveredGame, Converter={StaticResource IsNotNullConverter}}"
               Background="#E0000000"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
@@ -131,8 +132,8 @@
               Width="278">
         <StackPanel Spacing="4">
           <!-- Map preview image -->
-          <Image Source="{Binding HoveredGameMapPreview, Converter={x:Static converters:ImageSharpToBitmapConverter.Instance}}"
-                 IsVisible="{Binding HoveredGameMapPreview, Converter={x:Static ObjectConverters.IsNotNull}}"
+          <Image Source="{Binding HoveredGameMapPreview, Converter={StaticResource ImageSharpToBitmapConverter}}"
+                 IsVisible="{Binding HoveredGameMapPreview, Converter={StaticResource IsNotNullConverter}}"
                  Stretch="Uniform"
                  MaxHeight="150"
                  HorizontalAlignment="Center" />
@@ -299,7 +300,7 @@
     </Border>
 
     <!-- ========== MESSAGE BOX OVERLAY ========== -->
-    <Border IsVisible="{Binding PendingMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+    <Border IsVisible="{Binding PendingMessage, Converter={StaticResource IsNotNullOrEmptyConverter}}"
             Background="#80000000"
             Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
@@ -329,7 +330,7 @@
     </Border>
 
     <!-- ========== GAME INVITE OVERLAY ========== -->
-    <Border IsVisible="{Binding PendingGameInvite, Converter={x:Static ObjectConverters.IsNotNull}}"
+    <Border IsVisible="{Binding PendingGameInvite, Converter={StaticResource IsNotNullConverter}}"
             Background="#80000000"
             Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
@@ -355,11 +356,11 @@
               <Button Content="Accept"
                       Width="100" Height="23"
                       FontWeight="Bold"
-                      Command="{Binding AcceptGameInviteCommand}" />
+                      Command="{Binding #Root.DataContext.AcceptGameInviteCommand}" />
               <Button Content="Decline"
                       Width="100" Height="23"
                       FontWeight="Bold"
-                      Command="{Binding DismissGameInviteCommand}" />
+                      Command="{Binding #Root.DataContext.DismissGameInviteCommand}" />
             </StackPanel>
           </StackPanel>
         </Border>

@@ -48,7 +48,7 @@
                    IsVisible="{Binding IsPasswordProtected}"
                    Foreground="{DynamicResource XnaAltBrush}" />
         <TextBlock Text="Incompatible"
-                   IsVisible="{Binding IsCompatible, Converter={x:Static BoolConverters.Not}}"
+                   IsVisible="{Binding IsCompatible, Converter={StaticResource BoolNotConverter}}"
                    Foreground="Gray" />
       </StackPanel>
 
@@ -57,10 +57,10 @@
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                  Margin="0,4,0,0"
-                 IsVisible="{Binding PlayerNames.Count, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                 IsVisible="{Binding PlayerNames.Count, Converter={StaticResource IsNotNullConverter}}" />
       <ItemsControl ItemsSource="{Binding PlayerNames}"
                     Margin="4,0,0,0"
-                    IsVisible="{Binding PlayerNames.Count, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    IsVisible="{Binding PlayerNames.Count, Converter={StaticResource IsNotNullConverter}}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <WrapPanel />

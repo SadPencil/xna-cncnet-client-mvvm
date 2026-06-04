@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>AvClientView</RootNamespace>
     <AssemblyName>AvClientView</AssemblyName>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" />

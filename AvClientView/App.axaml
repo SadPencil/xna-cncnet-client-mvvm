@@ -4,8 +4,14 @@
     x:Class="AvClientView.App"
     RequestedThemeVariant="Dark">
   <Application.Resources>
-    <converters:ObjectToStringConverter x:Key="ObjectToStringConverter"/>
+    <converters:BoolNotConverter x:Key="BoolNotConverter"/>
+    <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+    <converters:IsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter"/>
+    <converters:GameStateToBrushConverter x:Key="GameStateToBrushConverter"/>
+    <converters:ImageSharpToBitmapConverter x:Key="ImageSharpToBitmapConverter"/>
     <converters:FilePathToBitmapConverter x:Key="FilePathToBitmapConverter"/>
+    <converters:Rgb24ToBrushConverter x:Key="Rgb24ToBrushConverter"/>
+    <converters:ObjectToStringConverter x:Key="ObjectToStringConverter"/>
   </Application.Resources>
 
   <Application.Styles>

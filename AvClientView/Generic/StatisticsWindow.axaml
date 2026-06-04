@@ -44,7 +44,7 @@
 
     <!-- ========== Game Statistics Panel ========== -->
     <Border x:Name="panelGameStatistics"
-            IsVisible="{Binding ShowingTotalStats, Converter={x:Static BoolConverters.Not}}"
+            IsVisible="{Binding ShowingTotalStats, Converter={StaticResource BoolNotConverter}}"
             Background="#C8000000"
             BorderBrush="{DynamicResource XnaPanelBorderBrush}"
             BorderThickness="1"
