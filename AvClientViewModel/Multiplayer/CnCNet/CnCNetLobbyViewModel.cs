@@ -886,6 +886,11 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void AddMessageToChat(ChatMessage message)
     {
+        UI_AddMessageToChat(message);
+    }
+
+    private void UI_AddMessageToChat(ChatMessage message)
+    {
         if (!string.IsNullOrEmpty(message.SenderIdent) &&
             cncnetUserData.IsIgnored(message.SenderIdent) &&
             !message.SenderIsAdmin)
@@ -908,7 +913,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         uiThreadMarshaller.AddCallback(new Action(() =>
         {
-            AddMessageToChat(e.Message);
+            UI_AddMessageToChat(e.Message);
         }));
     }
 

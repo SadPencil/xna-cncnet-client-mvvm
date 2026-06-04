@@ -1939,7 +1939,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private void MapSharer_HandleMapUploadComplete(MapEventArgs e)
     {
         UIThreadMarshaller.AddCallback(() =>
-            AddNotice(string.Format("Uploading map {0} to the CnCNet map database complete.".L10N("Client:Main:UpdateMapToDBSuccess"), e.Map.Name)));
+            UI_AddNotice(string.Format("Uploading map {0} to the CnCNet map database complete.".L10N("Client:Main:UpdateMapToDBSuccess"), e.Map.Name)));
 
         if (e.Map == Map)
             channel.SendCTCPMessage(MAP_SHARING_DOWNLOAD_REQUEST + " " + Map.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);

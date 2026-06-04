@@ -112,6 +112,11 @@ namespace AvClientViewModel.Generic
         /// </summary>
         public void SetData(string newGameVersion)
         {
+            UI_SetData(newGameVersion);
+        }
+
+        private void UI_SetData(string newGameVersion)
+        {
             DescriptionText = string.Format(
                 "Please wait while {0} is updated to version {1}.\nThis window will automatically close once the update is complete.\n\nThe client may also restart after the update has been downloaded.".L10N("Client:Main:UpdateVersionPleaseWait"),
                 MainClientConstants.GAME_NAME_SHORT, newGameVersion);
@@ -149,7 +154,7 @@ namespace AvClientViewModel.Generic
             {
                 uiThreadMarshaller.AddCallback(new Action(() =>
                 {
-                    CloseWindow();
+                    UI_CloseWindow();
                 }));
                 return;
             }
@@ -157,16 +162,18 @@ namespace AvClientViewModel.Generic
             {
                 uiThreadMarshaller.AddCallback(new Action(() =>
                 {
-                    CloseWindow();
+                    UI_CloseWindow();
                 }));
                 return;
             }
 
+            string version = updateService.ServerGameVersion;
+            updateService.StartUpdate();
+            isStartingForceUpdate = false;
+
             uiThreadMarshaller.AddCallback(new Action(() =>
             {
-                SetData(updateService.ServerGameVersion);
-                updateService.StartUpdate();
-                isStartingForceUpdate = false;
+                UI_SetData(version);
             }));
         }
 
@@ -216,6 +223,11 @@ namespace AvClientViewModel.Generic
         #endregion
 
         private void CloseWindow()
+        {
+            UI_CloseWindow();
+        }
+
+        private void UI_CloseWindow()
         {
             isStartingForceUpdate = false;
             IsVisible = false;
