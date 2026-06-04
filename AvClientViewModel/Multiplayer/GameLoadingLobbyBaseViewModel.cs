@@ -105,8 +105,6 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
         UIThreadMarshaller = uiThreadMarshaller;
 
         MPColors = MultiplayerColor.LoadColors();
-
-        GameProcessService.GameProcessExited += OnGameProcessExited;
     }
 
     // --- Commands ---
@@ -301,6 +299,10 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
         gameLoadTime = DateTime.Now;
 
+        // One-shot subscription: only the lobby that launched the game receives the exit event
+        GameProcessService.GameProcessExited += OnGameProcessExited;
+        GameProcessService.StartGameProcess();
+
         if (fsw != null)
             fsw.EnableRaisingEvents = true;
 
@@ -312,6 +314,9 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     private void OnGameProcessExited()
     {
+        // One-shot: unsubscribe so only the lobby that started the game handles this
+        GameProcessService.GameProcessExited -= OnGameProcessExited;
+
         // File I/O and Discord RPC on current (threadpool) thread - not on UI thread
         if (fsw != null)
             fsw.EnableRaisingEvents = false;
