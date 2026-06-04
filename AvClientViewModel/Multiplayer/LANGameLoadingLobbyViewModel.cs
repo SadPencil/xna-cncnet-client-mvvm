@@ -220,10 +220,10 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
 
     private void UpdateTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(UpdateTick));
+        UIThreadMarshaller.AddCallback(new Action(UI_UpdateTick));
     }
 
-    private void UpdateTick()
+    private void UI_UpdateTick()
     {
         if (IsHost)
         {
@@ -336,7 +336,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             {
                 lpInfo.Name = name;
 
-                UIThreadMarshaller.AddCallback(new Action<LANPlayerInfo>(AddPlayer), lpInfo);
+                UIThreadMarshaller.AddCallback(new Action<LANPlayerInfo>(UI_AddPlayer), lpInfo);
                 return;
             }
 
@@ -347,7 +347,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             lpInfo.TcpClient.Close();
     }
 
-    private void AddPlayer(LANPlayerInfo lpInfo)
+    private void UI_AddPlayer(LANPlayerInfo lpInfo)
     {
         if (Players.Find(p => p.Name == lpInfo.Name) != null ||
             Players.Count >= SGPlayers.Count ||
@@ -377,10 +377,10 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
 
     private void LpInfo_ConnectionLost(object? sender, EventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action<LANPlayerInfo>(HandleConnectionLost), (LANPlayerInfo)sender!);
+        UIThreadMarshaller.AddCallback(new Action<LANPlayerInfo>(UI_HandleConnectionLost), (LANPlayerInfo)sender!);
     }
 
-    private void HandleConnectionLost(LANPlayerInfo lpInfo)
+    private void UI_HandleConnectionLost(LANPlayerInfo lpInfo)
     {
         CleanUpPlayer(lpInfo);
         Players.Remove(lpInfo);
@@ -396,11 +396,11 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
 
     private void LpInfo_MessageReceived(object? sender, NetworkMessageEventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action<string, LANPlayerInfo>(HandleClientMessage),
+        UIThreadMarshaller.AddCallback(new Action<string, LANPlayerInfo>(UI_HandleClientMessage),
             e.Message, (LANPlayerInfo)sender!);
     }
 
-    private void HandleClientMessage(string data, LANPlayerInfo lpInfo)
+    private void UI_HandleClientMessage(string data, LANPlayerInfo lpInfo)
     {
         lpInfo.TimeSinceLastReceivedMessage = TimeSpan.Zero;
 

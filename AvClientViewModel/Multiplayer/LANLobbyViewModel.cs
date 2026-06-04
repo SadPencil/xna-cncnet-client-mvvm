@@ -468,10 +468,10 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void UpdateTimer_Elapsed(object? sender, ElapsedEventArgs e)
     {
-        uiThreadMarshaller.AddCallback(new Action(UpdateTick));
+        uiThreadMarshaller.AddCallback(new Action(UI_UpdateTick));
     }
 
-    private void UpdateTick()
+    private void UI_UpdateTick()
     {
         // Remove inactive players
         var playersCopy = playerManager.GetAllPlayers();

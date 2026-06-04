@@ -224,15 +224,15 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
 
     private void HandleDownloadFinishedCallback(CustomComponent c, bool success)
     {
-        uiThreadMarshaller.AddCallback(new Action<CustomComponent, bool>(HandleDownloadFinished), c, success);
+        uiThreadMarshaller.AddCallback(new Action<CustomComponent, bool>(UI_HandleDownloadFinished), c, success);
     }
 
     private void HandleDownloadProgressChangedCallback(CustomComponent c, int percentage)
     {
-        uiThreadMarshaller.AddCallback(new Action<CustomComponent, int>(HandleDownloadProgressChanged), c, percentage);
+        uiThreadMarshaller.AddCallback(new Action<CustomComponent, int>(UI_HandleDownloadProgressChanged), c, percentage);
     }
 
-    private void HandleDownloadProgressChanged(CustomComponent cc, int percentage)
+    private void UI_HandleDownloadProgressChanged(CustomComponent cc, int percentage)
     {
         if (Updater.CustomComponents == null)
             return;
@@ -249,7 +249,7 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
             _componentActionTexts[index] = "Downloading...".L10N("Client:DTAConfig:Downloading") + " " + percentage + "%";
     }
 
-    private void HandleDownloadFinished(CustomComponent cc, bool success)
+    private void UI_HandleDownloadFinished(CustomComponent cc, bool success)
     {
         cc.DownloadFinished -= HandleDownloadFinishedCallback;
         cc.DownloadProgressChanged -= HandleDownloadProgressChangedCallback;

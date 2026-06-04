@@ -624,7 +624,7 @@ namespace AvClientViewModel.Generic
 
         private void OnFileIdentifiersUpdated()
         {
-            uiThreadMarshaller.AddCallback(new Action(HandleFileIdentifierUpdate));
+            uiThreadMarshaller.AddCallback(new Action(UI_HandleFileIdentifierUpdate));
         }
 
         private void OnCustomComponentsOutdated()
@@ -685,7 +685,7 @@ namespace AvClientViewModel.Generic
 
         #region Update UI
 
-        private void HandleFileIdentifierUpdate()
+        private void UI_HandleFileIdentifierUpdate()
         {
             if (!AreButtonsEnabled)
                 return;
