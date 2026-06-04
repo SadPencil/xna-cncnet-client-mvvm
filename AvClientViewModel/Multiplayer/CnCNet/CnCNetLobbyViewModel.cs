@@ -55,6 +55,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private CnCNetGameLoadingLobbyViewModel? gameLoadingLobby;
     private PrivateMessagingWindowViewModel? pmWindow;
 
+    public ICnCNetGameLobbyViewModel? GameLobby => gameLobby;
+    public ICnCNetGameLoadingLobbyViewModel? GameLoadingLobby => gameLoadingLobby;
+
     private Channel? currentChatChannel;
     private string localGameID;
     private CnCNetGame? localGame;
@@ -515,6 +518,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         Channel gameChannel = connectionManager.CreateChannel(gameRoomName, channelName, false, true, password);
         connectionManager.AddChannel(gameChannel);
         gameLobby.SetUp(gameChannel, true, maxPlayers, tunnel, ProgramConstants.PLAYERNAME, isCustomPassword, skillLevel);
+        gameLobby.IsEnabled = true;
         gameChannel.UserAdded += GameChannel_UserAdded;
         connectionManager.SendCustomMessage(new QueuedMessage("JOIN " + channelName + " " + password,
             QueuedMessageType.INSTANT_MESSAGE, 0));
@@ -542,6 +546,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         Channel gameLoadingChannel = connectionManager.CreateChannel(gameRoomName, channelName, false, true, password);
         connectionManager.AddChannel(gameLoadingChannel);
         gameLoadingLobby.SetUp(true, tunnel, gameLoadingChannel, ProgramConstants.PLAYERNAME);
+        gameLoadingLobby.IsEnabled = true;
         gameLoadingChannel.UserAdded += GameLoadingChannel_UserAdded;
         connectionManager.SendCustomMessage(new QueuedMessage("JOIN " + channelName + " " + password,
             QueuedMessageType.INSTANT_MESSAGE, 0));

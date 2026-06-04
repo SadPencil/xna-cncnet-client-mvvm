@@ -3,6 +3,7 @@
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.GameLobby"
              x:Class="AvClientView.Multiplayer.GameLobby.CnCNetGameLobby"
              x:DataType="vmc:ICnCNetGameLobbyViewModel"
+             IsVisible="{Binding IsEnabled}"
              Width="1220" Height="728">
   <Canvas x:Name="MainCanvas">
 

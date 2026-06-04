@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using AvClientMvvmContract.Domain.Multiplayer;
+using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.Online;
 
 using CommunityToolkit.Mvvm.Input;
@@ -47,6 +48,9 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     bool IsGameCreationPanelVisible { get; }
     IPendingGameInviteData? PendingGameInvite { get; }
     string? SoundToPlay { get; }
+
+    ICnCNetGameLobbyViewModel? GameLobby { get; }
+    ICnCNetGameLoadingLobbyViewModel? GameLoadingLobby { get; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }

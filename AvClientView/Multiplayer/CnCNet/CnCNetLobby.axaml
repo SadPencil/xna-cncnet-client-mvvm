@@ -4,6 +4,7 @@
              xmlns:dom="using:AvClientMvvmContract.Domain.Multiplayer"
              xmlns:onl="using:AvClientMvvmContract.Online"
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
+             xmlns:gamelobby="using:AvClientView.Multiplayer.GameLobby"
              xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLobby"
              x:Name="CnCNetLobbyView"
@@ -370,6 +371,11 @@
         </Border>
       </Panel>
     </Border>
+
+    <!-- ========== GAME LOBBY OVERLAY (shown when creating/joining a game) ========== -->
+    <gamelobby:CnCNetGameLobby x:Name="gameLobby"
+                               DataContext="{Binding GameLobby}"
+                               Canvas.Left="0" Canvas.Top="0" />
 
   </Canvas>
 </UserControl>
