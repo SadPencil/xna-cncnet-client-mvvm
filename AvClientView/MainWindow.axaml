@@ -1,14 +1,17 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:view="using:AvClientView"
         x:Class="AvClientView.Generic.MainWindow"
         Title="CnCNet Client"
-        Width="1280" Height="720"
+        Width="{x:Static view:ViewConstants.DesignResolutionWidth}"
+        Height="{x:Static view:ViewConstants.DesignResolutionHeight}"
         MinWidth="800" MinHeight="600"
         WindowStartupLocation="CenterScreen"
         CanResize="True"
         Background="#000000">
   <Viewbox Stretch="Uniform" ClipToBounds="False">
-    <Grid Width="1280" Height="720">
+    <Grid Width="{x:Static view:ViewConstants.DesignResolutionWidth}"
+          Height="{x:Static view:ViewConstants.DesignResolutionHeight}">
       <ContentControl x:Name="MainContent"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center" />

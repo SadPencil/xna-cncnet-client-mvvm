@@ -31,8 +31,8 @@ public partial class MainMenu : UserControl
     private const int APPEAR_CURSOR_THRESHOLD_Y = 8;
 
     private readonly IIniLayoutOverlayService _iniOverlay;
-    private double _menuWidth = 1280;
-    private double _menuHeight = 720;
+    private double _menuWidth = ViewConstants.DesignResolutionWidth;
+    private double _menuHeight = ViewConstants.DesignResolutionHeight;
     private bool _isLoaded;
     private static int _dialogCounter;
     private readonly List<Action> _pendingDialogs = new();
@@ -91,10 +91,10 @@ public partial class MainMenu : UserControl
 
         // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini).
         // The [MainMenu] section's Size is meant for the main menu content area,
-        // not the full UserControl which must stay at 1280x720 for overlays.
+        // not the full UserControl which must stay at design resolution for overlays.
         _iniOverlay.ApplyLayout(this, "MainMenu");
 
-        // Steal the INI Size for MainMenuPanel and keep the UserControl at 1280x720.
+        // Steal the INI Size for MainMenuPanel and keep the UserControl at design resolution.
         var menuWidth = Width;
         var menuHeight = Height;
         _menuWidth = menuWidth;
@@ -102,8 +102,8 @@ public partial class MainMenu : UserControl
 
         MainMenuPanel.Width = menuWidth;
         MainMenuPanel.Height = menuHeight;
-        Width = 1280;
-        Height = 720;
+        Width = ViewConstants.DesignResolutionWidth;
+        Height = ViewConstants.DesignResolutionHeight;
 
         // Size dialog overlay panels to cover the full menu panel
         OKDialogsPanel.Width = menuWidth;
@@ -124,7 +124,7 @@ public partial class MainMenu : UserControl
 
         // Center the panel when it's smaller than the full UserControl.
         // Must use Stretch in AXAML (not Center) so Canvas sizes correctly.
-        if (menuWidth < 1280 || menuHeight < 720)
+        if (menuWidth < ViewConstants.DesignResolutionWidth || menuHeight < ViewConstants.DesignResolutionHeight)
         {
             MainMenuPanel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             MainMenuPanel.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;

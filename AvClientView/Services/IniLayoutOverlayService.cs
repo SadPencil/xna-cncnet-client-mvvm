@@ -137,6 +137,15 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (mainSection != null)
             ApplyProperties(control, mainSection, iniFile, sectionName);
 
+        // Clamp window size to the design resolution.
+        // INI files may specify sizes that exceed the rendering resolution
+        // (e.g., Yuri Theme/GenericWindow.ini has Size=1220,768).
+        // The Viewbox handles scaling from design resolution to physical window.
+        if (control.Width > ViewConstants.DesignResolutionWidth)
+            control.Width = ViewConstants.DesignResolutionWidth;
+        if (control.Height > ViewConstants.DesignResolutionHeight)
+            control.Height = ViewConstants.DesignResolutionHeight;
+
         // Apply hardcoded draw modes from XNA code first (even if INI has no section)
         ApplyHardcodedDrawModes(control);
 
@@ -603,7 +612,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
 
         // Use explicit effective dimensions when provided (e.g. LoadingScreen uses
-        // 1280x720 design size regardless of INI Size). Otherwise walk up the tree.
+        // design resolution size regardless of INI Size). Otherwise walk up the tree.
         double parentWidth = effectiveWidth ?? GetEffectiveWidth(parent);
         double parentHeight = effectiveHeight ?? GetEffectiveHeight(parent);
 

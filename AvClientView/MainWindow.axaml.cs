@@ -29,7 +29,7 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
-        // LoadingScreen fills the Grid (1280x720). MainMenu will be centered.
+        // LoadingScreen fills the Grid (design resolution). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
 

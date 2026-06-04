@@ -30,7 +30,7 @@ public partial class LoadingScreen : UserControl
     {
         BackgroundHelper.ApplyDefaultBackground(this, "loadingscreen.png", IniOverlayService);
 
-        IniOverlayService?.ApplyLayout(this, "LoadingScreen", effectiveWidth: 1280, effectiveHeight: 720);
+        IniOverlayService?.ApplyLayout(this, "LoadingScreen", effectiveWidth: ViewConstants.DesignResolutionWidth, effectiveHeight: ViewConstants.DesignResolutionHeight);
 
         Width = double.NaN;
         Height = double.NaN;
