@@ -315,8 +315,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         InitializeChannelList();
 
-        // gameLobby.GameLeft and gameLoadingLobby.GameLeft
-        // are handled via the service pattern
+        gameLobby.Initialize();
+        gameLoadingLobby.Initialize();
     }
 
     public void SwitchOn()
