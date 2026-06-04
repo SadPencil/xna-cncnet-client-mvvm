@@ -574,25 +574,18 @@ namespace AvClientViewModel.Generic
 
         private void OnGameProcessExitedInternal()
         {
-            uiThreadMarshaller.AddCallback(new Action(HandleGameProcessExited));
-        }
-
-        private void HandleGameProcessExited()
-        {
-            gameLoadingWindowViewModel.ListSaves();
-
-            // If music is disabled on menus, check if the main menu is the top-most
-            // window of the top bar and only play music if it is.
-            // LAN has the top bar disabled, so to detect the LAN game lobby
-            // we'll check whether we're NOT in LAN mode.
+            // Music playback on current (threadpool) thread - not on UI thread
             if (!UserINISettings.Instance.StopMusicOnMenu ||
                 (!IsLanMode && topBarViewModel.LastSwitchType == SwitchType.PRIMARY))
                 musicPlayer.PlayThemeSong();
+
+            // ListSaves modifies ObservableCollections so must be on UI thread
+            uiThreadMarshaller.AddCallback(() => gameLoadingWindowViewModel.ListSaves());
         }
 
         private void OnUpdaterRestart(object? sender, EventArgs e)
         {
-            uiThreadMarshaller.AddCallback(new Action(ExitClient));
+            ExitClient();
         }
 
         private void OnSettingsSaved(object? sender, EventArgs e)

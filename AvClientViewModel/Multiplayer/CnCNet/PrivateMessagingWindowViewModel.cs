@@ -540,16 +540,14 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     private void GameProcessService_GameProcessExited()
     {
-        uiThreadMarshaller.AddCallback(new Action(HandleGameProcessExited));
-    }
-
-    private void HandleGameProcessExited()
-    {
-        if (pmReceivedDuringGame != null)
+        uiThreadMarshaller.AddCallback(() =>
         {
-            ShowNotification(pmReceivedDuringGame.User, pmReceivedDuringGame.Message);
-            pmReceivedDuringGame = null;
-        }
+            if (pmReceivedDuringGame != null)
+            {
+                ShowNotification(pmReceivedDuringGame.User, pmReceivedDuringGame.Message);
+                pmReceivedDuringGame = null;
+            }
+        });
     }
 
     // --- Helpers ---

@@ -312,11 +312,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     private void OnGameProcessExited()
     {
-        UIThreadMarshaller.AddCallback(new Action(HandleGameProcessExited));
-    }
-
-    protected virtual void HandleGameProcessExited()
-    {
+        // File I/O and Discord RPC on current (threadpool) thread - not on UI thread
         if (fsw != null)
             fsw.EnableRaisingEvents = false;
 
@@ -335,17 +331,19 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
             StatisticsManager.Instance.SaveDatabase();
         }
         UpdateDiscordPresence(true);
+
+        HandleGameProcessExited();
+    }
+
+    protected virtual void HandleGameProcessExited()
+    {
     }
 
     // --- Saved game file system watcher ---
 
     private void OnSavedGameFileEvent(object sender, FileSystemEventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(() => HandleFSWEvent(e)));
-    }
-
-    private void HandleFSWEvent(FileSystemEventArgs e)
-    {
+        // File I/O on current (threadpool) thread - no UI marshaling needed
         Log.Information("FSW Event: " + e.FullPath);
 
         if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")

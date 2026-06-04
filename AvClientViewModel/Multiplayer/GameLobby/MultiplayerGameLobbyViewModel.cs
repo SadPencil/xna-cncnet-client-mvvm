@@ -993,11 +993,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     private void OnSavedGameFileEvent(object sender, FileSystemEventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(() => FSWEvent(e)));
-    }
-
-    private void FSWEvent(FileSystemEventArgs e)
-    {
+        // File I/O on current (threadpool) thread - no UI marshaling needed
         Log.Information("FSW Event: " + e.FullPath);
 
         if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")

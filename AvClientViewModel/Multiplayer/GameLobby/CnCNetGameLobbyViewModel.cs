@@ -392,7 +392,23 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void TunnelHandler_CurrentTunnelPinged(object sender, EventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(UpdatePing));
+        if (tunnelHandler.CurrentTunnel == null)
+            return;
+
+        int pingMs = tunnelHandler.CurrentTunnel.PingInMs;
+
+        // Network I/O on current (threadpool) thread - not on UI thread
+        channel.SendCTCPMessage("TNLPNG " + pingMs, QueuedMessageType.SYSTEM_MESSAGE, 10);
+
+        UIThreadMarshaller.AddCallback(() =>
+        {
+            PlayerInfo pInfo = Players.Find(p => p.Name.Equals(ProgramConstants.PLAYERNAME));
+            if (pInfo != null)
+            {
+                pInfo.Ping = pingMs;
+                CopyPlayerDataToUI();
+            }
+        });
     }
 
     private void UpdatePing()
@@ -400,14 +416,18 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         if (tunnelHandler.CurrentTunnel == null)
             return;
 
-        channel.SendCTCPMessage("TNLPNG " + tunnelHandler.CurrentTunnel.PingInMs, QueuedMessageType.SYSTEM_MESSAGE, 10);
+        int pingMs = tunnelHandler.CurrentTunnel.PingInMs;
+        channel.SendCTCPMessage("TNLPNG " + pingMs, QueuedMessageType.SYSTEM_MESSAGE, 10);
 
-        PlayerInfo pInfo = Players.Find(p => p.Name.Equals(ProgramConstants.PLAYERNAME));
-        if (pInfo != null)
+        UIThreadMarshaller.AddCallback(() =>
         {
-            pInfo.Ping = tunnelHandler.CurrentTunnel.PingInMs;
-            CopyPlayerDataToUI();
-        }
+            PlayerInfo pInfo = Players.Find(p => p.Name.Equals(ProgramConstants.PLAYERNAME));
+            if (pInfo != null)
+            {
+                pInfo.Ping = pingMs;
+                CopyPlayerDataToUI();
+            }
+        });
     }
 
     // --- Tunnel ---
@@ -1810,38 +1830,39 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void MapSharer_MapDownloadFailed(object sender, SHA1EventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(() => MapSharer_HandleMapDownloadFailed(e)));
+        MapSharer_HandleMapDownloadFailed(e);
     }
 
     private void MapSharer_HandleMapDownloadFailed(SHA1EventArgs e)
     {
-        MapDownloadFailed?.Invoke(this, e.SHA1);
+        UIThreadMarshaller.AddCallback(() => MapDownloadFailed?.Invoke(this, e.SHA1));
 
         if (hostUploadedMaps.Contains(e.SHA1))
         {
-            AddNotice("Download of the custom map failed. The host needs to change the map or you will be unable to participate in this match.".L10N("Client:Main:DownloadCustomMapFailed"));
+            UIThreadMarshaller.AddCallback(() =>
+                AddNotice("Download of the custom map failed. The host needs to change the map or you will be unable to participate in this match.".L10N("Client:Main:DownloadCustomMapFailed")));
 
             channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
             return;
         }
         else if (chatCommandDownloadedMaps.Contains(e.SHA1))
         {
-            AddNotice("Downloading map via chat command has failed. Check the map ID and try again.".L10N("Client:Main:DownloadMapCommandFailedGeneric"));
+            UIThreadMarshaller.AddCallback(() =>
+                AddNotice("Downloading map via chat command has failed. Check the map ID and try again.".L10N("Client:Main:DownloadMapCommandFailedGeneric")));
             return;
         }
 
-        AddNotice("Requesting the game host to upload the map to the CnCNet map database.".L10N("Client:Main:RequestHostUploadMapToDB"));
+        UIThreadMarshaller.AddCallback(() =>
+            AddNotice("Requesting the game host to upload the map to the CnCNet map database.".L10N("Client:Main:RequestHostUploadMapToDB")));
 
         channel.SendCTCPMessage(MAP_SHARING_UPLOAD_REQUEST + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
     }
 
     private void MapSharer_MapDownloadComplete(object sender, SHA1EventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(() =>
-        {
-            string mapFileName = MapSharer.GetMapFileName(e.SHA1, e.MapName);
-            Log.Information("Map " + mapFileName + " downloaded successfully.");
-        }));
+        // Logging can be done on the current (dedicated) thread, no UI marshaling needed
+        string mapFileName = MapSharer.GetMapFileName(e.SHA1, e.MapName);
+        Log.Information("Map " + mapFileName + " downloaded successfully.");
     }
 
     private void MapLoader_MapChanged(object sender, MapChangedEventArgs e)
@@ -1891,33 +1912,37 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void MapSharer_MapUploadFailed(object sender, MapEventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(() => MapSharer_HandleMapUploadFailed(e)));
+        MapSharer_HandleMapUploadFailed(e);
     }
 
     private void MapSharer_HandleMapUploadFailed(MapEventArgs e)
     {
         Map map = e.Map;
 
-        AddNotice(string.Format("Uploading map {0} to the CnCNet map database failed.".L10N("Client:Main:UpdateMapToDBFailed"), map.Name));
+        UIThreadMarshaller.AddCallback(() =>
+            AddNotice(string.Format("Uploading map {0} to the CnCNet map database failed.".L10N("Client:Main:UpdateMapToDBFailed"), map.Name)));
+
         if (map == Map)
         {
-            AddNotice("You need to change the map or some players won't be able to participate in this match.".L10N("Client:Main:YouMustReplaceMap"));
+            UIThreadMarshaller.AddCallback(() =>
+                AddNotice("You need to change the map or some players won't be able to participate in this match.".L10N("Client:Main:YouMustReplaceMap")));
+
             channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + map.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
         }
     }
 
     private void MapSharer_MapUploadComplete(object sender, MapEventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(() => MapSharer_HandleMapUploadComplete(e)));
+        MapSharer_HandleMapUploadComplete(e);
     }
 
     private void MapSharer_HandleMapUploadComplete(MapEventArgs e)
     {
-        AddNotice(string.Format("Uploading map {0} to the CnCNet map database complete.".L10N("Client:Main:UpdateMapToDBSuccess"), e.Map.Name));
+        UIThreadMarshaller.AddCallback(() =>
+            AddNotice(string.Format("Uploading map {0} to the CnCNet map database complete.".L10N("Client:Main:UpdateMapToDBSuccess"), e.Map.Name)));
+
         if (e.Map == Map)
-        {
             channel.SendCTCPMessage(MAP_SHARING_DOWNLOAD_REQUEST + " " + Map.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
-        }
     }
 
     private void HandleMapUploadRequest(string sender, string mapSHA1)
