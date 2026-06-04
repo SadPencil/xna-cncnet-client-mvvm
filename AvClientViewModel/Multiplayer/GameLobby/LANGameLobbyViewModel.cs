@@ -448,13 +448,16 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                     }
                 }
 
-                foreach (string cmd in commands)
+                if (commands.Count > 0)
                 {
-                    string capturedCmd = cmd;
+                    var commandsSnapshot = commands.ToArray();
                     UIThreadMarshaller.AddCallback(() =>
                     {
                         if (sessionId == mySessionId)
-                            HandleMessageFromServer(capturedCmd);
+                        {
+                            foreach (string cmd in commandsSnapshot)
+                                HandleMessageFromServer(cmd);
+                        }
                     });
                 }
 
