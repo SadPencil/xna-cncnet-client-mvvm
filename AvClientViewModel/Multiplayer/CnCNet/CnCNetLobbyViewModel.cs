@@ -525,7 +525,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (gameCreationWindowViewModel != null)
             gameCreationWindowViewModel.IsWindowVisible = false;
 
-        (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
+        pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
 
     /// <summary>
@@ -552,7 +552,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (gameCreationWindowViewModel != null)
             gameCreationWindowViewModel.IsWindowVisible = false;
 
-        (pmWindow as PrivateMessagingWindowViewModel)?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
+        pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
     }
 
     /// <summary>
@@ -621,7 +621,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         isInGameRoom = false;
         UpdateLogoutButtonText();
-        (pmWindow as PrivateMessagingWindowViewModel)?.ClearInviteChannelInfo();
+        pmWindow.ClearInviteChannelInfo();
     }
 
     /// <summary>
@@ -631,7 +631,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         isInGameRoom = false;
         UpdateLogoutButtonText();
-        (pmWindow as PrivateMessagingWindowViewModel)?.ClearInviteChannelInfo();
+        pmWindow?.ClearInviteChannelInfo();
     }
 
     /// <summary>
