@@ -390,7 +390,10 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     // --- Ping ---
 
-    private void TunnelHandler_CurrentTunnelPinged(object sender, EventArgs e) => UpdatePing();
+    private void TunnelHandler_CurrentTunnelPinged(object sender, EventArgs e)
+    {
+        UIThreadMarshaller.AddCallback(new Action(UpdatePing));
+    }
 
     private void UpdatePing()
     {
