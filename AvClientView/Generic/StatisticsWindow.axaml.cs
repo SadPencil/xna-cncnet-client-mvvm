@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Generic;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 
@@ -21,26 +20,10 @@ public partial class StatisticsWindow : UserControl, IStatisticsWindowView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ApplyDefaultBackground("scoreviewerbg.png");
+        BackgroundHelper.ApplyDefaultBackground(this, "scoreviewerbg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "StatisticsWindow");
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = IniOverlayService;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     public IStatisticsWindowViewModel? ViewModel

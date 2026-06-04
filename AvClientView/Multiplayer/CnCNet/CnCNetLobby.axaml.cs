@@ -8,6 +8,7 @@ using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 namespace AvClientView.Multiplayer.CnCNet;
@@ -28,7 +29,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ApplyDefaultBackground("cncnetlobbybg.png");
+        BackgroundHelper.ApplyDefaultBackground(this, "cncnetlobbybg.png", IniOverlayService);
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "CnCNetLobby");
 
@@ -60,22 +61,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
         _infoPanelPositioned = true;
         LayoutUpdated -= PositionInfoPanel;
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = IniOverlayService;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     private void SetupGameListHover()

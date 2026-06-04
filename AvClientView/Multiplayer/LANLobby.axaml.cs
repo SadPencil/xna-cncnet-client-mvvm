@@ -25,7 +25,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ApplyDefaultBackground("cncnetlobbybg.png");
+        BackgroundHelper.ApplyDefaultBackground(this, "cncnetlobbybg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "LANLobby");
@@ -34,22 +34,6 @@ public partial class LANLobby : UserControl, ILANLobbyView
         WireOverlayVisibility(gameCreationWindow, gameCreationOverlay);
         WireOverlayVisibility(gameLobby, gameLobbyOverlay);
         WireOverlayVisibility(gameLoadingLobby, gameLoadingLobbyOverlay);
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = IniOverlayService;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     private void SetupChatInputEnterKey()

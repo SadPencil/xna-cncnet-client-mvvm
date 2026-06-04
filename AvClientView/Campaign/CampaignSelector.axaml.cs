@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Campaign;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 
@@ -21,28 +20,10 @@ public partial class CampaignSelector : UserControl
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        // Apply default background (matching original: AssetLoader.LoadTexture("MainMenu/dbak.png"))
-        ApplyDefaultBackground("MainMenu/dbak.png");
+        BackgroundHelper.ApplyDefaultBackground(this, "MainMenu/dbak.png", IniOverlayService);
 
-        // Apply INI layout overrides (CampaignSelector.ini -> GenericWindow.ini)
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "CampaignSelector");
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = IniOverlayService;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     public ICampaignSelectorViewModel? ViewModel

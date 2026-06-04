@@ -12,6 +12,7 @@ using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 
@@ -51,7 +52,7 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ApplyDefaultBackground("gamelobbybg.png");
+        BackgroundHelper.ApplyDefaultBackground(this, "gamelobbybg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "MultiplayerGameLobby");
@@ -61,22 +62,6 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
 
         if (currentMapPreview != null)
             RenderIndicators();
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = IniOverlayService;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     private void SetupChatInputEnterKey()

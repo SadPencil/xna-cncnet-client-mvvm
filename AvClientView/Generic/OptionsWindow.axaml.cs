@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Generic;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 namespace AvClientView.Generic;
@@ -20,42 +19,8 @@ public partial class OptionsWindow : UserControl, IOptionsWindowView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        // Apply default background (matching original: AssetLoader.LoadTextureUncached("optionsbg.png"))
-        ApplyDefaultBackground("optionsbg.png");
-
-        // Apply INI layout overrides (OptionsWindow.ini if it exists)
+        BackgroundHelper.ApplyDefaultBackground(this, "optionsbg.png", IniOverlayService);
         IniOverlayService?.ApplyLayout(this, "OptionsWindow");
-
-        // Wire up child panel DataContexts from DI
-        SetupPanelDataContexts();
-    }
-
-    private void SetupPanelDataContexts()
-    {
-        var vm = ViewModel;
-        if (vm == null) return;
-
-        if (displayPanel != null)    displayPanel.DataContext = vm.DisplayOptions;
-        if (audioPanel != null)      audioPanel.DataContext = vm.AudioOptions;
-        if (gamePanel != null)       gamePanel.DataContext = vm.GameOptions;
-        if (cncnetPanel != null)     cncnetPanel.DataContext = vm.CnCNetOptions;
-        if (updaterPanel != null)    updaterPanel.DataContext = vm.UpdaterOptions;
-        if (componentsPanel != null) componentsPanel.DataContext = vm.ComponentsOptions;
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            if (IniOverlayService == null) return;
-            var fullPath = IniOverlayService.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     public IOptionsWindowViewModel? ViewModel

@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 
@@ -21,26 +20,10 @@ public partial class LANGameCreationWindow : UserControl, ILANGameCreationWindow
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ApplyDefaultBackground("genericwindowbg.png");
+        BackgroundHelper.ApplyDefaultBackground(this, "genericwindowbg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "GenericWindow");
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = IniOverlayService;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     public ILANGameCreationWindowViewModel? ViewModel

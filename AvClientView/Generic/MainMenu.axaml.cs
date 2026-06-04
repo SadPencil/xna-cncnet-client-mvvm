@@ -17,6 +17,7 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 using CommunityToolkit.Mvvm.Messaging;
@@ -86,7 +87,7 @@ public partial class MainMenu : UserControl
 
         // Apply default background to MainMenuPanel (the menu content area),
         // not the full UserControl. INI may later override this.
-        ApplyDefaultBackgroundToPanel(MainMenuPanel, "MainMenu/mainmenubg.png");
+        BackgroundHelper.ApplyDefaultBackground(MainMenuPanel, "MainMenu/mainmenubg.png", _iniOverlay);
 
         // Apply INI layout overrides (MainMenu.ini + GenericWindow.ini).
         // The [MainMenu] section's Size is meant for the main menu content area,
@@ -210,35 +211,6 @@ public partial class MainMenu : UserControl
             ViewModel?.TopBarViewModel.ExpandCommand.Execute(null);
     }
 
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = _iniOverlay;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
-    }
-
-    private void ApplyDefaultBackgroundToPanel(Panel target, string texturePath)
-    {
-        try
-        {
-            var fullPath = _iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                target.Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
-    }
 
     public IMainMenuViewModel? ViewModel
     {

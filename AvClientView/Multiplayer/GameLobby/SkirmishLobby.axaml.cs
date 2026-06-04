@@ -12,6 +12,7 @@ using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
+using AvClientView.Controls;
 using AvClientView.Services;
 
 
@@ -52,7 +53,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        ApplyDefaultBackground("gamelobbybg.png");
+        BackgroundHelper.ApplyDefaultBackground(this, "gamelobbybg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "SkirmishLobby");
@@ -63,22 +64,6 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         // Re-render in case data was set before Loaded fired
         if (currentMapPreview != null)
             RenderIndicators();
-    }
-
-    private void ApplyDefaultBackground(string texturePath)
-    {
-        try
-        {
-            var iniOverlay = IniOverlayService;
-            if (iniOverlay == null) return;
-            var fullPath = iniOverlay.FindTextureFile(texturePath);
-            if (fullPath != null)
-            {
-                var bitmap = new Bitmap(fullPath);
-                Background = new ImageBrush { Source = bitmap, Stretch = Stretch.UniformToFill };
-            }
-        }
-        catch { }
     }
 
     public IGameLobbyViewModel? ViewModel
