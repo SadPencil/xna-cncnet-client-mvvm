@@ -398,7 +398,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void OpenPrivateMessages()
     {
-        // View handles showing the PM window
+        pmWindow?.SwitchOnCommand.Execute(null);
     }
 
     [RelayCommand]
