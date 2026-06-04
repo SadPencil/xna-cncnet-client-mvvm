@@ -151,57 +151,8 @@ public partial class MainMenu : UserControl
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
-        var vm = ViewModel;
-        if (vm == null || !vm.AreButtonsEnabled)
-            return;
-
-        // TODO: If the current panel is not the main menu, we don't want to trigger these shortcuts.
-        // For now, I just disable all shortcuts.
-        return;
-
-        //switch (e.Key)
-        //{
-        //    case Key.C:
-        //        vm.StartCampaignCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.L:
-        //        vm.LoadGameCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.S:
-        //        vm.StartSkirmishCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.M:
-        //        vm.JoinCnCNetCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.N:
-        //        vm.HostLANGameCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.O:
-        //        vm.OpenOptionsCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.E:
-        //        vm.OpenMapEditorCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.T:
-        //        vm.OpenStatisticsCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.R:
-        //        vm.OpenCreditsCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //    case Key.X:
-        //        vm.OpenExtrasCommand.Execute(null);
-        //        e.Handled = true;
-        //        break;
-        //}
+        // Shortcuts are disabled while the main menu is embedded in a sub-panel.
+        // When re-enabled, bind to ViewModel commands via Window.KeyBindings instead.
     }
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
