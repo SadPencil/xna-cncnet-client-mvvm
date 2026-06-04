@@ -73,8 +73,11 @@
                Watermark="Type your message..."
                IsEnabled="{Binding IsMessageInputEnabled}"
                Width="464" Height="23"
-              
-               Canvas.Left="222" Canvas.Top="407" />
+               Canvas.Left="222" Canvas.Top="407">
+        <TextBox.KeyBindings>
+          <KeyBinding Gesture="Enter" Command="{Binding SendMessageCommand}" />
+        </TextBox.KeyBindings>
+      </TextBox>
 
       <!-- Send Button -->
       <Button x:Name="btnSend"

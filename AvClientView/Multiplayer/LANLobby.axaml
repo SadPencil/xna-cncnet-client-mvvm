@@ -79,8 +79,11 @@
                Watermark="Type here to chat..."
                IsEnabled="{Binding IsEnabled}"
                Width="630" Height="23"
-              
-               Canvas.Left="300" Canvas.Top="693" />
+               Canvas.Left="300" Canvas.Top="693">
+        <TextBox.KeyBindings>
+          <KeyBinding Gesture="Enter" Command="{Binding SendChatMessageCommand}" />
+        </TextBox.KeyBindings>
+      </TextBox>
 
       <!-- ========== RIGHT COLUMN: Player List ========== -->
 

@@ -97,7 +97,11 @@
              Text="{Binding DraftMessage}"
              Watermark="Type a message..."
              Width="566" Height="19"
-             Canvas.Left="12" Canvas.Top="462" />
+             Canvas.Left="12" Canvas.Top="462">
+      <TextBox.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding SendChatMessageCommand}" />
+      </TextBox.KeyBindings>
+    </TextBox>
 
     <!-- Load Game Button -->
     <Button x:Name="btnLoadGame"

@@ -1,8 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer;
 
@@ -20,7 +17,6 @@ public partial class LANLobby : UserControl, ILANLobbyView
     {
         InitializeComponent();
         Loaded += OnLoaded;
-        SetupChatInputEnterKey();
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -34,21 +30,6 @@ public partial class LANLobby : UserControl, ILANLobbyView
         WireOverlayVisibility(gameCreationWindow, gameCreationOverlay);
         WireOverlayVisibility(gameLobby, gameLobbyOverlay);
         WireOverlayVisibility(gameLoadingLobby, gameLoadingLobbyOverlay);
-    }
-
-    private void SetupChatInputEnterKey()
-    {
-        if (tbChatInput != null)
-        {
-            tbChatInput.KeyDown += (s, e) =>
-            {
-                if (e.Key == Key.Return && ViewModel?.SendChatMessageCommand.CanExecute(null) == true)
-                {
-                    ViewModel.SendChatMessageCommand.Execute(null);
-                    e.Handled = true;
-                }
-            };
-        }
     }
 
     public ILANLobbyViewModel? ViewModel

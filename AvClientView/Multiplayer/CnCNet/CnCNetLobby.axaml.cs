@@ -3,8 +3,6 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 
@@ -21,7 +19,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     {
         InitializeComponent();
         Loaded += OnLoaded;
-        SetupChatInputEnterKey();
         SetupGameListHover();
     }
 
@@ -87,21 +84,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             if (vm != null)
                 vm.HoveredGameIndex = -1;
         }, handledEventsToo: true);
-    }
-
-    private void SetupChatInputEnterKey()
-    {
-        if (tbChatInput != null)
-        {
-            tbChatInput.KeyDown += (s, e) =>
-            {
-                if (e.Key == Key.Return && ViewModel?.SendChatMessageCommand.CanExecute(null) == true)
-                {
-                    ViewModel.SendChatMessageCommand.Execute(null);
-                    e.Handled = true;
-                }
-            };
-        }
     }
 
     public ICnCNetLobbyViewModel? ViewModel
