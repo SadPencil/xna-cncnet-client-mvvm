@@ -1,9 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
+             xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Multiplayer.CnCNet.GameCreationWindow"
              x:DataType="vmc:IGameCreationWindowViewModel"
-             IsVisible="{Binding IsWindowVisible}">
+             IsVisible="{Binding IsWindowVisible, FallbackValue=False}">
   <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
           BorderBrush="{DynamicResource XnaPanelBorderBrush}"
           BorderThickness="1"
@@ -68,7 +69,7 @@
       <!-- Validation error -->
       <TextBlock Text="{Binding ValidationErrorMessage}"
                  Foreground="Red"
-                 IsVisible="{Binding !CanCreateGame}" />
+                 IsVisible="{Binding CanCreateGame, Converter={x:Static converters:BoolConverters.Not}, FallbackValue=True}" />
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">

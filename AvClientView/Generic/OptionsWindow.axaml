@@ -2,9 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vmc="using:AvClientMvvmContract.Generic"
              xmlns:vmcOpt="using:AvClientMvvmContract.Generic.OptionPanels"
+             xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Generic.OptionsWindow"
              x:DataType="vmc:IOptionsWindowViewModel"
-             IsVisible="{Binding IsVisible}"
+             IsVisible="{Binding IsVisible, FallbackValue=False}"
              Width="576" Height="475">
   <Canvas>
     <!-- Tab buttons (at top, matching original XNAClientTabControl at y=12) -->
@@ -313,7 +314,7 @@
                         Foreground="{DynamicResource XnaTextBrush}" />
               <CheckBox x:Name="chkDiscordIntegration" Content="Show Game Info on Discord Status"
                         IsChecked="{Binding IsDiscordIntegrationEnabled}"
-                        IsEnabled="{Binding !IsDiscordIntegrationGloballyDisabled}"
+                        IsEnabled="{Binding IsDiscordIntegrationGloballyDisabled, Converter={x:Static converters:BoolConverters.Not}, FallbackValue=False}"
                         Foreground="{DynamicResource XnaTextBrush}" />
               <CheckBox x:Name="chkAllowGameInvitesFromFriendsOnly" Content="Only Allow Game Invites from Friends"
                         IsChecked="{Binding AllowGameInvitesOnlyFromFriends}"

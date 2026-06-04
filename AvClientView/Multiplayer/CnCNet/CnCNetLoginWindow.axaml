@@ -1,7 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLoginWindow"
-             IsVisible="{Binding IsVisible}">
+             x:DataType="vmc:ICnCNetLoginWindowViewModel"
+             IsVisible="{Binding IsVisible, FallbackValue=False}">
   <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
           BorderBrush="{DynamicResource XnaPanelBorderBrush}"
           BorderThickness="1"
