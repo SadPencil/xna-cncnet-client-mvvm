@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -111,8 +112,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     private bool _isMapSortButtonEnabled = true;
 
-    IReadOnlyList<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => PlayerSlots;
-    protected IReadOnlyList<PlayerSlotObservable> PlayerSlots { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.PlayerSlots)); } } = [];
+    ObservableCollection<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => PlayerSlots;
+    protected ObservableCollection<IPlayerSlotObservable> PlayerSlots { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.PlayerSlots)); } } = new();
 
     IReadOnlyList<IGameOptionCheckBox> IGameLobbyViewModel.CheckBoxes => CheckBoxes.Cast<IGameOptionCheckBox>().ToList().AsReadOnly();
     protected IReadOnlyList<GameOptionCheckBox> CheckBoxes { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.CheckBoxes)); } } = [];
@@ -206,12 +207,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GetRandomSelectors(selectorNames, RandomSelectors);
         RandomSelectorCount = RandomSelectors.Count + 1;
 
-        var slots = new PlayerSlotObservable[MAX_PLAYER_COUNT];
+        var slots = new ObservableCollection<IPlayerSlotObservable>();
         for (int i = 0; i < MAX_PLAYER_COUNT; i++)
         {
-            slots[i] = new PlayerSlotObservable();
-            slots[i].PropertyChanged += PlayerSlot_PropertyChanged;
-            InitPlayerSlotOptions(slots[i], sides, selectorNames);
+            var slot = new PlayerSlotObservable();
+            slot.PropertyChanged += PlayerSlot_PropertyChanged;
+            InitPlayerSlotOptions(slot, sides, selectorNames);
+            slots.Add(slot);
         }
         PlayerSlots = slots;
 
@@ -241,44 +243,50 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     // --- Player slot initialization ---
 
-    private static IReadOnlyList<string> CreateNameOptionsWithFirstPlayerName(string firstPlayerName)
+    private static ObservableCollection<string> CreateNameOptionsWithFirstPlayerName(string firstPlayerName)
     {
-        var nameOptions = new List<string> { firstPlayerName };
-        nameOptions.AddRange(ProgramConstants.AI_PLAYER_NAMES);
+        var nameOptions = new ObservableCollection<string> { firstPlayerName };
+        foreach (var name in ProgramConstants.AI_PLAYER_NAMES)
+            nameOptions.Add(name);
         return nameOptions;
     }
 
-    private void InitPlayerSlotOptions(PlayerSlotObservable slot, string[] sides, List<string> selectorNames)
+    private void InitPlayerSlotOptions(IPlayerSlotObservable slot, string[] sides, List<string> selectorNames)
     {
         // Name options: empty + AI names
-        var nameOptions = new List<string> { string.Empty };
-        nameOptions.AddRange(ProgramConstants.AI_PLAYER_NAMES);
+        var nameOptions = new ObservableCollection<string> { string.Empty };
+        foreach (var name in ProgramConstants.AI_PLAYER_NAMES)
+            nameOptions.Add(name);
         slot.NameOptions = nameOptions;
 
         // Side options: Random + selectors + sides
-        var sideOptions = new List<string> { "Random".L10N("Client:Sides:RandomSide") };
-        sideOptions.AddRange(selectorNames);
-        sideOptions.AddRange(sides.Select(s => s.L10N($"INI:Sides:{s}")));
+        var sideOptions = new ObservableCollection<string> { "Random".L10N("Client:Sides:RandomSide") };
+        foreach (var sn in selectorNames)
+            sideOptions.Add(sn);
+        foreach (var s in sides.Select(s => s.L10N($"INI:Sides:{s}")))
+            sideOptions.Add(s);
         slot.SideOptions = sideOptions;
-        slot.SideSelectable = Enumerable.Repeat(true, sideOptions.Count).ToArray();
+        slot.SideSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, sideOptions.Count));
 
         // Color options: Random + MPColors
         string randomColor = GameOptionsIni.GetStringValue("General", "RandomColor", "255,255,255");
-        var colorOptions = new List<string> { "Random".L10N("Client:Main:RandomColor") };
-        colorOptions.AddRange(MPColors.Select(c => c.Name));
+        var colorOptions = new ObservableCollection<string> { "Random".L10N("Client:Main:RandomColor") };
+        foreach (var c in MPColors)
+            colorOptions.Add(c.Name);
         slot.ColorOptions = colorOptions;
-        slot.ColorSelectable = Enumerable.Repeat(true, colorOptions.Count).ToArray();
+        slot.ColorSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, colorOptions.Count));
 
         // Start options
-        var startOptions = new List<string> { "???" };
+        var startOptions = new ObservableCollection<string> { "???" };
         for (int i = 1; i <= MAX_PLAYER_COUNT; i++)
             startOptions.Add(i.ToString());
         slot.StartOptions = startOptions;
-        slot.StartSelectable = Enumerable.Repeat(true, startOptions.Count).ToArray();
+        slot.StartSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, startOptions.Count));
 
         // Team options
-        var teamOptions = new List<string> { "-" };
-        teamOptions.AddRange(ProgramConstants.TEAMS);
+        var teamOptions = new ObservableCollection<string> { "-" };
+        foreach (var t in ProgramConstants.TEAMS)
+            teamOptions.Add(t);
         slot.TeamOptions = teamOptions;
     }
 
@@ -737,24 +745,24 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             dd.IsEnabled = true;
 
         // Enable all sides and colors by default
-        foreach (PlayerSlotObservable slot in PlayerSlots)
+        foreach (var slot in PlayerSlots)
         {
-            slot.SideSelectable = Enumerable.Repeat(true, slot.SideSelectable.Count()).ToArray();
-            slot.ColorSelectable = Enumerable.Repeat(true, slot.ColorSelectable.Count()).ToArray();
+            slot.SideSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, slot.SideSelectable.Count));
+            slot.ColorSelectable = new ObservableCollection<bool>(Enumerable.Repeat(true, slot.ColorSelectable.Count));
         }
 
         // Update start location options per map
         int maxLocation = GameModeMap.MaxPlayers == 0 ? 0
             : (GameModeMap.AllowedStartingLocations.Max() == GameModeMap.MaxPlayers
                 ? GameModeMap.MaxPlayers : MAX_PLAYER_COUNT);
-        var startOptions = new List<string> { "???" };
-        var startSelectable = new List<bool> { true };
+        var startOptions = new ObservableCollection<string> { "???" };
+        var startSelectable = new ObservableCollection<bool> { true };
         for (int i = 1; i <= maxLocation; i++)
         {
             startOptions.Add(i.ToString());
             startSelectable.Add(GameModeMap.AllowedStartingLocations.Contains(i));
         }
-        foreach (PlayerSlotObservable slot in PlayerSlots)
+        foreach (var slot in PlayerSlots)
         {
             slot.StartOptions = startOptions;
             slot.StartSelectable = startSelectable;
@@ -1140,7 +1148,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new List<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
                 for (int i = 0; i < RandomSelectorCount; i++)
                     sideSelectable[i] = false;
                 slots[pInfo.Index].SideSelectable = sideSelectable;
@@ -1150,7 +1158,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         {
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new List<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
                 for (int i = 0; i < RandomSelectorCount; i++)
                     sideSelectable[i] = true;
                 slots[pInfo.Index].SideSelectable = sideSelectable;
@@ -1166,7 +1174,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new List<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
                 sideSelectable[1 + c] = !disabled;
                 slots[pInfo.Index].SideSelectable = sideSelectable;
 
@@ -1184,7 +1192,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 foreach (PlayerInfo pInfo in playerInfos)
                 {
-                    var sideSelectable = new List<bool>(slots[pInfo.Index].SideSelectable);
+                    var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
                     sideSelectable[i + RandomSelectorCount] = false;
                     slots[pInfo.Index].SideSelectable = sideSelectable;
 
@@ -1196,7 +1204,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             {
                 foreach (PlayerInfo pInfo in playerInfos)
                 {
-                    var sideSelectable = new List<bool>(slots[pInfo.Index].SideSelectable);
+                    var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
                     sideSelectable[i + RandomSelectorCount] = true;
                     slots[pInfo.Index].SideSelectable = sideSelectable;
                 }
@@ -1223,7 +1231,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new List<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
                 if (sideSelectable.Count > GetSpectatorSideIndex())
                     sideSelectable[GetSpectatorSideIndex()] = false;
                 slots[pInfo.Index].SideSelectable = sideSelectable;
@@ -1233,7 +1241,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         {
             foreach (PlayerInfo pInfo in playerInfos)
             {
-                var sideSelectable = new List<bool>(slots[pInfo.Index].SideSelectable);
+                var sideSelectable = new ObservableCollection<bool>(slots[pInfo.Index].SideSelectable);
                 if (sideSelectable.Count > SideCount + RandomSelectorCount)
                     sideSelectable[SideCount + RandomSelectorCount] = true;
                 slots[pInfo.Index].SideSelectable = sideSelectable;

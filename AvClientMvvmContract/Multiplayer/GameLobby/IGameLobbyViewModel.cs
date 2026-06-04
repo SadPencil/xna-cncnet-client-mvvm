@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
@@ -31,7 +32,7 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     bool IsMapSortButtonEnabled { get; }
 
     // --- Player slots (8 slots) ---
-    IReadOnlyList<IPlayerSlotObservable> PlayerSlots { get; }
+    ObservableCollection<IPlayerSlotObservable> PlayerSlots { get; }
 
     // --- Game options ---
     IReadOnlyList<IGameOptionCheckBox> CheckBoxes { get; }

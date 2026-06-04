@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
@@ -18,8 +19,8 @@ public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
         set => SetProperty(ref _playerName, value);
     }
 
-    private IReadOnlyList<string> _nameOptions = System.Array.Empty<string>();
-    public IReadOnlyList<string> NameOptions
+    private ObservableCollection<string> _nameOptions = new ObservableCollection<string>();
+    public ObservableCollection<string> NameOptions
     {
         get => _nameOptions;
         set => SetProperty(ref _nameOptions, value);
@@ -39,8 +40,8 @@ public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
         set => SetProperty(ref _isNameDropdownEnabled, value);
     }
 
-    private IReadOnlyList<string> _sideOptions = System.Array.Empty<string>();
-    public IReadOnlyList<string> SideOptions
+    private ObservableCollection<string> _sideOptions = new ObservableCollection<string>();
+    public ObservableCollection<string> SideOptions
     {
         get => _sideOptions;
         set => SetProperty(ref _sideOptions, value);
@@ -60,18 +61,18 @@ public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
         set => SetProperty(ref _isSideDropdownEnabled, value);
     }
 
-    private IReadOnlyList<bool> _sideSelectable = System.Array.Empty<bool>();
+    private ObservableCollection<bool> _sideSelectable = new ObservableCollection<bool>();
     /// <summary>
     /// Per-item selectability for side options.
     /// </summary>
-    public IReadOnlyList<bool> SideSelectable
+    public ObservableCollection<bool> SideSelectable
     {
         get => _sideSelectable;
         set => SetProperty(ref _sideSelectable, value);
     }
 
-    private IReadOnlyList<string> _colorOptions = System.Array.Empty<string>();
-    public IReadOnlyList<string> ColorOptions
+    private ObservableCollection<string> _colorOptions = new ObservableCollection<string>();
+    public ObservableCollection<string> ColorOptions
     {
         get => _colorOptions;
         set => SetProperty(ref _colorOptions, value);
@@ -91,18 +92,18 @@ public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
         set => SetProperty(ref _isColorDropdownEnabled, value);
     }
 
-    private IReadOnlyList<bool> _colorSelectable = System.Array.Empty<bool>();
+    private ObservableCollection<bool> _colorSelectable = new ObservableCollection<bool>();
     /// <summary>
     /// Per-item selectability for color options.
     /// </summary>
-    public IReadOnlyList<bool> ColorSelectable
+    public ObservableCollection<bool> ColorSelectable
     {
         get => _colorSelectable;
         set => SetProperty(ref _colorSelectable, value);
     }
 
-    private IReadOnlyList<string> _startOptions = System.Array.Empty<string>();
-    public IReadOnlyList<string> StartOptions
+    private ObservableCollection<string> _startOptions = new ObservableCollection<string>();
+    public ObservableCollection<string> StartOptions
     {
         get => _startOptions;
         set => SetProperty(ref _startOptions, value);
@@ -122,18 +123,18 @@ public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
         set => SetProperty(ref _isStartDropdownEnabled, value);
     }
 
-    private IReadOnlyList<bool> _startSelectable = System.Array.Empty<bool>();
+    private ObservableCollection<bool> _startSelectable = new ObservableCollection<bool>();
     /// <summary>
     /// Per-item selectability for start location options.
     /// </summary>
-    public IReadOnlyList<bool> StartSelectable
+    public ObservableCollection<bool> StartSelectable
     {
         get => _startSelectable;
         set => SetProperty(ref _startSelectable, value);
     }
 
-    private IReadOnlyList<string> _teamOptions = System.Array.Empty<string>();
-    public IReadOnlyList<string> TeamOptions
+    private ObservableCollection<string> _teamOptions = new ObservableCollection<string>();
+    public ObservableCollection<string> TeamOptions
     {
         get => _teamOptions;
         set => SetProperty(ref _teamOptions, value);

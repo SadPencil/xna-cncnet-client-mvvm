@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -179,11 +180,11 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         // matches original MultiplayerGameLobby.Initialize)
         const string spectatorName = "Spectator";
         string spectatorL10N = spectatorName.L10N("Client:Sides:SpectatorSide");
-        foreach (PlayerSlotObservable slot in PlayerSlots)
+        foreach (var slot in PlayerSlots)
         {
-            var sideOptions = new List<string>(slot.SideOptions) { spectatorL10N };
+            var sideOptions = new ObservableCollection<string>(slot.SideOptions) { spectatorL10N };
             slot.SideOptions = sideOptions;
-            var sideSelectable = new List<bool>(slot.SideSelectable) { true };
+            var sideSelectable = new ObservableCollection<bool>(slot.SideSelectable) { true };
             slot.SideSelectable = sideSelectable;
         }
 
