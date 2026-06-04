@@ -229,9 +229,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         // Subscribe to map changes
         MapLoader.MapChanged += MapLoader_MapChanged;
 
-        // Subscribe to game process exit
-        GameProcessService.GameProcessExited += OnGameProcessExited;
-
         // Load default map
         LoadDefaultGameModeMap();
     }
@@ -1710,6 +1707,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     protected virtual void StartGame()
     {
+        // One-shot subscription: only the lobby that launches the game receives the exit event
+        GameProcessService.GameProcessExited += OnGameProcessExited;
+
         Random pseudoRandom = new Random(RandomSeed);
 
         PlayerHouseInfo[] houseInfos = WriteSpawnIni(pseudoRandom);
@@ -2071,6 +2071,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     protected virtual void OnGameProcessExited()
     {
+        // One-shot: unsubscribe so only the lobby that started the game handles this
+        GameProcessService.GameProcessExited -= OnGameProcessExited;
+
         // File I/O and Discord RPC on current (threadpool) thread - not on UI thread
         Log.Information("GameProcessExited: Parsing statistics.");
         matchStatistics?.ParseStatistics(ProgramConstants.GamePath, ClientConfiguration.Instance.LocalGame, false);
