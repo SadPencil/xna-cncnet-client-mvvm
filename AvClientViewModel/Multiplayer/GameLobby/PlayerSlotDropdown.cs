@@ -6,10 +6,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
-public class PlayerSlotDropdown : ObservableObject, IPlayerSlotDropdown
+public class PlayerSlotDropdown<T> : ObservableObject, IPlayerSlotDropdown<T>
 {
-    private ObservableCollection<string> _options = new();
-    public ObservableCollection<string> Options
+    private ObservableCollection<T> _options = new();
+    public ObservableCollection<T> Options
     {
         get => _options;
         set => SetProperty(ref _options, value);
@@ -22,8 +22,8 @@ public class PlayerSlotDropdown : ObservableObject, IPlayerSlotDropdown
         set => SetProperty(ref _selectable, value);
     }
 
-    private string _selectedOption = string.Empty;
-    public string SelectedOption
+    private T? _selectedOption = default;
+    public T? SelectedOption
     {
         get => _selectedOption;
         set => SetProperty(ref _selectedOption, value);

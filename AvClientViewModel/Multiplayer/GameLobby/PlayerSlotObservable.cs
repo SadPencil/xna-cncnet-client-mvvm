@@ -13,36 +13,36 @@ public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
         set => SetProperty(ref _playerName, value);
     }
 
-    private IPlayerSlotDropdown _name = new PlayerSlotDropdown();
-    public IPlayerSlotDropdown Name
+    private IPlayerSlotDropdown<IPlayerName> _name = new PlayerSlotDropdown<IPlayerName>();
+    public IPlayerSlotDropdown<IPlayerName> Name
     {
         get => _name;
         set => SetProperty(ref _name, value);
     }
 
-    private IPlayerSlotDropdown _side = new PlayerSlotDropdown();
-    public IPlayerSlotDropdown Side
+    private IPlayerSlotDropdown<IPlayerSide> _side = new PlayerSlotDropdown<IPlayerSide>();
+    public IPlayerSlotDropdown<IPlayerSide> Side
     {
         get => _side;
         set => SetProperty(ref _side, value);
     }
 
-    private IPlayerSlotDropdown _color = new PlayerSlotDropdown();
-    public IPlayerSlotDropdown Color
+    private IPlayerSlotDropdown<IPlayerColor> _color = new PlayerSlotDropdown<IPlayerColor>();
+    public IPlayerSlotDropdown<IPlayerColor> Color
     {
         get => _color;
         set => SetProperty(ref _color, value);
     }
 
-    private IPlayerSlotDropdown _start = new PlayerSlotDropdown();
-    public IPlayerSlotDropdown Start
+    private IPlayerSlotDropdown<IPlayerStart> _start = new PlayerSlotDropdown<IPlayerStart>();
+    public IPlayerSlotDropdown<IPlayerStart> Start
     {
         get => _start;
         set => SetProperty(ref _start, value);
     }
 
-    private IPlayerSlotDropdown _team = new PlayerSlotDropdown();
-    public IPlayerSlotDropdown Team
+    private IPlayerSlotDropdown<IPlayerTeam> _team = new PlayerSlotDropdown<IPlayerTeam>();
+    public IPlayerSlotDropdown<IPlayerTeam> Team
     {
         get => _team;
         set => SetProperty(ref _team, value);

@@ -182,7 +182,8 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         string spectatorL10N = spectatorName.L10N("Client:Sides:SpectatorSide");
         foreach (var slot in PlayerSlots)
         {
-            var sideOptions = new ObservableCollection<string>(slot.Side.Options) { spectatorL10N };
+            int lastIdx = slot.Side.Options.Count;
+            var sideOptions = new ObservableCollection<IPlayerSide>(slot.Side.Options) { new PlayerSideOption { Index = lastIdx, Name = spectatorL10N } };
             slot.Side.Options = sideOptions;
             var sideSelectable = new ObservableCollection<bool>(slot.Side.Selectable) { true };
             slot.Side.Selectable = sideSelectable;
@@ -665,10 +666,10 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
         // Read from PlayerSlots (which the View updates via binding)
         var slot = PlayerSlots[mTopIndex];
-        int requestedSide = IndexOfOption(slot.Side.Options, slot.Side.SelectedOption);
-        int requestedColor = IndexOfOption(slot.Color.Options, slot.Color.SelectedOption);
-        int requestedStart = IndexOfOption(slot.Start.Options, slot.Start.SelectedOption);
-        int requestedTeam = IndexOfOption(slot.Team.Options, slot.Team.SelectedOption);
+        int requestedSide = slot.Side.SelectedOption?.Index ?? 0;
+        int requestedColor = slot.Color.SelectedOption?.Index ?? 0;
+        int requestedStart = slot.Start.SelectedOption?.Index ?? 0;
+        int requestedTeam = slot.Team.SelectedOption?.Index ?? 0;
 
         RequestPlayerOptions(requestedSide, requestedColor, requestedStart, requestedTeam);
     }

@@ -4,17 +4,19 @@ using System.ComponentModel;
 namespace AvClientMvvmContract.Multiplayer.GameLobby;
 
 /// <summary>
-/// One dropdown group for a player slot (name, side, color, start, or team).
+/// One dropdown group for a player slot. T is the option type
+/// (IPlayerName, IPlayerSide, IPlayerColor, IPlayerStart, or IPlayerTeam).
+///
 /// Avalonia ComboBox bindings:
-///   ItemsSource  = Options     (OneWay, View reads the list)
-///   SelectedItem = SelectedOption (TwoWay, View reads &amp; writes user selection)
-///   IsEnabled    = IsEnabled   (OneWay, View reads)
-///   Selectable   = per-item bool flags (OneWay, View reads)
+///   ItemsSource  = Options         (OneWay)
+///   SelectedItem = SelectedOption  (TwoWay)
+///   IsEnabled    = IsEnabled       (OneWay)
+///   Selectable   = per-item bool[] (OneWay)
 /// </summary>
-public interface IPlayerSlotDropdown : INotifyPropertyChanged
+public interface IPlayerSlotDropdown<T> : INotifyPropertyChanged
 {
-    ObservableCollection<string> Options { get; set; }
+    ObservableCollection<T> Options { get; set; }
     ObservableCollection<bool> Selectable { get; set; }
-    string SelectedOption { get; set; }
+    T? SelectedOption { get; set; }
     bool IsEnabled { get; set; }
 }

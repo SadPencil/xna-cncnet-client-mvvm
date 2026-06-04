@@ -4,16 +4,16 @@ namespace AvClientMvvmContract.Multiplayer.GameLobby;
 
 /// <summary>
 /// Observable state for one player slot row in the game lobby.
-/// Each dropdown (Name/Side/Color/Start/Team) is an IPlayerSlotDropdown
-/// with its own Options, SelectedOption, and IsEnabled — no indices needed.
+/// Each dropdown is typed so the ViewModel matches by Index, not
+/// by translated display names.
 /// </summary>
 public interface IPlayerSlotObservable : INotifyPropertyChanged
 {
     string PlayerName { get; set; }
 
-    IPlayerSlotDropdown Name { get; set; }
-    IPlayerSlotDropdown Side { get; set; }
-    IPlayerSlotDropdown Color { get; set; }
-    IPlayerSlotDropdown Start { get; set; }
-    IPlayerSlotDropdown Team { get; set; }
+    IPlayerSlotDropdown<IPlayerName> Name { get; set; }
+    IPlayerSlotDropdown<IPlayerSide> Side { get; set; }
+    IPlayerSlotDropdown<IPlayerColor> Color { get; set; }
+    IPlayerSlotDropdown<IPlayerStart> Start { get; set; }
+    IPlayerSlotDropdown<IPlayerTeam> Team { get; set; }
 }
