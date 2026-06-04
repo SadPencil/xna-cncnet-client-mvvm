@@ -1493,8 +1493,15 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     {
         base.WriteSpawnIniAdditions(iniFile);
 
-        iniFile.SetStringValue("Tunnel", "Ip", tunnelHandler.CurrentTunnel.Address);
-        iniFile.SetIntValue("Tunnel", "Port", tunnelHandler.CurrentTunnel.Port);
+        if (tunnelHandler.CurrentTunnel != null)
+        {
+            iniFile.SetStringValue("Tunnel", "Ip", tunnelHandler.CurrentTunnel.Address);
+            iniFile.SetIntValue("Tunnel", "Port", tunnelHandler.CurrentTunnel.Port);
+        }
+        else
+        {
+            Log.Warning("WriteSpawnIniAdditions: tunnelHandler.CurrentTunnel is null, skipping tunnel info in spawn.ini");
+        }
 
         iniFile.SetIntValue("Settings", "GameID", UniqueGameID);
         iniFile.SetBooleanValue("Settings", "Host", IsHost);
