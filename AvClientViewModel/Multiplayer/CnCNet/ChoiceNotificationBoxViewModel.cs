@@ -96,7 +96,7 @@ public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceN
             autoDismissTimer.AutoReset = false;
             autoDismissTimer.Elapsed += (s, e) =>
             {
-                uiThreadMarshaller.AddCallback(new Action(Hide));
+                uiThreadMarshaller.AddCallback(new Action(UI_Hide));
             };
             autoDismissTimer.Start();
         }
@@ -106,6 +106,11 @@ public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceN
     /// Hides the notification box.
     /// </summary>
     public void Hide()
+    {
+        UI_Hide();
+    }
+
+    private void UI_Hide()
     {
         IsVisible = false;
         StopAutoDismissTimer();

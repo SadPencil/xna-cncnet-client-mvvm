@@ -544,7 +544,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         {
             if (pmReceivedDuringGame != null)
             {
-                ShowNotification(pmReceivedDuringGame.User, pmReceivedDuringGame.Message);
+                UI_ShowNotification(pmReceivedDuringGame.User, pmReceivedDuringGame.Message);
                 pmReceivedDuringGame = null;
             }
         });
@@ -565,6 +565,11 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     }
 
     private void ShowNotification(IRCUser ircUser, string message)
+    {
+        UI_ShowNotification(ircUser, message);
+    }
+
+    private void UI_ShowNotification(IRCUser ircUser, string message)
     {
         if (!UserINISettings.Instance.DisablePrivateMessagePopups)
         {

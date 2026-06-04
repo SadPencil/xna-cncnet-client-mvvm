@@ -892,7 +892,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         UI_ClearReadyStatuses(resetAutoReady);
     }
 
-    private void UI_ClearReadyStatuses(bool resetAutoReady = false)
+    protected void UI_ClearReadyStatuses(bool resetAutoReady = false)
     {
         for (int i = 1; i < Players.Count; i++)
         {
@@ -906,7 +906,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         UI_CopyPlayerDataToUI();
     }
 
-    private void UI_CopyPlayerDataToUI()
+    protected void UI_CopyPlayerDataToUI()
     {
         PlayerUpdatingInProgress = true;
 

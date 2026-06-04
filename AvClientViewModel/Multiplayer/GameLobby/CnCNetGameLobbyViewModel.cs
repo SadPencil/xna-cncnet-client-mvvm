@@ -406,7 +406,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             if (pInfo != null)
             {
                 pInfo.Ping = pingMs;
-                CopyPlayerDataToUI();
+                UI_CopyPlayerDataToUI();
             }
         });
     }
@@ -425,7 +425,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             if (pInfo != null)
             {
                 pInfo.Ping = pingMs;
-                CopyPlayerDataToUI();
+                UI_CopyPlayerDataToUI();
             }
         });
     }
