@@ -76,7 +76,7 @@ namespace AvClientViewModel.Generic
         partial void OnIsVisibleChanged(bool value)
         {
             if (value)
-                ListSaves();
+                UI_ListSaves();
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace AvClientViewModel.Generic
         /// </summary>
         public void Open()
         {
-            ListSaves();
+            UI_ListSaves();
             IsVisible = true;
         }
 
@@ -184,7 +184,7 @@ namespace AvClientViewModel.Generic
 
             Log.Information("Deleting saved game " + sg.FileName);
             SafePath.DeleteFileIfExists(ProgramConstants.GamePath, SAVED_GAMES_DIRECTORY, sg.FileName);
-            ListSaves();
+            UI_ListSaves();
         }
 
         [RelayCommand]
@@ -202,7 +202,7 @@ namespace AvClientViewModel.Generic
         [RelayCommand]
         private void Refresh()
         {
-            ListSaves();
+            UI_ListSaves();
         }
 
         private void OnGameProcessExited()
@@ -219,7 +219,7 @@ namespace AvClientViewModel.Generic
         /// <summary>
         /// Loads and parses all saved games from the Saved Games directory.
         /// </summary>
-        public void ListSaves()
+        public void UI_ListSaves()
         {
             SavedGames.Clear();
             SavedGameNames.Clear();

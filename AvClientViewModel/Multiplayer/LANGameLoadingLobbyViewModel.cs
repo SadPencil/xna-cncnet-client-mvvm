@@ -258,7 +258,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             {
                 LobbyNotification?.Invoke(this,
                     new LobbyNotificationEventArgs("Connection to the game host timed out.".L10N("Client:Main:HostConnectTimeOut")));
-                LeaveGame();
+                UI_LeaveGame();
             }
         }
     }
@@ -454,7 +454,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
                 UIThreadMarshaller.AddCallback(() =>
                 {
                     if (sessionId == mySessionId)
-                        LeaveGameCommand.Execute(null);
+                        UI_LeaveGame();
                 });
                 break;
             }
@@ -490,7 +490,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
                         if (sessionId == mySessionId)
                         {
                             foreach (string cmd in commandsSnapshot)
-                                HandleMessageFromServer(cmd);
+                                UI_HandleMessageFromServer(cmd);
                         }
                     });
                 }
@@ -502,12 +502,12 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
                 break;
 
             Log.Warning("Reading data from the server failed (0 bytes received)!");
-            UIThreadMarshaller.AddCallback(() => { if (sessionId == mySessionId) LeaveGameCommand.Execute(null); });
+            UIThreadMarshaller.AddCallback(() => { if (sessionId == mySessionId) UI_LeaveGame(); });
             break;
         }
     }
 
-    private void HandleMessageFromServer(string message)
+    private void UI_HandleMessageFromServer(string message)
     {
         timeSinceLastReceivedCommand = TimeSpan.Zero;
 
@@ -523,12 +523,17 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     private void HandleHostQuit()
     {
         if (!IsHost && !leaving)
-            LeaveGameCommand.Execute(null);
+            UI_LeaveGame();
     }
 
     // --- Abstract member implementations ---
 
     protected override void LeaveGame()
+    {
+        UI_LeaveGame();
+    }
+
+    private void UI_LeaveGame()
     {
         if (leaving)
             return;
@@ -629,7 +634,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     protected override void HandleGameProcessExited()
     {
         base.HandleGameProcessExited();
-        LeaveGame();
+        UI_LeaveGame();
     }
 
     // --- Server command handlers ---

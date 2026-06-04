@@ -420,7 +420,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 UIThreadMarshaller.AddCallback(() =>
                 {
                     if (sessionId == mySessionId)
-                        LeaveGame(localizedMessage);
+                        UI_LeaveGame(localizedMessage);
                 });
                 break;
             }
@@ -456,7 +456,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                         if (sessionId == mySessionId)
                         {
                             foreach (string cmd in commandsSnapshot)
-                                HandleMessageFromServer(cmd);
+                                UI_HandleMessageFromServer(cmd);
                         }
                     });
                 }
@@ -478,7 +478,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                 UIThreadMarshaller.AddCallback(() =>
                 {
                     if (sessionId == mySessionId)
-                        LeaveGame(localizedMessage);
+                        UI_LeaveGame(localizedMessage);
                 });
             }
 
@@ -486,7 +486,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         }
     }
 
-    private void HandleMessageFromServer(string message)
+    private void UI_HandleMessageFromServer(string message)
     {
         timeSinceLastReceivedCommand = TimeSpan.Zero;
 
@@ -507,6 +507,11 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     protected override void LeaveGame() => LeaveGame(null);
 
     protected void LeaveGame(string message = null)
+    {
+        UI_LeaveGame(message);
+    }
+
+    private void UI_LeaveGame(string message)
     {
         if (leaving)
             return;
@@ -770,7 +775,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
                     "Connection to the game host timed out. Server address: {0}".L10N("Client:Main:HostConnectTimeOutWithAddress"),
                     hostEndPoint.Address.ToString());
                 LobbyNotification?.Invoke(this, new LobbyNotificationEventArgs(localizedMessage));
-                LeaveGame(localizedMessage);
+                UI_LeaveGame(localizedMessage);
             }
         }
     }

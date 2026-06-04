@@ -340,26 +340,26 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             switch (e.ChangeType)
             {
                 case MapChangeType.Added:
-                    HandleMapAdded(e.Map);
+                    UI_HandleMapAdded(e.Map);
                     break;
                 case MapChangeType.Updated:
-                    HandleMapUpdated(e.Map, e.PreviousMapSHA1);
+                    UI_HandleMapUpdated(e.Map, e.PreviousMapSHA1);
                     break;
                 case MapChangeType.Removed:
-                    HandleMapRemoved(e.Map);
+                    UI_HandleMapRemoved(e.Map);
                     break;
             }
         }));
     }
 
-    protected virtual void HandleMapAdded(Map addedMap)
+    protected virtual void UI_HandleMapAdded(Map addedMap)
     {
         RefreshGameModeFilter();
         if (ShouldShowMapInCurrentFilter(addedMap))
             ListMaps();
     }
 
-    protected virtual void HandleMapUpdated(Map updatedMap, string previousSHA1)
+    protected virtual void UI_HandleMapUpdated(Map updatedMap, string previousSHA1)
     {
         if (Map != null && (Map.SHA1 == previousSHA1 || Map.SHA1 == updatedMap.SHA1))
         {
@@ -372,7 +372,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         ListMaps();
     }
 
-    private void HandleMapRemoved(Map removedMap)
+    private void UI_HandleMapRemoved(Map removedMap)
     {
         if (Map != null && Map.SHA1 == removedMap.SHA1)
         {
@@ -889,6 +889,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     protected void ClearReadyStatuses(bool resetAutoReady = false)
     {
+        UI_ClearReadyStatuses(resetAutoReady);
+    }
+
+    private void UI_ClearReadyStatuses(bool resetAutoReady = false)
+    {
         for (int i = 1; i < Players.Count; i++)
         {
             if (resetAutoReady || !Players[i].AutoReady || Players[i].IsInGame)
@@ -897,6 +902,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     }
 
     protected virtual void CopyPlayerDataToUI()
+    {
+        UI_CopyPlayerDataToUI();
+    }
+
+    private void UI_CopyPlayerDataToUI()
     {
         PlayerUpdatingInProgress = true;
 
@@ -2073,8 +2083,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         // Only marshal UI state changes
         UIThreadMarshaller.AddCallback(() =>
         {
-            ClearReadyStatuses();
-            CopyPlayerDataToUI();
+            UI_ClearReadyStatuses();
+            UI_CopyPlayerDataToUI();
         });
     }
 
@@ -2091,6 +2101,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     protected virtual bool UpdateLaunchGameButtonStatus() => true;
 
     protected abstract void AddNotice(string message);
+
+    protected void UI_AddNotice(string message)
+    {
+        AddNotice(message);
+    }
 
     protected virtual void KickPlayer(int playerIndex) { }
 

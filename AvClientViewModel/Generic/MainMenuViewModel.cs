@@ -579,8 +579,7 @@ namespace AvClientViewModel.Generic
                 (!IsLanMode && topBarViewModel.LastSwitchType == SwitchType.PRIMARY))
                 musicPlayer.PlayThemeSong();
 
-            // ListSaves modifies ObservableCollections so must be on UI thread
-            uiThreadMarshaller.AddCallback(() => gameLoadingWindowViewModel.ListSaves());
+            uiThreadMarshaller.AddCallback(() => gameLoadingWindowViewModel.UI_ListSaves());
         }
 
         private void OnUpdaterRestart(object? sender, EventArgs e)

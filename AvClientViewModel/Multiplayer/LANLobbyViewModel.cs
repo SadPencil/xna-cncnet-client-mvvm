@@ -166,7 +166,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         applicationLifecycleService.ApplicationClosing += (_, _) => Cleanup();
 
         broadcastManager.MessageReceived += (sender, e) =>
-            uiThreadMarshaller.AddCallback(() => HandleNetworkMessage(e.Data, e.EndPoint));
+            uiThreadMarshaller.AddCallback(() => UI_HandleNetworkMessage(e.Data, e.EndPoint));
     }
 
     // --- Commands ---
@@ -514,7 +514,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         }
     }
 
-    private void HandleNetworkMessage(string data, IPEndPoint endPoint)
+    private void UI_HandleNetworkMessage(string data, IPEndPoint endPoint)
     {
         messageDeduplicator.UnwrapMessage(data, out string payload, out bool isDuplicate);
 

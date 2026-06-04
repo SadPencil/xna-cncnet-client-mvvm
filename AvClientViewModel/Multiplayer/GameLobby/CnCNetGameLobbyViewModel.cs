@@ -1358,9 +1358,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         base.ChangeMap(gameModeMap);
     }
 
-    protected override void HandleMapUpdated(Map updatedMap, string previousSHA1)
+    protected override void UI_HandleMapUpdated(Map updatedMap, string previousSHA1)
     {
-        base.HandleMapUpdated(updatedMap, previousSHA1);
+        base.UI_HandleMapUpdated(updatedMap, previousSHA1);
 
         if (IsHost && Map != null && Map.SHA1 == updatedMap.SHA1)
             OnGameOptionChanged();
@@ -1840,7 +1840,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         if (hostUploadedMaps.Contains(e.SHA1))
         {
             UIThreadMarshaller.AddCallback(() =>
-                AddNotice("Download of the custom map failed. The host needs to change the map or you will be unable to participate in this match.".L10N("Client:Main:DownloadCustomMapFailed")));
+                UI_AddNotice("Download of the custom map failed. The host needs to change the map or you will be unable to participate in this match.".L10N("Client:Main:DownloadCustomMapFailed")));
 
             channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
             return;
@@ -1848,12 +1848,12 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         else if (chatCommandDownloadedMaps.Contains(e.SHA1))
         {
             UIThreadMarshaller.AddCallback(() =>
-                AddNotice("Downloading map via chat command has failed. Check the map ID and try again.".L10N("Client:Main:DownloadMapCommandFailedGeneric")));
+                UI_AddNotice("Downloading map via chat command has failed. Check the map ID and try again.".L10N("Client:Main:DownloadMapCommandFailedGeneric")));
             return;
         }
 
         UIThreadMarshaller.AddCallback(() =>
-            AddNotice("Requesting the game host to upload the map to the CnCNet map database.".L10N("Client:Main:RequestHostUploadMapToDB")));
+            UI_AddNotice("Requesting the game host to upload the map to the CnCNet map database.".L10N("Client:Main:RequestHostUploadMapToDB")));
 
         channel.SendCTCPMessage(MAP_SHARING_UPLOAD_REQUEST + " " + e.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
     }
@@ -1885,7 +1885,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             chatCommandDownloadedMaps.Remove(e.Map.SHA1);
     }
 
-    protected override void HandleMapAdded(Map addedMap)
+    protected override void UI_HandleMapAdded(Map addedMap)
     {
         bool isFromChatCommand = chatCommandDownloadedMaps.Contains(addedMap.SHA1);
         bool isFromHostSharing = lastMapSHA1 == addedMap.SHA1 && !isFromChatCommand;
@@ -1906,7 +1906,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         }
         else
         {
-            base.HandleMapAdded(addedMap);
+            base.UI_HandleMapAdded(addedMap);
         }
     }
 
@@ -1920,12 +1920,12 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         Map map = e.Map;
 
         UIThreadMarshaller.AddCallback(() =>
-            AddNotice(string.Format("Uploading map {0} to the CnCNet map database failed.".L10N("Client:Main:UpdateMapToDBFailed"), map.Name)));
+            UI_AddNotice(string.Format("Uploading map {0} to the CnCNet map database failed.".L10N("Client:Main:UpdateMapToDBFailed"), map.Name)));
 
         if (map == Map)
         {
             UIThreadMarshaller.AddCallback(() =>
-                AddNotice("You need to change the map or some players won't be able to participate in this match.".L10N("Client:Main:YouMustReplaceMap")));
+                UI_AddNotice("You need to change the map or some players won't be able to participate in this match.".L10N("Client:Main:YouMustReplaceMap")));
 
             channel.SendCTCPMessage(MAP_SHARING_FAIL_MESSAGE + " " + map.SHA1, QueuedMessageType.SYSTEM_MESSAGE, 9);
         }
