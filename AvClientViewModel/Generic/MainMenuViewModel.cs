@@ -356,7 +356,7 @@ namespace AvClientViewModel.Generic
         {
             musicPlayer.StartExitFade(0.025f * (float)UserINISettings.Instance.ClientVolume, () =>
             {
-                uiThreadMarshaller.AddCallback(new Action(ExitClient));
+                uiThreadMarshaller.AddCallback(new Action(UI_ExitClient));
             });
         }
 
@@ -852,6 +852,11 @@ namespace AvClientViewModel.Generic
         }
 
         private void ExitClient()
+        {
+            UI_ExitClient();
+        }
+
+        private void UI_ExitClient()
         {
             Log.Information("Exiting.");
             lifecycleService.Shutdown();
