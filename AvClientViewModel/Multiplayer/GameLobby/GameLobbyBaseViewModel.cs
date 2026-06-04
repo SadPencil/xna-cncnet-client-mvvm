@@ -1026,13 +1026,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
 
         // Enable adding AI to the next slot
-        int nextIdx = Players.Count + AIPlayers.Count;
-        bool wasEnabled = nextIdx < MAX_PLAYER_COUNT ? slots[nextIdx].IsNameDropdownEnabled : false;
-        if (allowOptionsChange && nextIdx < MAX_PLAYER_COUNT)
-        {
-            slots[nextIdx].IsNameDropdownEnabled = true;
-            Serilog.Log.Debug($"[UNLOCK] nextSlot={nextIdx} wasEnabled={wasEnabled} nowEnabled={slots[nextIdx].IsNameDropdownEnabled} allowOptionsChange={allowOptionsChange} total={nextIdx}");
-        }
+        if (allowOptionsChange && Players.Count + AIPlayers.Count < MAX_PLAYER_COUNT)
+            slots[Players.Count + AIPlayers.Count].IsNameDropdownEnabled = true;
 
         CheckDisallowedSides();
 
@@ -1042,15 +1037,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         mapPreviewBox.UpdateStartingLocationIndicators();
 
         PlayerUpdatingInProgress = false;
-
-        // Avalonia compiled bindings for indexed paths (PlayerSlots[N].Is*Enabled)
-        // don't track PropertyChanged on items when the collection is a plain IReadOnlyList.
-        // Deferred OnPropertyChanged notifies Avalonia to re-evaluate all PlayerSlots[N].*
-        // bindings after current binding update stack unwinds, avoiding re-entrancy warnings.
-        UIThreadMarshaller.AddCallback(new Action(() =>
-        {
-            OnPropertyChanged(nameof(IGameLobbyViewModel.PlayerSlots));
-        }));
     }
 
     private static readonly string[] PlayerSlotUserEditableProperties = new[]
@@ -1068,12 +1054,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             return;
         if (e.PropertyName == null || !Array.Exists(PlayerSlotUserEditableProperties, p => p == e.PropertyName))
             return;
-
-        // Identify which slot changed
-        int si = -1;
-        for (int i = 0; i < PlayerSlots.Count; i++)
-            if (ReferenceEquals(PlayerSlots[i], sender)) { si = i; break; }
-        Serilog.Log.Debug($"[PSLOT] slot={si} prop={e.PropertyName} Players.Count={Players.Count} AIPlayers.Count={AIPlayers.Count}");
 
         CopyPlayerDataFromUI();
     }
@@ -1106,12 +1086,10 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
                 pInfo.StartingLocation = 0;
         }
 
-        int prevAICount = AIPlayers.Count;
         AIPlayers.Clear();
         for (int cmbId = Players.Count; cmbId < MAX_PLAYER_COUNT; cmbId++)
         {
             var slot = slots[cmbId];
-            Serilog.Log.Debug($"[COPYFROMUI] slot={cmbId} SelectedNameIndex={slot.SelectedNameIndex}");
             if (slot.SelectedNameIndex < 1)
                 continue;
 
@@ -1127,8 +1105,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             };
             AIPlayers.Add(aiPlayer);
         }
-
-        Serilog.Log.Debug($"[COPYFROMUI] Players.Count={Players.Count} prevAI={prevAICount} newAI={AIPlayers.Count} total={Players.Count + AIPlayers.Count}");
 
         CopyPlayerDataToUI();
         LaunchButtonRank = GetRank();
