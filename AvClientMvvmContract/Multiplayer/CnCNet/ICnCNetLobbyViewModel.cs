@@ -54,7 +54,6 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }
-    IRelayCommand OpenPrivateMessagesCommand { get; }
     IRelayCommand RefreshGamesCommand { get; }
     IRelayCommand LogoutCommand { get; }
     IRelayCommand SendChatMessageCommand { get; }

@@ -396,12 +396,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     }
 
     [RelayCommand]
-    private void OpenPrivateMessages()
-    {
-        pmWindow?.SwitchOnCommand.Execute(null);
-    }
-
-    [RelayCommand]
     private void RefreshGames()
     {
         SortAndRefreshHostedGames();

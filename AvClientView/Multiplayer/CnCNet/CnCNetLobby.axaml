@@ -272,13 +272,6 @@
               FontWeight="Bold"
               Canvas.Left="157" Canvas.Top="693" />
 
-      <!-- Private Messages Button -->
-      <Button x:Name="btnPrivateMessages"
-              Content="PM"
-              Command="{Binding OpenPrivateMessagesCommand}"
-              Width="50" Height="23"
-              FontWeight="Bold"
-              Canvas.Left="870" Canvas.Top="693" />
 
       <!-- Logout Button -->
       <Button x:Name="btnLogout"
