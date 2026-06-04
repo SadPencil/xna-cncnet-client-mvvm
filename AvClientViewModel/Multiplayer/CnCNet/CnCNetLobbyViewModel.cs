@@ -298,6 +298,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         CnCNetPlayerCountTask.CnCNetGameCountUpdated += OnCnCNetGameCountUpdated;
         OnlinePlayerCountText = CnCNetPlayerCountTask.PlayerCount.ToString();
 
+        gameLobby.GameLeft += (s, e) => OnGameLobbyLeft();
+        gameLoadingLobby.GameLeft += (s, e) => OnGameLoadingLobbyLeft();
+
         invitationIndex = new Dictionary<Tuple<string, string>, WeakReference>();
     }
 
@@ -405,7 +408,11 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void Logout()
     {
         if (isInGameRoom)
+        {
+            // Switch to game lobby view (equivalent to topBar.SwitchToPrimary() in original)
+            gameLobby.IsEnabled = true;
             return;
+        }
 
         if (connectionManager.IsConnected && !UserINISettings.Instance.PersistentMode)
         {
