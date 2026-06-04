@@ -312,11 +312,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     private void OnGameProcessExited()
     {
-        UIThreadMarshaller.AddCallback(new Action(HandleGameProcessExited));
-    }
-
-    protected virtual void HandleGameProcessExited()
-    {
+        // Do file I/O on the current (threadpool) thread, not the UI thread
         if (fsw != null)
             fsw.EnableRaisingEvents = false;
 
@@ -334,6 +330,13 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
             StatisticsManager.Instance.SaveDatabase();
         }
+
+        // Only marshal UI state updates
+        UIThreadMarshaller.AddCallback(new Action(HandleGameProcessExited));
+    }
+
+    protected virtual void HandleGameProcessExited()
+    {
         UpdateDiscordPresence(true);
     }
 
@@ -341,11 +344,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     private void OnSavedGameFileEvent(object sender, FileSystemEventArgs e)
     {
-        UIThreadMarshaller.AddCallback(new Action(() => HandleFSWEvent(e)));
-    }
-
-    private void HandleFSWEvent(FileSystemEventArgs e)
-    {
+        // File I/O and logging can be done on the current (threadpool) thread, no UI marshaling needed
         Log.Information("FSW Event: " + e.FullPath);
 
         if (Path.GetFileName(e.FullPath) == "SAVEGAME.NET")

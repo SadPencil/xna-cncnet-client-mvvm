@@ -2061,18 +2061,20 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     protected virtual void OnGameProcessExited()
     {
-        UIThreadMarshaller.AddCallback(new Action(() =>
+        // Do file I/O on the current (threadpool) thread, not the UI thread
+        Log.Information("GameProcessExited: Parsing statistics.");
+        matchStatistics?.ParseStatistics(ProgramConstants.GamePath, ClientConfiguration.Instance.LocalGame, false);
+
+        Log.Information("GameProcessExited: Adding match to statistics.");
+        StatisticsManager.Instance.AddMatchAndSaveDatabase(true, matchStatistics);
+
+        // Only marshal UI state updates
+        UIThreadMarshaller.AddCallback(() =>
         {
-            Log.Information("GameProcessExited: Parsing statistics.");
-            matchStatistics?.ParseStatistics(ProgramConstants.GamePath, ClientConfiguration.Instance.LocalGame, false);
-
-            Log.Information("GameProcessExited: Adding match to statistics.");
-            StatisticsManager.Instance.AddMatchAndSaveDatabase(true, matchStatistics);
-
             ClearReadyStatuses();
             CopyPlayerDataToUI();
             UpdateDiscordPresence(true);
-        }));
+        });
     }
 
     // --- Discord ---
