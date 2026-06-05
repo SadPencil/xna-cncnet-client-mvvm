@@ -46,8 +46,8 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
         if (currentMapPreview != null)
         {
             currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
-            UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
-            RenderIndicators();
+            UI_UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
+            UI_RenderIndicators();
         }
     }
 
@@ -62,7 +62,7 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
         SetupSearchContextMenu();
 
         if (currentMapPreview != null)
-            RenderIndicators();
+            UI_RenderIndicators();
     }
 
     private void SetupChatInputEnterKey()
@@ -104,15 +104,15 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
         if (e.PropertyName == nameof(IMapPreviewBoxViewModel.MapPreviewImageBytes)
             && sender is IMapPreviewBoxViewModel preview)
         {
-            Dispatcher.UIThread.Post(() => UpdateMapPreviewImage(preview.MapPreviewImageBytes));
+            Dispatcher.UIThread.Post(() => UI_UpdateMapPreviewImage(preview.MapPreviewImageBytes));
         }
         else if (e.PropertyName == nameof(IMapPreviewBoxViewModel.StartingLocationIndicators))
         {
-            Dispatcher.UIThread.Post(() => RenderIndicators());
+            Dispatcher.UIThread.Post(() => UI_RenderIndicators());
         }
     }
 
-    private void UpdateMapPreviewImage(byte[]? imageBytes)
+    private void UI_UpdateMapPreviewImage(byte[]? imageBytes)
     {
         if (imageBytes == null || imageBytes.Length == 0)
         {
@@ -135,7 +135,7 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
 
     private const double INDICATOR_SIZE = 20.0;
 
-    private void RenderIndicators()
+    private void UI_RenderIndicators()
     {
         foreach (var el in indicatorElements)
             indicatorsCanvas.Children.Remove(el);

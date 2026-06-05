@@ -47,8 +47,8 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         if (currentMapPreview != null)
         {
             currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
-            UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
-            RenderIndicators();
+            UI_UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
+            UI_RenderIndicators();
         }
     }
 
@@ -64,7 +64,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 
         // Re-render in case data was set before Loaded fired
         if (currentMapPreview != null)
-            RenderIndicators();
+            UI_RenderIndicators();
     }
 
     public IGameLobbyViewModel? ViewModel
@@ -89,15 +89,15 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         if (e.PropertyName == nameof(IMapPreviewBoxViewModel.MapPreviewImageBytes)
             && sender is IMapPreviewBoxViewModel preview)
         {
-            Dispatcher.UIThread.Post(() => UpdateMapPreviewImage(preview.MapPreviewImageBytes));
+            Dispatcher.UIThread.Post(() => UI_UpdateMapPreviewImage(preview.MapPreviewImageBytes));
         }
         else if (e.PropertyName == nameof(IMapPreviewBoxViewModel.StartingLocationIndicators))
         {
-            Dispatcher.UIThread.Post(() => RenderIndicators());
+            Dispatcher.UIThread.Post(() => UI_RenderIndicators());
         }
     }
 
-    private void UpdateMapPreviewImage(byte[]? imageBytes)
+    private void UI_UpdateMapPreviewImage(byte[]? imageBytes)
     {
         if (imageBytes == null || imageBytes.Length == 0)
         {
@@ -120,7 +120,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
 
     private const double INDICATOR_SIZE = 20.0;
 
-    private void RenderIndicators()
+    private void UI_RenderIndicators()
     {
         // Clear existing indicators
         foreach (var el in indicatorElements)
