@@ -264,7 +264,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
 
     private void UpdateMapInfo()
     {
-        if (gameModeMap == null)
+        if (gameModeMap == null || gameModeMap.Map == null)
         {
             SelectedMapName = string.Empty;
             SelectedGameModeName = string.Empty;
@@ -293,7 +293,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     {
         try
         {
-            if (gameModeMap == null)
+            if (gameModeMap == null || gameModeMap.Map == null)
             {
                 uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = null);
                 return;
@@ -329,7 +329,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     {
         _startingLocationIndicators.Clear();
 
-        if (gameModeMap == null || MapPreviewImageBytes == null)
+        if (gameModeMap == null || gameModeMap.Map == null || MapPreviewImageBytes == null)
             return;
 
         // Get preview image dimensions from the loaded image
