@@ -755,10 +755,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             return;
         }
 
-        mapPreviewBox.SetGameModeMap(gameModeMap);
-        mapPreviewBox.SetPlayers(Players, AIPlayers);
-        mapPreviewBox.UpdateStartingLocationIndicators();
-
         disableGameOptionUpdateBroadcast = true;
 
         // Reset forced options
