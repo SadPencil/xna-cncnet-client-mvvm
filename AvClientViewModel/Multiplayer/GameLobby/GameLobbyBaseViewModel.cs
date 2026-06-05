@@ -772,20 +772,16 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             slot.Color.Selectable = new ObservableCollection<bool>(Enumerable.Repeat(true, slot.Color.Selectable.Count));
         }
 
-        // Update start location options per map
-        int maxLocation = GameModeMap.MaxPlayers == 0 ? 0
-            : (GameModeMap.AllowedStartingLocations.Max() == GameModeMap.MaxPlayers
-                ? GameModeMap.MaxPlayers : MAX_PLAYER_COUNT);
-        var startOptions = new ObservableCollection<IPlayerStart> { new PlayerStartOption { Index = 0, Name = "???" } };
-        var startSelectable = new ObservableCollection<bool> { true };
-        for (int i = 1; i <= maxLocation; i++)
-        {
-            startOptions.Add(new PlayerStartOption { Index = i, Name = i.ToString() });
-            startSelectable.Add(GameModeMap.AllowedStartingLocations.Contains(i));
-        }
+        // Update start location selectable flags per map (don't replace Options - original XNA never does)
         foreach (var slot in PlayerSlots)
         {
-            slot.Start.Options = startOptions;
+            var startOptions = slot.Start.Options;
+            // Rebuild selectable list: index 0 ("???") always selectable,
+            // indices 1-8 selectable only if in AllowedStartingLocations
+            var selectable = new ObservableCollection<bool> { true };
+            for (int i = 1; i <= MAX_PLAYER_COUNT; i++)
+                selectable.Add(GameModeMap.AllowedStartingLocations.Contains(i));
+            slot.Start.Selectable = selectable;
         }
 
         // Check if AI players allowed
