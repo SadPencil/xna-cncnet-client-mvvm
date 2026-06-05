@@ -9,7 +9,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
@@ -89,11 +88,11 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         if (e.PropertyName == nameof(IMapPreviewBoxViewModel.MapPreviewImageBytes)
             && sender is IMapPreviewBoxViewModel preview)
         {
-            Dispatcher.UIThread.Post(() => UpdateMapPreviewImage(preview.MapPreviewImageBytes));
+            UpdateMapPreviewImage(preview.MapPreviewImageBytes);
         }
         else if (e.PropertyName == nameof(IMapPreviewBoxViewModel.StartingLocationIndicators))
         {
-            Dispatcher.UIThread.Post(() => RenderIndicators());
+            RenderIndicators();
         }
     }
 
