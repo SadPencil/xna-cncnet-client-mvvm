@@ -80,8 +80,8 @@ namespace AvClientViewModel.Campaign
         private List<Mission> _allMissions = [];
         public IReadOnlyCollection<IMission> AllMissions { get => _allMissions; }
 
-        private Dictionary<int, Mission> _uniqueIDToMissions = new();
-        public IReadOnlyDictionary<int, IMission> UniqueIDToMissions => (IReadOnlyDictionary<int, IMission>)_uniqueIDToMissions;
+        private Dictionary<int, IMission> _uniqueIDToMissions = new();
+        public IReadOnlyDictionary<int, IMission> UniqueIDToMissions => _uniqueIDToMissions;
 
         private readonly Action? onReturnRequested;
 
