@@ -747,15 +747,17 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GameModeMap = gameModeMap;
         _ = UpdateLaunchGameButtonStatus();
         SetMapLabels();
-        mapPreviewBox.SetGameModeMap(gameModeMap);
-        mapPreviewBox.SetPlayers(Players, AIPlayers);
-        mapPreviewBox.UpdateStartingLocationIndicators();
 
         if (GameMode == null || Map == null)
         {
+            mapPreviewBox.SetGameModeMap(null);
             OnGameOptionChanged();
             return;
         }
+
+        mapPreviewBox.SetGameModeMap(gameModeMap);
+        mapPreviewBox.SetPlayers(Players, AIPlayers);
+        mapPreviewBox.UpdateStartingLocationIndicators();
 
         disableGameOptionUpdateBroadcast = true;
 
