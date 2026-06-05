@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
@@ -31,6 +32,7 @@ namespace AvClientViewModel.Generic
         private readonly MapLoader mapLoader;
         private readonly IUpdateService updateService;
         private readonly CnCNetManager connectionManager;
+        private readonly IUIThreadMarshaller uiThreadMarshaller;
 
         public event EventHandler? Completed;
 
@@ -53,11 +55,12 @@ namespace AvClientViewModel.Generic
         private Task? mapLoadTask;
         private Timer? pollingTimer;
 
-        public LoadingScreenViewModel(MapLoader mapLoader, IUpdateService updateService, CnCNetManager connectionManager)
+        public LoadingScreenViewModel(MapLoader mapLoader, IUpdateService updateService, CnCNetManager connectionManager, IUIThreadMarshaller uiThreadMarshaller)
         {
             this.mapLoader = mapLoader;
             this.updateService = updateService;
             this.connectionManager = connectionManager;
+            this.uiThreadMarshaller = uiThreadMarshaller;
 
             Initialize();
         }
@@ -164,7 +167,7 @@ namespace AvClientViewModel.Generic
                 connectionManager.Connect();
             }
 
-            IsLoading = false;
+            uiThreadMarshaller.AddCallback(() => IsLoading = false);
             Completed?.Invoke(this, EventArgs.Empty);
 
             Log.Information("Startup complete. Client is ready.");

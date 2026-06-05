@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 
 using Avalonia.Controls;
-using Avalonia.Threading;
 
 using AvClientMvvmContract.Generic;
 
@@ -50,7 +49,7 @@ public partial class LoadingScreen : UserControl
             var loadingScreenVM = (ILoadingScreenViewModel)sender!;
             if (!loadingScreenVM.IsLoading)
             {
-                Dispatcher.UIThread.Post(() => Completed?.Invoke(this, EventArgs.Empty));
+                Completed?.Invoke(this, EventArgs.Empty);
             }
         }
     }
