@@ -953,7 +953,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
             slot.PlayerName = pInfo.Name;
             slot.Name.Options = CreateNameOptionsWithFirstPlayerName(pInfo.Name);
-            slot.Name.SelectedOption = null;
+            slot.Name.SelectedOption = OptionAt(slot.Name.Options, 0);
             slot.Name.IsEnabled = false;
 
             bool allowPlayerOptionsChange = allowOptionsChange || pInfo.Name == ProgramConstants.PLAYERNAME;
