@@ -46,8 +46,8 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         if (currentMapPreview != null)
         {
             currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
-            UI_UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
-            UI_RenderIndicators();
+            UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
+            RenderIndicators();
         }
     }
 
@@ -62,7 +62,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         SetupSearchContextMenu();
 
         if (currentMapPreview != null)
-            UI_RenderIndicators();
+            RenderIndicators();
     }
 
     private void SetupChatInputEnterKey()
@@ -104,15 +104,15 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         if (e.PropertyName == nameof(IMapPreviewBoxViewModel.MapPreviewImageBytes)
             && sender is IMapPreviewBoxViewModel preview)
         {
-            Dispatcher.UIThread.Post(() => UI_UpdateMapPreviewImage(preview.MapPreviewImageBytes));
+            Dispatcher.UIThread.Post(() => UpdateMapPreviewImage(preview.MapPreviewImageBytes));
         }
         else if (e.PropertyName == nameof(IMapPreviewBoxViewModel.StartingLocationIndicators))
         {
-            Dispatcher.UIThread.Post(() => UI_RenderIndicators());
+            Dispatcher.UIThread.Post(() => RenderIndicators());
         }
     }
 
-    private void UI_UpdateMapPreviewImage(byte[]? imageBytes)
+    private void UpdateMapPreviewImage(byte[]? imageBytes)
     {
         if (imageBytes == null || imageBytes.Length == 0)
         {
@@ -135,7 +135,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
     private const double INDICATOR_SIZE = 20.0;
 
-    private void UI_RenderIndicators()
+    private void RenderIndicators()
     {
         foreach (var el in indicatorElements)
             indicatorsCanvas.Children.Remove(el);
