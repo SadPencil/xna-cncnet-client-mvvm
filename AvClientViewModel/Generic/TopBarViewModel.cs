@@ -233,7 +233,7 @@ namespace AvClientViewModel.Generic
         private void OnAttemptedServerChanged(object? sender, AttemptedServerEventArgs e)
         {
             ConnectionStatusText = "CONNECTING...".L10N("Client:Main:StatusConnecting");
-            IsExpanded = true;
+            uiThreadMarshaller.AddCallback(() => IsExpanded = true);
             StartAutoHideTimer(EVENT_DOWN_TIME_WAIT_SECONDS);
         }
 
@@ -255,7 +255,7 @@ namespace AvClientViewModel.Generic
 
         private void OnUnreadMessageCountUpdated(object? sender, UnreadMessageCountEventArgs e)
         {
-            UnreadMessageCount = e.UnreadMessageCount;
+            uiThreadMarshaller.AddCallback(() => UnreadMessageCount = e.UnreadMessageCount);
         }
 
         #endregion

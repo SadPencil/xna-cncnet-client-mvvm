@@ -89,10 +89,10 @@ public partial class TopBar : UserControl, ITopBarView
         switch (e.PropertyName)
         {
             case nameof(ITopBarViewModel.IsExpanded):
-                Dispatcher.UIThread.Post(() => UpdateExpandedState(_viewModel.IsExpanded));
+                UpdateExpandedState(_viewModel.IsExpanded);
                 break;
             case nameof(ITopBarViewModel.UnreadMessageCount):
-                Dispatcher.UIThread.Post(() => UpdateUnreadBadge(_viewModel.UnreadMessageCount));
+                UpdateUnreadBadge(_viewModel.UnreadMessageCount);
                 break;
         }
     }

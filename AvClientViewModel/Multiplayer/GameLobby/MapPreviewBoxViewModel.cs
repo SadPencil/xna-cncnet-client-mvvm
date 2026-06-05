@@ -6,6 +6,7 @@ using System.Linq;
 
 using AvClientMvvmContract;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Online;
@@ -30,6 +31,7 @@ namespace AvClientViewModel.Multiplayer.GameLobby;
 public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxViewModel
 {
     private readonly MapLoader mapLoader;
+    private readonly IUIThreadMarshaller uiThreadMarshaller;
     private GameModeMap? gameModeMap;
     private List<PlayerInfo>? players;
     private List<PlayerInfo>? aiPlayers;
@@ -84,9 +86,10 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
 
     // --- Constructor ---
 
-    public MapPreviewBoxViewModel(MapLoader mapLoader, Action? onFavoriteToggled = null, Action? onStartingLocationApplied = null, Action<int>? onLocalStartingLocationSelected = null)
+    public MapPreviewBoxViewModel(MapLoader mapLoader, IUIThreadMarshaller uiThreadMarshaller, Action? onFavoriteToggled = null, Action? onStartingLocationApplied = null, Action<int>? onLocalStartingLocationSelected = null)
     {
         this.mapLoader = mapLoader;
+        this.uiThreadMarshaller = uiThreadMarshaller;
         this.onFavoriteToggled = onFavoriteToggled;
         this.onStartingLocationApplied = onStartingLocationApplied;
         this.onLocalStartingLocationSelected = onLocalStartingLocationSelected;
@@ -292,24 +295,25 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
         {
             if (gameModeMap == null)
             {
-                MapPreviewImageBytes = null;
+                uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = null);
                 return;
             }
 
             using var lease = mapLoader.GetCachedPreviewImageFromMap(gameModeMap.Map, syncLoadOnCacheMiss: true);
             if (lease?.Value == null)
             {
-                MapPreviewImageBytes = null;
+                uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = null);
                 return;
             }
 
             using var ms = new MemoryStream();
             lease.Value.Save(ms, new PngEncoder());
-            MapPreviewImageBytes = ms.ToArray();
+            byte[] bytes = ms.ToArray();
+            uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = bytes);
         }
         catch
         {
-            MapPreviewImageBytes = null;
+            uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = null);
         }
     }
 
@@ -416,7 +420,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
                 playerList ?? new List<IIndicatorPlayerInfo>()));
         }
 
-        OnPropertyChanged(nameof(StartingLocationIndicators));
+        uiThreadMarshaller.AddCallback(() => OnPropertyChanged(nameof(StartingLocationIndicators)));
     }
 }
 

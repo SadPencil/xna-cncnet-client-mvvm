@@ -190,7 +190,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         UIThreadMarshaller = uiThreadMarshaller;
         this.random = random;
 
-        mapPreviewBox = new MapPreviewBoxViewModel(mapLoader);
+        mapPreviewBox = new MapPreviewBoxViewModel(mapLoader, uiThreadMarshaller);
 
         // Initialize player slots (must be done in constructor, not Initialize, because
         // CopyPlayerDataToUI can be called from SetUp before Initialize runs)
