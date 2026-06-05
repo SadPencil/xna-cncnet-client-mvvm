@@ -79,6 +79,28 @@ public partial class MainWindow : Window
         _mainMenu.SetLANLobbyViewModel(sp.GetRequiredService<ILANLobbyViewModel>());
         _mainMenu.SetPrivateMessagingWindowViewModel(sp.GetRequiredService<IPrivateMessagingWindowViewModel>());
         _mainMenu.SetPrivacyNotificationViewModel(sp.GetRequiredService<IPrivacyNotificationViewModel>());
+
+        // GameInProgressWindow: full-screen overlay shown while game is running
+        var gameInProgressVM = sp.GetRequiredService<IGameInProgressWindowViewModel>();
+        _mainMenu.SetGameInProgressWindowViewModel(gameInProgressVM);
+
+        // Bind MainWindow.WindowState to the ViewModel's WindowState for minimize/restore
+        gameInProgressVM.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(IGameInProgressWindowViewModel.WindowState))
+            {
+                var vmState = gameInProgressVM.WindowState;
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    WindowState = vmState switch
+                    {
+                        AvClientMvvmContract.Generic.WindowState.Minimized => Avalonia.Controls.WindowState.Minimized,
+                        AvClientMvvmContract.Generic.WindowState.Maximized => Avalonia.Controls.WindowState.Maximized,
+                        _ => Avalonia.Controls.WindowState.Normal
+                    };
+                });
+            }
+        };
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)

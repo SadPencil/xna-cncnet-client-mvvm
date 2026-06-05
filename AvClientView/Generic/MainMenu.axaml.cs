@@ -230,6 +230,11 @@ public partial class MainMenu : UserControl
         privacyNotification.ViewModel = vm;
     }
 
+    public void SetGameInProgressWindowViewModel(IGameInProgressWindowViewModel vm)
+    {
+        gameInProgressWindow.ViewModel = vm;
+    }
+
     /// <summary>
     /// Binds a DarkeningPanel's visibility to a child view's IsVisible.
     /// Pure View-layer logic: observes one control's property, reflects to another.
