@@ -207,11 +207,15 @@
       <!-- PrivacyNotification (overlay above all other content) -->
       <local:PrivacyNotification x:Name="privacyNotification" />
 
-      <!-- GameInProgressWindow (full-screen overlay shown while game is running) -->
-      <local:GameInProgressWindow x:Name="gameInProgressWindow"
-                                  Width="{x:Static view:ViewConstants.DesignResolutionWidth}"
-                                  Height="{x:Static view:ViewConstants.DesignResolutionHeight}"
-                                  Canvas.Left="0" Canvas.Top="0" />
+      <!-- GameInProgressWindow (full-screen overlay with darkening, shown while game is running) -->
+      <controls:DarkeningPanel x:Name="gameInProgressOverlay"
+                               Width="{x:Static view:ViewConstants.DesignResolutionWidth}"
+                               Height="{x:Static view:ViewConstants.DesignResolutionHeight}"
+                               Canvas.Left="0" Canvas.Top="0">
+        <controls:DarkeningPanel.ChildContent>
+          <local:GameInProgressWindow x:Name="gameInProgressWindow" />
+        </controls:DarkeningPanel.ChildContent>
+      </controls:DarkeningPanel>
 
     </Canvas>
 

@@ -233,6 +233,7 @@ public partial class MainMenu : UserControl
     public void SetGameInProgressWindowViewModel(IGameInProgressWindowViewModel vm)
     {
         gameInProgressWindow.ViewModel = vm;
+        WireOverlayVisibility(gameInProgressWindow, gameInProgressOverlay);
     }
 
     /// <summary>
