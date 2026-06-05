@@ -329,7 +329,7 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
         for (int i = 0; i < lobbyViewModel.PlayerSlots.Count; i++)
         {
             var slot = lobbyViewModel.PlayerSlots[i];
-            if (slot.Name.SelectedOption == null)
+            if (slot.Name.SelectedOption == null || slot.Name.SelectedOption.Index < 1)
                 continue;
 
             string playerName;

@@ -1113,7 +1113,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         for (int cmbId = Players.Count; cmbId < MAX_PLAYER_COUNT; cmbId++)
         {
             var slot = slots[cmbId];
-            if (slot.Name.SelectedOption == null)
+            if (slot.Name.SelectedOption == null || slot.Name.SelectedOption.Index < 1)
                 continue;
 
             string aiName = slot.Name.SelectedOption.Name;
