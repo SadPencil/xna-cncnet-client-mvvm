@@ -1,13 +1,17 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:view="using:AvClientView"
+        xmlns:conv="using:AvClientView.Converters"
+        xmlns:vmc="using:AvClientMvvmContract.Generic"
         x:Class="AvClientView.Generic.MainWindow"
+        x:DataType="vmc:IMainWindowViewModel"
         Title="CnCNet Client"
         Width="{x:Static view:ViewConstants.DesignResolutionWidth}"
         Height="{x:Static view:ViewConstants.DesignResolutionHeight}"
         MinWidth="800" MinHeight="600"
         WindowStartupLocation="CenterScreen"
         CanResize="True"
+        WindowState="{Binding WindowState, Converter={x:Static conv:WindowStateConverters.ToAvalonia}}"
         Background="#000000">
   <Viewbox Stretch="Uniform" ClipToBounds="False">
     <Grid Width="{x:Static view:ViewConstants.DesignResolutionWidth}"

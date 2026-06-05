@@ -281,6 +281,7 @@ namespace AvClientViewModel
             services.AddTransient<IManualUpdateQueryWindowViewModel, ManualUpdateQueryWindowViewModel>();
             services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
             services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
+            services.AddSingleton<IMainWindowViewModel, MainWindowViewModel>();
         }
 
         public static void Initialize(string[] args)

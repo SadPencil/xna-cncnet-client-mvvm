@@ -59,6 +59,9 @@ public partial class MainWindow : Window
         var sp = _serviceProvider!;
         var iniOverlay = sp.GetRequiredService<IIniLayoutOverlayService>();
 
+        // Set MainWindow ViewModel (handles WindowState for minimize/restore)
+        DataContext = sp.GetRequiredService<IMainWindowViewModel>();
+
         // Connect LoadingScreen ViewModel
         var loadingScreenVM = sp.GetRequiredService<ILoadingScreenViewModel>();
         _loadingScreen.ViewModel = loadingScreenVM;
@@ -81,26 +84,7 @@ public partial class MainWindow : Window
         _mainMenu.SetPrivacyNotificationViewModel(sp.GetRequiredService<IPrivacyNotificationViewModel>());
 
         // GameInProgressWindow: full-screen overlay shown while game is running
-        var gameInProgressVM = sp.GetRequiredService<IGameInProgressWindowViewModel>();
-        _mainMenu.SetGameInProgressWindowViewModel(gameInProgressVM);
-
-        // Bind MainWindow.WindowState to the ViewModel's WindowState for minimize/restore
-        gameInProgressVM.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(IGameInProgressWindowViewModel.WindowState))
-            {
-                var vmState = gameInProgressVM.WindowState;
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    WindowState = vmState switch
-                    {
-                        AvClientMvvmContract.Generic.WindowState.Minimized => Avalonia.Controls.WindowState.Minimized,
-                        AvClientMvvmContract.Generic.WindowState.Maximized => Avalonia.Controls.WindowState.Maximized,
-                        _ => Avalonia.Controls.WindowState.Normal
-                    };
-                });
-            }
-        };
+        _mainMenu.SetGameInProgressWindowViewModel(sp.GetRequiredService<IGameInProgressWindowViewModel>());
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)
