@@ -12,7 +12,7 @@ namespace AvClientViewModel.Services;
 
 /// <summary>
 /// Manages the client application process lifecycle.
-/// Launches a new instance then terminates the current one (shutdown marshalled to UI thread).
+/// Launches a new instance and / or terminates the current one on the UI thread.
 /// </summary>
 public class ProcessLifecycleService : IProcessLifecycleService
 {
@@ -30,21 +30,16 @@ public class ProcessLifecycleService : IProcessLifecycleService
     public void Restart()
     {
         LaunchProcess(admin: false);
-        ShutdownOnUIThread();
+        uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
     }
 
     public void RestartAsAdmin()
     {
         LaunchProcess(admin: true);
-        ShutdownOnUIThread();
+        uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
     }
 
     public void Shutdown()
-    {
-        ShutdownOnUIThread();
-    }
-
-    private void ShutdownOnUIThread()
     {
         uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
     }
