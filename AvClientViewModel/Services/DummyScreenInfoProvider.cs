@@ -8,6 +8,7 @@ namespace AvClientViewModel.Services;
 /// </summary>
 internal sealed class DummyScreenInfoProvider : IScreenInfoProvider
 {
+    public int Priority => int.MinValue;
     public bool IsApplicable => true;
 
     public int DesktopWidth => 1280;

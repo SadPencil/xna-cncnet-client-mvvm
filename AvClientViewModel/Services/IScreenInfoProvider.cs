@@ -14,6 +14,12 @@ internal interface IScreenInfoProvider
     /// </summary>
     bool IsApplicable { get; }
 
+    /// <summary>
+    /// Priority when selecting among applicable providers. Higher = tried first.
+    /// Platform providers default to 0; the dummy fallback uses int.MinValue.
+    /// </summary>
+    int Priority { get; }
+
     int DesktopWidth { get; }
     int DesktopHeight { get; }
     IReadOnlyList<(int Width, int Height)> GetSupportedDisplayModes();

@@ -16,7 +16,9 @@ namespace AvClientViewModel.Services
     {
         public ResolutionProvider(IEnumerable<IScreenInfoProvider> screenInfoProviders)
         {
-            var provider = screenInfoProviders.First(p => p.IsApplicable);
+            var provider = screenInfoProviders
+                .OrderByDescending(p => p.Priority)
+                .First(p => p.IsApplicable);
 
             ScreenResolution.DesktopResolution = new ScreenResolution(
                 provider.DesktopWidth,

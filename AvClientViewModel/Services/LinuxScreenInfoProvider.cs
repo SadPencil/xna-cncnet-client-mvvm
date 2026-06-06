@@ -17,6 +17,8 @@ internal sealed class LinuxScreenInfoProvider : IScreenInfoProvider
     private int _desktopHeight = 1080;
     private IReadOnlyList<(int Width, int Height)> _modes = [(1920, 1080)];
 
+    public int Priority => 0;
+
     public bool IsApplicable
     {
         get

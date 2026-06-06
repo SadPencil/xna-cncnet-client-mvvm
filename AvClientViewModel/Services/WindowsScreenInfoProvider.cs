@@ -15,6 +15,8 @@ internal sealed class WindowsScreenInfoProvider : IScreenInfoProvider
     private int _desktopHeight = 1080;
     private IReadOnlyList<(int Width, int Height)> _modes = [(1920, 1080)];
 
+    public int Priority => 0;
+
     public bool IsApplicable => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
     public int DesktopWidth { get { EnsureQueried(); return _desktopWidth; } }
