@@ -16,6 +16,8 @@ A ViewModel should not relying on view doing anything. It should run without att
 
 The MVVM conversion is done but you can't assume the process is correctly executed. There are a lot of mismatches. 
 
+You can use Avalonia docs MCP for documentation.
+
 When investigating the bugs, do not directly fix it, but find the root cause. Read the code in DXMainClient project, and make sure the AvClientView and AvClientViewModel project have the consistent behavior with DXMainClient. Often they have different behaviors, which is the root cause.
 
 Git commit and push often.
