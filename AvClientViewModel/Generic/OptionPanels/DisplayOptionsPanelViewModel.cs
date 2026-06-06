@@ -367,10 +367,13 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             rendererSettingsIni.WriteIniFile();
         }
 
-        if (iniSettings.BorderlessWindowedClient.Value != IsBorderlessClientEnabled)
-            restartRequired = true;
-
+        // Borderless client no longer requires restart — MainWindowViewModel
+        // picks up the INI change and re-evaluates WindowState dynamically.
+        // If a restart becomes necessary later, add back:
+        //   if (iniSettings.BorderlessWindowedClient.Value != IsBorderlessClientEnabled)
+        //       restartRequired = true;
         iniSettings.BorderlessWindowedClient.Value = IsBorderlessClientEnabled;
+        WeakReferenceMessenger.Default.Send(new BorderlessClientToggledMessage());
 
         if (iniSettings.IntegerScaledClient.Value != IsIntegerScaledClientEnabled)
             restartRequired = true;
