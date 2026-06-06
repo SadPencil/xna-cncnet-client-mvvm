@@ -23,9 +23,9 @@
                 ItemsSource="{Binding GameModeFilterOptions}"
                 SelectedIndex="{Binding SelectedGameModeFilterIndex}"
                 IsVisible="{Binding IsMapListVisible}"
-                Width="180" Height="21"
-               
-                Canvas.Left="420" Canvas.Top="12" />
+                Width="150" Height="21"
+
+                Canvas.Left="277" Canvas.Top="12" />
 
       <!-- Sort Button -->
       <Button x:Name="btnSortAlpha"
@@ -34,8 +34,8 @@
               IsVisible="{Binding IsMapSortButtonVisible}"
               IsEnabled="{Binding IsMapSortButtonEnabled}"
               Width="21" Height="21"
-             
-              Canvas.Left="395" Canvas.Top="12" />
+
+              Canvas.Left="252" Canvas.Top="12" />
 
       <!-- Map Search Box -->
       <TextBox x:Name="tbMapSearch"
