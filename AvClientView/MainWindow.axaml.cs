@@ -12,6 +12,8 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Services;
 
+using ClientCore.Settings;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Generic;
@@ -29,6 +31,11 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
+        // Apply borderless fullscreen immediately so the window doesn't
+        // briefly appear in normal size before ConnectAfterInit runs.
+        if (UserINISettings.Instance.BorderlessWindowedClient)
+            WindowState = Avalonia.Controls.WindowState.FullScreen;
+
         // LoadingScreen fills the Grid (design resolution). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         MainContent.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;

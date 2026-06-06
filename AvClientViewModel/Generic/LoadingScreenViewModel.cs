@@ -51,6 +51,8 @@ namespace AvClientViewModel.Generic
         [ObservableProperty]
         private bool isLoading = true;
 
+        public bool IsBorderlessClient => UserINISettings.Instance.BorderlessWindowedClient;
+
         private Task? updaterInitTask;
         private Task? mapLoadTask;
         private Timer? pollingTimer;
