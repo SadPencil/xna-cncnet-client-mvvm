@@ -222,7 +222,138 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
         PlayerSlots = slots;
 
+        LoadGameOptions();
         RefreshGameOptionWrappers();
+    }
+
+    // --- Game options INI loading ---
+
+    /// <summary>
+    /// Loads game option checkbox and dropdown definitions from INI files.
+    /// Override in subclass lobbies to load additional/replacement INI files.
+    /// </summary>
+    protected virtual void LoadGameOptions()
+    {
+        LoadGameOptionsFromIni("GameLobbyBase.ini");
+    }
+
+    /// <summary>
+    /// Parses game option checkbox/dropdown definitions from the specified INI file
+    /// and populates <see cref="CheckBoxSettings"/> and <see cref="DropDownSettings"/>.
+    /// If the same control name already exists, the new values override the old ones
+    /// (allowing subclass INIs to override base defaults).
+    /// </summary>
+    protected void LoadGameOptionsFromIni(string iniFileName)
+    {
+        string iniPath = SafePath.CombineFilePath(
+            ProgramConstants.GetBaseResourcePath(), iniFileName);
+        var ini = new IniFile(iniPath);
+
+        var panelSection = ini.GetSection("GameOptionsPanel");
+        if (panelSection == null)
+            return;
+
+        foreach (var keyInfo in panelSection.Keys)
+        {
+            string key = keyInfo.Key;
+            if (string.IsNullOrEmpty(key) || !key.StartsWith("$CC", StringComparison.Ordinal))
+                continue;
+
+            string value = keyInfo.Value;
+            int colonIdx = value.IndexOf(':');
+            if (colonIdx < 0)
+                continue;
+
+            string controlName = value.Substring(0, colonIdx);
+            string controlType = value.Substring(colonIdx + 1);
+
+            if (controlType == "GameLobbyCheckBox")
+            {
+                var setting = CheckBoxSettings.Find(s => s.Name == controlName);
+                if (setting == null)
+                {
+                    setting = new GameSessionSetting { Name = controlName };
+                    CheckBoxSettings.Add(setting);
+                }
+                ParseCheckBoxSetting(setting, ini, controlName);
+            }
+            else if (controlType == "GameLobbyDropDown")
+            {
+                var setting = DropDownSettings.Find(s => s.Name == controlName);
+                if (setting == null)
+                {
+                    setting = new GameSessionSetting { Name = controlName };
+                    DropDownSettings.Add(setting);
+                }
+                ParseDropDownSetting(setting, ini, controlName);
+            }
+        }
+    }
+
+    private static void ParseCheckBoxSetting(GameSessionSetting setting, IniFile ini, string sectionName)
+    {
+        setting.SpawnIniOption = ini.GetStringValue(sectionName, "SpawnIniOption", string.Empty);
+        setting.CustomIniPath = ini.GetStringValue(sectionName, "CustomIniPath", string.Empty);
+        setting.AffectsSpawnIni = !string.IsNullOrEmpty(setting.SpawnIniOption);
+        setting.AffectsMapCode = !string.IsNullOrEmpty(setting.CustomIniPath);
+        setting.Reversed = ini.GetBooleanValue(sectionName, "Reversed", false);
+        setting.EnabledSpawnIniValue = ini.GetStringValue(sectionName, "EnabledSpawnIniValue", "True");
+        setting.DisabledSpawnIniValue = ini.GetStringValue(sectionName, "DisabledSpawnIniValue", "False");
+        setting.BroadcastToLobby = ini.GetBooleanValue(sectionName, "BroadcastToLobby", false);
+
+        bool checkedValue = ini.GetBooleanValue(sectionName, "Checked", false);
+        setting.Value = checkedValue ? 1 : 0;
+
+        string mapScoringModeStr = ini.GetStringValue(sectionName, "MapScoringMode", "Irrelevant");
+        setting.MapScoringMode = mapScoringModeStr switch
+        {
+            "DenyWhenChecked" => CheckBoxMapScoringMode.DenyWhenChecked,
+            "DenyWhenUnchecked" => CheckBoxMapScoringMode.DenyWhenUnchecked,
+            _ => CheckBoxMapScoringMode.Irrelevant
+        };
+
+        string disallowedStr = ini.GetStringValue(sectionName, "DisallowedSideIndices", string.Empty);
+        if (string.IsNullOrEmpty(disallowedStr))
+            disallowedStr = ini.GetStringValue(sectionName, "DisallowedSideIndex", string.Empty);
+        if (!string.IsNullOrEmpty(disallowedStr))
+        {
+            var parts = disallowedStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            setting.DisallowedSideIndices = new List<int>();
+            foreach (var p in parts)
+            {
+                if (int.TryParse(p.Trim(), out int idx) && !setting.DisallowedSideIndices.Contains(idx))
+                    setting.DisallowedSideIndices.Add(idx);
+            }
+        }
+    }
+
+    private static void ParseDropDownSetting(GameSessionSetting setting, IniFile ini, string sectionName)
+    {
+        string itemsStr = ini.GetStringValue(sectionName, "Items", string.Empty);
+        if (!string.IsNullOrEmpty(itemsStr))
+        {
+            setting.DropDownItemTags = new List<string>(
+                itemsStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim()));
+        }
+
+        string dataWriteModeStr = ini.GetStringValue(sectionName, "DataWriteMode", "String");
+        setting.DataWriteMode = dataWriteModeStr.ToUpperInvariant() switch
+        {
+            "INDEX" => DropDownDataWriteMode.INDEX,
+            "BOOLEAN" => DropDownDataWriteMode.BOOLEAN,
+            "MAPCODE" => DropDownDataWriteMode.MAPCODE,
+            _ => DropDownDataWriteMode.STRING
+        };
+
+        setting.AffectsSpawnIni = setting.DataWriteMode != DropDownDataWriteMode.MAPCODE;
+        setting.AffectsMapCode = setting.DataWriteMode == DropDownDataWriteMode.MAPCODE;
+        setting.SpawnIniOption = ini.GetStringValue(sectionName, "SpawnIniOption", string.Empty);
+        setting.OptionName = ini.GetStringValue(sectionName, "OptionName", string.Empty);
+        setting.BroadcastToLobby = ini.GetBooleanValue(sectionName, "BroadcastToLobby", false);
+
+        int defaultIndex = ini.GetIntValue(sectionName, "DefaultIndex", 0);
+        setting.Value = defaultIndex;
     }
 
     // --- Lifecycle ---
@@ -322,7 +453,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             dd.PropertyChanged -= GameOptionDropDown_PropertyChanged;
 
         CheckBoxes = CheckBoxSettings.Select(s => new GameOptionCheckBox(s)).ToList();
-        DropDowns = DropDownSettings.Select(s => new GameOptionDropDown(s)).ToList();
+        DropDowns = DropDownSettings.Select(s =>
+        {
+            var dd = new GameOptionDropDown(s);
+            if (s.DropDownItemTags != null)
+                dd.Items = s.DropDownItemTags;
+            return dd;
+        }).ToList();
 
         // Subscribe to new items
         foreach (var cb in CheckBoxes.Cast<GameOptionCheckBox>())
@@ -1528,12 +1665,12 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         foreach (GameOptionCheckBox cb in CheckBoxes)
         {
-            if (cb.Setting.AllowScoring)
+            if (!cb.Setting.AllowScoring)
                 return Rank.None;
         }
         foreach (GameOptionDropDown dd in DropDowns)
         {
-            if (dd.Setting.AllowScoring)
+            if (!dd.Setting.AllowScoring)
                 return Rank.None;
         }
 

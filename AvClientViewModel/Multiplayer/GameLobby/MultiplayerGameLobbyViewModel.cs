@@ -194,6 +194,12 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         MaxAhead = ClientConfiguration.Instance.DefaultMaxAhead;
     }
 
+    protected override void LoadGameOptions()
+    {
+        LoadGameOptionsFromIni("GameLobbyBase.ini");
+        LoadGameOptionsFromIni("MultiplayerGameLobby.ini");
+    }
+
     // --- Initialization ---
 
     public override void Initialize()

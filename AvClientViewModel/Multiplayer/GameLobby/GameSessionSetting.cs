@@ -9,6 +9,21 @@ using Rampastring.Tools;
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
 /// <summary>
+/// Determines how a checkbox setting affects scoring/ranking eligibility.
+/// </summary>
+public enum CheckBoxMapScoringMode
+{
+    /// <summary>The check box value makes no difference for scoring.</summary>
+    Irrelevant = 0,
+
+    /// <summary>Scoring is denied when the check box is checked.</summary>
+    DenyWhenChecked = 1,
+
+    /// <summary>Scoring is denied when the check box is unchecked.</summary>
+    DenyWhenUnchecked = 2
+}
+
+/// <summary>
 /// Data model for a game session setting (checkbox or dropdown option).
 /// Contains configuration data and implements spawn.ini / map code application logic
 /// migrated from the old XNA GameSessionCheckBox and GameSessionDropDown controls.
@@ -20,10 +35,15 @@ public class GameSessionSetting : IGameSessionSetting
 
     public bool AffectsSpawnIni { get; set; }
     public bool AffectsMapCode { get; set; }
-    public bool AllowScoring { get; set; }
+
+    public bool AllowScoring =>
+        !((MapScoringMode == CheckBoxMapScoringMode.DenyWhenChecked && Value != 0)
+       || (MapScoringMode == CheckBoxMapScoringMode.DenyWhenUnchecked && Value == 0));
+
     public bool BroadcastToLobby { get; set; }
 
     // --- Configuration fields (checkbox) ---
+    public CheckBoxMapScoringMode MapScoringMode { get; set; }
     public string SpawnIniOption { get; set; } = string.Empty;
     public bool Reversed { get; set; }
     public string EnabledSpawnIniValue { get; set; } = string.Empty;
@@ -34,6 +54,7 @@ public class GameSessionSetting : IGameSessionSetting
     // --- Configuration fields (dropdown) ---
     public DropDownDataWriteMode DataWriteMode { get; set; }
     public List<string>? DropDownItemTags { get; set; }
+    public string OptionName { get; set; } = string.Empty;
 
     public IReadOnlyList<string>? DropDownItems => DropDownItemTags;
 
@@ -119,5 +140,6 @@ public enum DropDownDataWriteMode
 {
     STRING,
     BOOLEAN,
-    INDEX
+    INDEX,
+    MAPCODE
 }
