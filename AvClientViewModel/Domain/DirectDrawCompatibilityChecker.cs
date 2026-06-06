@@ -7,7 +7,7 @@ using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-using AvClientMvvmContract.ViewServices;
+using AvClientViewModel.Services;
 
 using ClientCore;
 using ClientCore.Extensions;

@@ -1,4 +1,4 @@
-namespace AvClientMvvmContract.ViewServices;
+namespace AvClientViewModel.Services;
 
 /// <summary>
 /// Manages the client application process lifecycle.
