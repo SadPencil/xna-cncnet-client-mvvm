@@ -20,7 +20,7 @@ public partial class ExtrasWindow : UserControl, IExtrasWindowView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        BackgroundHelper.ApplyDefaultBackground(this, "MainMenu/mainmenuebg.png", IniOverlayService);
+        BackgroundHelper.ApplyDefaultBackground(this, "extrasMenu.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "ExtrasWindow");

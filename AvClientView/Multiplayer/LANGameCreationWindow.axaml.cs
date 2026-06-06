@@ -20,7 +20,7 @@ public partial class LANGameCreationWindow : UserControl, ILANGameCreationWindow
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        BackgroundHelper.ApplyDefaultBackground(this, "genericwindowbg.png", IniOverlayService);
+        BackgroundHelper.ApplyDefaultBackground(this, "gamecreationoptionsbg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "GenericWindow");
