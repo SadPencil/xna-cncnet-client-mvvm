@@ -155,6 +155,9 @@ public class IniExpressionEvaluator
     {
         SkipWhitespace();
 
+        if (IsEndOfInput())
+            return 0;
+
         char c = _input[_tokenPlace];
 
         if (char.IsDigit(c))
