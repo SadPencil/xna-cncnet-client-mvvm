@@ -875,6 +875,11 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         }
     }
 
+    private void UI_RefreshPlayerList()
+    {
+        RefreshPlayerList(this, EventArgs.Empty);
+    }
+
     private void OnUserDataChanged(object sender, EventArgs e)
     {
         RefreshPlayerList(sender, e);
@@ -910,9 +915,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void CurrentChatChannel_UserGameIndexUpdated(object sender, ChannelUserEventArgs e)
     {
-        // View handles icon display - we just notify that player list may need refresh
-        // ObservableCollection auto-notifies the View; no manual OnPropertyChanged needed.
-        uiThreadMarshaller.AddCallback(new Action(() => { }));
+        uiThreadMarshaller.AddCallback(new Action(() =>
+        {
+            UI_RefreshPlayerList();
+        }));
     }
 
     private void SortAndRefreshHostedGames()

@@ -57,7 +57,7 @@ namespace AvClientViewModel
 
             // Domain services
             services.AddSingleton<GameCollection>();
-            services.AddSingleton<CnCNetUserData>(_ => new CnCNetUserData(() => { })); // TODO: empty callback? check it
+            services.AddSingleton<CnCNetUserData>();
             services.AddSingleton<CnCNetManager>();
             services.AddSingleton<MapLoader>();
             services.AddSingleton<PrivateMessageHandler>();

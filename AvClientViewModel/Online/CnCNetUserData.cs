@@ -50,7 +50,7 @@ namespace AvClientViewModel.Online
         public event EventHandler<UserNameEventArgs> UserFriendToggled;
         public event EventHandler<IdentEventArgs> UserIgnoreToggled;
 
-        public CnCNetUserData(Action onSaveCallback)
+        public CnCNetUserData()
         {
             lazyFriendList = new Lazy<List<string>>(LoadFriendList, LazyThreadSafetyMode.ExecutionAndPublication);
             lazyIgnoreList = new Lazy<List<string>>(LoadIgnoreList, LazyThreadSafetyMode.ExecutionAndPublication);
@@ -60,15 +60,7 @@ namespace AvClientViewModel.Online
             Task.Run(() => _ = FriendList);
             Task.Run(() => _ = IgnoreList);
             Task.Run(() => _ = RecentList);
-
-            if (onSaveCallback != null)
-            {
-                // Register for save callback (replaces WindowManager.GameClosing)
-                _onSaveCallback = onSaveCallback;
-            }
         }
-
-        private readonly Action _onSaveCallback;
 
         private static List<string> LoadTextList(string path)
         {
