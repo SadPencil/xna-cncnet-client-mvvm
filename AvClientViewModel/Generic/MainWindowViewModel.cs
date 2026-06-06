@@ -123,4 +123,7 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
             _isUpdatingState = false;
         }
     }
+
+    // [RelayCommand] generates IRelayCommand, but the interface exposes ICommand.
+    ICommand IMainWindowViewModel.ToggleFullScreenCommand => ToggleFullScreenCommand;
 }
