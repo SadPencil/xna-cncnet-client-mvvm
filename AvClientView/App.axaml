@@ -161,14 +161,50 @@
             <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
         </Style>
 
-        <!-- Slider: use XNAUI theme colors -->
-        <Style Selector="Slider">
-            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource XnaPanelBorderBrush}" />
-        </Style>
-        <Style Selector="Slider /template/ Thumb">
-            <Setter Property="Background" Value="{DynamicResource XnaAltBrush}" />
-        </Style>
+        <!-- Slider/Trackbar: use XNAUI theme colors.
+             SimpleTheme hardcodes track/thumb colors in its template,
+             so we provide a full ControlTheme with XNAUI resources. -->
+        <ControlTheme x:Key="{x:Type Slider}" TargetType="Slider">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid>
+                        <Track Name="PART_Track">
+                            <!-- Filled portion (left of thumb): themed border color -->
+                            <Track.DecreaseButton>
+                                <RepeatButton Name="PART_DecreaseButton" Theme="{x:Null}">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate>
+                                            <Border Background="{DynamicResource XnaPanelBorderBrush}"
+                                                    Height="6" CornerRadius="3" />
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.DecreaseButton>
+                            <!-- Unfilled portion (right of thumb): dark background -->
+                            <Track.IncreaseButton>
+                                <RepeatButton Name="PART_IncreaseButton" Theme="{x:Null}">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate>
+                                            <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
+                                                    Height="6" CornerRadius="3" />
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.IncreaseButton>
+                            <!-- Draggable thumb: bright themed color -->
+                            <Thumb Name="PART_Thumb">
+                                <Thumb.Template>
+                                    <ControlTemplate>
+                                        <Border Background="{DynamicResource XnaAltBrush}"
+                                                Width="14" Height="14" CornerRadius="7" />
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
 
     </Application.Styles>
 </Application>
