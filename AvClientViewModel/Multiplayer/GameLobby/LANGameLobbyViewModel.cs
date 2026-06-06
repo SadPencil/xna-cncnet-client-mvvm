@@ -123,6 +123,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
             new StringCommandHandler(PLAYER_READY_REQUEST, GameHost_HandleReadyRequest),
             new StringCommandHandler(FILE_HASH_COMMAND, HandleFileHashCommand),
             new StringCommandHandler(DICE_ROLL_COMMAND, Host_HandleDiceRoll),
+            // PING is keepalive only, no host response needed.
             new NoParamCommandHandler(PING, s => { }),
         };
 
