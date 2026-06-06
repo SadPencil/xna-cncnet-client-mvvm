@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
+
+using AvClientMvvmContract.ViewServices;
 
 using ClientCore;
 using ClientCore.Extensions;
@@ -158,6 +161,73 @@ public static class DirectDrawCompatibilityChecker
             Log.Information("Fixing __COMPAT_LAYER environment variable. Previous value: " +
                        $"'{compatLayerEnv}', new value: '{fixedCompatLayerEnv}'");
             Environment.SetEnvironmentVariable("__COMPAT_LAYER", fixedCompatLayerEnv);
+        }
+    }
+
+    /// <summary>
+    /// Checks for DirectDraw compatibility issues and prompts the user to fix them.
+    /// If admin privileges are needed, offers to restart the client with admin rights.
+    /// </summary>
+    /// <param name="dialogService">Service for showing Yes/No dialogs.</param>
+    /// <param name="lifecycleService">Service for shutting down the application after admin restart.</param>
+    public static async Task CheckAndPromptFixAsync(
+        Services.DialogService dialogService,
+        IRestartService restartService)
+    {
+        // Fix environment variable __COMPAT_LAYER first, for the client itself.
+        FixEnvironmentVariable();
+
+        // Now check registry compatibility settings for all relevant executables.
+        try
+        {
+            Examine(out bool requireFix, out bool requireAdmin, out IEnumerable<string> problematicExeNames);
+
+            if (!requireFix)
+                return;
+
+            Log.Information("DirectDraw compatibility issue detected.");
+
+            string localizedMessage = "Problematic Windows compatibility mode settings have been detected that may interfere with the game."
+                .L10N("Client:Main:ProblematicCompatibilityText1") + "\n\n"
+                + "Affected executables:".L10N("Client:Main:ProblematicCompatibilityText2")
+                + "\n- " + string.Join("\n- ", problematicExeNames) + "\n\n" +
+                "Would you like to remove these compatibility settings now?".L10N("Client:Main:ProblematicCompatibilityText3");
+
+            if (requireAdmin && !AdminRestarter.IsRunningAsAdministrator())
+            {
+                localizedMessage += "\n\n" + ("Note: Administrator privileges are required to remove compatibility settings." + " " +
+                    "Clicking Yes will relaunch the client with administrator permissions.").L10N("Client:Main:ProblematicCompatibilityText4");
+            }
+
+            bool yes = await dialogService.ShowYesNoDialog(
+                "Problematic Compatibility Settings Detected".L10N("Client:Main:ProblematicCompatibilityTitle"),
+                localizedMessage);
+
+            if (!yes)
+                return;
+
+            if (requireAdmin && !AdminRestarter.IsRunningAsAdministrator())
+            {
+                Log.Information("Administrator privileges required. Restart with elevated privileges.");
+
+                restartService.RestartAsAdmin();
+                restartService.Shutdown();
+            }
+            else
+            {
+                Log.Information("Attempting to fix DirectDraw compatibility settings.");
+                Fix();
+                Log.Information("DirectDraw compatibility settings fixed successfully.");
+
+                _ = dialogService.ShowOKDialog(
+                    "Fix Applied".L10N("Client:Main:CompatibilityFixAppliedTitle"),
+                    "The compatibility settings have been removed successfully.\n\n" +
+                    "Please note that these settings might be re-applied after a Windows Update, so you may need to use this fix again in the future.".L10N("Client:Main:CompatibilityFixAppliedText"));
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("Checking or fixing DirectDraw compatibility failed: " + ex.ToString());
         }
     }
 }

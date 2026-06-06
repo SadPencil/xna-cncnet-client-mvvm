@@ -68,6 +68,7 @@ namespace AvClientViewModel.Generic
         private readonly LANLobbyViewModel lanLobbyViewModel;
         private readonly PrivateMessagingWindowViewModel privateMessagingWindowViewModel;
         private readonly DialogService dialogService;
+        private readonly IRestartService restartService;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -152,7 +153,8 @@ namespace AvClientViewModel.Generic
             CnCNetLobbyViewModel cncNetLobbyViewModel,
             LANLobbyViewModel lanLobbyViewModel,
             PrivateMessagingWindowViewModel privateMessagingWindowViewModel,
-            DialogService dialogService)
+            DialogService dialogService,
+            IRestartService restartService)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -160,6 +162,7 @@ namespace AvClientViewModel.Generic
             this.musicPlayer = musicPlayer;
             this.uiThreadMarshaller = uiThreadMarshaller;
             this.lifecycleService = lifecycleService;
+            this.restartService = restartService;
             this.connectionManager = connectionManager;
             this.optionsWindowViewModel = optionsWindowViewModel;
             this.topBarViewModel = topBarViewModel;
@@ -864,59 +867,13 @@ namespace AvClientViewModel.Generic
         {
             Log.Information("Restarting client.");
             Clean();
-            RestartClient();
+            restartService.RestartClient();
             uiThreadMarshaller.AddCallback(new Action(UI_ShutdownForRestart));
-        }
-
-        private static void RestartClient()
-        {
-            LaunchProcess(admin: false);
-        }
-
-        /// <summary>
-        /// Restarts the client with administrator privileges (Windows only).
-        /// On .NET Framework starts the native exe with runas verb.
-        /// On .NET 8+ starts the launcher exe with runas verb.
-        /// </summary>
-        internal static void RestartAsAdmin()
-        {
-            LaunchProcess(admin: true);
-        }
-
-        private static void LaunchProcess(bool admin)
-        {
-#if NETFRAMEWORK
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = ProgramConstants.StartupExecutable,
-                Verb = admin ? "runas" : null,
-                UseShellExecute = admin,
-            });
-#else
-            if (OperatingSystem.IsWindows())
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = SafePath.CombineFilePath(ProgramConstants.GamePath, ClientConfiguration.Instance.LauncherExe),
-                    Arguments = "-NET8 -Av",
-                    Verb = admin ? "runas" : null,
-                    UseShellExecute = admin,
-                });
-            }
-            else
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = Environment.ProcessPath!,
-                    Arguments = Environment.CommandLine
-                });
-            }
-#endif
         }
 
         private void UI_ShutdownForRestart()
         {
-            lifecycleService.Shutdown();
+            restartService.Shutdown();
         }
 
         private void UI_ExitClient()

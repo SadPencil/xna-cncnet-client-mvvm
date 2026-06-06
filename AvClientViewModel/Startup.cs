@@ -56,6 +56,7 @@ namespace AvClientViewModel
             // Core services
             services.AddSingleton<Random>(_ => CreateRandom());
             services.AddSingleton<DialogService>();
+            services.AddSingleton<IRestartService, RestartService>();
 
             // Domain services
             services.AddSingleton<GameCollection>();
@@ -98,7 +99,8 @@ namespace AvClientViewModel
                     UserINISettings.Instance,
                     sp.GetRequiredService<DirectDrawWrapperManager>(),
                     sp.GetRequiredService<IResolutionProvider>(),
-                    sp.GetRequiredService<DialogService>()));
+                    sp.GetRequiredService<DialogService>(),
+                    sp.GetRequiredService<IRestartService>()));
             services.AddSingleton<IDisplayOptionsPanelViewModel>(sp =>
                 sp.GetRequiredService<DisplayOptionsPanelViewModel>());
 
@@ -277,7 +279,8 @@ namespace AvClientViewModel
                 sp.GetRequiredService<CnCNetLobbyViewModel>(),
                 sp.GetRequiredService<LANLobbyViewModel>(),
                 sp.GetRequiredService<PrivateMessagingWindowViewModel>(),
-                sp.GetRequiredService<DialogService>()));
+                sp.GetRequiredService<DialogService>(),
+                sp.GetRequiredService<IRestartService>()));
 
             services.AddSingleton<IMainMenuViewModel>(sp =>
                 sp.GetRequiredService<MainMenuViewModel>());

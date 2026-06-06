@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 
 using AvClientMvvmContract.Generic.OptionPanels;
 using AvClientMvvmContract.Messages;
+using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain;
 using AvClientViewModel.Services;
@@ -43,6 +44,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     private readonly DirectDrawWrapperManager directDrawWrapperManager;
     private readonly IResolutionProvider resolutionProvider;
     private readonly DialogService dialogService;
+    private readonly IRestartService restartService;
 
     // --- State ---
 
@@ -137,12 +139,14 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         UserINISettings iniSettings,
         DirectDrawWrapperManager directDrawWrapperManager,
         IResolutionProvider resolutionProvider,
-        DialogService dialogService)
+        DialogService dialogService,
+        IRestartService restartService)
     {
         this.iniSettings = iniSettings;
         this.directDrawWrapperManager = directDrawWrapperManager;
         this.resolutionProvider = resolutionProvider;
         this.dialogService = dialogService;
+        this.restartService = restartService;
 
         PopulateOptions();
         CheckCompatibilityFixes();
@@ -438,16 +442,9 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             IsRestartRequired = true;
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            // Check for DirectDraw compatibility issues after renderer change
+            // Since CheckAndPromptFixAsync might restart the client if admin rights are required, do this at the end.
             if (isChangingRenderer && newSelectedRenderer != null && !newSelectedRenderer.IsDummy)
-            {
-                DirectDrawCompatibilityChecker.Examine(out bool requireFix, out bool requireAdmin, out IEnumerable<string> problematicExeNames);
-                if (requireFix)
-                {
-                    IsDirectDrawCompatFixRequired = true;
-                    DirectDrawCompatFixRequiresAdmin = requireAdmin;
-                }
-            }
+                _ = DirectDrawCompatibilityChecker.CheckAndPromptFixAsync(dialogService, restartService);
     }
 
     [RelayCommand]
