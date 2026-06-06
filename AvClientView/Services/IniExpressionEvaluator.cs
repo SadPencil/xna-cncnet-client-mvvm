@@ -6,6 +6,8 @@ using Avalonia.Controls;
 
 using ClientCore;
 
+using Serilog;
+
 namespace AvClientView.Services;
 
 /// <summary>
@@ -61,6 +63,7 @@ public class IniExpressionEvaluator
         }
 
         _instance = new IniExpressionEvaluator(constants);
+        Serilog.Log.Debug($"[IniExpr] Initialized with {constants.Count} constants: {string.Join(", ", constants.Keys)}");
     }
 
     /// <summary>

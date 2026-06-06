@@ -378,19 +378,35 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 break;
 
             case "X":
-                Canvas.SetLeft(control, EvaluateIniValue(value, control));
+                {
+                    int result = EvaluateIniValue(value, control);
+                    Log.Debug($"[INI-POS] {controlName}.X = {result} (was {Canvas.GetLeft(control):F0}) expr='{value}'");
+                    Canvas.SetLeft(control, result);
+                }
                 break;
 
             case "Y":
-                Canvas.SetTop(control, EvaluateIniValue(value, control));
+                {
+                    int result = EvaluateIniValue(value, control);
+                    Log.Debug($"[INI-POS] {controlName}.Y = {result} (was {Canvas.GetTop(control):F0}) expr='{value}'");
+                    Canvas.SetTop(control, result);
+                }
                 break;
 
             case "Width":
-                control.Width = EvaluateIniValue(value, control);
+                {
+                    int result = EvaluateIniValue(value, control);
+                    Log.Debug($"[INI-POS] {controlName}.Width = {result} (was {control.Width}) expr='{value}'");
+                    control.Width = result;
+                }
                 break;
 
             case "Height":
-                control.Height = EvaluateIniValue(value, control);
+                {
+                    int result = EvaluateIniValue(value, control);
+                    Log.Debug($"[INI-POS] {controlName}.Height = {result} (was {control.Height}) expr='{value}'");
+                    control.Height = result;
+                }
                 break;
 
             case "Visible":
@@ -716,7 +732,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         string[] parts = anchorStr.Split(',');
         if (parts.Length != 2)
             return;
-
         // Evaluate each part as an expression (supports getX, getRight, constants, etc.)
         float anchorX = EvaluateIniValue(parts[0], control);
         float anchorY = EvaluateIniValue(parts[1], control);

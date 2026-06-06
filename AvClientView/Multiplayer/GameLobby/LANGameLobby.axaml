@@ -13,7 +13,7 @@
                  Text="GAME MODE:"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                
+                 Width="100"
                  Canvas.Left="12" Canvas.Top="13" />
 
       <ComboBox x:Name="ddGameMode"
