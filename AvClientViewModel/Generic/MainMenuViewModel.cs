@@ -869,6 +869,11 @@ namespace AvClientViewModel.Generic
                 FileName = Environment.ProcessPath!,
                 Arguments = Environment.CommandLine
             });
+            uiThreadMarshaller.AddCallback(new Action(UI_ShutdownForRestart));
+        }
+
+        private void UI_ShutdownForRestart()
+        {
             lifecycleService.Shutdown();
         }
 
