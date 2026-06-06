@@ -8,7 +8,6 @@ using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using AvClientView.Services;
 
-using Serilog;
 
 namespace AvClientView.Multiplayer.CnCNet;
 
@@ -63,11 +62,9 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
 
         // Capture the idle brush from the first tab button (all share the same texture).
         _tabIdleBrush = tabMessages.Background as IImageBrush;
-        Log.Debug($"[PMW] Idle brush: {(_tabIdleBrush != null ? "found" : "NULL")}");
 
         // Load hover texture using the `_c` convention (e.g. 133pxbtn_c.png).
         string? hoverPath = iniOverlay.FindTextureFile("133pxbtn_c.png");
-        Log.Debug($"[PMW] Hover texture path: {hoverPath ?? "NULL"}");
         if (hoverPath != null)
         {
             _tabHoverBrush = new ImageBrush(new Bitmap(hoverPath))
