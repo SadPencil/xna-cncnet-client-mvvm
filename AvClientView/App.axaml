@@ -153,19 +153,22 @@
             <Setter Property="Opacity" Value="0.5" />
         </Style>
 
-        <!-- ScrollBar: use XNAUI scrollbar textures -->
+        <!-- ScrollBar: use XNAUI theme colors for track and thumb -->
         <Style Selector="ScrollBar">
             <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
         </Style>
-
-        <!-- ScrollBar thumb: use XNAUI thumb texture -->
         <Style Selector="ScrollBar /template/ Thumb">
             <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
         </Style>
 
-        <!-- Slider/Trackbar: use XNAUI trackbarButton.png texture -->
+        <!-- Slider: use XNAUI theme colors -->
         <Style Selector="Slider">
+            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource XnaPanelBorderBrush}" />
         </Style>
+        <Style Selector="Slider /template/ Thumb">
+            <Setter Property="Background" Value="{DynamicResource XnaAltBrush}" />
+        </Style>
+
     </Application.Styles>
 </Application>
