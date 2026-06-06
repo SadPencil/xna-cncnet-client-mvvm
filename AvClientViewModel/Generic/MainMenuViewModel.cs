@@ -489,6 +489,7 @@ namespace AvClientViewModel.Generic
                 connectionManager.Disconnect();
 
             cncNetUserData.Save();
+            musicPlayer.Dispose();
         }
 
         #endregion
@@ -874,7 +875,6 @@ namespace AvClientViewModel.Generic
         {
             Log.Information("Exiting.");
             lifecycleService.Shutdown();
-            musicPlayer.Dispose();
         }
 
         #endregion
