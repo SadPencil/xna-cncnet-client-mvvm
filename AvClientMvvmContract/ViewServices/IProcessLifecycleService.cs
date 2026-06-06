@@ -16,4 +16,9 @@ public interface IProcessLifecycleService
     /// then terminates the current one.
     /// </summary>
     void RestartAsAdmin();
+
+    /// <summary>
+    /// Terminates the client application.
+    /// </summary>
+    void Shutdown();
 }

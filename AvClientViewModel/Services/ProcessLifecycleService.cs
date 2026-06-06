@@ -39,6 +39,11 @@ public class ProcessLifecycleService : IProcessLifecycleService
         ShutdownOnUIThread();
     }
 
+    public void Shutdown()
+    {
+        ShutdownOnUIThread();
+    }
+
     private void ShutdownOnUIThread()
     {
         uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
