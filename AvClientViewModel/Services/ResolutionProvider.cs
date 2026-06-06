@@ -11,9 +11,8 @@ namespace AvClientViewModel.Services
 {
     /// <summary>
     /// Provides screen resolution options using ScreenResolution logic.
-    /// Initializes ScreenResolution.DesktopResolution from the View layer's
-    /// IResolutionService so that resolution lists are filtered to the
-    /// actual primary monitor's capabilities.
+    /// Initializes ScreenResolution with the actual desktop resolution and
+    /// display modes from the View layer's IResolutionService.
     /// </summary>
     public class ResolutionProvider : IResolutionProvider
     {
@@ -22,6 +21,11 @@ namespace AvClientViewModel.Services
             ScreenResolution.DesktopResolution = new ScreenResolution(
                 resolutionService.DesktopWidth,
                 resolutionService.DesktopHeight);
+
+            var modes = resolutionService.GetSupportedDisplayModes();
+            ScreenResolution.DisplayModes = modes
+                .Select(m => new ScreenResolution(m.Width, m.Height))
+                .ToList();
         }
 
         public IReadOnlyList<string> GetIngameResolutions()

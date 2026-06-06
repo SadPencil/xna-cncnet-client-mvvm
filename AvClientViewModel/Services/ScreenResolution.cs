@@ -92,21 +92,18 @@ namespace AvClientViewModel.Services
             }
         }
 
+        private static IReadOnlyList<ScreenResolution>? _displayModes;
+
         /// <summary>
-        /// Comprehensive list of common monitor resolutions used when GPU display modes cannot be queried.
-        /// Covers standard VESA/CEA/HDMI modes plus ultrawide and high-DPI resolutions.
+        /// Display modes supported by the primary monitor.
+        /// Set by ResolutionProvider from the View layer's OS-level display mode enumeration.
+        /// Falls back to the desktop resolution until initialized.
         /// </summary>
-        private static readonly IReadOnlyList<ScreenResolution> CommonFullScreenResolutions =
-        [
-            "640x480", "720x480", "720x576", "800x600", "1024x768",
-            "1152x864", "1176x664", "1280x720", "1280x768", "1280x800",
-            "1280x960", "1280x1024", "1360x768", "1366x768", "1400x1050",
-            "1440x900", "1600x900", "1600x1024", "1600x1200", "1680x1050",
-            "1768x992", "1920x1080", "1920x1200", "1920x1440", "2048x1152",
-            "2048x1536", "2560x1080", "2560x1440", "2560x1600", "2880x1800",
-            "3072x1728", "3200x1800", "3440x1440", "3840x2160", "4096x2160",
-            "5120x2880", "6016x3384", "7680x4320",
-        ];
+        internal static IReadOnlyList<ScreenResolution> DisplayModes
+        {
+            get => _displayModes ??= [DesktopResolution];
+            set => _displayModes = value;
+        }
 
         public static SortedSet<ScreenResolution> GetFullScreenResolutions(int minWidth, int minHeight) =>
             GetFullScreenResolutions(minWidth, minHeight, DesktopResolution.Width, DesktopResolution.Height);
@@ -114,7 +111,7 @@ namespace AvClientViewModel.Services
         {
             SortedSet<ScreenResolution> screenResolutions = [];
 
-            foreach (ScreenResolution res in CommonFullScreenResolutions)
+            foreach (ScreenResolution res in DisplayModes)
             {
                 if (res.Width < minWidth || res.Height < minHeight || res.Width > maxWidth || res.Height > maxHeight)
                     continue;
