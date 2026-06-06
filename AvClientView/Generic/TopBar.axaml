@@ -26,14 +26,14 @@
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
                 Margin="184,0,0,0" Spacing="12">
       <Button x:Name="btnCnCNetLobby"
-              Content="CnCNet"
+              Content="CnCNet Lobby"
               Command="{Binding SwitchToSecondaryCommand}"
               IsEnabled="{Binding AreSwitchButtonsClickable}"
               Width="160" Height="23"
               />
       <Panel>
         <Button x:Name="btnPrivateMessages"
-                Content="Messages"
+                Content="Private Messages"
                 Command="{Binding SwitchToTertiaryCommand}"
                 IsEnabled="{Binding AreSwitchButtonsClickable}"
                 Width="160" Height="23"
