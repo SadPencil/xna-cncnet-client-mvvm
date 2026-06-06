@@ -14,9 +14,9 @@ namespace AvClientViewModel.Services.Resolutions;
 internal sealed class LinuxScreenInfoProvider : IScreenInfoProvider
 {
     private bool _queried;
-    private int _desktopWidth = 1920;
-    private int _desktopHeight = 1080;
-    private IReadOnlyList<(int Width, int Height)> _modes = [(1920, 1080)];
+    private int _desktopWidth;
+    private int _desktopHeight;
+    private IReadOnlyList<(int Width, int Height)> _modes = [];
 
     public int Priority => 0;
 

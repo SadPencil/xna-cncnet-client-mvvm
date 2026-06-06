@@ -16,16 +16,30 @@ namespace AvClientViewModel.Services.Resolutions
     {
         public ResolutionProvider(IEnumerable<IScreenInfoProvider> screenInfoProviders)
         {
-            var provider = screenInfoProviders
-                .OrderByDescending(p => p.Priority)
-                .First(p => p.IsApplicable);
+            var ordered = screenInfoProviders.OrderByDescending(p => p.Priority);
+
+            IScreenInfoProvider? selected = null;
+
+            foreach (var provider in ordered)
+            {
+                if (!provider.IsApplicable)
+                    continue;
+
+                var modes = provider.GetSupportedDisplayModes();
+                if (modes.Count == 0)
+                    continue;
+
+                selected = provider;
+                break;
+            }
+
+            selected ??= ordered.First(p => p.IsApplicable);
 
             ScreenResolution.DesktopResolution = new ScreenResolution(
-                provider.DesktopWidth,
-                provider.DesktopHeight);
+                selected.DesktopWidth,
+                selected.DesktopHeight);
 
-            var modes = provider.GetSupportedDisplayModes();
-            ScreenResolution.DisplayModes = modes
+            ScreenResolution.DisplayModes = selected.GetSupportedDisplayModes()
                 .Select(m => new ScreenResolution(m.Width, m.Height))
                 .ToList();
         }
