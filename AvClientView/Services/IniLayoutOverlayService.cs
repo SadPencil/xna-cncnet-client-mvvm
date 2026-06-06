@@ -82,13 +82,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         Log.Information($"INI Layout: Loading {iniPath}");
         var iniFile = new CCIniFile(iniPath);
 
-        // Initialize the expression evaluator (once) and set the primary control
-        // so $X/$Y/$Width/$Height expressions can reference sibling controls.
-        IniExpressionEvaluator.Initialize(
-            (int)(effectiveWidth ?? ViewConstants.DesignResolutionWidth),
-            (int)(effectiveHeight ?? ViewConstants.DesignResolutionHeight));
-        IniExpressionEvaluator.Instance.SetPrimaryControl(control);
-
         // Merge base INI at key level (fills in missing keys like
         // IdleTexture, HoverTexture, Location that theme files don't define).
         string basePath = FindBaseIniFile(sectionName);
@@ -378,19 +371,23 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 break;
 
             case "X":
-                Canvas.SetLeft(control, EvaluateIniValue(value, control));
+                if (int.TryParse(value, out int xVal))
+                    Canvas.SetLeft(control, xVal);
                 break;
 
             case "Y":
-                Canvas.SetTop(control, EvaluateIniValue(value, control));
+                if (int.TryParse(value, out int yVal))
+                    Canvas.SetTop(control, yVal);
                 break;
 
             case "Width":
-                control.Width = EvaluateIniValue(value, control);
+                if (int.TryParse(value, out int wVal))
+                    control.Width = wVal;
                 break;
 
             case "Height":
-                control.Height = EvaluateIniValue(value, control);
+                if (int.TryParse(value, out int hVal))
+                    control.Height = hVal;
                 break;
 
             case "Visible":
@@ -616,22 +613,28 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             switch (defKey)
             {
                 case "FillWidth":
-                    fillWidth = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int fw))
+                        fillWidth = fw;
                     break;
                 case "FillHeight":
-                    fillHeight = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int fh))
+                        fillHeight = fh;
                     break;
                 case "DistanceFromRightBorder":
-                    distRight = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int dr))
+                        distRight = dr;
                     break;
                 case "DistanceFromBottomBorder":
-                    distBottom = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int db))
+                        distBottom = db;
                     break;
                 case "DistanceFromLeftBorder":
-                    distLeft = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int dl))
+                        distLeft = dl;
                     break;
                 case "DistanceFromTopBorder":
-                    distTop = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int dt))
+                        distTop = dt;
                     break;
             }
         }
@@ -716,10 +719,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         string[] parts = anchorStr.Split(',');
         if (parts.Length != 2)
             return;
-
-        // Evaluate each part as an expression (supports getX, getRight, constants, etc.)
-        float anchorX = EvaluateIniValue(parts[0], control);
-        float anchorY = EvaluateIniValue(parts[1], control);
+        if (!float.TryParse(parts[0], out float anchorX) || !float.TryParse(parts[1], out float anchorY))
+            return;
 
         // Use DesiredSize (available after measure pass) or fall back to Bounds.
         double controlWidth = control.DesiredSize.Width > 0 ? control.DesiredSize.Width
@@ -866,10 +867,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             switch (inlineKey)
             {
                 case "FillWidth":
-                    fillWidth = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int fw))
+                        fillWidth = fw;
                     break;
                 case "FillHeight":
-                    fillHeight = EvaluateIniValue(kvp.Value, control);
+                    if (int.TryParse(kvp.Value, out int fh))
+                        fillHeight = fh;
                     break;
             }
         }
@@ -1702,24 +1705,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         char first = char.ToLower(value[0]);
         return first == 't' || first == 'y' || first == '1' || first == 'a' || first == 'e';
-    }
-
-    /// <summary>
-    /// Evaluates an INI value as an integer. Tries plain integer parsing first,
-    /// then falls back to the expression evaluator for formulas like
-    /// getRight(lbMapList) - getWidth($Self).
-    /// </summary>
-    private static int EvaluateIniValue(string value, Control control)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return 0;
-
-        // Try plain integer first (fast path)
-        if (int.TryParse(value, out int intVal))
-            return intVal;
-
-        // Try expression evaluation (throws on invalid expressions, matching old Parser.cs)
-        return IniExpressionEvaluator.Instance.Evaluate(value, control);
     }
 
     /// <summary>
