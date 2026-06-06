@@ -15,8 +15,6 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientView.Controls;
 using AvClientView.Services;
 
-using Serilog;
-
 
 namespace AvClientView.Multiplayer.GameLobby;
 
@@ -54,40 +52,16 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        LogLayout("BEFORE_INI");
-
         BackgroundHelper.ApplyDefaultBackground(this, "gamelobbybg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "MultiplayerGameLobby");
-
-        LogLayout("AFTER_INI");
 
         SetupMapListContextMenu();
         SetupSearchContextMenu();
 
         if (currentMapPreview != null)
             RenderIndicators();
-    }
-
-    private void LogLayout(string stage)
-    {
-        Serilog.Log.Debug("[LAYOUT] {Stage} lblGameModeSelect L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(lblGameModeSelect), Canvas.GetTop(lblGameModeSelect), lblGameModeSelect.Width, lblGameModeSelect.Bounds);
-        Serilog.Log.Debug("[LAYOUT] {Stage} btnSortAlpha       L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(btnSortAlpha), Canvas.GetTop(btnSortAlpha), btnSortAlpha.Width, btnSortAlpha.Bounds);
-        Serilog.Log.Debug("[LAYOUT] {Stage} ddGameMode          L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(ddGameMode), Canvas.GetTop(ddGameMode), ddGameMode.Width, ddGameMode.Bounds);
-        Serilog.Log.Debug("[LAYOUT] {Stage} lbMapList           L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(lbMapList), Canvas.GetTop(lbMapList), lbMapList.Width, lbMapList.Bounds);
-        Serilog.Log.Debug("[LAYOUT] {Stage} tbMapSearch         L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(tbMapSearch), Canvas.GetTop(tbMapSearch), tbMapSearch.Width, tbMapSearch.Bounds);
-        Serilog.Log.Debug("[LAYOUT] {Stage} MapPreviewBox       L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(MapPreviewBox), Canvas.GetTop(MapPreviewBox), MapPreviewBox.Width, MapPreviewBox.Bounds);
-        Serilog.Log.Debug("[LAYOUT] {Stage} PlayerOptionsPanel  L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(PlayerOptionsPanel), Canvas.GetTop(PlayerOptionsPanel), PlayerOptionsPanel.Width, PlayerOptionsPanel.Bounds);
-        Serilog.Log.Debug("[LAYOUT] {Stage} GameOptionsPanel    L={L:F0} T={T:F0} W={W} B={B}",
-            stage, Canvas.GetLeft(GameOptionsPanel), Canvas.GetTop(GameOptionsPanel), GameOptionsPanel.Width, GameOptionsPanel.Bounds);
     }
 
     private void SetupChatInputEnterKey()
