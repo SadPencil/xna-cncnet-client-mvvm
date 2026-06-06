@@ -194,7 +194,7 @@
             <ItemsControl ItemsSource="{Binding CheckBoxes}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vmc:IGameOptionCheckBox">
-                  <CheckBox Content="{Binding Name}"
+                  <CheckBox Content="{Binding DisplayName}"
                             IsChecked="{Binding IsChecked, Mode=TwoWay}"
                             IsEnabled="{Binding IsEnabled}"
                             Foreground="{DynamicResource XnaTextBrush}"
@@ -206,7 +206,7 @@
               <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vmc:IGameOptionDropDown">
                   <StackPanel Margin="0,4">
-                    <TextBlock Text="{Binding Name}" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" FontWeight="Bold" />
+                    <TextBlock Text="{Binding DisplayName}" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" FontWeight="Bold" />
                     <ComboBox ItemsSource="{Binding Items}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}" Width="112" Height="21" FontSize="10" />
                   </StackPanel>
                 </DataTemplate>

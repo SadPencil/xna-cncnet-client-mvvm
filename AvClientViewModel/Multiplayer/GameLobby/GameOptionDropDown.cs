@@ -18,6 +18,8 @@ public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
 
     public string Name => Setting.Name;
 
+    public string DisplayName => !string.IsNullOrEmpty(Setting.OptionName) ? Setting.OptionName : Setting.Name;
+
     private int _selectedIndex;
     public int SelectedIndex
     {

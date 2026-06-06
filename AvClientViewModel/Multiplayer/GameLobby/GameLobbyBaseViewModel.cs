@@ -299,6 +299,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         setting.Reversed = ini.GetBooleanValue(sectionName, "Reversed", false);
         setting.EnabledSpawnIniValue = ini.GetStringValue(sectionName, "EnabledSpawnIniValue", "True");
         setting.DisabledSpawnIniValue = ini.GetStringValue(sectionName, "DisabledSpawnIniValue", "False");
+        setting.Text = ini.GetStringValue(sectionName, "Text", string.Empty);
         setting.BroadcastToLobby = ini.GetBooleanValue(sectionName, "BroadcastToLobby", false);
 
         bool checkedValue = ini.GetBooleanValue(sectionName, "Checked", false);

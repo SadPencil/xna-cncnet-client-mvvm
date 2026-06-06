@@ -16,6 +16,8 @@ public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
 
     public string Name => Setting.Name;
 
+    public string DisplayName => !string.IsNullOrEmpty(Setting.Text) ? Setting.Text : Setting.Name;
+
     private bool _isChecked;
     public bool IsChecked
     {
