@@ -69,6 +69,12 @@ namespace AvClientViewModel
             services.AddSingleton<IGameProcessSettingsService, GameProcessSettingsService>();
             services.AddSingleton<IDiscordHandlerService, DiscordHandlerService>();
             services.AddSingleton<IMusicPlayerService, MusicPlayerService>();
+            // Screen info providers tried in order; first applicable wins
+            services.AddSingleton<IScreenInfoProvider, LinuxScreenInfoProvider>();
+            services.AddSingleton<IScreenInfoProvider, WindowsScreenInfoProvider>();
+            services.AddSingleton<IScreenInfoProvider, MacOSScreenInfoProvider>();
+            services.AddSingleton<IScreenInfoProvider, DummyScreenInfoProvider>();
+
             services.AddSingleton<IResolutionProvider, ResolutionProvider>();
             services.AddSingleton<DirectDrawWrapperManager>();
             services.AddSingleton<IFileIntegrityService, FileIntegrityService>();

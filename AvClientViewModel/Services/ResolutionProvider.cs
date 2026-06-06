@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using AvClientMvvmContract.ViewServices;
-
 using ClientCore;
 
 using Serilog;
@@ -12,17 +10,19 @@ namespace AvClientViewModel.Services
     /// <summary>
     /// Provides screen resolution options using ScreenResolution logic.
     /// Initializes ScreenResolution with the actual desktop resolution and
-    /// display modes from the View layer's IResolutionService.
+    /// display modes from the first applicable IScreenInfoProvider.
     /// </summary>
-    public class ResolutionProvider : IResolutionProvider
+    internal class ResolutionProvider : IResolutionProvider
     {
-        public ResolutionProvider(IResolutionService resolutionService)
+        public ResolutionProvider(IEnumerable<IScreenInfoProvider> screenInfoProviders)
         {
-            ScreenResolution.DesktopResolution = new ScreenResolution(
-                resolutionService.DesktopWidth,
-                resolutionService.DesktopHeight);
+            var provider = screenInfoProviders.First(p => p.IsApplicable);
 
-            var modes = resolutionService.GetSupportedDisplayModes();
+            ScreenResolution.DesktopResolution = new ScreenResolution(
+                provider.DesktopWidth,
+                provider.DesktopHeight);
+
+            var modes = provider.GetSupportedDisplayModes();
             ScreenResolution.DisplayModes = modes
                 .Select(m => new ScreenResolution(m.Width, m.Height))
                 .ToList();
