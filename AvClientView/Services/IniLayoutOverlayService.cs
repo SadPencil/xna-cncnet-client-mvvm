@@ -142,15 +142,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             ApplyProperties(control, genericSection, iniFile, "GenericWindow");
 
         if (mainSection != null)
-        {
-            // For INItializableWindow-based views (game lobbies), the primary
-            // control's size is hardcoded in C# (e.g. GameLobbyBase.Initialize).
-            // The INI $X/$Y/$Width/$Height from GenericWindow section must not
-            // override the primary control's size. Only child controls get
-            // expression-based positioning.
-            bool isIniInitWindow = _iniInitializableWindowViews.Contains(sectionName);
-            ApplyProperties(control, mainSection, iniFile, sectionName, skipPositioning: isIniInitWindow);
-        }
+            ApplyProperties(control, mainSection, iniFile, sectionName);
 
         // Clamp window size to the design resolution.
         // INI files may specify sizes that exceed the rendering resolution
@@ -171,7 +163,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Apply hardcoded draw modes from XNA code first (even if INI has no section)
         ApplyHardcodedDrawModes(control);
 
-        // Apply properties to all named child controls (INI DrawMode can override)
+        // Apply properties to all named child controls (INI DrawMode can override).
+        // Two-pass evaluation: first pass sets sizes and non-dependent positions,
+        // second pass re-evaluates expressions so dependencies on already-positioned
+        // controls resolve correctly (e.g. lblGameModeSelect depends on ddGameMode.X).
+        ApplyToDescendants(control, iniFile);
         ApplyToDescendants(control, iniFile);
 
         // Create ExtraControls
@@ -315,7 +311,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void ApplyProperties(Control control, IniSection section, CCIniFile iniFile, string controlName, bool skipPositioning = false)
+    private static void ApplyProperties(Control control, IniSection section, CCIniFile iniFile, string controlName)
     {
         string? idleTexturePath = null;
 
@@ -330,11 +326,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
             // Skip $CC keys (handled by CreateExtraControls)
             if (key.StartsWith("$CC"))
-                continue;
-
-            // For INItializableWindow primary controls, skip position/size
-            // overrides. The window size is hardcoded in C# code, not from INI.
-            if (skipPositioning && IsPositionProperty(key))
                 continue;
 
             ApplySingleProperty(control, key, value, controlName);
@@ -1730,26 +1721,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         char first = char.ToLower(value[0]);
         return first == 't' || first == 'y' || first == '1' || first == 'a' || first == 'e';
-    }
-
-    /// <summary>
-    /// Returns true if the key is a positioning/sizing property that should
-    /// be skipped for INItializableWindow primary controls (whose size is
-    /// hardcoded in C# rather than set by INI like GenericWindow.ini).
-    /// </summary>
-    private static bool IsPositionProperty(string key)
-    {
-        string k = key.StartsWith('$') ? key.Substring(1) : key;
-        return k switch
-        {
-            "X" or "Y" or "Width" or "Height" or "Size"
-                or "AnchorPoint" or "TextAnchor"
-                or "FillWidth" or "FillHeight"
-                or "DistanceFromRightBorder" or "DistanceFromBottomBorder"
-                or "DistanceFromLeftBorder" or "DistanceFromTopBorder"
-                => true,
-            _ => false,
-        };
     }
 
     /// <summary>
