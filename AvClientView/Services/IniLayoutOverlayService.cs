@@ -1652,9 +1652,16 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (color == null)
             return;
 
-        // Apply as opacity based on alpha channel
-        if (color.Value.A < 255)
+        // XNALabel maps RemapColor to TextColor (font color).
+        // Match this for TextBlock; for other controls set opacity.
+        if (control is TextBlock textBlock)
+        {
+            textBlock.Foreground = new SolidColorBrush(color.Value);
+        }
+        else if (color.Value.A < 255)
+        {
             control.Opacity = color.Value.A / 255.0;
+        }
     }
 
     private static Color? ParseColor(string colorStr)
