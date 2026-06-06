@@ -185,6 +185,9 @@ namespace AvClientViewModel.Generic
             // Subscribe to options window closed to trigger custom component dialog
             optionsWindowViewModel.PropertyChanged += OnOptionsWindowPropertyChanged;
 
+            // Handle restart request from options window
+            optionsWindowViewModel.RestartRequested += OnRestartRequested;
+
             // Subscribe to child lobby visibility changes for exit detection
             skirmishLobbyViewModel.PropertyChanged += OnSkirmishLobbyPropertyChanged;
             lanLobbyViewModel.PropertyChanged += OnLanLobbyPropertyChanged;
@@ -855,6 +858,18 @@ namespace AvClientViewModel.Generic
         private void ExitClient()
         {
             UI_ExitClient();
+        }
+
+        private void OnRestartRequested(object? sender, EventArgs e)
+        {
+            Log.Information("Restarting client.");
+            Clean();
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = Environment.ProcessPath!,
+                Arguments = Environment.CommandLine
+            });
+            lifecycleService.Shutdown();
         }
 
         private void UI_ExitClient()
