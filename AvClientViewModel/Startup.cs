@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using System.Text;
 using System.Threading.Tasks;
 
 using AvClientMvvmContract.Campaign;
@@ -289,13 +287,6 @@ namespace AvClientViewModel
             services.AddTransient<IUpdateWindowViewModel, UpdateWindowViewModel>();
             services.AddTransient<IGameInProgressWindowViewModel, GameInProgressWindowViewModel>();
             services.AddSingleton<IMainWindowViewModel, MainWindowViewModel>();
-        }
-
-        public static void Initialize(string[] args)
-        {
-            Initialize(new StartupParams(noAudio: args.Contains("--noaudio", StringComparer.InvariantCultureIgnoreCase),
-                multipleInstanceMode: args.Contains("--multipleinstances", StringComparer.InvariantCultureIgnoreCase),
-                unknownParams: args.Except(new[] { "--noaudio", "--multipleinstances" }, StringComparer.InvariantCultureIgnoreCase).ToList()));
         }
 
         public static void Initialize(StartupParams parameters)

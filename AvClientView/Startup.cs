@@ -28,7 +28,7 @@ public static class Startup
     internal static IniLayoutOverlayService IniLayoutOverlayService => field ??= new IniLayoutOverlayService(UrlService);
 
     [STAThread]
-    public static void Run(string[] args, Func<ServiceProvider> initServices, IMainWindowViewModel? mainWindowViewModel = null)
+    public static void Run(string[] args, IMainWindowViewModel? mainWindowViewModel, Func<ServiceProvider> initServices)
     {
         MainWindowViewModel = mainWindowViewModel;
         InitializeServices = initServices;
@@ -66,6 +66,6 @@ public static class Startup
         services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
         services.AddSingleton<IClientSoundService, ClientSoundService>();
         services.AddSingleton<IApplicationLifecycleService, ApplicationLifecycleService>();
-        services.AddSingleton<ITranslationNotifierService, TranslationNotifierService>();
+        services.AddSingleton<IViewTranslationNotifierService, ViewTranslationNotifierService>();
     }
 }

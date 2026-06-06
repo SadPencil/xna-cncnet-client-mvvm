@@ -1,75 +1,27 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Threading;
-using System.Threading.Tasks;
 
-using AvClientMvvmContract.Campaign;
-using AvClientMvvmContract.Generic;
-using AvClientMvvmContract.Generic.OptionPanels;
-using AvClientMvvmContract.Multiplayer;
-using AvClientMvvmContract.Multiplayer.CnCNet;
-using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.ViewServices;
 
-using AvClientViewModel.Campaign;
 using AvClientViewModel.Domain;
-using AvClientViewModel.Domain.Multiplayer;
-using AvClientViewModel.Domain.Multiplayer.CnCNet;
-using AvClientViewModel.Generic;
-using AvClientViewModel.Generic.OptionPanels;
-using AvClientViewModel.LAN;
-using AvClientViewModel.Multiplayer;
-using AvClientViewModel.Multiplayer.CnCNet;
-using AvClientViewModel.Multiplayer.GameLobby;
-using AvClientViewModel.Online;
-using AvClientViewModel.Services;
 using AvClientViewModel.Services.Resolutions;
 
 using ClientCore;
-using ClientCore.Enums;
 using ClientCore.Extensions;
 using ClientCore.I18N;
-using ClientCore.INIProcessing;
-using ClientCore.PlatformShim;
 using ClientCore.Settings;
-
-using ClientUpdater;
-
-using Microsoft.Extensions.DependencyInjection;
 
 using Rampastring.Tools;
 
 using Serilog;
 
-using Steamworks;
-
 namespace AvClientViewModel;
-
-/// <summary>
-/// Contains client startup parameters.
-/// </summary>
-public struct StartupParams
-{
-    public StartupParams(bool noAudio, bool multipleInstanceMode,
-        List<string> unknownParams)
-    {
-        NoAudio = noAudio;
-        MultipleInstanceMode = multipleInstanceMode;
-        UnknownStartupParams = unknownParams ?? new List<string>();
-    }
-
-    public bool NoAudio { get; }
-    public bool MultipleInstanceMode { get; }
-    public List<string> UnknownStartupParams { get; }
-}
 
 /// <summary>
 /// Initializes client systems before the UI starts.
@@ -83,7 +35,7 @@ public static class PreStartup
     /// <summary>
     /// Initializes all non-UI systems.
     /// </summary>
-    public static void Initialize(StartupParams parameters = default, ITranslationNotifierService? translationNotifierService = null)
+    public static void Initialize(StartupParams parameters, IViewTranslationNotifierService? viewTranslationNotifierService)
     {
         // --- Culture (same as DXMainClient PreStartup lines 60-61) ---
         Translation.InitialUICulture = CultureInfo.CurrentUICulture;
@@ -153,8 +105,6 @@ public static class PreStartup
         if (parameters.MultipleInstanceMode)
             Log.Information("Startup parameter: Allow multiple client instances");
 
-        parameters.UnknownStartupParams?.ForEach(p => Log.Information("Unknown startup parameter: " + p));
-
         Log.Information("Loading settings.");
 
         // --- Settings initialization (same as DXMainClient PreStartup lines 127-129) ---
@@ -211,7 +161,7 @@ public static class PreStartup
                 ClientCore.Generated.TranslationNotifier.Register();
                 ClientUpdater.Generated.TranslationNotifier.Register();
                 AvClientViewModel.Generated.TranslationNotifier.Register();
-                translationNotifierService?.Register();
+                viewTranslationNotifierService?.Register();
             }
         }
         catch (Exception ex)

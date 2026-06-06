@@ -5,7 +5,7 @@ namespace AvClientMvvmContract.ViewServices;
 /// The Exe composition root creates the implementation and passes it to the ViewModel,
 /// because the ViewModel cannot reference the View project directly.
 /// </summary>
-public interface ITranslationNotifierService
+public interface IViewTranslationNotifierService
 {
     /// <summary>
     /// Registers all compile-time translation strings from the View project
