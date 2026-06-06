@@ -44,7 +44,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     private readonly DirectDrawWrapperManager directDrawWrapperManager;
     private readonly IResolutionProvider resolutionProvider;
     private readonly DialogService dialogService;
-    private readonly IRestartService restartService;
+    private readonly IProcessLifecycleService processLifecycleService;
 
     // --- State ---
 
@@ -140,13 +140,13 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         DirectDrawWrapperManager directDrawWrapperManager,
         IResolutionProvider resolutionProvider,
         DialogService dialogService,
-        IRestartService restartService)
+        IProcessLifecycleService processLifecycleService)
     {
         this.iniSettings = iniSettings;
         this.directDrawWrapperManager = directDrawWrapperManager;
         this.resolutionProvider = resolutionProvider;
         this.dialogService = dialogService;
-        this.restartService = restartService;
+        this.processLifecycleService = processLifecycleService;
 
         PopulateOptions();
         CheckCompatibilityFixes();
@@ -444,7 +444,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             // Since CheckAndPromptFixAsync might restart the client if admin rights are required, do this at the end.
             if (isChangingRenderer && newSelectedRenderer != null && !newSelectedRenderer.IsDummy)
-                _ = DirectDrawCompatibilityChecker.CheckAndPromptFixAsync(dialogService, restartService);
+                _ = DirectDrawCompatibilityChecker.CheckAndPromptFixAsync(dialogService, processLifecycleService);
     }
 
     [RelayCommand]

@@ -187,7 +187,7 @@ public static class DirectDrawCompatibilityChecker
     /// <param name="lifecycleService">Service for shutting down the application after admin restart.</param>
     public static async Task CheckAndPromptFixAsync(
         Services.DialogService dialogService,
-        IRestartService restartService)
+        IProcessLifecycleService processLifecycleService)
     {
         // Fix environment variable __COMPAT_LAYER first, for the client itself.
         FixEnvironmentVariable();
@@ -225,8 +225,7 @@ public static class DirectDrawCompatibilityChecker
             {
                 Log.Information("Administrator privileges required. Restart with elevated privileges.");
 
-                restartService.RestartAsAdmin();
-                restartService.Shutdown();
+                processLifecycleService.RestartAsAdmin();
             }
             else
             {

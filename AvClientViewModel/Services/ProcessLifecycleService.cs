@@ -1,7 +1,6 @@
 #nullable enable
 using System;
 using System.Diagnostics;
-using System.Runtime.Versioning;
 
 using AvClientMvvmContract.ViewServices;
 
@@ -9,36 +8,40 @@ using ClientCore;
 
 using Rampastring.Tools;
 
-using Serilog;
-
 namespace AvClientViewModel.Services;
 
 /// <summary>
-/// Handles client restart, with optional admin elevation.
-/// Consolidates restart logic that was split between MainMenuViewModel and AdminRestarter.
+/// Manages the client application process lifecycle.
+/// Launches a new instance then terminates the current one (shutdown marshalled to UI thread).
 /// </summary>
-public class RestartService : IRestartService
+public class ProcessLifecycleService : IProcessLifecycleService
 {
     private readonly IApplicationLifecycleService lifecycleService;
+    private readonly IUIThreadMarshaller uiThreadMarshaller;
 
-    public RestartService(IApplicationLifecycleService lifecycleService)
+    public ProcessLifecycleService(
+        IApplicationLifecycleService lifecycleService,
+        IUIThreadMarshaller uiThreadMarshaller)
     {
         this.lifecycleService = lifecycleService;
+        this.uiThreadMarshaller = uiThreadMarshaller;
     }
 
-    public void RestartClient()
+    public void Restart()
     {
         LaunchProcess(admin: false);
+        ShutdownOnUIThread();
     }
 
     public void RestartAsAdmin()
     {
         LaunchProcess(admin: true);
+        ShutdownOnUIThread();
     }
 
-    public void Shutdown()
+    private void ShutdownOnUIThread()
     {
-        lifecycleService.Shutdown();
+        uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
     }
 
     private static void LaunchProcess(bool admin)

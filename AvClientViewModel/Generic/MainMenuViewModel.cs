@@ -68,7 +68,7 @@ namespace AvClientViewModel.Generic
         private readonly LANLobbyViewModel lanLobbyViewModel;
         private readonly PrivateMessagingWindowViewModel privateMessagingWindowViewModel;
         private readonly DialogService dialogService;
-        private readonly IRestartService restartService;
+        private readonly IProcessLifecycleService processLifecycleService;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -154,7 +154,7 @@ namespace AvClientViewModel.Generic
             LANLobbyViewModel lanLobbyViewModel,
             PrivateMessagingWindowViewModel privateMessagingWindowViewModel,
             DialogService dialogService,
-            IRestartService restartService)
+            IProcessLifecycleService processLifecycleService)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;
@@ -162,7 +162,7 @@ namespace AvClientViewModel.Generic
             this.musicPlayer = musicPlayer;
             this.uiThreadMarshaller = uiThreadMarshaller;
             this.lifecycleService = lifecycleService;
-            this.restartService = restartService;
+            this.processLifecycleService = processLifecycleService;
             this.connectionManager = connectionManager;
             this.optionsWindowViewModel = optionsWindowViewModel;
             this.topBarViewModel = topBarViewModel;
@@ -867,13 +867,7 @@ namespace AvClientViewModel.Generic
         {
             Log.Information("Restarting client.");
             Clean();
-            restartService.RestartClient();
-            uiThreadMarshaller.AddCallback(new Action(UI_ShutdownForRestart));
-        }
-
-        private void UI_ShutdownForRestart()
-        {
-            restartService.Shutdown();
+            processLifecycleService.Restart();
         }
 
         private void UI_ExitClient()
