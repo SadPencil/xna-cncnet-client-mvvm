@@ -15,7 +15,7 @@ namespace AvClientView.Services;
 
 /// <summary>
 /// Provides the primary monitor's desktop resolution and supported display modes
-/// using OS-level APIs (xrandr on Linux, EnumDisplaySettings on Windows).
+/// using OS-level APIs (xrandr on Linux, EnumDisplaySettings on Windows, CoreGraphics on macOS).
 /// </summary>
 public class ResolutionService : IResolutionService
 {
@@ -35,6 +35,8 @@ public class ResolutionService : IResolutionService
             _displayModes = QueryXrandrDisplayModes();
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             _displayModes = QueryWindowsDisplayModes();
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            _displayModes = QueryMacOSDisplayModes();
 
         // Fall back to the desktop resolution only
         if (_displayModes == null || _displayModes.Count == 0)
@@ -218,5 +220,73 @@ public class ResolutionService : IResolutionService
         }
 
         return modes.OrderBy(m => m.Item1 * m.Item2).ThenBy(m => m.Item1).ToList();
+    }
+
+    // ----------------------------------------------------------------
+    // macOS: CoreGraphics CGDisplayCopyAllDisplayModes
+    // ----------------------------------------------------------------
+
+    private const string CoreGraphics = "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics";
+
+    [DllImport(CoreGraphics)]
+    private static extern uint CGMainDisplayID();
+
+    [DllImport(CoreGraphics)]
+    private static extern IntPtr CGDisplayCopyAllDisplayModes(uint display, IntPtr options);
+
+    [DllImport(CoreGraphics)]
+    private static extern int CGDisplayModeGetWidth(IntPtr mode);
+
+    [DllImport(CoreGraphics)]
+    private static extern int CGDisplayModeGetHeight(IntPtr mode);
+
+    [DllImport(CoreGraphics)]
+    private static extern void CFRelease(IntPtr obj);
+
+    [DllImport(CoreGraphics)]
+    private static extern int CFArrayGetCount(IntPtr array);
+
+    [DllImport(CoreGraphics)]
+    private static extern IntPtr CFArrayGetValueAtIndex(IntPtr array, int index);
+
+    private static IReadOnlyList<(int Width, int Height)> QueryMacOSDisplayModes()
+    {
+        try
+        {
+            uint displayId = CGMainDisplayID();
+            IntPtr modesArray = CGDisplayCopyAllDisplayModes(displayId, IntPtr.Zero);
+
+            if (modesArray == IntPtr.Zero)
+                return [];
+
+            try
+            {
+                int count = CFArrayGetCount(modesArray);
+                var modes = new HashSet<(int, int)>();
+
+                for (int i = 0; i < count; i++)
+                {
+                    IntPtr mode = CFArrayGetValueAtIndex(modesArray, i);
+                    if (mode == IntPtr.Zero) continue;
+
+                    int w = CGDisplayModeGetWidth(mode);
+                    int h = CGDisplayModeGetHeight(mode);
+
+                    if (w > 0 && h > 0)
+                        modes.Add((w, h));
+                }
+
+                return modes.OrderBy(m => m.Item1 * m.Item2).ThenBy(m => m.Item1).ToList();
+            }
+            finally
+            {
+                CFRelease(modesArray);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("[ResolutionService] Failed to query macOS display modes: {Message}", ex.Message);
+            return [];
+        }
     }
 }
