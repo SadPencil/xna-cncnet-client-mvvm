@@ -1,13 +1,11 @@
 using System.ComponentModel;
 
 using Avalonia.Controls;
-using Avalonia.Media;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using AvClientView.Services;
 
-using Serilog;
 
 namespace AvClientView.Multiplayer.CnCNet;
 
@@ -42,52 +40,7 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
     public IPrivateMessagingWindowViewModel? ViewModel
     {
         get => DataContext as IPrivateMessagingWindowViewModel;
-        set
-        {
-            if (DataContext is IPrivateMessagingWindowViewModel oldVm)
-                oldVm.PropertyChanged -= OnViewModelPropertyChanged;
-
-            DataContext = value;
-
-            if (value != null)
-            {
-                value.PropertyChanged += OnViewModelPropertyChanged;
-                UpdateTabSelection(value.SelectedTabIndex);
-            }
-        }
-    }
-
-    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(IPrivateMessagingWindowViewModel.SelectedTabIndex)
-            && ViewModel != null)
-        {
-            UpdateTabSelection(ViewModel.SelectedTabIndex);
-        }
-    }
-
-    /// <summary>
-    /// Updates tab button visual state to indicate the selected tab.
-    /// Selected tab is enabled (normal); unselected tabs are dimmed.
-    /// </summary>
-    private void UpdateTabSelection(int selectedIndex)
-    {
-        var buttons = new[] { tabMessages, tabFriendList, tabAllPlayers, tabRecentPlayers };
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            if (i == selectedIndex)
-            {
-                buttons[i].IsEnabled = true;
-                buttons[i].Opacity = 1.0;
-            }
-            else
-            {
-                buttons[i].IsEnabled = true;
-                buttons[i].Opacity = 0.5;
-            }
-        }
-
-        Log.Debug($"[PrivateMessagingWindow] Tab selected: {selectedIndex}");
+        set => DataContext = value;
     }
 
     void ISwitchableView.Show() => IsVisible = true;
