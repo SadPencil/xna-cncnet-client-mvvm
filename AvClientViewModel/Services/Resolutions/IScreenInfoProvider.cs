@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AvClientViewModel.Services.Resolutions;
 
@@ -11,9 +12,9 @@ internal interface IScreenInfoProvider
     /// <summary>
     /// Whether this provider can run on the current system.
     /// Providers check that required OS APIs or commands are available.
-    /// Called in parallel across all providers; keep it fast.
+    /// Called in parallel across all providers via Task.WhenAll.
     /// </summary>
-    bool IsApplicable();
+    Task<bool> IsApplicableAsync();
 
     /// <summary>
     /// Priority when selecting among applicable providers. Higher = tried first.

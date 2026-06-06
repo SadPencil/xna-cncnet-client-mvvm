@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AvClientViewModel.Services.Resolutions;
 
@@ -9,7 +10,8 @@ namespace AvClientViewModel.Services.Resolutions;
 internal sealed class DummyScreenInfoProvider : IScreenInfoProvider
 {
     public int Priority => int.MinValue;
-    public bool IsApplicable() => true;
+
+    public Task<bool> IsApplicableAsync() => Task.FromResult(true);
 
     public int DesktopWidth => 1280;
     public int DesktopHeight => 720;

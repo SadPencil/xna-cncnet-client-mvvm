@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace AvClientViewModel.Services.Resolutions;
 
@@ -17,7 +18,8 @@ internal sealed class MacOSScreenInfoProvider : IScreenInfoProvider
 
     public int Priority => 0;
 
-    public bool IsApplicable() => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+    public Task<bool> IsApplicableAsync() =>
+        Task.FromResult(RuntimeInformation.IsOSPlatform(OSPlatform.OSX));
 
     public int DesktopWidth { get { EnsureQueried(); return _desktopWidth; } }
     public int DesktopHeight { get { EnsureQueried(); return _desktopHeight; } }

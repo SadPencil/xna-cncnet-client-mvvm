@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 using Serilog;
 
@@ -20,7 +21,7 @@ internal sealed class LinuxScreenInfoProvider : IScreenInfoProvider
 
     public int Priority => 0;
 
-    public bool IsApplicable()
+    public Task<bool> IsApplicableAsync() => Task.Run(() =>
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             return false;
@@ -42,7 +43,7 @@ internal sealed class LinuxScreenInfoProvider : IScreenInfoProvider
         {
             return false;
         }
-    }
+    });
 
     public int DesktopWidth { get { EnsureQueried(); return _desktopWidth; } }
     public int DesktopHeight { get { EnsureQueried(); return _desktopHeight; } }

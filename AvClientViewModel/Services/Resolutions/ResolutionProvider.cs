@@ -19,19 +19,18 @@ namespace AvClientViewModel.Services.Resolutions
         {
             var providers = screenInfoProviders.ToList();
 
-            // Run IsApplicable() checks in parallel
-            var results = new (IScreenInfoProvider provider, bool applicable)[providers.Count];
-            Parallel.For(0, providers.Count, i =>
-            {
-                results[i] = (providers[i], providers[i].IsApplicable());
-            });
+            // Run all IsApplicableAsync() checks concurrently
+            var results = providers
+                .Select(p => (provider: p, task: p.IsApplicableAsync()))
+                .ToArray();
+            Task.WhenAll(results.Select(r => r.task)).GetAwaiter().GetResult();
 
             // Pick the highest-priority applicable provider with non-empty modes
             IScreenInfoProvider? selected = null;
 
-            foreach (var (provider, applicable) in results.OrderByDescending(r => r.provider.Priority))
+            foreach (var (provider, task) in results.OrderByDescending(r => r.provider.Priority))
             {
-                if (!applicable)
+                if (!task.Result)
                     continue;
 
                 var modes = provider.GetSupportedDisplayModes();
@@ -45,9 +44,9 @@ namespace AvClientViewModel.Services.Resolutions
             // Fall back to first applicable (dummy always applies)
             if (selected == null)
             {
-                foreach (var (provider, applicable) in results.OrderByDescending(r => r.provider.Priority))
+                foreach (var (provider, task) in results.OrderByDescending(r => r.provider.Priority))
                 {
-                    if (applicable) { selected = provider; break; }
+                    if (task.Result) { selected = provider; break; }
                 }
             }
 
