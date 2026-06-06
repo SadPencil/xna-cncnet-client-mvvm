@@ -3,96 +3,79 @@ using System.Linq;
 
 using ClientCore;
 
+using Serilog;
+
 namespace AvClientViewModel.Services
 {
     /// <summary>
-    /// Provides screen resolution options without XNA GraphicsAdapter dependency.
-    /// Uses ClientConfiguration for custom/rescommended resolutions and common defaults.
+    /// Provides screen resolution options using ScreenResolution logic.
+    /// Uses comprehensive common resolution lists and INI configuration,
+    /// matching the behavior of the original XNA client without GPU queries.
     /// </summary>
     public class ResolutionProvider : IResolutionProvider
     {
-        private static readonly IReadOnlyList<string> CommonFullResolutions = new[]
-        {
-            "800x600", "1024x768", "1152x864", "1280x720", "1280x768", "1280x800",
-            "1280x960", "1280x1024", "1360x768", "1366x768", "1440x900",
-            "1600x900", "1600x1024", "1680x1050", "1920x1080", "1920x1200",
-            "2560x1080", "2560x1440", "3840x2160"
-        };
-
-        private static readonly IReadOnlyList<string> CommonWindowedResolutions = new[]
-        {
-            "800x600", "1024x600", "1024x720", "1024x768",
-            "1280x600", "1280x720", "1280x768", "1280x800", "1280x960", "1280x1024",
-            "1360x768", "1366x768", "1440x900",
-            "1600x900", "1680x1050", "1920x1080"
-        };
-
         public IReadOnlyList<string> GetIngameResolutions()
         {
-            var customResolutions = ClientConfiguration.Instance.CustomIngameResolutions
-                .Where(r => !string.IsNullOrWhiteSpace(r))
-                .ToList();
+            var maximumIngameResolution = new ScreenResolution(
+                ClientConfiguration.Instance.MaximumIngameWidth,
+                ClientConfiguration.Instance.MaximumIngameHeight);
 
-            if (customResolutions.Count > 0)
-                return customResolutions;
+            SortedSet<ScreenResolution> resolutions = ScreenResolution.GetFullScreenResolutions(
+                ClientConfiguration.Instance.MinimumIngameWidth,
+                ClientConfiguration.Instance.MinimumIngameHeight,
+                maximumIngameResolution.Width,
+                maximumIngameResolution.Height);
 
-            var recommended = ClientConfiguration.Instance.RecommendedResolutions
-                .Where(r => !string.IsNullOrWhiteSpace(r))
-                .ToList();
+            var minimumIngameResolution = new ScreenResolution(
+                ClientConfiguration.Instance.MinimumIngameWidth,
+                ClientConfiguration.Instance.MinimumIngameHeight);
 
-            if (recommended.Count > 0)
+            // Add custom in-game resolutions
+            var customIngameResolutions = ScreenResolution.GetCustomIngameResolutions();
+            foreach (var customRes in customIngameResolutions)
             {
-                var expanded = new List<string>();
-                foreach (var res in recommended)
+                if (!customRes.Fits(minimumIngameResolution))
                 {
-                    var parts = res.Split('x');
-                    if (parts.Length == 2 && int.TryParse(parts[0], out int w) && int.TryParse(parts[1], out int h))
-                    {
-                        for (int scale = 1; scale <= 4; scale++)
-                            expanded.Add($"{w * scale}x{h * scale}");
-                    }
+                    Log.Warning(
+                        $"Custom in-game resolution {customRes} is too small. " +
+                        "Please check 'MinimumIngameWidth' and 'MinimumIngameHeight' in 'ClientDefinitions.ini' file.");
                 }
-                return expanded;
+
+                if (!maximumIngameResolution.Fits(customRes))
+                {
+                    Log.Warning(
+                        $"Custom in-game resolution {customRes} is too large. " +
+                        "Please check 'MaximumIngameWidth' and 'MaximumIngameHeight' in 'ClientDefinitions.ini' file.");
+                }
+
+                resolutions.Add(customRes);
             }
 
-            return CommonFullResolutions;
+            return resolutions.Select(r => r.ToString()).ToList();
         }
 
         public IReadOnlyList<string> GetClientResolutions()
         {
-            return CommonWindowedResolutions;
+            SortedSet<ScreenResolution> scaledRecommendedResolutions = ScreenResolution.GetRecommendedResolutions();
+
+            SortedSet<ScreenResolution> resolutions =
+            [
+                .. ScreenResolution.GetFullScreenResolutions(minWidth: 800, minHeight: 600),
+                .. ScreenResolution.GetWindowedResolutions(minWidth: 800, minHeight: 600),
+                .. scaledRecommendedResolutions,
+            ];
+
+            return resolutions.Select(r => r.ToString()).ToList();
         }
 
         public string GetSafeFullScreenResolution()
         {
-            return CommonFullResolutions[^1];
+            return ScreenResolution.SafeFullScreenResolution;
         }
 
         public string GetBestRecommendedResolution()
         {
-            var recommended = ClientConfiguration.Instance.RecommendedResolutions
-                .Where(r => !string.IsNullOrWhiteSpace(r))
-                .ToList();
-
-            if (recommended.Count > 0)
-            {
-                string best = recommended[0];
-                foreach (var res in recommended)
-                {
-                    var parts = res.Split('x');
-                    var bestParts = best.Split('x');
-                    if (parts.Length == 2 && bestParts.Length == 2
-                        && int.TryParse(parts[0], out int w) && int.TryParse(parts[1], out int h)
-                        && int.TryParse(bestParts[0], out int bw) && int.TryParse(bestParts[1], out int bh))
-                    {
-                        if (w * h > bw * bh)
-                            best = res;
-                    }
-                }
-                return best;
-            }
-
-            return "1920x1080";
+            return ScreenResolution.GetBestRecommendedResolution();
         }
     }
 }

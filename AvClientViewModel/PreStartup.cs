@@ -232,13 +232,13 @@ public static class PreStartup
         // --- Client resolution initialization (same as DXMainClient Startup.Execute lines 133-147) ---
         if (!UserINISettings.Instance.BorderlessWindowedClient)
         {
-            var (bestWidth, bestHeight) = GetBestRecommendedResolution();
+            var (bestWidth, bestHeight) = ScreenResolution.GetBestRecommendedResolution();
             UserINISettings.Instance.ClientResolutionX = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionX", bestWidth);
             UserINISettings.Instance.ClientResolutionY = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionY", bestHeight);
         }
         else
         {
-            var (safeWidth, safeHeight) = GetSafeFullScreenResolution();
+            var (safeWidth, safeHeight) = ScreenResolution.SafeFullScreenResolution;
             UserINISettings.Instance.ClientResolutionX = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionX", safeWidth);
             UserINISettings.Instance.ClientResolutionY = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionY", safeHeight);
         }
@@ -387,53 +387,4 @@ public static class PreStartup
         return isInRoleWithAccess;
     }
 
-    // ===================================================================
-    // Resolution helpers (same as DXMainClient ScreenResolution)
-    // ===================================================================
-
-    /// <summary>
-    /// Gets the best recommended resolution from ClientConfiguration.
-    /// Replicates ScreenResolution.GetBestRecommendedResolution() without XNA dependency.
-    /// </summary>
-    private static (int Width, int Height) GetBestRecommendedResolution()
-    {
-        var recommended = ClientConfiguration.Instance.RecommendedResolutions
-            .Where(r => !string.IsNullOrWhiteSpace(r))
-            .ToList();
-
-        if (recommended.Count > 0)
-        {
-            string best = recommended[0];
-            int bestArea = 0;
-            foreach (var res in recommended)
-            {
-                var parts = res.Split('x');
-                if (parts.Length == 2
-                    && int.TryParse(parts[0], out int w) && int.TryParse(parts[1], out int h))
-                {
-                    int area = w * h;
-                    if (area > bestArea)
-                    {
-                        best = res;
-                        bestArea = area;
-                    }
-                }
-            }
-            var bestParts = best.Split('x');
-            if (bestParts.Length == 2
-                && int.TryParse(bestParts[0], out int bw) && int.TryParse(bestParts[1], out int bh))
-                return (bw, bh);
-        }
-
-        return (1920, 1080);
-    }
-
-    /// <summary>
-    /// Gets a safe full-screen resolution default.
-    /// Replicates ScreenResolution.SafeFullScreenResolution without XNA dependency.
-    /// </summary>
-    private static (int Width, int Height) GetSafeFullScreenResolution()
-    {
-        return (3840, 2160);
-    }
 }
