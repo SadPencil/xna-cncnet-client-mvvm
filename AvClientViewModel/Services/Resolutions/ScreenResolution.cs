@@ -5,7 +5,7 @@ using System.Linq;
 
 using ClientCore;
 
-namespace AvClientViewModel.Services
+namespace AvClientViewModel.Services.Resolutions
 {
     /// <summary>
     /// A single screen resolution.

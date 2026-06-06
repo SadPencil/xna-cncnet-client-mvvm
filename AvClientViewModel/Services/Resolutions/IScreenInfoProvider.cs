@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AvClientViewModel.Services;
+namespace AvClientViewModel.Services.Resolutions;
 
 /// <summary>
 /// Provides the primary monitor's desktop resolution and supported display modes.

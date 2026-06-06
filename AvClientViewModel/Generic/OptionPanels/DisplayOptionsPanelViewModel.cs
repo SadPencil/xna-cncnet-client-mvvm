@@ -11,6 +11,7 @@ using AvClientMvvmContract.Messages;
 
 using AvClientViewModel.Domain;
 using AvClientViewModel.Services;
+using AvClientViewModel.Services.Resolutions;
 
 using ClientCore;
 using ClientCore.Enums;

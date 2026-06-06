@@ -5,7 +5,7 @@ using System.Linq;
 
 using Serilog;
 
-namespace AvClientViewModel.Services;
+namespace AvClientViewModel.Services.Resolutions;
 
 /// <summary>
 /// Queries display modes and current desktop resolution via xrandr on Linux.

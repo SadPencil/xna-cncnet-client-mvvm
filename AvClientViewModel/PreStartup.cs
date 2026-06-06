@@ -31,6 +31,7 @@ using AvClientViewModel.Multiplayer.CnCNet;
 using AvClientViewModel.Multiplayer.GameLobby;
 using AvClientViewModel.Online;
 using AvClientViewModel.Services;
+using AvClientViewModel.Services.Resolutions;
 
 using ClientCore;
 using ClientCore.Enums;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace AvClientViewModel.Services;
+namespace AvClientViewModel.Services.Resolutions;
 
 /// <summary>
 /// Queries display modes and current desktop resolution via CoreGraphics on macOS.

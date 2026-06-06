@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AvClientViewModel.Services;
+namespace AvClientViewModel.Services.Resolutions;
 
 /// <summary>
 /// Provides available screen resolutions for display options.

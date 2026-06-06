@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AvClientViewModel.Services;
+namespace AvClientViewModel.Services.Resolutions;
 
 /// <summary>
 /// Fallback provider when no platform-specific screen query is available.

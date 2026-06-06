@@ -5,7 +5,7 @@ using ClientCore;
 
 using Serilog;
 
-namespace AvClientViewModel.Services
+namespace AvClientViewModel.Services.Resolutions
 {
     /// <summary>
     /// Provides screen resolution options using ScreenResolution logic.
