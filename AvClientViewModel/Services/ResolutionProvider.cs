@@ -70,7 +70,7 @@ namespace AvClientViewModel.Services
 
         public string GetSafeFullScreenResolution()
         {
-            return ScreenResolution.SafeFullScreenResolution;
+            return ScreenResolution.FullScreenResolution;
         }
 
         public string GetBestRecommendedResolution()

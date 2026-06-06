@@ -238,7 +238,7 @@ public static class PreStartup
         }
         else
         {
-            var (safeWidth, safeHeight) = ScreenResolution.SafeFullScreenResolution;
+            var (safeWidth, safeHeight) = ScreenResolution.FullScreenResolution;
             UserINISettings.Instance.ClientResolutionX = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionX", safeWidth);
             UserINISettings.Instance.ClientResolutionY = new IntSetting(UserINISettings.Instance.SettingsIni, UserINISettings.VIDEO, "ClientResolutionY", safeHeight);
         }

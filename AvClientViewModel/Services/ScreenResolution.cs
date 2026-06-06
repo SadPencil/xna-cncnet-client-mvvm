@@ -61,34 +61,15 @@ namespace AvClientViewModel.Services
             return (this.Width, this.Height).CompareTo((other.Width, other.Height));
         }
 
-        // The default graphic profile supports resolution up to 4096x4096. The number gets even smaller in practice. Therefore, we select 3840 as the limit.
-        public static ScreenResolution HiDefLimitResolution { get; } = "3840x3840";
-
-        /// <summary>
-        /// A reasonable default desktop resolution used when the actual desktop resolution cannot be queried.
-        /// 3840x2160 (4K) covers the vast majority of modern monitors.
-        /// </summary>
-        public static ScreenResolution DesktopResolution { get; } = "3840x2160";
-
-        private static ScreenResolution? _safeMaximumResolution = null;
-
         /// <summary>
         /// The resolution of primary monitor, or the maximum resolution supported by the graphic profile, whichever is smaller.
         /// </summary>
-        public static ScreenResolution SafeMaximumResolution
-        {
-            get
-            {
-                return _safeMaximumResolution ??= HiDefLimitResolution.Fits(DesktopResolution) ? DesktopResolution : HiDefLimitResolution;
-            }
-        }
-
-        private static ScreenResolution? _safeFullScreenResolution = null;
+        public static ScreenResolution DesktopResolution { get; } = "1280x720";
 
         /// <summary>
         /// The maximum resolution supported by the graphic profile, or the largest full screen resolution supported by the primary monitor, whichever is smaller.
         /// </summary>
-        public static ScreenResolution SafeFullScreenResolution => _safeFullScreenResolution ??= GetFullScreenResolutions(minWidth: 800, minHeight: 600).Max ?? SafeMaximumResolution;
+        public static ScreenResolution FullScreenResolution => field ??= GetFullScreenResolutions(minWidth: 800, minHeight: 600).Max ?? DesktopResolution;
 
         /// <summary>
         /// Comprehensive list of common monitor resolutions used when GPU display modes cannot be queried.
@@ -107,7 +88,7 @@ namespace AvClientViewModel.Services
         ];
 
         public static SortedSet<ScreenResolution> GetFullScreenResolutions(int minWidth, int minHeight) =>
-            GetFullScreenResolutions(minWidth, minHeight, SafeMaximumResolution.Width, SafeMaximumResolution.Height);
+            GetFullScreenResolutions(minWidth, minHeight, DesktopResolution.Width, DesktopResolution.Height);
         public static SortedSet<ScreenResolution> GetFullScreenResolutions(int minWidth, int minHeight, int maxWidth, int maxHeight)
         {
             SortedSet<ScreenResolution> screenResolutions = [];
@@ -123,20 +104,12 @@ namespace AvClientViewModel.Services
             return screenResolutions;
         }
 
-        public static readonly IReadOnlyList<ScreenResolution> OptimalWindowedResolutions =
-        [
-            "1024x600",
-            "1024x720",
-            "1280x600",
-            "1280x720",
-            "1280x768",
-            "1280x800",
-        ];
+        public static readonly IReadOnlyList<ScreenResolution> OptimalWindowedResolutions = ["1280x720"];
 
         public const int MAX_INT_SCALE = 9;
 
         public SortedSet<ScreenResolution> GetIntegerScaledResolutions() =>
-            GetIntegerScaledResolutions(SafeMaximumResolution);
+            GetIntegerScaledResolutions(DesktopResolution);
         public SortedSet<ScreenResolution> GetIntegerScaledResolutions(ScreenResolution maxResolution)
         {
             SortedSet<ScreenResolution> resolutions = [];
@@ -154,9 +127,9 @@ namespace AvClientViewModel.Services
         }
 
         public static SortedSet<ScreenResolution> GetWindowedResolutions(int minWidth, int minHeight) =>
-            GetWindowedResolutions(minWidth, minHeight, SafeMaximumResolution.Width, SafeMaximumResolution.Height);
+            GetWindowedResolutions(minWidth, minHeight, DesktopResolution.Width, DesktopResolution.Height);
         public static SortedSet<ScreenResolution> GetWindowedResolutions(IEnumerable<ScreenResolution> optimalResolutions, int minWidth, int minHeight) =>
-            GetWindowedResolutions(OptimalWindowedResolutions, minWidth, minHeight, SafeMaximumResolution.Width, SafeMaximumResolution.Height);
+            GetWindowedResolutions(OptimalWindowedResolutions, minWidth, minHeight, DesktopResolution.Width, DesktopResolution.Height);
         public static SortedSet<ScreenResolution> GetWindowedResolutions(int minWidth, int minHeight, int maxWidth, int maxHeight) =>
             GetWindowedResolutions(OptimalWindowedResolutions, minWidth, minHeight, maxWidth, maxHeight);
         public static SortedSet<ScreenResolution> GetWindowedResolutions(IEnumerable<ScreenResolution> optimalResolutions, int minWidth, int minHeight, int maxWidth, int maxHeight)
@@ -198,7 +171,7 @@ namespace AvClientViewModel.Services
         }
 
         public static ScreenResolution GetBestRecommendedResolution() =>
-            GetRecommendedResolutions().Max ?? SafeFullScreenResolution;
+            GetRecommendedResolutions().Max ?? FullScreenResolution;
 
     }
 }
