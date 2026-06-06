@@ -63,16 +63,6 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
         LogLayout("AFTER_INI");
 
-        // Reposition sort button after INI expression evaluation repositions ddGameMode.
-        // Matches old client: btnMapSortAlphabetically.X = ddGameMode.X - ddGameMode.Height - 4
-        double ddX = Canvas.GetLeft(ddGameMode);
-        double ddY = Canvas.GetTop(ddGameMode);
-        double ddH = double.IsNaN(ddGameMode.Height) ? ddGameMode.Bounds.Height : ddGameMode.Height;
-        Canvas.SetLeft(btnSortAlpha, ddX - ddH - 4);
-        Canvas.SetTop(btnSortAlpha, ddY);
-        btnSortAlpha.Width = ddH;
-        btnSortAlpha.Height = ddH;
-
         SetupMapListContextMenu();
         SetupSearchContextMenu();
 
