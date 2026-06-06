@@ -77,6 +77,17 @@ public partial class MainMenu : UserControl
                 return tcs.Task;
             }));
         });
+
+        // Clickable labels: forward PointerPressed to ViewModel commands.
+        // Old client used XNALinkLabel (label with LeftClick + hover color).
+        lblVersion.PointerPressed += (_, _) =>
+            ViewModel?.OpenVersionCommand?.Execute(null);
+
+        lblUpdateStatus.PointerPressed += (_, _) =>
+        {
+            if (lblUpdateStatus.IsEnabled)
+                ViewModel?.UpdateStatusCommand?.Execute(null);
+        };
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

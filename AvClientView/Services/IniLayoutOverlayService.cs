@@ -505,6 +505,25 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
                 ToolTip.SetTip(control, value.Replace("@", "\n"));
                 break;
 
+            // TextAnchor: set text alignment on TextBlock (positioning via AnchorPoint is deferred)
+            case "TextAnchor":
+                if (control is TextBlock taBlock)
+                {
+                    string[] flags = value.Split('|', ',');
+                    foreach (string flag in flags)
+                    {
+                        string trimmed = flag.Trim();
+                        if (string.Equals(trimmed, "HORIZONTAL_CENTER", StringComparison.OrdinalIgnoreCase))
+                            taBlock.TextAlignment = TextAlignment.Center;
+                        else if (string.Equals(trimmed, "LEFT", StringComparison.OrdinalIgnoreCase))
+                            taBlock.TextAlignment = TextAlignment.Left;
+                        else if (string.Equals(trimmed, "RIGHT", StringComparison.OrdinalIgnoreCase))
+                            taBlock.TextAlignment = TextAlignment.Right;
+                    }
+                }
+                // Fall through to deferred: AnchorPoint + TextAnchor positioning
+                break;
+
             // Deferred properties - store for later processing
             case "FillWidth":
             case "FillHeight":
@@ -512,7 +531,9 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             case "DistanceFromBottomBorder":
             case "DistanceFromLeftBorder":
             case "DistanceFromTopBorder":
-                // These are handled in ApplyDeferredProperties
+            case "AnchorPoint":
+                // AnchorPoint is handled in ApplyDeferredProperties (positioning)
+                // TextAnchor is handled above (text alignment) and below (positioning)
                 break;
 
             // Skip properties we don't handle yet
@@ -659,6 +680,75 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
             control.Height = newHeight;
             control.InvalidateMeasure();
         }
+
+        // Apply AnchorPoint + TextAnchor positioning (XNALabel-compatible).
+        // AnchorPoint is an X,Y reference point; TextAnchor determines how the
+        // control's text is positioned relative to it. The formula matches
+        // XNALabel.RefreshClientRectangle().
+        ApplyAnchorPointPosition(control, section);
+    }
+
+    /// <summary>
+    /// Computes and applies Canvas.Left/Top based on AnchorPoint and TextAnchor
+    /// using the same formula as XNALabel.RefreshClientRectangle().
+    /// </summary>
+    private static void ApplyAnchorPointPosition(Control control, IniSection section)
+    {
+        string? anchorStr = null;
+        string? textAnchorStr = null;
+
+        foreach (var kvp in section.Keys)
+        {
+            if (kvp.Key == "AnchorPoint")
+                anchorStr = kvp.Value;
+            else if (kvp.Key == "TextAnchor")
+                textAnchorStr = kvp.Value;
+        }
+
+        if (string.IsNullOrEmpty(anchorStr))
+            return;
+
+        string[] parts = anchorStr.Split(',');
+        if (parts.Length != 2)
+            return;
+        if (!float.TryParse(parts[0], out float anchorX) || !float.TryParse(parts[1], out float anchorY))
+            return;
+
+        // Use DesiredSize (available after measure pass) or fall back to Bounds.
+        double controlWidth = control.DesiredSize.Width > 0 ? control.DesiredSize.Width
+            : (!double.IsNaN(control.Width) ? control.Width : 0);
+        double controlHeight = control.DesiredSize.Height > 0 ? control.DesiredSize.Height
+            : (!double.IsNaN(control.Height) ? control.Height : 0);
+
+        double x = anchorX;
+        double y = anchorY;
+
+        // Parse TextAnchor flags (same values as XNA's LabelTextAnchorInfo enum)
+        if (!string.IsNullOrEmpty(textAnchorStr))
+        {
+            string[] flags = textAnchorStr.Split('|', ',');
+            foreach (string flag in flags)
+            {
+                string trimmed = flag.Trim();
+                if (string.Equals(trimmed, "HORIZONTAL_CENTER", StringComparison.OrdinalIgnoreCase))
+                    x = anchorX - controlWidth / 2;
+                else if (string.Equals(trimmed, "LEFT", StringComparison.OrdinalIgnoreCase))
+                    x = anchorX - controlWidth;
+                else if (string.Equals(trimmed, "RIGHT", StringComparison.OrdinalIgnoreCase))
+                    x = anchorX; // left edge at anchor point
+                else if (string.Equals(trimmed, "VERTICAL_CENTER", StringComparison.OrdinalIgnoreCase))
+                    y = anchorY - controlHeight / 2;
+                else if (string.Equals(trimmed, "TOP", StringComparison.OrdinalIgnoreCase))
+                    y = anchorY - controlHeight;
+                else if (string.Equals(trimmed, "BOTTOM", StringComparison.OrdinalIgnoreCase))
+                    y = anchorY; // top edge at anchor point
+            }
+        }
+
+        Canvas.SetLeft(control, x);
+        Canvas.SetTop(control, y);
+
+        Log.Debug($"INI Layout: AnchorPoint '{anchorStr}' + TextAnchor '{textAnchorStr}' → Canvas.Left={x:F0}, Canvas.Top={y:F0} for '{control.Name}' (size={controlWidth:F0}x{controlHeight:F0})");
     }
 
     private static void CreateExtraControls(Control root, CCIniFile iniFile, string sectionName, double? effectiveWidth = null, double? effectiveHeight = null)
