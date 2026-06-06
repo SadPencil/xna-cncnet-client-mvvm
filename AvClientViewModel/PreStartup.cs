@@ -83,7 +83,7 @@ public static class PreStartup
     /// <summary>
     /// Initializes all non-UI systems.
     /// </summary>
-    public static void Initialize(StartupParams parameters = default, ITranslationNotifierService? translationNotifierService = null)
+    public static void Initialize(StartupParams parameters = default)
     {
         // --- Culture (same as DXMainClient PreStartup lines 60-61) ---
         Translation.InitialUICulture = CultureInfo.CurrentUICulture;
@@ -211,7 +211,6 @@ public static class PreStartup
                 ClientCore.Generated.TranslationNotifier.Register();
                 ClientUpdater.Generated.TranslationNotifier.Register();
                 AvClientViewModel.Generated.TranslationNotifier.Register();
-                translationNotifierService?.Register();
             }
         }
         catch (Exception ex)

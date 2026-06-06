@@ -64,7 +64,8 @@ public static class Startup
         services.AddTransient<IIniLayoutOverlayService, IniLayoutOverlayService>();
 
         services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
-        services.AddSingleton<IClientSoundService, ClientSoundService>();        
+        services.AddSingleton<IClientSoundService, ClientSoundService>();
         services.AddSingleton<IApplicationLifecycleService, ApplicationLifecycleService>();
+        services.AddSingleton<ITranslationNotifierService, TranslationNotifierService>();
     }
 }

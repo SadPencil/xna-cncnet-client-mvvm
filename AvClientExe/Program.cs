@@ -10,24 +10,10 @@ namespace AvClientExe;
 
 internal class Program
 {
-    /// <summary>
-    /// Exe-level implementation of ITranslationNotifierService.
-    /// Calls the View project's generated TranslationNotifier so that
-    /// compile-time L10N strings from AXAML code-behind files are
-    /// included in the translation stub.
-    /// </summary>
-    private sealed class TranslationNotifierService : ITranslationNotifierService
-    {
-        public void Register()
-        {
-            AvClientView.Generated.TranslationNotifier.Register();
-        }
-    }
-
     [STAThread]
     public static void Main(string[] args)
     {
-        AvClientViewModel.PreStartup.Initialize(translationNotifierService: new TranslationNotifierService());
+        AvClientViewModel.PreStartup.Initialize();
 
         // Create the MainWindowViewModel before the window appears so
         // WindowState (FullScreen from BorderlessWindowedClient) is
@@ -46,6 +32,11 @@ internal class Program
         AvClientView.Startup.ConfigureServices(services);
         AvClientViewModel.Startup.ConfigureServices(services);
 
-        return services.BuildServiceProvider();
+        var provider = services.BuildServiceProvider();
+
+        // Register View project's compile-time L10N strings for translation stub generation
+        provider.GetRequiredService<ITranslationNotifierService>().Register();
+
+        return provider;
     }
 }
