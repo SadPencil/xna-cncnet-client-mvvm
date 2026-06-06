@@ -1,5 +1,6 @@
 using System.ComponentModel;
-using System.Windows.Input;
+
+using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Generic;
 
@@ -10,5 +11,5 @@ public interface IMainWindowViewModel : INotifyPropertyChanged
     /// <summary>
     /// Toggles between FullScreen and Normal window state (Alt+Enter).
     /// </summary>
-    ICommand ToggleFullScreenCommand { get; }
+    IRelayCommand ToggleFullScreenCommand { get; }
 }

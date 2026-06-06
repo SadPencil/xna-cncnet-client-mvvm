@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Input;
 
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Messages;
@@ -124,6 +123,4 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
         }
     }
 
-    // [RelayCommand] generates IRelayCommand, but the interface exposes ICommand.
-    ICommand IMainWindowViewModel.ToggleFullScreenCommand => ToggleFullScreenCommand;
 }
