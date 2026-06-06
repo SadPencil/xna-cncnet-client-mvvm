@@ -1718,8 +1718,16 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (int.TryParse(value, out int intVal))
             return intVal;
 
-        // Try expression evaluation (throws on invalid expressions, matching old Parser.cs)
-        return IniExpressionEvaluator.Instance.Evaluate(value, control);
+        // Try expression evaluation
+        try
+        {
+            return IniExpressionEvaluator.Instance.Evaluate(value, control);
+        }
+        catch (Exception ex)
+        {
+            Log.Debug($"[IniExpr] Failed to evaluate '{value}' for '{control.Name}': {ex.Message}");
+            return 0;
+        }
     }
 
     /// <summary>
