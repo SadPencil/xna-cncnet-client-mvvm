@@ -1,23 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
 
 using ClientCore;
 
-using Serilog;
-
 namespace AvClientView.Services;
 
 /// <summary>
 /// Evaluates arithmetic expressions in INI $X/$Y/$Width/$Height values.
-/// Ported from ClientGUI/Parser.cs — matches the same grammar and functions:
+/// Ported from ClientGUI/Parser.cs — same grammar, same error behavior (throws).
+///
+/// Supports: integers, +, -, *, /, (), UPPERCASE constants, and functions:
 ///   getX(name), getY(name), getWidth(name), getHeight(name),
 ///   getBottom(name), getRight(name), horizontalCenterOnParent(name)
-/// Supports integers, +, -, *, /, (), UPPERCASE constants, and
-/// $Self / $ParentControl parameter aliases.
+/// Parameter aliases: $Self, $ParentControl
 /// </summary>
 public class IniExpressionEvaluator
 {
@@ -54,6 +52,7 @@ public class IniExpressionEvaluator
         };
 
         // Load parser constants from DTACnCNetClient.ini [ParserConstants]
+        // (EMPTY_SPACE_SIDES, EMPTY_SPACE_TOP, LOBBY_PANEL_SPACING, etc.)
         var parserSection = ClientConfiguration.Instance.GetParserConstants();
         if (parserSection != null)
         {
@@ -74,7 +73,7 @@ public class IniExpressionEvaluator
 
     /// <summary>
     /// Evaluates an expression string and returns the integer result.
-    /// The parsingControl is the control being parsed (for $Self/$ParentControl).
+    /// Throws on invalid expressions (matching old Parser.cs behavior).
     /// </summary>
     public int Evaluate(string expression, Control? parsingControl)
     {
@@ -87,7 +86,7 @@ public class IniExpressionEvaluator
         return GetExprValue();
     }
 
-    // ---- Expression grammar ----
+    // ---- Expression grammar (ported from ClientGUI/Parser.cs) ----
 
     private int GetExprValue()
     {
@@ -146,9 +145,8 @@ public class IniExpressionEvaluator
             }
             else
             {
-                // Unknown character — skip and try to continue
-                Log.Warning($"[IniExpr] Unexpected character '{c}' in expression: {_input}");
-                _tokenPlace++;
+                throw new FormatException(
+                    $"Unexpected character '{c}' when parsing input: {_input}");
             }
         }
     }
@@ -156,9 +154,6 @@ public class IniExpressionEvaluator
     private int GetNumericalValue()
     {
         SkipWhitespace();
-
-        if (IsEndOfInput())
-            return 0;
 
         char c = _input[_tokenPlace];
 
@@ -174,9 +169,8 @@ public class IniExpressionEvaluator
             return GetExprValue();
         }
 
-        Log.Warning($"[IniExpr] Unexpected character '{c}' in expression: {_input}");
-        _tokenPlace++;
-        return 0;
+        throw new FormatException(
+            $"Unexpected character '{c}' when parsing input: {_input}");
     }
 
     // ---- Helpers ----
@@ -215,8 +209,9 @@ public class IniExpressionEvaluator
         if (_constants.TryGetValue(name, out int value))
             return value;
 
-        Log.Warning($"[IniExpr] Unknown constant '{name}' in expression: {_input}");
-        return 0;
+        throw new KeyNotFoundException(
+            $"Constant '{name}' not found. " +
+            $"Please check [ParserConstants] section in the client settings file.");
     }
 
     private int GetFunctionValue()
@@ -234,80 +229,73 @@ public class IniExpressionEvaluator
             if (_parsingControl?.Parent is Control parent && !string.IsNullOrEmpty(parent.Name))
                 paramName = parent.Name;
             else
-            {
-                Log.Warning($"[IniExpr] $ParentControl used but parent is null or unnamed in: {_input}");
-                return 0;
-            }
+                throw new FormatException(
+                    $"$ParentControl used for control that has no parent in expression: {_input}");
         }
         else if (paramName == "$Self")
         {
             if (_parsingControl != null && !string.IsNullOrEmpty(_parsingControl.Name))
                 paramName = _parsingControl.Name;
             else
-            {
-                Log.Warning($"[IniExpr] $Self used but parsing control is null or unnamed in: {_input}");
-                return 0;
-            }
+                throw new FormatException(
+                    $"$Self used for control that has no name in expression: {_input}");
         }
 
-        Control? target = FindControlByName(_primaryControl, paramName);
+        Control target = GetControl(paramName);
 
         switch (functionName)
         {
             case "getX":
-                return target != null ? (int)Canvas.GetLeft(target) : 0;
+                return (int)Canvas.GetLeft(target);
 
             case "getY":
-                return target != null ? (int)Canvas.GetTop(target) : 0;
+                return (int)Canvas.GetTop(target);
 
             case "getWidth":
-                return target != null ? (int)(double.IsNaN(target.Width) ? target.Bounds.Width : target.Width) : 0;
+                return (int)(double.IsNaN(target.Width) ? target.Bounds.Width : target.Width);
 
             case "getHeight":
-                return target != null ? (int)(double.IsNaN(target.Height) ? target.Bounds.Height : target.Height) : 0;
+                return (int)(double.IsNaN(target.Height) ? target.Bounds.Height : target.Height);
 
             case "getBottom":
-                if (target != null)
                 {
                     double y = Canvas.GetTop(target);
                     double h = double.IsNaN(target.Height) ? target.Bounds.Height : target.Height;
                     return (int)(y + h);
                 }
-                return 0;
 
             case "getRight":
-                if (target != null)
                 {
                     double x = Canvas.GetLeft(target);
                     double w = double.IsNaN(target.Width) ? target.Bounds.Width : target.Width;
                     return (int)(x + w);
                 }
-                return 0;
 
             case "horizontalCenterOnParent":
-                if (_parsingControl != null && _parsingControl.Parent is Control parentControl)
+                if (_parsingControl?.Parent is Control parentControl)
                 {
-                    double parentWidth = double.IsNaN(parentControl.Width) ? parentControl.Bounds.Width : parentControl.Width;
-                    double myWidth = double.IsNaN(_parsingControl.Width) ? _parsingControl.Bounds.Width : _parsingControl.Width;
+                    double parentWidth = double.IsNaN(parentControl.Width)
+                        ? parentControl.Bounds.Width : parentControl.Width;
+                    double myWidth = double.IsNaN(_parsingControl.Width)
+                        ? _parsingControl.Bounds.Width : _parsingControl.Width;
                     int centeredX = (int)((parentWidth - myWidth) / 2);
                     Canvas.SetLeft(_parsingControl, centeredX);
                     return centeredX;
                 }
-                return 0;
+                throw new FormatException(
+                    $"horizontalCenterOnParent used for control that has no parent: {_input}");
 
             default:
-                Log.Warning($"[IniExpr] Unknown function '{functionName}' in expression: {_input}");
-                return 0;
+                throw new FormatException(
+                    $"Unknown function '{functionName}' in expression: {_input}");
         }
     }
 
     private void ConsumeChar(char token)
     {
         if (IsEndOfInput() || _input[_tokenPlace] != token)
-        {
-            Log.Warning($"[IniExpr] Expected '{token}' in expression: {_input}");
-            return;
-        }
+            throw new FormatException(
+                $"Parse error: expected '{token}' in expression {_input}.");
         _tokenPlace++;
     }
 
@@ -327,21 +315,27 @@ public class IniExpressionEvaluator
     // ---- Avalonia control tree search ----
 
     /// <summary>
-    /// Recursively finds a control by name in the Avalonia visual tree.
+    /// Finds a control by name. Throws KeyNotFoundException if not found,
+    /// matching the old client's GetControl() behavior.
     /// </summary>
-    private static Control? FindControlByName(Control? root, string name)
+    private Control GetControl(string controlName)
     {
-        if (root == null || string.IsNullOrEmpty(name))
-            return null;
+        if (_primaryControl != null && _primaryControl.Name == controlName)
+            return _primaryControl;
 
-        if (root.Name == name)
-            return root;
+        var found = FindInChildren(_primaryControl, controlName);
+        if (found == null)
+            throw new KeyNotFoundException(
+                $"Control '{controlName}' not found while parsing input '{_input}'");
 
-        return FindInChildren(root, name);
+        return found;
     }
 
-    private static Control? FindInChildren(Control parent, string name)
+    private static Control? FindInChildren(Control? parent, string name)
     {
+        if (parent == null)
+            return null;
+
         foreach (var child in GetVisualChildren(parent))
         {
             if (child.Name == name)
