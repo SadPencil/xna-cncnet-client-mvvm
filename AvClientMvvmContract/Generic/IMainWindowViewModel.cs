@@ -4,5 +4,5 @@ namespace AvClientMvvmContract.Generic;
 
 public interface IMainWindowViewModel : INotifyPropertyChanged
 {
-    WindowState WindowState { get; }
+    WindowState WindowState { get; set; }
 }
