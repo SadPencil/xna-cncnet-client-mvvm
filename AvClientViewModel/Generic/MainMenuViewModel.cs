@@ -477,19 +477,33 @@ namespace AvClientViewModel.Generic
 
         public void Clean()
         {
-            updateService.FileIdentifiersUpdated -= OnFileIdentifiersUpdated;
+            TryClean(() => updateService.FileIdentifiersUpdated -= OnFileIdentifiersUpdated, nameof(updateService.FileIdentifiersUpdated));
+            TryClean(() => cncnetPlayerCountCancellationSource?.Cancel(), "cancel player count");
+            TryClean(() => topBarViewModel.Clean(), nameof(topBarViewModel.Clean));
+            TryClean(() =>
+            {
+                if (AreButtonsEnabled == false)
+                    updateService.StopUpdate();
+            }, "stop update");
+            TryClean(() =>
+            {
+                if (connectionManager.IsConnected)
+                    connectionManager.Disconnect();
+            }, "disconnect IRC");
+            TryClean(() => cncNetUserData.Save(), nameof(cncNetUserData.Save));
+            TryClean(() => musicPlayer.Dispose(), nameof(musicPlayer.Dispose));
+        }
 
-            cncnetPlayerCountCancellationSource?.Cancel();
-            topBarViewModel.Clean();
-
-            if (AreButtonsEnabled == false)
-                updateService.StopUpdate();
-
-            if (connectionManager.IsConnected)
-                connectionManager.Disconnect();
-
-            cncNetUserData.Save();
-            musicPlayer.Dispose();
+        private static void TryClean(Action action, string description)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"Clean task '{description}' failed: {ex}");
+            }
         }
 
         #endregion
