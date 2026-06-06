@@ -8,12 +8,25 @@ using AvClientMvvmContract.Multiplayer.CnCNet;
 
 using AvClientView.Services;
 
+using Serilog;
 
 namespace AvClientView.Multiplayer.CnCNet;
 
 public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWindowView
 {
-    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+    private IIniLayoutOverlayService? _iniOverlayService;
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService
+    {
+        get => _iniOverlayService;
+        set
+        {
+            _iniOverlayService = value;
+            // IniOverlayService is set by MainMenu AFTER OnLoaded has already fired,
+            // so we must apply the layout here when it arrives.
+            if (value != null)
+                ApplyLayoutAndCaptureBrushes(value);
+        }
+    }
 
     private const int MESSAGES_INDEX = 0;
     private const int FRIEND_LIST_VIEW_INDEX = 1;
@@ -23,11 +36,12 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
     private IImageBrush? _tabIdleBrush;
     private IImageBrush? _tabHoverBrush;
     private Button[]? _tabButtons;
+    private int _selectedTabIndex;
+    private bool _layoutApplied;
 
     public PrivateMessagingWindow()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
 
         // Wire tab button clicks to set SelectedTabIndex on ViewModel.
         // Matches old XNAClientTabControl.SelectedIndexChanged behavior.
@@ -37,24 +51,47 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
         tabRecentPlayers.Click += (_, _) => { if (ViewModel != null) ViewModel.SelectedTabIndex = RECENT_PLAYERS_VIEW_INDEX; };
     }
 
-    private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void ApplyLayoutAndCaptureBrushes(IIniLayoutOverlayService iniOverlay)
     {
-        var iniOverlay = IniOverlayService;
-        iniOverlay?.ApplyLayout(this, "PrivateMessagingWindow");
+        if (_layoutApplied)
+            return;
+        _layoutApplied = true;
+
+        iniOverlay.ApplyLayout(this, "PrivateMessagingWindow");
 
         _tabButtons = new[] { tabMessages, tabFriendList, tabAllPlayers, tabRecentPlayers };
 
         // Capture the idle brush from the first tab button (all share the same texture).
         _tabIdleBrush = tabMessages.Background as IImageBrush;
+        Log.Debug($"[PMW] Idle brush: {(_tabIdleBrush != null ? "found" : "NULL")}");
 
         // Load hover texture using the `_c` convention (e.g. 133pxbtn_c.png).
-        string? hoverPath = iniOverlay?.FindTextureFile("133pxbtn_c.png");
+        string? hoverPath = iniOverlay.FindTextureFile("133pxbtn_c.png");
+        Log.Debug($"[PMW] Hover texture path: {hoverPath ?? "NULL"}");
         if (hoverPath != null)
         {
             _tabHoverBrush = new ImageBrush(new Bitmap(hoverPath))
             {
                 Stretch = Stretch.Fill,
                 TileMode = TileMode.None
+            };
+        }
+
+        // The INI overlay's ApplyStandardButtonTextures installs PointerEntered/Exited
+        // handlers that swap idle/hover brushes. Those handlers fire BEFORE ours
+        // (we subscribe later). We intercept PointerExited to re-apply the correct
+        // background for the selected tab.
+        foreach (var btn in _tabButtons)
+        {
+            btn.PointerExited += (_, _) =>
+            {
+                if (_tabButtons == null || _tabIdleBrush == null)
+                    return;
+
+                int idx = System.Array.IndexOf(_tabButtons, btn);
+                btn.Background = (idx == _selectedTabIndex && _tabHoverBrush != null)
+                    ? _tabHoverBrush
+                    : _tabIdleBrush;
             };
         }
 
@@ -96,6 +133,8 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
     /// </summary>
     private void UpdateTabHover(int selectedIndex)
     {
+        _selectedTabIndex = selectedIndex;
+
         if (_tabButtons == null || _tabIdleBrush == null)
             return;
 
