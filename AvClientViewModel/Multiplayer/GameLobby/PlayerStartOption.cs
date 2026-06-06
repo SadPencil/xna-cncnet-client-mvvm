@@ -4,13 +4,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
-public class PlayerStartOption : ObservableObject, IPlayerStart
+public partial class PlayerStartOption : ObservableObject, IPlayerStart
 {
-    private int _index;
-    public int Index { get => _index; set => SetProperty(ref _index, value); }
+    [ObservableProperty]
+    public partial int Index { get; set; }
 
-    private string _name = string.Empty;
-    public string Name { get => _name; set => SetProperty(ref _name, value); }
+    [ObservableProperty]
+    public partial string Name { get; set; } = string.Empty;
 
     public override string ToString() => Name;
 }
