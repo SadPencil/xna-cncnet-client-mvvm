@@ -500,10 +500,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             isCustomPassword = false;
         }
 
+        Log.Debug($"[DEBUG_HOSTSLOT] OnGameCreated: gameRoomName={gameRoomName}, maxPlayers={maxPlayers}, hostName={ProgramConstants.PLAYERNAME}");
+
         Channel gameChannel = connectionManager.CreateChannel(gameRoomName, channelName, false, true, password);
         connectionManager.AddChannel(gameChannel);
         gameLobby.SetUp(gameChannel, true, maxPlayers, tunnel, ProgramConstants.PLAYERNAME, isCustomPassword, skillLevel);
         gameLobby.IsEnabled = true;
+        Log.Debug($"[DEBUG_HOSTSLOT] OnGameCreated: after SetUp, IsEnabled=true, sending JOIN");
         gameChannel.UserAdded += GameChannel_UserAdded;
         connectionManager.SendCustomMessage(new QueuedMessage("JOIN " + channelName + " " + password,
             QueuedMessageType.INSTANT_MESSAGE, 0));
@@ -1130,11 +1133,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void GameChannel_UserAdded(object sender, ChannelUserEventArgs e)
     {
+        Log.Debug($"[DEBUG_HOSTSLOT] GameChannel_UserAdded: userName={e.User.IRCUser.Name}, isSelf={e.User.IRCUser.Name == ProgramConstants.PLAYERNAME}");
         Channel gameChannel = (Channel)sender;
         if (e.User.IRCUser.Name == ProgramConstants.PLAYERNAME)
         {
             ClearGameChannelEvents(gameChannel);
             gameLobby.OnJoined();
+            Log.Debug($"[DEBUG_HOSTSLOT] GameChannel_UserAdded: OnJoined called");
             isInGameRoom = true;
             UpdateLogoutButtonText();
         }

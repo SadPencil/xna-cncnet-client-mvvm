@@ -281,7 +281,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         connectionManager.ConnectionLost += ConnectionManager_ConnectionLost;
         connectionManager.Disconnected += ConnectionManager_Disconnected;
 
+        Log.Debug($"[DEBUG_HOSTSLOT] SetUp completed: isHost={isHost}, playerLimit={playerLimit}, hostName={hostName}, Players.Count={Players.Count}");
         Refresh(isHost);
+        Log.Debug($"[DEBUG_HOSTSLOT] SetUp after Refresh: Players.Count={Players.Count}");
     }
 
     public void OnJoined()
@@ -680,8 +682,10 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void Channel_UserAdded(object sender, ChannelUserEventArgs e)
     {
+        Log.Debug($"[DEBUG_HOSTSLOT] Channel_UserAdded: userName={e.User.IRCUser.Name}, isHost={IsHost}, Players.Count before Add={Players.Count}");
         PlayerInfo pInfo = new PlayerInfo(e.User.IRCUser.Name);
         Players.Add(pInfo);
+        Log.Debug($"[DEBUG_HOSTSLOT] Channel_UserAdded: Players.Count after Add={Players.Count}, isSelf={e.User.IRCUser.Name == ProgramConstants.PLAYERNAME}");
 
         if (Players.Count + AIPlayers.Count > MAX_PLAYER_COUNT && AIPlayers.Count > 0)
             AIPlayers.RemoveAt(AIPlayers.Count - 1);
