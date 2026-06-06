@@ -23,6 +23,7 @@ internal sealed class WindowStateToAvaloniaConverter : IValueConverter
             {
                 AvClientMvvmContract.Generic.WindowState.Minimized => Avalonia.Controls.WindowState.Minimized,
                 AvClientMvvmContract.Generic.WindowState.Maximized => Avalonia.Controls.WindowState.Maximized,
+                AvClientMvvmContract.Generic.WindowState.FullScreen => Avalonia.Controls.WindowState.FullScreen,
                 _ => Avalonia.Controls.WindowState.Normal
             };
         }
@@ -37,6 +38,7 @@ internal sealed class WindowStateToAvaloniaConverter : IValueConverter
             {
                 Avalonia.Controls.WindowState.Minimized => AvClientMvvmContract.Generic.WindowState.Minimized,
                 Avalonia.Controls.WindowState.Maximized => AvClientMvvmContract.Generic.WindowState.Maximized,
+                Avalonia.Controls.WindowState.FullScreen => AvClientMvvmContract.Generic.WindowState.FullScreen,
                 _ => AvClientMvvmContract.Generic.WindowState.Normal
             };
         }
