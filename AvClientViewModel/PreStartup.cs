@@ -231,8 +231,6 @@ public static class PreStartup
         Log.Information("Base resource path: " + ProgramConstants.GetBaseResourcePath());
 
         // --- Client resolution initialization (same as DXMainClient Startup.Execute lines 133-147) ---
-        StartupSettings.IsBorderlessClient = UserINISettings.Instance.BorderlessWindowedClient;
-
         if (!UserINISettings.Instance.BorderlessWindowedClient)
         {
             var (bestWidth, bestHeight) = ScreenResolution.GetBestRecommendedResolution();

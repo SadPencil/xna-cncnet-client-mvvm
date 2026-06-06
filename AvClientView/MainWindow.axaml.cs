@@ -29,13 +29,10 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
-        // Set an initial ViewModel immediately so the window goes fullscreen
-        // (if BorderlessWindowedClient is enabled) from the first frame,
-        // before DI is ready. Replaced by ConnectAfterInit.
-        DataContext = new DefaultMainWindowViewModel(
-            StartupSettings.IsBorderlessClient
-                ? AvClientMvvmContract.Generic.WindowState.FullScreen
-                : AvClientMvvmContract.Generic.WindowState.Normal);
+        // Initial ViewModel provided by the composition root before DI is ready.
+        // Handles WindowState (FullScreen from BorderlessWindowedClient) immediately.
+        if (Startup.InitialViewModel != null)
+            DataContext = Startup.InitialViewModel;
 
         // LoadingScreen fills the Grid (design resolution). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
