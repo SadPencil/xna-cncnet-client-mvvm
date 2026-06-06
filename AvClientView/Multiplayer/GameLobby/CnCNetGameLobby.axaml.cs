@@ -61,6 +61,8 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         var iniOverlay = IniOverlayService;
         iniOverlay?.ApplyLayout(this, "MultiplayerGameLobby");
 
+        LogLayout("AFTER_INI");
+
         // Reposition sort button after INI expression evaluation repositions ddGameMode.
         // Matches old client: btnMapSortAlphabetically.X = ddGameMode.X - ddGameMode.Height - 4
         double ddX = Canvas.GetLeft(ddGameMode);
@@ -70,8 +72,6 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         Canvas.SetTop(btnSortAlpha, ddY);
         btnSortAlpha.Width = ddH;
         btnSortAlpha.Height = ddH;
-
-        LogLayout("AFTER_INI");
 
         SetupMapListContextMenu();
         SetupSearchContextMenu();
