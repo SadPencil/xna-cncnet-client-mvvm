@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using Serilog;
 
@@ -23,6 +24,9 @@ internal sealed class LinuxScreenInfoProvider : IScreenInfoProvider
     {
         get
         {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return false;
+
             try
             {
                 using var proc = Process.Start(new ProcessStartInfo
