@@ -54,6 +54,7 @@ public class GameSessionSetting : IGameSessionSetting
     // --- Configuration fields (dropdown) ---
     public DropDownDataWriteMode DataWriteMode { get; set; }
     public List<string>? DropDownItemTags { get; set; }
+    public List<string>? DropDownDisplayItems { get; set; }
     public string Text { get; set; } = string.Empty;
     public string OptionName { get; set; } = string.Empty;
 

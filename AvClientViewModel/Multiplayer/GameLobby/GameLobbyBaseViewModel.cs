@@ -333,9 +333,24 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         string itemsStr = ini.GetStringValue(sectionName, "Items", string.Empty);
         if (!string.IsNullOrEmpty(itemsStr))
         {
-            setting.DropDownItemTags = new List<string>(
-                itemsStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => s.Trim()));
+            var rawItems = itemsStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim()).ToList();
+            setting.DropDownItemTags = new List<string>(rawItems);
+
+            string itemLabelsStr = ini.GetStringValue(sectionName, "ItemLabels", string.Empty);
+            if (!string.IsNullOrEmpty(itemLabelsStr))
+            {
+                var labels = itemLabelsStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim()).ToList();
+                // Pad labels if fewer than items
+                while (labels.Count < rawItems.Count)
+                    labels.Add(rawItems[labels.Count]);
+                setting.DropDownDisplayItems = labels;
+            }
+            else
+            {
+                setting.DropDownDisplayItems = new List<string>(rawItems);
+            }
         }
 
         string dataWriteModeStr = ini.GetStringValue(sectionName, "DataWriteMode", "String");
@@ -457,7 +472,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         DropDowns = DropDownSettings.Select(s =>
         {
             var dd = new GameOptionDropDown(s);
-            if (s.DropDownItemTags != null)
+            if (s.DropDownDisplayItems != null)
+                dd.Items = s.DropDownDisplayItems;
+            else if (s.DropDownItemTags != null)
                 dd.Items = s.DropDownItemTags;
             return dd;
         }).ToList();
