@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Timers;
 
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Controls;
 using AvClientView.Services;
+using Serilog;
+
+using Timer = System.Timers.Timer;
 
 
 namespace AvClientView.Multiplayer.GameLobby;
@@ -36,11 +41,24 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
     private void OnDataContextChanged(object? sender, EventArgs e)
     {
+        Log.Debug($"[DEBUG_HOSTSLOT_VIEW] OnDataContextChanged: DataContext={DataContext?.GetType().Name}, IsVisible={IsVisible}");
         if (currentMapPreview != null)
             currentMapPreview.PropertyChanged -= OnMapPreviewPropertyChanged;
 
         lobbyViewModel = DataContext as IGameLobbyViewModel;
         currentMapPreview = lobbyViewModel?.MapPreviewBox;
+
+        if (lobbyViewModel != null)
+        {
+            var slots = lobbyViewModel.PlayerSlots;
+            if (slots != null && slots.Count > 0)
+            {
+                var slot0 = slots[0];
+                Log.Debug($"[DEBUG_HOSTSLOT_VIEW] OnDataContextChanged: slot[0].PlayerName={slot0.PlayerName}, slot[0].Name.SelectedOption={slot0.Name.SelectedOption?.ToString()}, slot[0].Name.Options.Count={slot0.Name.Options.Count}");
+                if (slot0.Name.Options.Count > 0)
+                    Log.Debug($"[DEBUG_HOSTSLOT_VIEW] OnDataContextChanged: slot[0].Name.Options[0]={slot0.Name.Options[0]}");
+            }
+        }
 
         if (currentMapPreview != null)
         {
@@ -52,6 +70,40 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        Log.Debug($"[DEBUG_HOSTSLOT_VIEW] OnLoaded: DataContext={DataContext?.GetType().Name}, IsVisible={IsVisible}");
+
+        // Log slot 0 from ViewModel
+        if (lobbyViewModel != null)
+        {
+            var slots = lobbyViewModel.PlayerSlots;
+            if (slots != null && slots.Count > 0)
+            {
+                var slot0 = slots[0];
+                Log.Debug($"[DEBUG_HOSTSLOT_VIEW] OnLoaded slot[0]: PlayerName={slot0.PlayerName}, SelectedOption={slot0.Name.SelectedOption}, Options.Count={slot0.Name.Options.Count}, IsEnabled={slot0.Name.IsEnabled}");
+            }
+        }
+
+        // Delayed check after bindings settle
+        var timer = new Timer(3000);
+        timer.AutoReset = false;
+        timer.Elapsed += (_, _) =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                Log.Debug($"[DEBUG_HOSTSLOT_VIEW] DelayedCheck(3s): IsVisible={IsVisible}, DataContext={DataContext?.GetType().Name}");
+                if (lobbyViewModel != null)
+                {
+                    var slots = lobbyViewModel.PlayerSlots;
+                    if (slots != null && slots.Count > 0)
+                    {
+                        var slot0 = slots[0];
+                        Log.Debug($"[DEBUG_HOSTSLOT_VIEW] DelayedCheck(3s) slot[0]: PlayerName={slot0.PlayerName}, SelectedOption={slot0.Name.SelectedOption}, Options.Count={slot0.Name.Options.Count}, IsEnabled={slot0.Name.IsEnabled}");
+                    }
+                }
+            });
+        };
+        timer.Start();
+
         BackgroundHelper.ApplyDefaultBackground(this, "gamelobbybg.png", IniOverlayService);
 
         var iniOverlay = IniOverlayService;
