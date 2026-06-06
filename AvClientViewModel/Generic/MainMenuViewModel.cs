@@ -864,12 +864,32 @@ namespace AvClientViewModel.Generic
         {
             Log.Information("Restarting client.");
             Clean();
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = Environment.ProcessPath!,
-                Arguments = Environment.CommandLine
-            });
+            RestartClient();
             uiThreadMarshaller.AddCallback(new Action(UI_ShutdownForRestart));
+        }
+
+        private static void RestartClient()
+        {
+#if NETFRAMEWORK
+            System.Diagnostics.Process.Start(ProgramConstants.StartupExecutable);
+#else
+            if (OperatingSystem.IsWindows())
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = SafePath.CombineFilePath(ProgramConstants.GamePath, ClientConfiguration.Instance.LauncherExe),
+                    Arguments = "-NET8 -Av",
+                });
+            }
+            else
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = Environment.ProcessPath!,
+                    Arguments = Environment.CommandLine
+                });
+            }
+#endif
         }
 
         private void UI_ShutdownForRestart()
