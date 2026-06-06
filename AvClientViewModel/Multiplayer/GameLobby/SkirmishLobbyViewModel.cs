@@ -68,6 +68,20 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)
     {
         this.random = random;
+
+        // Add Spectator side to all player slots (matches old SkirmishLobby.Initialize)
+        const string spectatorName = "Spectator";
+        string spectatorL10N = spectatorName.L10N("Client:Sides:SpectatorSide");
+        foreach (var slot in PlayerSlots)
+        {
+            int lastIdx = slot.Side.Options.Count;
+            var sideOptions = new System.Collections.ObjectModel.ObservableCollection<IPlayerSide>(
+                slot.Side.Options) { new PlayerSideOption { Index = lastIdx, Name = spectatorL10N } };
+            slot.Side.Options = sideOptions;
+            var sideSelectable = new System.Collections.ObjectModel.ObservableCollection<bool>(
+                slot.Side.Selectable) { true };
+            slot.Side.Selectable = sideSelectable;
+        }
     }
 
     protected override int MaxPlayerCount => MAX_PLAYER_COUNT;
@@ -88,6 +102,18 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
     {
         base.Initialize();
         RandomSeed = random.Next();
+
+        // Wire up map preview starting location callbacks (matches old SkirmishLobby.Initialize)
+        mapPreviewBox.SetOnStartingLocationApplied(() => CopyPlayerDataToUI());
+        mapPreviewBox.SetOnLocalStartingLocationSelected(startingLocation =>
+        {
+            if (Players.Count > 0)
+            {
+                Players[0].StartingLocation = startingLocation + 1;
+                CopyPlayerDataToUI();
+            }
+        });
+
         LoadSettings();
         CopyPlayerDataToUI();
         ProgramConstants.PlayerNameChanged += ProgramConstants_PlayerNameChanged;

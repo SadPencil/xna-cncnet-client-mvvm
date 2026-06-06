@@ -81,8 +81,8 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     public IReadOnlyList<IStartingLocationIndicatorData> StartingLocationIndicators => _startingLocationIndicators;
 
     private readonly Action? onFavoriteToggled;
-    private readonly Action? onStartingLocationApplied;
-    private readonly Action<int>? onLocalStartingLocationSelected;
+    private Action? onStartingLocationApplied;
+    private Action<int>? onLocalStartingLocationSelected;
 
     // --- Constructor ---
 
@@ -216,6 +216,22 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     }
 
     // --- Public methods ---
+
+    /// <summary>
+    /// Sets the callback invoked when a starting location is applied.
+    /// </summary>
+    public void SetOnStartingLocationApplied(Action? callback)
+    {
+        onStartingLocationApplied = callback;
+    }
+
+    /// <summary>
+    /// Sets the callback invoked when the local player selects a starting location on the map preview.
+    /// </summary>
+    public void SetOnLocalStartingLocationSelected(Action<int>? callback)
+    {
+        onLocalStartingLocationSelected = callback;
+    }
 
     /// <summary>
     /// Sets the current game mode map and updates all display properties.
