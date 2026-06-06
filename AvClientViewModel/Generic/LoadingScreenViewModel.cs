@@ -37,7 +37,7 @@ namespace AvClientViewModel.Generic
         public event EventHandler? Completed;
 
         [ObservableProperty]
-        private string statusText = "Loading...";
+        public partial string StatusText { get; set; } = "Loading...";
 
         [ObservableProperty]
         private string currentTaskText = "Initializing...";
