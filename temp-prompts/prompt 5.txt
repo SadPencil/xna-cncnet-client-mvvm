@@ -22,48 +22,46 @@ Git commit and push often.
 
 Now, your task is: 
 
-clicking the New Game button in Lan lobby causes a crash.
+when I returned from a lan game, I got the following exception *occasionally*. While resolving it, be sure to also check all other codes where they might share the same issue, not limited to lan, multiplayer and skrimish lobby, but maybe also other codes. It is not easy to catch this occasional exception, so you need to carefully read the code and find the root cause. The exception is:
 
-
-03.06. 01:54:07.413    KABOOOOOOM!!! Info:
-03.06. 01:54:07.414    Type: System.ArgumentOutOfRangeException
-03.06. 01:54:07.414    Message: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
-03.06. 01:54:07.415    Source: System.Private.CoreLib
-03.06. 01:54:07.415    TargetSite.Name: ThrowArgumentOutOfRange_IndexMustBeLessException
-03.06. 01:54:07.447    Stacktrace:    at System.SZArrayHelper.get_Item[T](Int32 index)
-   at AvClientViewModel.Multiplayer.GameLobby.GameLobbyBaseViewModel.CopyPlayerDataToUI() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\GameLobbyBaseViewModel.cs:line 997
-   at AvClientViewModel.Multiplayer.GameLobby.MultiplayerGameLobbyViewModel.CopyPlayerDataToUI() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\MultiplayerGameLobbyViewModel.cs:line 574
-   at AvClientViewModel.Multiplayer.GameLobby.MultiplayerGameLobbyViewModel.Refresh(Boolean isHost) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\MultiplayerGameLobbyViewModel.cs:line 508
-   at AvClientViewModel.Multiplayer.GameLobby.LANGameLobbyViewModel.SetUp(Boolean isHost, IPEndPoint hostEndPoint, TcpClient client) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\LANGameLobbyViewModel.cs:line 162
-   at AvClientViewModel.Multiplayer.LANLobbyViewModel.<Initialize>b__57_0() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\LANLobbyViewModel.cs:line 341
-   at AvClientViewModel.Multiplayer.LANGameCreationWindowViewModel.CreateNewGame() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\LANGameCreationWindowViewModel.cs:line 55
-   at CommunityToolkit.Mvvm.Input.RelayCommand.Execute(Object parameter)
-   at Avalonia.Controls.Button.OnClick()
-   at Avalonia.Controls.Button.OnPointerReleased(PointerReleasedEventArgs e)
-   at Avalonia.Input.InputElement.<>c.<.cctor>b__33_9(InputElement x, PointerReleasedEventArgs e)
-   at Avalonia.Reactive.LightweightObservableBase`1.PublishNext(T value)
-   at Avalonia.Interactivity.EventRoute.RaiseEventImpl(RoutedEventArgs e)
-   at Avalonia.Interactivity.EventRoute.RaiseEvent(Interactive source, RoutedEventArgs e)
-   at Avalonia.Interactivity.Interactive.RaiseEvent(RoutedEventArgs e)
-   at Avalonia.Input.MouseDevice.MouseUp(IMouseDevice device, UInt64 timestamp, IInputRoot root, Point p, PointerPointProperties props, KeyModifiers inputModifiers, IInputElement hitTest)
-   at Avalonia.Input.MouseDevice.ProcessRawEvent(RawPointerEventArgs e)
-   at Avalonia.Controls.TopLevel.<>c.<HandleInput>b__150_0(Object state)
-   at Avalonia.Threading.Dispatcher.Send(SendOrPostCallback action, Object arg, Nullable`1 priority)
-   at Avalonia.Controls.TopLevel.HandleInput(RawInputEventArgs e)
-   at Avalonia.Win32.WindowImpl.AppWndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
-   at Avalonia.Win32.WindowImpl.WndProcMessageHandler(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
-   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
-   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
-   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
-   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
-   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
-   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
-   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
-   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
-   at AvClientView.Startup.Run(ServiceProvider serviceProvider, String[] args) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientView\Startup.cs:line 28
-   at AvClientExe.Program.Main(String[] args) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientExe\Program.cs:line 13
-03.06. 01:54:07.452    KABOOOOOOOM
-
-Tiberian Sun has crashed. Error message:
-
-Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+System.InvalidOperationException
+  HResult=0x80131509
+  Message=Cannot change source while update is in progress.
+  Source=Avalonia.Controls
+  StackTrace:
+   at Avalonia.Controls.Selection.SelectionModel`1.SetSource(IEnumerable value)
+   at Avalonia.Controls.Selection.InternalSelectionModel.SetSource(IEnumerable value)
+   at Avalonia.Controls.ItemCollection.SetSource(IEnumerable source)
+   at Avalonia.Controls.ItemCollection.SetItemsSource(IEnumerable value)
+   at Avalonia.Controls.ItemsControl.OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   at Avalonia.Controls.Primitives.SelectingItemsControl.OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   at Avalonia.Controls.ComboBox.OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+   at Avalonia.Animation.Animatable.OnPropertyChangedCore(AvaloniaPropertyChangedEventArgs change)
+   at Avalonia.AvaloniaObject.RaisePropertyChanged[T](AvaloniaProperty`1 property, Optional`1 oldValue, BindingValue`1 newValue, BindingPriority priority, Boolean isEffectiveValue)
+   at Avalonia.PropertyStore.EffectiveValue`1.NotifyValueChanged(ValueStore owner, StyledProperty`1 property, T oldValue)
+   at Avalonia.PropertyStore.EffectiveValue`1.SetAndRaiseCore(ValueStore owner, StyledProperty`1 property, T value, BindingPriority priority, Boolean isOverriddenCurrentValue, Boolean isCoercedDefaultValue)
+   at Avalonia.PropertyStore.EffectiveValue`1.SetLocalValueAndRaise(ValueStore owner, AvaloniaProperty property, Object value)
+   at Avalonia.PropertyStore.ValueStore.SetLocalValue(AvaloniaProperty property, Object value)
+   at Avalonia.Data.Core.UntypedBindingExpressionBase.PublishValue(Object value, BindingError error)
+   at Avalonia.Data.Core.BindingExpression.OnNodeError(Int32 nodeIndex, String error)
+   at Avalonia.Data.Core.ExpressionNodes.ExpressionNode.SetError(String message)
+   at Avalonia.Data.Core.ExpressionNodes.ExpressionNode.SetError(Exception e)
+   at Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings.InpcPropertyAccessor.SendCurrentValue()
+   at Avalonia.Utilities.WeakEvent`2.Subscription.OnEvent(Object sender, TEventArgs eventArgs)
+   at Avalonia.Utilities.WeakEvents.<>c__DisplayClass5_1.<.cctor>b__7(Object _, PropertyChangedEventArgs e)
+   at CommunityToolkit.Mvvm.ComponentModel.ObservableObject.SetProperty[T](T& field, T newValue, String propertyName)
+   at AvClientViewModel.Multiplayer.GameLobby.PlayerSlotDropdown`1.set_Options(ObservableCollection`1 value) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\PlayerSlotDropdown.cs:line 15
+   at AvClientViewModel.Multiplayer.GameLobby.GameLobbyBaseViewModel.UI_CopyPlayerDataToUI() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\GameLobbyBaseViewModel.cs:line 952
+   at AvClientViewModel.Multiplayer.GameLobby.GameLobbyBaseViewModel.CopyPlayerDataToUI() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\GameLobbyBaseViewModel.cs:line 928
+   at AvClientViewModel.Multiplayer.GameLobby.MultiplayerGameLobbyViewModel.CopyPlayerDataToUI() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\MultiplayerGameLobbyViewModel.cs:line 580
+   at AvClientViewModel.Multiplayer.GameLobby.GameLobbyBaseViewModel.CopyPlayerDataFromUI() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\GameLobbyBaseViewModel.cs:line 1134
+   at AvClientViewModel.Multiplayer.GameLobby.MultiplayerGameLobbyViewModel.CopyPlayerDataFromUI() in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\MultiplayerGameLobbyViewModel.cs:line 657
+   at AvClientViewModel.Multiplayer.GameLobby.GameLobbyBaseViewModel.PlayerSlotDropdown_PropertyChanged(Int32 slotIdx, PropertyChangedEventArgs e) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\GameLobbyBaseViewModel.cs:line 1078
+   at AvClientViewModel.Multiplayer.GameLobby.GameLobbyBaseViewModel.<>c__DisplayClass117_0.<.ctor>b__0(Object s, PropertyChangedEventArgs e) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\GameLobbyBaseViewModel.cs:line 215
+   at CommunityToolkit.Mvvm.ComponentModel.ObservableObject.SetProperty[T](T& field, T newValue, String propertyName)
+   at AvClientViewModel.Multiplayer.GameLobby.PlayerSlotDropdown`1.set_SelectedOption(T value) in D:\SadPencil\Documents\GitHub\xna-cncnet-client-mvvm\AvClientViewModel\Multiplayer\GameLobby\PlayerSlotDropdown.cs:line 29
+   at CompiledAvaloniaXaml.XamlIlHelpers.AvClientMvvmContract.Multiplayer.GameLobby.IPlayerSlotDropdown`1,AvClientMvvmContract.SelectedOption!Setter(Object , Object )
+   at Avalonia.Data.Core.ClrPropertyInfo.Set(Object target, Object value)
+   at Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings.InpcPropertyAccessor.SetValue(Object value, BindingPriority priority)
+   at Avalonia.Data.Core.Plugins.DataValidationBase.SetValue(Object value, BindingPriority priority)
+   at Avalonia.Data.Core.Plugins.ExceptionValidationPlugin.Validator.SetValue(Object value, BindingPriority priority)
