@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 using AvClientMvvmContract.Campaign;
@@ -52,7 +54,7 @@ namespace AvClientViewModel
         public static void ConfigureServices(ServiceCollection services)
         {
             // Core services
-            services.AddSingleton<Random>(_ => new Random()); // TODO: the old client creates the Random instance with a customized method.
+            services.AddSingleton<Random>(_ => CreateRandom());
             services.AddSingleton<DialogService>();
 
             // Domain services
@@ -566,6 +568,17 @@ namespace AvClientViewModel
                     // Couldn't init for some reason (steam is closed etc)
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Random"/> instance seeded with a cryptographically
+        /// generated seed, matching the old client's GetRandom() behaviour.
+        /// </summary>
+        private static Random CreateRandom()
+        {
+            byte[] intBytes = new byte[sizeof(int)];
+            RandomNumberGenerator.Create().GetBytes(intBytes);
+            return new Random(BinaryPrimitives.ReadInt32LittleEndian(intBytes));
         }
 
     }
