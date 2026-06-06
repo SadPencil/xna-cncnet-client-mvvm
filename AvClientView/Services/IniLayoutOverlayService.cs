@@ -266,61 +266,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         }
     }
 
-    private static void ApplyToDescendants(Control root, CCIniFile iniFile, string? sectionName = null)
+    private static void ApplyToDescendants(Control root, CCIniFile iniFile)
     {
-        // Build dependency-ordered list from $ExtraControls $CC entries.
-        // In the old client, INItializableWindow creates and evaluates controls
-        // in $CC order, so lblGameModeSelect (CC14) is evaluated after
-        // ddGameMode (CC13), which is after lbMapList (CC12), etc.
-        var ccOrder = BuildCcOrder(iniFile);
-
-        if (ccOrder.Count > 0)
-        {
-            // Process controls in $CC dependency order
-            foreach (var controlName in ccOrder)
-            {
-                var foundControl = FindControlByName(root, controlName);
-                if (foundControl != null)
-                {
-                    var section = iniFile.GetSection(controlName);
-                    if (section != null)
-                        ApplyProperties(foundControl, section, iniFile, controlName);
-                }
-            }
-        }
-
-        // Process remaining controls (not in $CC list) in tree order
+        // Walk all named descendants and apply their INI sections
         ApplyToDescendantsRecursive(root, iniFile);
-    }
-
-    /// <summary>
-    /// Reads the $ExtraControls section from the INI and returns control names
-    /// in their $CC index order (matching old client's evaluation order).
-    /// </summary>
-    private static List<string> BuildCcOrder(CCIniFile iniFile)
-    {
-        var result = new List<string>();
-        var extraSection = iniFile.GetSection("$ExtraControls");
-        if (extraSection == null)
-            return result;
-
-        // Parse $CC entries and sort by index
-        var entries = new SortedDictionary<int, string>();
-        foreach (var kvp in extraSection.Keys)
-        {
-            if (!kvp.Key.StartsWith("$CC"))
-                continue;
-            // Key is like "$CC03", extract the numeric index
-            string numPart = kvp.Key.Substring(3);
-            if (int.TryParse(numPart, out int index))
-            {
-                string[] parts = kvp.Value.Split(':');
-                if (parts.Length == 2 && !string.IsNullOrEmpty(parts[0]))
-                    entries[index] = parts[0];
-            }
-        }
-
-        return entries.Values.ToList();
     }
 
     private static void ApplyToDescendantsRecursive(Control parent, CCIniFile iniFile)
