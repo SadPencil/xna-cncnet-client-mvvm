@@ -18,19 +18,19 @@ public static class Startup
     internal static Func<ServiceProvider> InitializeServices { get; private set; } = null!;
 
     /// <summary>
-    /// Initial ViewModel set by the composition root (AvClientExe) before
-    /// the window appears. Provides the WindowState (FullScreen/Normal)
-    /// from the first frame, before DI is ready.
+    /// Provided by the composition root (AvClientExe) before the window
+    /// appears. The MainWindow sets this as its DataContext immediately
+    /// so the correct WindowState is applied from the first frame.
     /// </summary>
-    internal static IMainWindowViewModel? InitialViewModel { get; private set; }
+    internal static IMainWindowViewModel? MainWindowViewModel { get; private set; }
 
     private static UrlService UrlService => field ??= new UrlService();
     internal static IniLayoutOverlayService IniLayoutOverlayService => field ??= new IniLayoutOverlayService(UrlService);
 
     [STAThread]
-    public static void Run(string[] args, Func<ServiceProvider> initServices, IMainWindowViewModel? initialViewModel = null)
+    public static void Run(string[] args, Func<ServiceProvider> initServices, IMainWindowViewModel? mainWindowViewModel = null)
     {
-        InitialViewModel = initialViewModel;
+        MainWindowViewModel = mainWindowViewModel;
         InitializeServices = initServices;
 
         bool headless = args.Contains("--headless");

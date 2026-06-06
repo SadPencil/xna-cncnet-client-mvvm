@@ -29,10 +29,8 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
-        // Initial ViewModel provided by the composition root before DI is ready.
-        // Handles WindowState (FullScreen from BorderlessWindowedClient) immediately.
-        if (Startup.InitialViewModel != null)
-            DataContext = Startup.InitialViewModel;
+        if (Startup.MainWindowViewModel != null)
+            DataContext = Startup.MainWindowViewModel;
 
         // LoadingScreen fills the Grid (design resolution). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
