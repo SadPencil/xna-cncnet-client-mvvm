@@ -24,7 +24,7 @@ public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
     bool IsBorderlessWindowedModeAllowed { get; }
     bool IsBackBufferStoredInVideoMemory { get; set; }
     bool IsBorderlessClientEnabled { get; set; }
-    // Note: the IntegerScaledClient is no longer meaningful with the new renderers. We need to remove this option in the end.
+    bool IsIntegerScalingAllowed { get; }
     bool IsIntegerScaledClientEnabled { get; set; }
     bool IsGameCompatFixAvailable { get; }
     bool IsFinalSunCompatFixAvailable { get; }

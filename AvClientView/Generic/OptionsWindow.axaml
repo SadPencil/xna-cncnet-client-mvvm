@@ -102,6 +102,7 @@
                       Foreground="{DynamicResource XnaTextBrush}" />
             <CheckBox x:Name="chkIntegerScaledClient" Content="Integer Scaled Client"
                       IsChecked="{Binding IsIntegerScaledClientEnabled}"
+                      IsVisible="{Binding IsIntegerScalingAllowed}"
                       Foreground="{DynamicResource XnaTextBrush}" />
             <!-- Client Theme -->
             <StackPanel Orientation="Horizontal" Spacing="8">

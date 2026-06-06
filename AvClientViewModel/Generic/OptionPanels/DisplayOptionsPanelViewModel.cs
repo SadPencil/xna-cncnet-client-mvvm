@@ -88,6 +88,11 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     [ObservableProperty]
     public partial bool IsBorderlessClientEnabled { get; set; }
 
+    /// <summary>
+    /// Integer scaling is permanently disabled for the new client.
+    /// </summary>
+    public bool IsIntegerScalingAllowed => false;
+
     [ObservableProperty]
     public partial bool IsIntegerScaledClientEnabled { get; set; }
 
@@ -256,7 +261,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         SelectedClientResolutionIndex = clientResIndex >= 0 ? clientResIndex : 0;
 
         IsBorderlessClientEnabled = UserINISettings.Instance.BorderlessWindowedClient;
-        IsIntegerScaledClientEnabled = iniSettings.IntegerScaledClient.Value;
+        IsIntegerScaledClientEnabled = false;
 
         // Load theme
         int themeIndex = _themeNames.FindIndex(t => t == UserINISettings.Instance.ClientTheme);
@@ -336,9 +341,6 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             string[] parts = _clientResolutionOptions[SelectedClientResolutionIndex].Split('x');
             if (parts.Length == 2 && int.TryParse(parts[0], out int width) && int.TryParse(parts[1], out int height))
             {
-                if (width != iniSettings.ClientResolutionX.Value || height != iniSettings.ClientResolutionY.Value)
-                    restartRequired = true;
-
                 iniSettings.ClientResolutionX.Value = width;
                 iniSettings.ClientResolutionY.Value = height;
             }
@@ -379,10 +381,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         iniSettings.BorderlessWindowedClient.Value = IsBorderlessClientEnabled;
         WeakReferenceMessenger.Default.Send(new BorderlessClientToggledMessage());
 
-        if (iniSettings.IntegerScaledClient.Value != IsIntegerScaledClientEnabled)
-            restartRequired = true;
-
-        iniSettings.IntegerScaledClient.Value = IsIntegerScaledClientEnabled;
+        iniSettings.IntegerScaledClient.Value = false;
 
         // Save theme
         if (SelectedThemeIndex >= 0 && SelectedThemeIndex < _themeNames.Count)
@@ -478,24 +477,6 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         OnPropertyChanged(nameof(IsBorderlessWindowedModeAllowed));
         if (!value)
             IsBorderlessWindowedModeEnabled = false;
-    }
-
-    partial void OnIsBorderlessClientEnabledChanged(bool value)
-    {
-        if (value)
-        {
-            string nativeRes = resolutionProvider.GetSafeFullScreenResolution();
-            int nativeResIndex = _clientResolutionOptions.ToList().FindIndex(r => r == nativeRes);
-            if (nativeResIndex > -1)
-                SelectedClientResolutionIndex = nativeResIndex;
-        }
-        else
-        {
-            string bestRes = resolutionProvider.GetBestRecommendedResolution();
-            int bestResIndex = _clientResolutionOptions.ToList().FindIndex(r => r == bestRes);
-            if (bestResIndex > -1)
-                SelectedClientResolutionIndex = bestResIndex;
-        }
     }
 
     // --- Helpers ---
