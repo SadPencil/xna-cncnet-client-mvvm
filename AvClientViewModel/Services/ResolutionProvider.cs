@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using AvClientMvvmContract.ViewServices;
+
 using ClientCore;
 
 using Serilog;
@@ -9,11 +11,19 @@ namespace AvClientViewModel.Services
 {
     /// <summary>
     /// Provides screen resolution options using ScreenResolution logic.
-    /// Uses comprehensive common resolution lists and INI configuration,
-    /// matching the behavior of the original XNA client without GPU queries.
+    /// Initializes ScreenResolution.DesktopResolution from the View layer's
+    /// IResolutionService so that resolution lists are filtered to the
+    /// actual primary monitor's capabilities.
     /// </summary>
     public class ResolutionProvider : IResolutionProvider
     {
+        public ResolutionProvider(IResolutionService resolutionService)
+        {
+            ScreenResolution.DesktopResolution = new ScreenResolution(
+                resolutionService.DesktopWidth,
+                resolutionService.DesktopHeight);
+        }
+
         public IReadOnlyList<string> GetIngameResolutions()
         {
             var maximumIngameResolution = new ScreenResolution(

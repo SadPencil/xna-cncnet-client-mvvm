@@ -57,5 +57,6 @@ public static class Startup
         services.AddSingleton<IUIThreadMarshaller, AvaloniaUIThreadMarshaller>();
         services.AddSingleton<IClientSoundService, ClientSoundService>();        
         services.AddSingleton<IApplicationLifecycleService, ApplicationLifecycleService>();
+        services.AddSingleton<IResolutionService, ResolutionService>();
     }
 }

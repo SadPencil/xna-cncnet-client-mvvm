@@ -61,15 +61,36 @@ namespace AvClientViewModel.Services
             return (this.Width, this.Height).CompareTo((other.Width, other.Height));
         }
 
-        /// <summary>
-        /// The resolution of primary monitor, or the maximum resolution supported by the graphic profile, whichever is smaller.
-        /// </summary>
-        public static ScreenResolution DesktopResolution { get; } = "1280x720";
+        private static ScreenResolution? _desktopResolution;
 
         /// <summary>
-        /// The maximum resolution supported by the graphic profile, or the largest full screen resolution supported by the primary monitor, whichever is smaller.
+        /// The resolution of the primary monitor. Defaults to 1280x720 until initialized
+        /// by ResolutionProvider with the actual desktop resolution from the View layer.
         /// </summary>
-        public static ScreenResolution FullScreenResolution => field ??= GetFullScreenResolutions(minWidth: 800, minHeight: 600).Max ?? DesktopResolution;
+        public static ScreenResolution DesktopResolution
+        {
+            get => _desktopResolution ??= new ScreenResolution(1280, 720);
+            set => _desktopResolution = value;
+        }
+
+        private static ScreenResolution? _fullScreenResolution;
+
+        /// <summary>
+        /// The largest full screen resolution among available display modes, or the desktop resolution as fallback.
+        /// </summary>
+        public static ScreenResolution FullScreenResolution
+        {
+            get
+            {
+                if (_fullScreenResolution == null)
+                {
+                    var resolutions = GetFullScreenResolutions(minWidth: 800, minHeight: 600);
+                    _fullScreenResolution = resolutions.Max ?? DesktopResolution;
+                }
+
+                return _fullScreenResolution;
+            }
+        }
 
         /// <summary>
         /// Comprehensive list of common monitor resolutions used when GPU display modes cannot be queried.
