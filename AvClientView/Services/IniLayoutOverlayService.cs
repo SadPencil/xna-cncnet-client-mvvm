@@ -146,6 +146,13 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         if (control.Height > ViewConstants.DesignResolutionHeight)
             control.Height = ViewConstants.DesignResolutionHeight;
 
+        // Apply theme colors from DTACnCNetClient.ini as DynamicResource brushes
+        // BEFORE ApplyToDescendants. This way theme colors provide defaults that
+        // INI properties (RemapColor, ForeColor, etc.) can override. If theme
+        // colors were applied after, DynamicResource re-evaluation would undo
+        // any Foreground overrides set by the INI.
+        ApplyThemeColors(control);
+
         // Apply hardcoded draw modes from XNA code first (even if INI has no section)
         ApplyHardcodedDrawModes(control);
 
@@ -162,10 +169,6 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // buttons that weren't given a custom IdleTexture via INI.  This matches
         // XNAClientButton.Initialize() which loads these textures based on Width.
         ApplyStandardButtonTextures(control);
-
-        // Apply theme colors from DTACnCNetClient.ini as DynamicResource brushes.
-        // AXAML files can reference these via {DynamicResource XnaTextBrush}, etc.
-        ApplyThemeColors(control);
 
         // Apply INI theme colors to ComboBox and TextBox controls.
         // Matches XNADropDown/XNATextBox drawing with BackColor, BorderColor, TextColor.

@@ -153,31 +153,19 @@
             <Setter Property="Opacity" Value="0.5" />
         </Style>
 
-        <!-- ScrollBar: XNAUI scrollbar styling (dark track, themed thumb) -->
+        <!-- ScrollBar: use XNAUI scrollbar textures -->
         <Style Selector="ScrollBar">
             <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
-            <Setter Property="AllowAutoHide" Value="False" />
         </Style>
-        <!-- ScrollBar track buttons (up/down arrows) -->
-        <Style Selector="ScrollBar /template/ RepeatButton">
-            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
-        </Style>
-        <!-- ScrollBar thumb -->
-        <Style Selector="ScrollBar /template/ RepeatButton#PART_Thumb">
+
+        <!-- ScrollBar thumb: use XNAUI thumb texture -->
+        <Style Selector="ScrollBar /template/ Thumb">
             <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
         </Style>
 
-        <!-- Slider/Trackbar: XNAUI trackbarButton.png styling -->
+        <!-- Slider/Trackbar: use XNAUI trackbarButton.png texture -->
         <Style Selector="Slider">
             <Setter Property="Foreground" Value="{DynamicResource XnaPanelBorderBrush}" />
-            <Setter Property="Background" Value="{DynamicResource XnaPanelBackgroundBrush}" />
-        </Style>
-        <!-- Slider thumb -->
-        <Style Selector="Slider /template/ RepeatButton#PART_DecreaseButton">
-            <Setter Property="Background" Value="{DynamicResource XnaPanelBorderBrush}" />
-        </Style>
-        <Style Selector="Slider /template/ Thumb">
-            <Setter Property="Background" Value="{DynamicResource XnaAltBrush}" />
         </Style>
     </Application.Styles>
 </Application>
