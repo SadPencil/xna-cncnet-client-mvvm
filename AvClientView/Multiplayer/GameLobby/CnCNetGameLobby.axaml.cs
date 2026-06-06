@@ -30,6 +30,8 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
     private IMapPreviewBoxViewModel? currentMapPreview;
     private IGameLobbyViewModel? lobbyViewModel;
     private readonly List<Border> indicatorElements = new();
+    private IPlayerSlotObservable? watchedSlot0;
+    private IPlayerSlotDropdown<IPlayerName>? watchedSlot0Name;
 
     public CnCNetGameLobby()
     {
@@ -48,6 +50,12 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         lobbyViewModel = DataContext as IGameLobbyViewModel;
         currentMapPreview = lobbyViewModel?.MapPreviewBox;
 
+        // Subscribe to slot[0] changes to see if PropertyChanged fires
+        if (watchedSlot0 != null)
+            watchedSlot0.PropertyChanged -= OnSlot0PropertyChanged;
+        if (watchedSlot0Name != null)
+            watchedSlot0Name.PropertyChanged -= OnSlot0NamePropertyChanged;
+
         if (lobbyViewModel != null)
         {
             var slots = lobbyViewModel.PlayerSlots;
@@ -57,6 +65,12 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
                 Log.Debug($"[DEBUG_HOSTSLOT_VIEW] OnDataContextChanged: slot[0].PlayerName={slot0.PlayerName}, slot[0].Name.SelectedOption={slot0.Name.SelectedOption?.ToString()}, slot[0].Name.Options.Count={slot0.Name.Options.Count}");
                 if (slot0.Name.Options.Count > 0)
                     Log.Debug($"[DEBUG_HOSTSLOT_VIEW] OnDataContextChanged: slot[0].Name.Options[0]={slot0.Name.Options[0]}");
+
+                watchedSlot0 = slot0;
+                watchedSlot0.PropertyChanged += OnSlot0PropertyChanged;
+                watchedSlot0Name = slot0.Name;
+                watchedSlot0Name.PropertyChanged += OnSlot0NamePropertyChanged;
+                Log.Debug($"[DEBUG_HOSTSLOT_VIEW] Subscribed to slot[0].PropertyChanged and slot[0].Name.PropertyChanged");
             }
         }
 
@@ -428,4 +442,16 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
     public void Show() => IsVisible = true;
     public void Hide() => IsVisible = false;
     public string GetDisplayName() => "CnCNet Game Lobby";
+
+    private void OnSlot0PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        var slot = (IPlayerSlotObservable?)sender;
+        Log.Debug($"[DEBUG_HOSTSLOT_VIEW] slot[0].PropertyChanged: {e.PropertyName}, PlayerName={slot?.PlayerName}");
+    }
+
+    private void OnSlot0NamePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        var name = (IPlayerSlotDropdown<IPlayerName>?)sender;
+        Log.Debug($"[DEBUG_HOSTSLOT_VIEW] slot[0].Name.PropertyChanged: {e.PropertyName}, SelectedOption={name?.SelectedOption}, Options.Count={name?.Options.Count}");
+    }
 }
