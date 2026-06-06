@@ -361,10 +361,7 @@ namespace AvClientViewModel.Generic
         [RelayCommand]
         private void Exit()
         {
-            musicPlayer.StartExitFade(0.025f * (float)UserINISettings.Instance.ClientVolume, () =>
-            {
-                uiThreadMarshaller.AddCallback(new Action(UI_ExitClient));
-            });
+            musicPlayer.StartExitFade(0.025f * (float)UserINISettings.Instance.ClientVolume, ExitClient);
         }
 
         [RelayCommand]
@@ -875,7 +872,8 @@ namespace AvClientViewModel.Generic
 
         private void ExitClient()
         {
-            UI_ExitClient();
+            Log.Information("Exiting.");
+            lifecycleService.Shutdown();
         }
 
         private void OnRestartRequested(object? sender, EventArgs e)
@@ -884,13 +882,6 @@ namespace AvClientViewModel.Generic
             Clean();
             processLifecycleService.Restart();
         }
-
-        private void UI_ExitClient()
-        {
-            Log.Information("Exiting.");
-            lifecycleService.Shutdown();
-        }
-
         #endregion
     }
 }
