@@ -509,6 +509,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     protected void Refresh(bool isHost)
     {
+        Log.Debug($"[DEBUG_HOSTSLOT] Refresh called: isHost={isHost}, Players.Count={Players.Count}");
         IsHost = isHost;
         Locked = false;
         CopyPlayerDataToUI();
