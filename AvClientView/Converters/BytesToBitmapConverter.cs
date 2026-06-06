@@ -6,6 +6,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Bmp;
 
 namespace AvClientView.Converters;
 
@@ -24,7 +25,7 @@ public class ImageSharpToBitmapConverter : IValueConverter
             try
             {
                 using var ms = new MemoryStream();
-                image.SaveAsPng(ms);
+                image.SaveAsBmp(ms, new BmpEncoder() { BitsPerPixel = SixLabors.ImageSharp.Formats.Bmp.BmpBitsPerPixel.Pixel32, SupportTransparency = true });
                 ms.Position = 0;
                 return new Bitmap(ms);
             }
