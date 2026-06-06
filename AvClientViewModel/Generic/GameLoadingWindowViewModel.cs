@@ -33,28 +33,28 @@ namespace AvClientViewModel.Generic
         private readonly CampaignSelectorViewModel campaignSelectorViewModel;
 
         [ObservableProperty]
-        private List<SavedGame> savedGames = new();
+        public partial List<SavedGame> SavedGames { get; set; }  = new();
 
         [ObservableProperty]
-        private int selectedSavedGameIndex = -1;
+        public partial int SelectedSavedGameIndex { get; set; }  = -1;
 
         [ObservableProperty]
-        private bool canLoadGame;
+        public partial bool CanLoadGame { get; set; }
 
         [ObservableProperty]
-        private bool canDeleteSavedGame;
+        public partial bool CanDeleteSavedGame { get; set; }
 
         [ObservableProperty]
-        private List<string> savedGameNames = new();
+        public partial List<string> SavedGameNames { get; set; }  = new();
 
         [ObservableProperty]
-        private bool isVisible;
+        public partial bool IsVisible { get; set; }
 
         [ObservableProperty]
-        private bool showDeleteConfirmation;
+        public partial bool ShowDeleteConfirmation { get; set; }
 
         [ObservableProperty]
-        private string deleteConfirmationMessage = string.Empty;
+        public partial string DeleteConfirmationMessage { get; set; }  = string.Empty;
 
         public GameLoadingWindowViewModel(
             IGameProcessService gameProcessService,

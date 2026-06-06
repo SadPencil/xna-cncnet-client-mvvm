@@ -24,19 +24,19 @@ public partial class GameLobbySettingsWindowViewModel : ObservableObject, IGameL
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _gameName = string.Empty;
+    public partial string GameName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _password = string.Empty;
+    public partial string Password { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int _maxPlayers = 8;
+    public partial int MaxPlayers { get; set; }  = 8;
 
     [ObservableProperty]
-    private int _selectedSkillLevelIndex;
+    public partial int SelectedSkillLevelIndex { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     // --- Observable collections ---
 

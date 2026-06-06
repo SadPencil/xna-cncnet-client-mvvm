@@ -73,46 +73,46 @@ namespace AvClientViewModel.Generic
         private DateTime lastUpdateCheckTime;
 
         [ObservableProperty]
-        private string versionText = string.Empty;
+        public partial string VersionText { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private string updateStatusText = string.Empty;
+        public partial string UpdateStatusText { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private bool isUpdateStatusEnabled;
+        public partial bool IsUpdateStatusEnabled { get; set; }
 
         [ObservableProperty]
-        private bool isUpdateStatusUnderlined;
+        public partial bool IsUpdateStatusUnderlined { get; set; }
 
         [ObservableProperty]
-        private string cnCNetPlayerCountText = "-";
+        public partial string CnCNetPlayerCountText { get; set; }  = "-";
 
         [ObservableProperty]
-        private bool areButtonsEnabled = true;
+        public partial bool AreButtonsEnabled { get; set; }  = true;
 
         [ObservableProperty]
-        private bool isUpdateNotificationVisible;
+        public partial bool IsUpdateNotificationVisible { get; set; }
 
         [ObservableProperty]
-        private string updateNotificationText = string.Empty;
+        public partial string UpdateNotificationText { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private bool isMapEditorButtonVisible;
+        public partial bool IsMapEditorButtonVisible { get; set; }
 
         [ObservableProperty]
-        private bool isStatisticsButtonVisible = true;
+        public partial bool IsStatisticsButtonVisible { get; set; }  = true;
 
         [ObservableProperty]
-        private bool showVersionInfo;
+        public partial bool ShowVersionInfo { get; set; }
 
         [ObservableProperty]
-        private bool isMusicPlaying;
+        public partial bool IsMusicPlaying { get; set; }
 
         [ObservableProperty]
-        private bool isLanMode;
+        public partial bool IsLanMode { get; set; }
 
         [ObservableProperty]
-        private MainMenuPanel activePanel = MainMenuPanel.PRIMARY;
+        public partial MainMenuPanel ActivePanel { get; set; }  = MainMenuPanel.PRIMARY;
 
         /// <summary>
         /// Domain event: fired when skirmish lobby is exited. Parent subscribes.

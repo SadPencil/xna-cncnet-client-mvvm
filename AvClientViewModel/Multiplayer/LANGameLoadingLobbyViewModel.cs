@@ -79,16 +79,16 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     [ObservableProperty]
-    private string _localAddressText = string.Empty;
+    public partial string LocalAddressText { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _areAllPlayersReady;
+    public partial bool AreAllPlayersReady { get; set; }
 
     [ObservableProperty]
-    private bool _isEnabled;
+    public partial bool IsEnabled { get; set; }
 
     // --- Events ---
 

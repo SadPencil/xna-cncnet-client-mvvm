@@ -28,21 +28,21 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _selectedUpdateServerIndex = -1;
+    public partial int SelectedUpdateServerIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private bool _checkForUpdatesAutomatically;
+    public partial bool CheckForUpdatesAutomatically { get; set; }
 
     [ObservableProperty]
-    private bool _isForceUpdateEnabled = true;
+    public partial bool IsForceUpdateEnabled { get; set; }  = true;
 
     // --- Confirmation dialog state ---
 
     [ObservableProperty]
-    private bool _isConfirmationVisible;
+    public partial bool IsConfirmationVisible { get; set; }
 
     [ObservableProperty]
-    private string _confirmationMessage = string.Empty;
+    public partial string ConfirmationMessage { get; set; }  = string.Empty;
 
     // --- Observable collections ---
 

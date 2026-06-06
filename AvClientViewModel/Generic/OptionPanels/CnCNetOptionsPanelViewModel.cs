@@ -33,25 +33,25 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _pingUnofficialTunnels;
+    public partial bool PingUnofficialTunnels { get; set; }
 
     [ObservableProperty]
-    private bool _writeInstallationPathToRegistry;
+    public partial bool WriteInstallationPathToRegistry { get; set; }
 
     [ObservableProperty]
-    private bool _disableMainMenuHotkeys;
+    public partial bool DisableMainMenuHotkeys { get; set; }
 
     [ObservableProperty]
-    private bool _notifyOnUserListChanges;
+    public partial bool NotifyOnUserListChanges { get; set; }
 
     [ObservableProperty]
-    private bool _disablePrivateMessagePopups;
+    public partial bool DisablePrivateMessagePopups { get; set; }
 
     [ObservableProperty]
-    private int _allowPrivateMessagesMode;
+    public partial int AllowPrivateMessagesMode { get; set; }
 
     [ObservableProperty]
-    private int _selectedAllowPrivateMessagesFromIndex;
+    public partial int SelectedAllowPrivateMessagesFromIndex { get; set; }
 
     public IReadOnlyList<string> AllowPrivateMessagesFromOptions { get; } = new[]
     {
@@ -62,28 +62,28 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
     };
 
     [ObservableProperty]
-    private bool _skipLoginDialog;
+    public partial bool SkipLoginDialog { get; set; }
 
     [ObservableProperty]
-    private bool _persistentMode;
+    public partial bool PersistentMode { get; set; }
 
     [ObservableProperty]
-    private bool _autoConnectOnStartup;
+    public partial bool AutoConnectOnStartup { get; set; }
 
     [ObservableProperty]
-    private bool _isDiscordIntegrationEnabled;
+    public partial bool IsDiscordIntegrationEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isSteamIntegrationEnabled;
+    public partial bool IsSteamIntegrationEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _allowGameInvitesOnlyFromFriends;
+    public partial bool AllowGameInvitesOnlyFromFriends { get; set; }
 
     [ObservableProperty]
-    private bool _isAutoConnectOnStartupAllowed;
+    public partial bool IsAutoConnectOnStartupAllowed { get; set; }
 
     [ObservableProperty]
-    private bool _isDiscordIntegrationGloballyDisabled;
+    public partial bool IsDiscordIntegrationGloballyDisabled { get; set; }
 
     // --- Observable collections ---
 

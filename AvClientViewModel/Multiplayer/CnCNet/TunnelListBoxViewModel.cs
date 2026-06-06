@@ -33,10 +33,10 @@ public partial class TunnelListBoxViewModel : ObservableObject, ITunnelListBoxVi
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _selectedTunnelIndex;
+    public partial int SelectedTunnelIndex { get; set; }
 
     [ObservableProperty]
-    private string? _selectedTunnelName;
+    public partial string? SelectedTunnelName { get; set; }
 
     // --- Observable collections ---
 

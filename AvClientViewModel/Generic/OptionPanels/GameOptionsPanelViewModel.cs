@@ -29,31 +29,31 @@ public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsP
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _scrollRate;
+    public partial int ScrollRate { get; set; }
 
     [ObservableProperty]
-    private bool _isScrollCoastingEnabled;
+    public partial bool IsScrollCoastingEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _areTargetLinesEnabled;
+    public partial bool AreTargetLinesEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _areTooltipsEnabled;
+    public partial bool AreTooltipsEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _areHiddenObjectsVisible;
+    public partial bool AreHiddenObjectsVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isBlackChatBackgroundEnabled;
+    public partial bool IsBlackChatBackgroundEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isUndeployWithAltEnabled;
+    public partial bool IsUndeployWithAltEnabled { get; set; }
 
     [ObservableProperty]
-    private string _playerName = string.Empty;
+    public partial string PlayerName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _showHotkeyConfiguration;
+    public partial bool ShowHotkeyConfiguration { get; set; }
 
     /// <summary>
     /// Indicates whether a restart is required after saving settings.

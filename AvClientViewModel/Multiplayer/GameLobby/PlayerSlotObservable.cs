@@ -4,47 +4,23 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
-public class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
+public partial class PlayerSlotObservable : ObservableObject, IPlayerSlotObservable
 {
-    private string _playerName = string.Empty;
-    public string PlayerName
-    {
-        get => _playerName;
-        set => SetProperty(ref _playerName, value);
-    }
+    [ObservableProperty]
+    public partial string PlayerName { get; set; } = string.Empty;
 
-    private IPlayerSlotDropdown<IPlayerName> _name = new PlayerSlotDropdown<IPlayerName>();
-    public IPlayerSlotDropdown<IPlayerName> Name
-    {
-        get => _name;
-        set => SetProperty(ref _name, value);
-    }
+    [ObservableProperty]
+    public partial IPlayerSlotDropdown<IPlayerName> Name { get; set; } = new PlayerSlotDropdown<IPlayerName>();
 
-    private IPlayerSlotDropdown<IPlayerSide> _side = new PlayerSlotDropdown<IPlayerSide>();
-    public IPlayerSlotDropdown<IPlayerSide> Side
-    {
-        get => _side;
-        set => SetProperty(ref _side, value);
-    }
+    [ObservableProperty]
+    public partial IPlayerSlotDropdown<IPlayerSide> Side { get; set; } = new PlayerSlotDropdown<IPlayerSide>();
 
-    private IPlayerSlotDropdown<IPlayerColor> _color = new PlayerSlotDropdown<IPlayerColor>();
-    public IPlayerSlotDropdown<IPlayerColor> Color
-    {
-        get => _color;
-        set => SetProperty(ref _color, value);
-    }
+    [ObservableProperty]
+    public partial IPlayerSlotDropdown<IPlayerColor> Color { get; set; } = new PlayerSlotDropdown<IPlayerColor>();
 
-    private IPlayerSlotDropdown<IPlayerStart> _start = new PlayerSlotDropdown<IPlayerStart>();
-    public IPlayerSlotDropdown<IPlayerStart> Start
-    {
-        get => _start;
-        set => SetProperty(ref _start, value);
-    }
+    [ObservableProperty]
+    public partial IPlayerSlotDropdown<IPlayerStart> Start { get; set; } = new PlayerSlotDropdown<IPlayerStart>();
 
-    private IPlayerSlotDropdown<IPlayerTeam> _team = new PlayerSlotDropdown<IPlayerTeam>();
-    public IPlayerSlotDropdown<IPlayerTeam> Team
-    {
-        get => _team;
-        set => SetProperty(ref _team, value);
-    }
+    [ObservableProperty]
+    public partial IPlayerSlotDropdown<IPlayerTeam> Team { get; set; } = new PlayerSlotDropdown<IPlayerTeam>();
 }

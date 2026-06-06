@@ -31,10 +31,10 @@ public partial class PlayerListBoxViewModel : ObservableObject, IPlayerListBoxVi
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _selectedPlayerIndex = -1;
+    public partial int SelectedPlayerIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private string? _selectedPlayerName;
+    public partial string? SelectedPlayerName { get; set; }
 
     // --- Observable collections ---
 

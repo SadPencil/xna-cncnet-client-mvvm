@@ -4,16 +4,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
-public class PlayerSideOption : ObservableObject, IPlayerSide
+public partial class PlayerSideOption : ObservableObject, IPlayerSide
 {
-    private int _index;
-    public int Index { get => _index; set => SetProperty(ref _index, value); }
+    [ObservableProperty]
+    public partial int Index { get; set; }
 
-    private string _name = string.Empty;
-    public string Name { get => _name; set => SetProperty(ref _name, value); }
+    [ObservableProperty]
+    public partial string Name { get; set; } = string.Empty;
 
-    private byte[]? _icon;
-    public byte[]? Icon { get => _icon; set => SetProperty(ref _icon, value); }
+    [ObservableProperty]
+    public partial byte[]? Icon { get; set; }
 
     public override string ToString() => Name;
 }

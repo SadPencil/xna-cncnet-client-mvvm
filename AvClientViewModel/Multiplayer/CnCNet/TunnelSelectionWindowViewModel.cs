@@ -30,19 +30,19 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _descriptionText = string.Empty;
+    public partial string DescriptionText { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int _selectedTunnelIndex = -1;
+    public partial int SelectedTunnelIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private string? _selectedTunnelName;
+    public partial string? SelectedTunnelName { get; set; }
 
     [ObservableProperty]
-    private bool _isConfirmEnabled;
+    public partial bool IsConfirmEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     // --- Observable collections ---
 

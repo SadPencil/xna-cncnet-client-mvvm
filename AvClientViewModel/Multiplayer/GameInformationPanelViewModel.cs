@@ -29,49 +29,49 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _selectedGameName = string.Empty;
+    public partial string SelectedGameName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _hostName = string.Empty;
+    public partial string HostName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _mapName = string.Empty;
+    public partial string MapName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _gameModeName = string.Empty;
+    public partial string GameModeName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int _playerCount;
+    public partial int PlayerCount { get; set; }
 
     [ObservableProperty]
-    private int _maxPlayers;
+    public partial int MaxPlayers { get; set; }
 
     [ObservableProperty]
-    private int _ping;
+    public partial int Ping { get; set; }
 
     [ObservableProperty]
-    private string _gameVersion = string.Empty;
+    public partial string GameVersion { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int _skillLevelIndex = -1;
+    public partial int SkillLevelIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private string _skillLevelName = string.Empty;
+    public partial string SkillLevelName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isLocked;
+    public partial bool IsLocked { get; set; }
 
     [ObservableProperty]
-    private bool _isPasswordProtected;
+    public partial bool IsPasswordProtected { get; set; }
 
     [ObservableProperty]
-    private bool _isCompatible;
+    public partial bool IsCompatible { get; set; }
 
     [ObservableProperty]
-    private bool _hasGameInfo;
+    public partial bool HasGameInfo { get; set; }
 
     [ObservableProperty]
-    private string? _mapHash;
+    public partial string? MapHash { get; set; }
 
     // --- Observable collections ---
 

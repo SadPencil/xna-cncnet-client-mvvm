@@ -25,16 +25,16 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _draftMessage = string.Empty;
+    public partial string DraftMessage { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isAutoScrollEnabled = true;
+    public partial bool IsAutoScrollEnabled { get; set; }  = true;
 
     [ObservableProperty]
-    private string? _pendingUntrustedUrl;
+    public partial string? PendingUntrustedUrl { get; set; }
 
     [ObservableProperty]
-    private bool _isUntrustedUrlDialogVisible;
+    public partial bool IsUntrustedUrlDialogVisible { get; set; }
 
     // --- Observable collections ---
 

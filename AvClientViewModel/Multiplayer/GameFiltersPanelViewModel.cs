@@ -42,22 +42,22 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _showFriendsOnlyGames;
+    public partial bool ShowFriendsOnlyGames { get; set; }
 
     [ObservableProperty]
-    private bool _hideLockedGames;
+    public partial bool HideLockedGames { get; set; }
 
     [ObservableProperty]
-    private bool _hidePasswordProtectedGames;
+    public partial bool HidePasswordProtectedGames { get; set; }
 
     [ObservableProperty]
-    private bool _hideIncompatibleGames;
+    public partial bool HideIncompatibleGames { get; set; }
 
     [ObservableProperty]
-    private int _maxPlayerCount = MaxPlayerCountLimit;
+    public partial int MaxPlayerCount { get; set; }  = MaxPlayerCountLimit;
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     // --- Constructor ---
 

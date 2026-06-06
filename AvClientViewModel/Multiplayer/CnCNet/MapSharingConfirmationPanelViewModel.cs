@@ -26,19 +26,19 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _mapName = string.Empty;
+    public partial string MapName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _hostName = string.Empty;
+    public partial string HostName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _statusText = string.Empty;
+    public partial string StatusText { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isDownloadAvailable;
+    public partial bool IsDownloadAvailable { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     private readonly Action? onMapDownloadConfirmed;
     private readonly Action? onCancelled;

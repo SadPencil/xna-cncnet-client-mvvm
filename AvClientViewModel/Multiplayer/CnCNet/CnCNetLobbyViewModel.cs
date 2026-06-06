@@ -80,71 +80,71 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private List<HostedCnCNetGame> hostedGames = new();
 
     [ObservableProperty]
-    private string currentChannelName = string.Empty;
+    public partial string CurrentChannelName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string onlinePlayerCountText = "0";
+    public partial string OnlinePlayerCountText { get; set; }  = "0";
 
     [ObservableProperty]
-    private string playerName = string.Empty;
+    public partial string PlayerName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string draftMessage = string.Empty;
+    public partial string DraftMessage { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int selectedGameIndex = -1;
+    public partial int SelectedGameIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private int selectedColorIndex;
+    public partial int SelectedColorIndex { get; set; }
 
     [ObservableProperty]
-    private int selectedChannelIndex;
+    public partial int SelectedChannelIndex { get; set; }
 
     [ObservableProperty]
-    private string gameSearchText = string.Empty;
+    public partial string GameSearchText { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string logoutButtonText = "Log Out".L10N("Client:Main:LogOut");
+    public partial string LogoutButtonText { get; set; }  = "Log Out".L10N("Client:Main:LogOut");
 
     [ObservableProperty]
-    private bool isNewGameButtonEnabled;
+    public partial bool IsNewGameButtonEnabled { get; set; }
 
     [ObservableProperty]
-    private bool isJoinGameButtonEnabled;
+    public partial bool IsJoinGameButtonEnabled { get; set; }
 
     [ObservableProperty]
-    private bool isChatInputEnabled;
+    public partial bool IsChatInputEnabled { get; set; }
 
     [ObservableProperty]
-    private bool isChannelDropdownEnabled;
+    public partial bool IsChannelDropdownEnabled { get; set; }
 
     [ObservableProperty]
-    private bool isGameSearchEnabled;
+    public partial bool IsGameSearchEnabled { get; set; }
 
     [ObservableProperty]
-    private bool isConnected;
+    public partial bool IsConnected { get; set; }
 
     [ObservableProperty]
-    private bool isVisible;
+    public partial bool IsVisible { get; set; }
 
     // Observable state for View to react to
     [ObservableProperty]
-    private string? pendingMessage;
+    public partial string? PendingMessage { get; set; }
 
     [ObservableProperty]
-    private bool isUpdateCheckNeeded;
+    public partial bool IsUpdateCheckNeeded { get; set; }
 
     [ObservableProperty]
-    private bool isLoginWindowVisible;
+    public partial bool IsLoginWindowVisible { get; set; }
 
     [ObservableProperty]
-    private bool isGameCreationPanelVisible;
+    public partial bool IsGameCreationPanelVisible { get; set; }
 
     [ObservableProperty]
-    private IPendingGameInviteData? pendingGameInvite;
+    public partial IPendingGameInviteData? PendingGameInvite { get; set; }
 
     [ObservableProperty]
-    private string? soundToPlay;
+    public partial string? SoundToPlay { get; set; }
 
     // The lists exposed to the View - use ObservableCollection so Avalonia
     // ListBox detects in-place modifications without needing OnPropertyChanged.
@@ -175,17 +175,17 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     // Computed observable for the currently selected game in the list.
     [ObservableProperty]
-    private IHostedCnCNetGame? selectedGame;
+    public partial IHostedCnCNetGame? SelectedGame { get; set; }
 
     // Hover state for the game info panel (driven by View's PointerMoved).
     [ObservableProperty]
-    private int hoveredGameIndex = -1;
+    public partial int HoveredGameIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private IHostedCnCNetGame? hoveredGame;
+    public partial IHostedCnCNetGame? HoveredGame { get; set; }
 
     [ObservableProperty]
-    private Image? hoveredGameMapPreview;
+    public partial Image? HoveredGameMapPreview { get; set; }
 
     private IDisposable? _mapPreviewLease;
 

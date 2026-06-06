@@ -22,10 +22,10 @@ namespace AvClientViewModel.Generic
         private readonly StatisticsWindowViewModel statisticsWindowViewModel;
 
         [ObservableProperty]
-        private bool isVisible;
+        public partial bool IsVisible { get; set; }
 
         [ObservableProperty]
-        private bool isMapEditorAvailable;
+        public partial bool IsMapEditorAvailable { get; set; }
 
         public ExtrasWindowViewModel(StatisticsWindowViewModel statisticsWindowViewModel)
         {

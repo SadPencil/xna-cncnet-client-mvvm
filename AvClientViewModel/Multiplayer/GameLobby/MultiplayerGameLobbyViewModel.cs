@@ -43,64 +43,64 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     // --- Network settings ---
     [ObservableProperty]
-    private int _frameSendRate;
+    public partial int FrameSendRate { get; set; }
 
     [ObservableProperty]
-    private int _maxAhead;
+    public partial int MaxAhead { get; set; }
 
     [ObservableProperty]
-    private int _protocolVersion;
+    public partial int ProtocolVersion { get; set; }
 
     // --- Chat ---
     [ObservableProperty]
-    private IReadOnlyList<string> _chatMessages = Array.Empty<string>();
+    public partial IReadOnlyList<string> ChatMessages { get; set; }  = Array.Empty<string>();
 
     private readonly List<string> chatMessagesList = new();
 
     [ObservableProperty]
-    private string _draftMessage = string.Empty;
+    public partial string DraftMessage { get; set; }  = string.Empty;
 
     // --- Ready / Lock ---
     [ObservableProperty]
-    private bool _isReady;
+    public partial bool IsReady { get; set; }
 
     [ObservableProperty]
-    private bool _isGameLocked;
+    public partial bool IsGameLocked { get; set; }
 
     [ObservableProperty]
-    private bool _isAutoReadyChecked;
+    public partial bool IsAutoReadyChecked { get; set; }
 
     [ObservableProperty]
-    private bool _isAutoReadyEnabled;
+    public partial bool IsAutoReadyEnabled { get; set; }
 
     // --- Player status indicators ---
     [ObservableProperty]
-    private IReadOnlyList<PlayerSlotState> _playerStatuses = Enumerable.Repeat(PlayerSlotState.Empty, MAX_PLAYER_COUNT).ToArray();
+    public partial IReadOnlyList<PlayerSlotState> PlayerStatuses { get; set; }  = Enumerable.Repeat(PlayerSlotState.Empty, MAX_PLAYER_COUNT).ToArray();
 
     [ObservableProperty]
-    private IReadOnlyList<string> _playerStatusTooltips = Enumerable.Repeat(string.Empty, MAX_PLAYER_COUNT).ToArray();
+    public partial IReadOnlyList<string> PlayerStatusTooltips { get; set; }  = Enumerable.Repeat(string.Empty, MAX_PLAYER_COUNT).ToArray();
 
     [ObservableProperty]
-    private IReadOnlyList<int> _playerPings = Enumerable.Repeat(-1, MAX_PLAYER_COUNT).ToArray();
+    public partial IReadOnlyList<int> PlayerPings { get; set; }  = Enumerable.Repeat(-1, MAX_PLAYER_COUNT).ToArray();
 
     // --- Map list visibility ---
     [ObservableProperty]
-    private bool _isMapListVisible = true;
+    public partial bool IsMapListVisible { get; set; }  = true;
 
     // --- Lock button ---
     [ObservableProperty]
-    private string _lockGameButtonText = "Lock Game".L10N("Client:Main:ButtonLockGame");
+    public partial string LockGameButtonText { get; set; }  = "Lock Game".L10N("Client:Main:ButtonLockGame");
 
     [ObservableProperty]
-    private bool _isLockGameButtonVisible = true;
+    public partial bool IsLockGameButtonVisible { get; set; }  = true;
 
     // --- Save game notification ---
     [ObservableProperty]
-    private bool _hasSavedGameWarning;
+    public partial bool HasSavedGameWarning { get; set; }
 
     // --- Map preview start location selection ---
     [ObservableProperty]
-    private bool _isStartLocationSelectionEnabled = true;
+    public partial bool IsStartLocationSelectionEnabled { get; set; }  = true;
 
     // --- Internal state ---
     private bool suppressAutoReadyChanged;

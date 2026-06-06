@@ -31,13 +31,13 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _selectedTagIndex = -1;
+    public partial int SelectedTagIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private string? _selectedTagName;
+    public partial string? SelectedTagName { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     // --- Observable collections ---
 

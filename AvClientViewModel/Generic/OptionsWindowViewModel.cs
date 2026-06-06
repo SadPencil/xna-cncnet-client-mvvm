@@ -47,7 +47,7 @@ namespace AvClientViewModel.Generic
         public IComponentsPanelViewModel ComponentsOptions => componentsPanel;
 
         [ObservableProperty]
-        private int selectedPanelIndex;
+        public partial int SelectedPanelIndex { get; set; }
 
         partial void OnSelectedPanelIndexChanged(int value)
         {
@@ -60,35 +60,35 @@ namespace AvClientViewModel.Generic
         }
 
         [ObservableProperty]
-        private bool isComponentsPanelVisible;
+        public partial bool IsComponentsPanelVisible { get; set; }
 
         [ObservableProperty]
-        private bool isUpdaterPanelVisible;
+        public partial bool IsUpdaterPanelVisible { get; set; }
 
         [ObservableProperty]
-        private bool isComponentDownloadInProgress;
+        public partial bool IsComponentDownloadInProgress { get; set; }
 
         [ObservableProperty]
-        private bool isVisible;
+        public partial bool IsVisible { get; set; }
 
         // Panel visibility (derived from SelectedPanelIndex)
         [ObservableProperty]
-        private bool isDisplayPanelVisible = true;
+        public partial bool IsDisplayPanelVisible { get; set; }  = true;
 
         [ObservableProperty]
-        private bool isAudioPanelVisible;
+        public partial bool IsAudioPanelVisible { get; set; }
 
         [ObservableProperty]
-        private bool isGamePanelVisible;
+        public partial bool IsGamePanelVisible { get; set; }
 
         [ObservableProperty]
-        private bool isCnCNetPanelVisible;
+        public partial bool IsCnCNetPanelVisible { get; set; }
 
         [ObservableProperty]
-        private bool isUpdaterPanelVisibleInner;
+        public partial bool IsUpdaterPanelVisibleInner { get; set; }
 
         [ObservableProperty]
-        private bool isComponentsPanelVisibleInner;
+        public partial bool IsComponentsPanelVisibleInner { get; set; }
 
         // Domain events (for MainMenu to subscribe, not on interface)
         public event EventHandler? RestartRequested;

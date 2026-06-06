@@ -17,10 +17,10 @@ public partial class CheaterWindowViewModel : ObservableObject, ICheaterWindowVi
     }
 
     [ObservableProperty]
-    private string titleText = string.Empty;
+    public partial string TitleText { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string messageText = string.Empty;
+    public partial string MessageText { get; set; }  = string.Empty;
 
     public IRelayCommand ConfirmCommand { get; }
     public IRelayCommand CancelCommand { get; }

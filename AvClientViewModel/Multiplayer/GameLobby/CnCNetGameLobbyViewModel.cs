@@ -81,42 +81,39 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     // --- Observable state ---
     [ObservableProperty]
-    private string _channelName = string.Empty;
+    public partial string ChannelName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _selectedTunnelName = string.Empty;
+    public partial string SelectedTunnelName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isEnabled;
+    public partial bool IsEnabled { get; set; }
 
     [ObservableProperty]
-    private string _gameRoomName = string.Empty;
+    public partial string GameRoomName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int _playerLimit;
+    public partial int PlayerLimit { get; set; }
 
     [ObservableProperty]
-    private int _skillLevel;
+    public partial int SkillLevel { get; set; }
 
     [ObservableProperty]
-    private bool _isCustomPassword;
+    public partial bool IsCustomPassword { get; set; }
 
     [ObservableProperty]
-    private bool _tunnelErrorMode;
+    public partial bool TunnelErrorMode { get; set; }
 
     [ObservableProperty]
-    private IIRCColor _chatColor;
+    public partial IIRCColor ChatColor { get; set; }
 
     // --- IsHost ---
+    // Note: override of abstract property, so [ObservableProperty] cannot be used.
     private bool _isHost;
     public override bool IsHost
     {
         get => _isHost;
-        set
-        {
-            if (SetProperty(ref _isHost, value))
-                OnPropertyChanged(nameof(IsHost));
-        }
+        set => SetProperty(ref _isHost, value);
     }
 
     // --- Events ---

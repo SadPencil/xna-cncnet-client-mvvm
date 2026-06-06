@@ -25,25 +25,25 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _scoreVolume;
+    public partial int ScoreVolume { get; set; }
 
     [ObservableProperty]
-    private int _soundVolume;
+    public partial int SoundVolume { get; set; }
 
     [ObservableProperty]
-    private int _voiceVolume;
+    public partial int VoiceVolume { get; set; }
 
     [ObservableProperty]
-    private int _clientVolume;
+    public partial int ClientVolume { get; set; }
 
     [ObservableProperty]
-    private bool _isScoreShuffleEnabled;
+    public partial bool IsScoreShuffleEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isMainMenuMusicEnabled;
+    public partial bool IsMainMenuMusicEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isStopMusicOnMenuDisabled;
+    public partial bool IsStopMusicOnMenuDisabled { get; set; }
 
     /// <summary>
     /// Derived from IsMainMenuMusicEnabled - defined once, not repeated.
@@ -51,10 +51,10 @@ public partial class AudioOptionsPanelViewModel : ObservableObject, IAudioOption
     public bool IsStopMusicOnMenuAllowed => IsMainMenuMusicEnabled;
 
     [ObservableProperty]
-    private bool _isGameLobbyMessageSoundEnabled;
+    public partial bool IsGameLobbyMessageSoundEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isHostedGameSoundEnabled;
+    public partial bool IsHostedGameSoundEnabled { get; set; }
 
     /// <summary>
     /// Indicates whether a restart is required after saving settings.

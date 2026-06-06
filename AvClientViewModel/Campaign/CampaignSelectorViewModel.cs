@@ -114,34 +114,34 @@ namespace AvClientViewModel.Campaign
         #region Observable Properties
 
         [ObservableProperty]
-        private IReadOnlyList<ICampaignListItem> campaignListItems = [];
+        public partial IReadOnlyList<ICampaignListItem> CampaignListItems { get; set; }  = [];
 
         [ObservableProperty]
-        private int selectedCampaignIndex = -1;
+        public partial int SelectedCampaignIndex { get; set; }  = -1;
 
         [ObservableProperty]
-        private string missionDescriptionText = string.Empty;
+        public partial string MissionDescriptionText { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private string? missionPreviewImagePath;
+        public partial string? MissionPreviewImagePath { get; set; }
 
         [ObservableProperty]
-        private bool isControlsEnabled = true;
+        public partial bool IsControlsEnabled { get; set; }  = true;
 
         [ObservableProperty]
-        private bool isVisible;
+        public partial bool IsVisible { get; set; }
 
         [ObservableProperty]
-        private IReadOnlyList<string> difficultyNames = DifficultyNamesArray;
+        public partial IReadOnlyList<string> DifficultyNames { get; set; }  = DifficultyNamesArray;
 
         [ObservableProperty]
-        private int selectedDifficultyIndex = 1;
+        public partial int SelectedDifficultyIndex { get; set; }  = 1;
 
         [ObservableProperty]
-        private bool canLaunchCampaign;
+        public partial bool CanLaunchCampaign { get; set; }
 
         [ObservableProperty]
-        private bool isCheaterWindowVisible;
+        public partial bool IsCheaterWindowVisible { get; set; }
 
         public bool IsReturnButtonVisible => ClientConfiguration.Instance.CampaignTagSelectorEnabled;
 

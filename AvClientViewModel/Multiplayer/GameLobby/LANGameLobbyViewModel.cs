@@ -75,13 +75,13 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
 
     // --- Observable state ---
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     [ObservableProperty]
-    private string _localAddressText = string.Empty;
+    public partial string LocalAddressText { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int _chatColorIndex;
+    public partial int ChatColorIndex { get; set; }
 
     protected override bool IsMultiplayer => true;
 

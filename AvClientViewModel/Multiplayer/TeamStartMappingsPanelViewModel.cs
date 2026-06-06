@@ -28,7 +28,7 @@ public partial class TeamStartMappingsPanelViewModel : ObservableObject, ITeamSt
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _isEnabled;
+    public partial bool IsEnabled { get; set; }
 
     // --- Observable collections ---
 

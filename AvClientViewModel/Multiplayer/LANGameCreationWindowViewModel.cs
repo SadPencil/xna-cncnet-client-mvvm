@@ -23,13 +23,13 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _gameName = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
+    public partial string GameName { get; set; }  = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
 
     [ObservableProperty]
-    private bool _isLoadGameAvailable;
+    public partial bool IsLoadGameAvailable { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     // --- Callbacks ---
 

@@ -28,22 +28,22 @@ namespace AvClientViewModel.Generic
         private readonly IUIThreadMarshaller uiThreadMarshaller;
 
         [ObservableProperty]
-        private string descriptionText = string.Empty;
+        public partial string DescriptionText { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private string currentFileName = string.Empty;
+        public partial string CurrentFileName { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private int currentFilePercentage;
+        public partial int CurrentFilePercentage { get; set; }
 
         [ObservableProperty]
-        private int totalPercentage;
+        public partial int TotalPercentage { get; set; }
 
         [ObservableProperty]
-        private string updaterStatusText = "Preparing".L10N("Client:Main:StatusPreparing");
+        public partial string UpdaterStatusText { get; set; }  = "Preparing".L10N("Client:Main:StatusPreparing");
 
         [ObservableProperty]
-        private bool isVisible;
+        public partial bool IsVisible { get; set; }
 
         /// <summary>
         /// Domain event: raised when update completes. MainMenu subscribes directly.

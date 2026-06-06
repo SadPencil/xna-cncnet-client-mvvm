@@ -69,19 +69,19 @@ public partial class CnCNetGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewM
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _channelName = string.Empty;
+    public partial string ChannelName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _selectedTunnelName = string.Empty;
+    public partial string SelectedTunnelName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isEnabled;
+    public partial bool IsEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isChangeTunnelVisible;
+    public partial bool IsChangeTunnelVisible { get; set; }
 
     [ObservableProperty]
-    private int _chatColorIndex;
+    public partial int ChatColorIndex { get; set; }
 
     // --- Events ---
 

@@ -4,16 +4,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
-public class PlayerColorOption : ObservableObject, IPlayerColor
+public partial class PlayerColorOption : ObservableObject, IPlayerColor
 {
-    private int _index;
-    public int Index { get => _index; set => SetProperty(ref _index, value); }
+    [ObservableProperty]
+    public partial int Index { get; set; }
 
-    private string _name = string.Empty;
-    public string Name { get => _name; set => SetProperty(ref _name, value); }
+    [ObservableProperty]
+    public partial string Name { get; set; } = string.Empty;
 
-    private uint _color;
-    public uint Color { get => _color; set => SetProperty(ref _color, value); }
+    [ObservableProperty]
+    public partial uint Color { get; set; }
 
     public override string ToString() => Name;
 }

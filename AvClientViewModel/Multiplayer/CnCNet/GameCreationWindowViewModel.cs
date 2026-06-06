@@ -33,40 +33,40 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _isWindowVisible;
+    public partial bool IsWindowVisible { get; set; }
 
     [ObservableProperty]
-    private string _gameName = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
+    public partial string GameName { get; set; }  = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
 
     [ObservableProperty]
-    private string _password = string.Empty;
+    public partial string Password { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private int _maxPlayers = 8;
+    public partial int MaxPlayers { get; set; }  = 8;
 
     [ObservableProperty]
-    private bool _isPrivateGame;
+    public partial bool IsPrivateGame { get; set; }
 
     [ObservableProperty]
-    private bool _isLoadedGame;
+    public partial bool IsLoadedGame { get; set; }
 
     [ObservableProperty]
-    private int _selectedTunnelIndex;
+    public partial int SelectedTunnelIndex { get; set; }
 
     [ObservableProperty]
-    private int _selectedSkillLevel;
+    public partial int SelectedSkillLevel { get; set; }
 
     [ObservableProperty]
-    private bool _isAdvancedOptionsVisible;
+    public partial bool IsAdvancedOptionsVisible { get; set; }
 
     [ObservableProperty]
-    private bool _canCreateGame;
+    public partial bool CanCreateGame { get; set; }
 
     [ObservableProperty]
-    private bool _canLoadGame;
+    public partial bool CanLoadGame { get; set; }
 
     [ObservableProperty]
-    private string _validationErrorMessage = string.Empty;
+    public partial string ValidationErrorMessage { get; set; }  = string.Empty;
 
     // --- Observable collections ---
 

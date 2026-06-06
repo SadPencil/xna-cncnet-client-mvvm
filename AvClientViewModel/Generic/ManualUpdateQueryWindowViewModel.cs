@@ -20,10 +20,10 @@ namespace AvClientViewModel.Generic
         private string descriptionTemplate = "Version {0} is available.\n\nManual download and installation is\nrequired.".L10N("Client:Main:ManualDownloadAvailable");
 
         [ObservableProperty]
-        private string descriptionText = string.Empty;
+        public partial string DescriptionText { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private bool isVisible;
+        public partial bool IsVisible { get; set; }
 
         public ManualUpdateQueryWindowViewModel(IUpdateService updateService)
         {

@@ -24,13 +24,13 @@ public partial class PrivateMessageNotificationBoxViewModel : ObservableObject, 
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _senderName = string.Empty;
+    public partial string SenderName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _messagePreview = string.Empty;
+    public partial string MessagePreview { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     private readonly Action<string>? onOpenConversationRequested;
 

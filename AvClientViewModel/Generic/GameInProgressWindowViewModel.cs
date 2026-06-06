@@ -35,13 +35,13 @@ namespace AvClientViewModel.Generic
         private bool deletingLogFilesFailed = false;
 
         [ObservableProperty]
-        private bool isGameInProgress;
+        public partial bool IsGameInProgress { get; set; }
 
         [ObservableProperty]
-        private bool isCursorVisible = true;
+        public partial bool IsCursorVisible { get; set; }  = true;
 
         [ObservableProperty]
-        private WindowState windowState = WindowState.Normal;
+        public partial WindowState WindowState { get; set; }  = WindowState.Normal;
 
         public GameInProgressWindowViewModel(IGameProcessService gameProcessService)
         {

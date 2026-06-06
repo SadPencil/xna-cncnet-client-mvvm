@@ -33,46 +33,46 @@ namespace AvClientViewModel.Generic
         private bool initialized = false;
 
         [ObservableProperty]
-        private List<string> gameModeNames = new();
+        public partial List<string> GameModeNames { get; set; }  = new();
 
         [ObservableProperty]
-        private int selectedGameModeIndex;
+        public partial int SelectedGameModeIndex { get; set; }
 
         [ObservableProperty]
-        private List<string> gameClassNames = new()
+        public partial List<string> GameClassNames { get; set; }  = new()
         {
             "All games", "Online games", "Online PvP", "Online Co-Op", "Skirmish"
         };
 
         [ObservableProperty]
-        private int selectedGameClassIndex;
+        public partial int SelectedGameClassIndex { get; set; }
 
         [ObservableProperty]
-        private bool showingTotalStats;
+        public partial bool ShowingTotalStats { get; set; }
 
         [ObservableProperty]
-        private bool includeSpectatedGames = true;
+        public partial bool IncludeSpectatedGames { get; set; }  = true;
 
         [ObservableProperty]
-        private List<string> statisticEntrySummaries = new();
+        public partial List<string> StatisticEntrySummaries { get; set; }  = new();
 
         [ObservableProperty]
-        private bool isVisible;
+        public partial bool IsVisible { get; set; }
 
         [ObservableProperty]
-        private bool showClearConfirmation;
+        public partial bool ShowClearConfirmation { get; set; }
 
         /// <summary>
         /// Detailed statistics for the selected game.
         /// </summary>
         [ObservableProperty]
-        private List<IGamePlayerStatistics> selectedGamePlayers = new();
+        public partial List<IGamePlayerStatistics> SelectedGamePlayers { get; set; }  = new();
 
         /// <summary>
         /// Total statistics values.
         /// </summary>
         [ObservableProperty]
-        private ITotalStatistics totalStatistics = new TotalStatistics();
+        public partial ITotalStatistics TotalStatistics { get; set; }  = new TotalStatistics();
 
         public StatisticsWindowViewModel(MapLoader mapLoader)
         {

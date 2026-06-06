@@ -33,7 +33,7 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
     private bool? _userFullScreenOverride;
 
     [ObservableProperty]
-    private WindowState windowState;
+    public partial WindowState WindowState { get; set; }
 
     /// <summary>
     /// When <paramref name="gameInProgressViewModel"/> is null (before DI is ready),

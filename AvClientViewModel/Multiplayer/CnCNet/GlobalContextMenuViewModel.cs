@@ -32,28 +32,28 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _targetUserName = string.Empty;
+    public partial string TargetUserName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _canInvitePlayer;
+    public partial bool CanInvitePlayer { get; set; }
 
     [ObservableProperty]
-    private bool _canJoinPlayer;
+    public partial bool CanJoinPlayer { get; set; }
 
     [ObservableProperty]
-    private bool _canOpenPrivateMessage;
+    public partial bool CanOpenPrivateMessage { get; set; }
 
     [ObservableProperty]
-    private bool _canAddFriend;
+    public partial bool CanAddFriend { get; set; }
 
     [ObservableProperty]
-    private bool _isFriend;
+    public partial bool IsFriend { get; set; }
 
     [ObservableProperty]
-    private bool _isBlocked;
+    public partial bool IsBlocked { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     // --- Observable collections ---
 

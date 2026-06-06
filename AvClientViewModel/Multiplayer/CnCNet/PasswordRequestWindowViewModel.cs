@@ -21,16 +21,16 @@ public partial class PasswordRequestWindowViewModel : ObservableObject, IPasswor
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _gameName = string.Empty;
+    public partial string GameName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _hostName = string.Empty;
+    public partial string HostName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _password = string.Empty;
+    public partial string Password { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     private readonly Action<PasswordEventArgs>? onPasswordEntered;
 

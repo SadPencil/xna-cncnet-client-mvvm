@@ -52,28 +52,28 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _selectedIngameResolutionIndex;
+    public partial int SelectedIngameResolutionIndex { get; set; }
 
     [ObservableProperty]
-    private int _selectedClientResolutionIndex;
+    public partial int SelectedClientResolutionIndex { get; set; }
 
     [ObservableProperty]
-    private int _selectedDetailLevelIndex;
+    public partial int SelectedDetailLevelIndex { get; set; }
 
     [ObservableProperty]
-    private int _selectedRendererIndex;
+    public partial int SelectedRendererIndex { get; set; }
 
     [ObservableProperty]
-    private int _selectedThemeIndex;
+    public partial int SelectedThemeIndex { get; set; }
 
     [ObservableProperty]
-    private int _selectedTranslationIndex;
+    public partial int SelectedTranslationIndex { get; set; }
 
     [ObservableProperty]
-    private bool _isWindowedModeEnabled;
+    public partial bool IsWindowedModeEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isBorderlessWindowedModeEnabled;
+    public partial bool IsBorderlessWindowedModeEnabled { get; set; }
 
     /// <summary>
     /// Derived from IsWindowedModeEnabled - defined once, not repeated.
@@ -81,28 +81,28 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     public bool IsBorderlessWindowedModeAllowed => IsWindowedModeEnabled;
 
     [ObservableProperty]
-    private bool _isBackBufferStoredInVideoMemory;
+    public partial bool IsBackBufferStoredInVideoMemory { get; set; }
 
     [ObservableProperty]
-    private bool _isBorderlessClientEnabled;
+    public partial bool IsBorderlessClientEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isIntegerScaledClientEnabled;
+    public partial bool IsIntegerScaledClientEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isGameCompatFixAvailable;
+    public partial bool IsGameCompatFixAvailable { get; set; }
 
     [ObservableProperty]
-    private bool _isFinalSunCompatFixAvailable;
+    public partial bool IsFinalSunCompatFixAvailable { get; set; }
 
     [ObservableProperty]
-    private bool _isRestartRequired;
+    public partial bool IsRestartRequired { get; set; }
 
     [ObservableProperty]
-    private bool _isDirectDrawCompatFixRequired;
+    public partial bool IsDirectDrawCompatFixRequired { get; set; }
 
     [ObservableProperty]
-    private bool _directDrawCompatFixRequiresAdmin;
+    public partial bool DirectDrawCompatFixRequiresAdmin { get; set; }
 
     // --- Observable collections ---
 

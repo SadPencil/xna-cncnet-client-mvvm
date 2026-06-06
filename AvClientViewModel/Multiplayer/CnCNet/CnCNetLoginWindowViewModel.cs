@@ -24,25 +24,25 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
     // --- Observable state ---
 
     [ObservableProperty]
-    private string _userName = string.Empty;
+    public partial string UserName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _password = string.Empty;
+    public partial string Password { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _rememberPassword;
+    public partial bool RememberPassword { get; set; }
 
     [ObservableProperty]
-    private bool _persistentMode;
+    public partial bool PersistentMode { get; set; }
 
     [ObservableProperty]
-    private bool _autoConnect;
+    public partial bool AutoConnect { get; set; }
 
     [ObservableProperty]
-    private bool _isAutoConnectAllowed;
+    public partial bool IsAutoConnectAllowed { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     private readonly Action? onConnectRequested;
     private readonly Action? onCancelled;

@@ -28,25 +28,25 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _isLoadMode;
+    public partial bool IsLoadMode { get; set; }
 
     [ObservableProperty]
-    private int _selectedPresetIndex;
+    public partial int SelectedPresetIndex { get; set; }
 
     [ObservableProperty]
-    private string _presetName = string.Empty;
+    public partial string PresetName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isNewPresetNameEnabled;
+    public partial bool IsNewPresetNameEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isConfirmEnabled;
+    public partial bool IsConfirmEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isDeleteEnabled;
+    public partial bool IsDeleteEnabled { get; set; }
 
     // --- Observable collections ---
 

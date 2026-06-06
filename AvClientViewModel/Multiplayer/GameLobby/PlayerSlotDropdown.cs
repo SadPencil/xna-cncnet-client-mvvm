@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
@@ -6,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
-public class PlayerSlotDropdown<T> : ObservableObject, IPlayerSlotDropdown<T>
+public partial class PlayerSlotDropdown<T> : ObservableObject, IPlayerSlotDropdown<T>
 {
     private readonly ObservableCollection<T> _options = new();
     public ObservableCollection<T> Options
@@ -45,17 +46,9 @@ public class PlayerSlotDropdown<T> : ObservableObject, IPlayerSlotDropdown<T>
         }
     }
 
-    private T? _selectedOption = default;
-    public T? SelectedOption
-    {
-        get => _selectedOption;
-        set => SetProperty(ref _selectedOption, value);
-    }
+    [ObservableProperty]
+    public partial T? SelectedOption { get; set; } = default;
 
-    private bool _isEnabled;
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set => SetProperty(ref _isEnabled, value);
-    }
+    [ObservableProperty]
+    public partial bool IsEnabled { get; set; }
 }

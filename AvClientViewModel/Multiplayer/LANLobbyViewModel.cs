@@ -78,22 +78,22 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     // --- Observable state ---
 
     [ObservableProperty]
-    private int _selectedGameIndex = -1;
+    public partial int SelectedGameIndex { get; set; }  = -1;
 
     [ObservableProperty]
-    private int _selectedColorIndex;
+    public partial int SelectedColorIndex { get; set; }
 
     [ObservableProperty]
-    private string _playerName = string.Empty;
+    public partial string PlayerName { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private string _draftMessage = string.Empty;
+    public partial string DraftMessage { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isEnabled;
+    public partial bool IsEnabled { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     // --- Observable collections ---
 

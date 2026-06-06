@@ -10,7 +10,7 @@ namespace AvClientViewModel.Multiplayer.GameLobby;
 /// <summary>
 /// Observable wrapper for a game option checkbox.
 /// </summary>
-public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
+public partial class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
 {
     public GameSessionSetting Setting { get; }
 
@@ -18,15 +18,12 @@ public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
 
     public string DisplayName => !string.IsNullOrEmpty(Setting.Text) ? Setting.Text : Setting.Name;
 
-    private bool _isChecked;
-    public bool IsChecked
+    [ObservableProperty]
+    public partial bool IsChecked { get; set; }
+
+    partial void OnIsCheckedChanged(bool value)
     {
-        get => _isChecked;
-        set
-        {
-            if (SetProperty(ref _isChecked, value))
-                Setting.Value = value ? 1 : 0;
-        }
+        Setting.Value = value ? 1 : 0;
     }
 
     /// <summary>
@@ -40,18 +37,14 @@ public class GameOptionCheckBox : ObservableObject, IGameOptionCheckBox
     /// </summary>
     public bool UserChecked { get; set; }
 
-    private bool _isEnabled = true;
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set => SetProperty(ref _isEnabled, value);
-    }
+    [ObservableProperty]
+    public partial bool IsEnabled { get; set; } = true;
 
     public GameOptionCheckBox(GameSessionSetting setting)
     {
         Setting = setting;
-        _isChecked = setting.Value != 0;
-        HostChecked = _isChecked;
-        UserChecked = _isChecked;
+        IsChecked = setting.Value != 0;
+        HostChecked = IsChecked;
+        UserChecked = IsChecked;
     }
 }

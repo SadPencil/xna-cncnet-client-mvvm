@@ -36,34 +36,34 @@ public partial class PlayerExtraOptionsPanelViewModel : ObservableObject, IPlaye
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _forceRandomSides;
+    public partial bool ForceRandomSides { get; set; }
 
     [ObservableProperty]
-    private bool _forceRandomColors;
+    public partial bool ForceRandomColors { get; set; }
 
     [ObservableProperty]
-    private bool _forceRandomStarts;
+    public partial bool ForceRandomStarts { get; set; }
 
     [ObservableProperty]
-    private bool _forceNoTeams;
+    public partial bool ForceNoTeams { get; set; }
 
     [ObservableProperty]
-    private bool _forceNoTeamsAllowChecking;
+    public partial bool ForceNoTeamsAllowChecking { get; set; }
 
     [ObservableProperty]
-    private bool _useTeamStartMappings;
+    public partial bool UseTeamStartMappings { get; set; }
 
     [ObservableProperty]
-    private bool _useTeamStartMappingsAllowChecking;
+    public partial bool UseTeamStartMappingsAllowChecking { get; set; }
 
     [ObservableProperty]
-    private int _selectedTeamStartMappingPresetIndex;
+    public partial int SelectedTeamStartMappingPresetIndex { get; set; }
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     [ObservableProperty]
-    private bool _isHostControlsEnabled;
+    public partial bool IsHostControlsEnabled { get; set; }
 
     // --- Observable collections ---
 

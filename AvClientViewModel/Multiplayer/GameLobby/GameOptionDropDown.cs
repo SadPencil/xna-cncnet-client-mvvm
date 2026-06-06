@@ -12,7 +12,7 @@ namespace AvClientViewModel.Multiplayer.GameLobby;
 /// <summary>
 /// Observable wrapper for a game option dropdown.
 /// </summary>
-public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
+public partial class GameOptionDropDown : ObservableObject, IGameOptionDropDown
 {
     public GameSessionSetting Setting { get; }
 
@@ -20,15 +20,12 @@ public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
 
     public string DisplayName => !string.IsNullOrEmpty(Setting.OptionName) ? Setting.OptionName : Setting.Name;
 
-    private int _selectedIndex;
-    public int SelectedIndex
+    [ObservableProperty]
+    public partial int SelectedIndex { get; set; }
+
+    partial void OnSelectedIndexChanged(int value)
     {
-        get => _selectedIndex;
-        set
-        {
-            if (SetProperty(ref _selectedIndex, value))
-                Setting.Value = value;
-        }
+        Setting.Value = value;
     }
 
     /// <summary>
@@ -42,24 +39,16 @@ public class GameOptionDropDown : ObservableObject, IGameOptionDropDown
     /// </summary>
     public int UserSelectedIndex { get; set; }
 
-    private bool _isEnabled = true;
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set => SetProperty(ref _isEnabled, value);
-    }
+    [ObservableProperty]
+    public partial bool IsEnabled { get; set; } = true;
 
-    private IReadOnlyList<string> _items = System.Array.Empty<string>();
-    public IReadOnlyList<string> Items
-    {
-        get => _items;
-        set => SetProperty(ref _items, value);
-    }
+    [ObservableProperty]
+    public partial IReadOnlyList<string> Items { get; set; } = System.Array.Empty<string>();
 
     public GameOptionDropDown(GameSessionSetting setting)
     {
         Setting = setting;
-        _selectedIndex = setting.Value;
+        SelectedIndex = setting.Value;
         UserSelectedIndex = setting.Value;
     }
 }

@@ -36,22 +36,22 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
     // --- Observable state ---
 
     [ObservableProperty]
-    private bool _isVisible;
+    public partial bool IsVisible { get; set; }
 
     [ObservableProperty]
-    private bool _showPlayerNamesInGame;
+    public partial bool ShowPlayerNamesInGame { get; set; }
 
     [ObservableProperty]
-    private bool _isErrorVisible;
+    public partial bool IsErrorVisible { get; set; }
 
     [ObservableProperty]
-    private string _errorMessage = string.Empty;
+    public partial string ErrorMessage { get; set; }  = string.Empty;
 
     [ObservableProperty]
-    private bool _isNoticeVisible;
+    public partial bool IsNoticeVisible { get; set; }
 
     [ObservableProperty]
-    private string _noticeMessage = string.Empty;
+    public partial string NoticeMessage { get; set; }  = string.Empty;
 
     // --- Domain events (on concrete class only, not on interface) ---
 

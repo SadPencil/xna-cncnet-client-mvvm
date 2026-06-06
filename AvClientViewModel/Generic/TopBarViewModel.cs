@@ -41,40 +41,40 @@ namespace AvClientViewModel.Generic
         private System.Timers.Timer? _autoHideTimer;
 
         [ObservableProperty]
-        private string connectionStatusText = "OFFLINE".L10N("Client:Main:StatusOffline");
+        public partial string ConnectionStatusText { get; set; }  = "OFFLINE".L10N("Client:Main:StatusOffline");
 
         [ObservableProperty]
-        private string playerCountText = "-";
+        public partial string PlayerCountText { get; set; }  = "-";
 
         [ObservableProperty]
-        private bool isPlayerCountVisible;
+        public partial bool IsPlayerCountVisible { get; set; }
 
         [ObservableProperty]
-        private string playerCountLabel = string.Empty;
+        public partial string PlayerCountLabel { get; set; }  = string.Empty;
 
         [ObservableProperty]
-        private bool areSwitchButtonsClickable = true;
+        public partial bool AreSwitchButtonsClickable { get; set; }  = true;
 
         [ObservableProperty]
-        private bool isOptionsButtonClickable = true;
+        public partial bool IsOptionsButtonClickable { get; set; }  = true;
 
         [ObservableProperty]
-        private bool isLogoutButtonClickable;
+        public partial bool IsLogoutButtonClickable { get; set; }
 
         [ObservableProperty]
-        private bool isLanMode;
+        public partial bool IsLanMode { get; set; }
 
         [ObservableProperty]
-        private SwitchType lastSwitchType;
+        public partial SwitchType LastSwitchType { get; set; }
 
         [ObservableProperty]
-        private string mainButtonText = "Main Menu".L10N("Client:Main:MainMenu");
+        public partial string MainButtonText { get; set; }  = "Main Menu".L10N("Client:Main:MainMenu");
 
         [ObservableProperty]
-        private bool isExpanded;
+        public partial bool IsExpanded { get; set; }
 
         [ObservableProperty]
-        private int unreadMessageCount;
+        public partial int UnreadMessageCount { get; set; }
 
         /// <summary>
         /// Domain event: fired when user logs out. MainMenu subscribes to handle navigation.

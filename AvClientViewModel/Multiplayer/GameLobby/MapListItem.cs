@@ -9,45 +9,25 @@ namespace AvClientViewModel.Multiplayer.GameLobby;
 /// <summary>
 /// Represents a single item in the map list for display.
 /// </summary>
-public class MapListItem : ObservableObject, IMapListItem
+public partial class MapListItem : ObservableObject, IMapListItem
 {
     /// <summary>
     /// The source GameModeMap this item represents.
     /// </summary>
     public GameModeMap Source { get; init; }
 
-    private int _rankIndex;
-    public int RankIndex
-    {
-        get => _rankIndex;
-        set => SetProperty(ref _rankIndex, value);
-    }
+    [ObservableProperty]
+    public partial int RankIndex { get; set; }
 
-    private string _mapName = string.Empty;
-    public string MapName
-    {
-        get => _mapName;
-        set => SetProperty(ref _mapName, value);
-    }
+    [ObservableProperty]
+    public partial string MapName { get; set; } = string.Empty;
 
-    private string _gameModeName = string.Empty;
-    public string GameModeName
-    {
-        get => _gameModeName;
-        set => SetProperty(ref _gameModeName, value);
-    }
+    [ObservableProperty]
+    public partial string GameModeName { get; set; } = string.Empty;
 
-    private bool _isDisabled;
-    public bool IsDisabled
-    {
-        get => _isDisabled;
-        set => SetProperty(ref _isDisabled, value);
-    }
+    [ObservableProperty]
+    public partial bool IsDisabled { get; set; }
 
-    private string? _rankTexturePath;
-    public string? RankTexturePath
-    {
-        get => _rankTexturePath;
-        set => SetProperty(ref _rankTexturePath, value);
-    }
+    [ObservableProperty]
+    public partial string? RankTexturePath { get; set; }
 }
