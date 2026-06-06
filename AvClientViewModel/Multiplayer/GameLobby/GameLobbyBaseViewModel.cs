@@ -930,8 +930,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     protected void UI_CopyPlayerDataToUI()
     {
-        Log.Debug($"[DEBUG_HOSTSLOT] UI_CopyPlayerDataToUI called: Players.Count={Players.Count}, AIPlayers.Count={AIPlayers.Count}, PlayerSlots.Count={PlayerSlots.Count}");
-
         PlayerUpdatingInProgress = true;
 
         var slots = PlayerSlots;
@@ -954,8 +952,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             slot.Name.Options = CreateNameOptionsWithFirstPlayerName(pInfo.Name);
             slot.Name.SelectedOption = OptionAt(slot.Name.Options, 0);
             slot.Name.IsEnabled = false;
-            if (pId == 0)
-                Log.Debug($"[DEBUG_HOSTSLOT] UI_CopyPlayerDataToUI slot[0]: PlayerName={slot.PlayerName}, SelectedOption={slot.Name.SelectedOption}, IsEnabled={slot.Name.IsEnabled}");
 
             bool allowPlayerOptionsChange = allowOptionsChange || pInfo.Name == ProgramConstants.PLAYERNAME;
 
