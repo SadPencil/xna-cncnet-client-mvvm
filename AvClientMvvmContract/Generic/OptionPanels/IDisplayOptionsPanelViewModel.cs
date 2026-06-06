@@ -24,10 +24,10 @@ public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
     bool IsBorderlessWindowedModeAllowed { get; }
     bool IsBackBufferStoredInVideoMemory { get; set; }
     bool IsBorderlessClientEnabled { get; set; }
-    bool IsIntegerScalingAllowed { get; }
+    bool IsIntegerScaledClientAllowed { get; }
     bool IsIntegerScaledClientEnabled { get; set; }
-    bool IsGameCompatFixAvailable { get; }
-    bool IsFinalSunCompatFixAvailable { get; }
+    bool IsGameCompatFixAllowed { get; }
+    bool IsFinalSunCompatFixAllowed { get; }
     bool IsRestartRequired { get; }
 
     IRelayCommand InstallGameCompatibilityFixCommand { get; }

@@ -7,7 +7,7 @@ namespace AvClientMvvmContract.Generic;
 public interface IExtrasWindowViewModel : INotifyPropertyChanged
 {
     bool IsVisible { get; set; }
-    bool IsMapEditorAvailable { get; }
+    bool IsMapEditorAllowed { get; }
 
     IRelayCommand OpenStatisticsCommand { get; }
     IRelayCommand OpenMapEditorCommand { get; }

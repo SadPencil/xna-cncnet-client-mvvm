@@ -38,7 +38,7 @@
         <Button Content="Download"
                 Command="{Binding DownloadMapCommand}"
                 Width="92" Height="23"
-                IsEnabled="{Binding IsDownloadAvailable}" />
+                IsEnabled="{Binding IsDownloadAllowed}" />
         <Button Content="Cancel"
                 Command="{Binding CancelCommand}"
                 Width="92" Height="23" />

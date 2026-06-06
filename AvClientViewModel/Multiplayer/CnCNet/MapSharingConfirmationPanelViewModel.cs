@@ -35,7 +35,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     public partial string StatusText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial bool IsDownloadAvailable { get; set; }
+    public partial bool IsDownloadAllowed { get; set; }
 
     [ObservableProperty]
     public partial bool IsVisible { get; set; }
@@ -56,7 +56,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     [RelayCommand]
     private async Task DownloadMap()
     {
-        IsDownloadAvailable = false;
+        IsDownloadAllowed = false;
         StatusText = MapSharingDownloadText;
         onMapDownloadConfirmed?.Invoke();
 
@@ -80,7 +80,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
         MapName = mapName;
         HostName = hostName;
         StatusText = MapSharingRequestText;
-        IsDownloadAvailable = true;
+        IsDownloadAllowed = true;
         IsVisible = true;
     }
 
@@ -90,7 +90,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     public void SetDownloadingStatus()
     {
         StatusText = MapSharingDownloadText;
-        IsDownloadAvailable = false;
+        IsDownloadAllowed = false;
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public partial class MapSharingConfirmationPanelViewModel : ObservableObject, IM
     public void SetFailedStatus()
     {
         StatusText = MapSharingFailedText;
-        IsDownloadAvailable = false;
+        IsDownloadAllowed = false;
     }
 }
 

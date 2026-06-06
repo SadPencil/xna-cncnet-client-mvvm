@@ -25,12 +25,12 @@ namespace AvClientViewModel.Generic
         public partial bool IsVisible { get; set; }
 
         [ObservableProperty]
-        public partial bool IsMapEditorAvailable { get; set; }
+        public partial bool IsMapEditorAllowed { get; set; }
 
         public ExtrasWindowViewModel(StatisticsWindowViewModel statisticsWindowViewModel)
         {
             this.statisticsWindowViewModel = statisticsWindowViewModel;
-            IsMapEditorAvailable = !string.IsNullOrEmpty(ClientConfiguration.Instance.MapEditorExePath);
+            IsMapEditorAllowed = !string.IsNullOrEmpty(ClientConfiguration.Instance.MapEditorExePath);
         }
 
         [RelayCommand]

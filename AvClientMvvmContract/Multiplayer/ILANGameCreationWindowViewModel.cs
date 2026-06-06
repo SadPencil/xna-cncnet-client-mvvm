@@ -7,7 +7,7 @@ namespace AvClientMvvmContract.Multiplayer;
 public interface ILANGameCreationWindowViewModel : INotifyPropertyChanged
 {
     string GameName { get; set; }
-    bool IsLoadGameAvailable { get; }
+    bool IsLoadGameAllowed { get; }
     bool IsVisible { get; set; }
 
     IRelayCommand CreateNewGameCommand { get; }

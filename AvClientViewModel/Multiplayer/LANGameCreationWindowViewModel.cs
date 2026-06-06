@@ -26,7 +26,7 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     public partial string GameName { get; set; } = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
 
     [ObservableProperty]
-    public partial bool IsLoadGameAvailable { get; set; }
+    public partial bool IsLoadGameAllowed { get; set; }
 
     [ObservableProperty]
     public partial bool IsVisible { get; set; }
@@ -75,7 +75,7 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
 
     public void Open()
     {
-        IsLoadGameAvailable = AllowLoadingGame();
+        IsLoadGameAllowed = AllowLoadingGame();
         IsVisible = true;
     }
 

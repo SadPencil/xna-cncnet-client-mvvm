@@ -91,16 +91,16 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     /// <summary>
     /// Integer scaling is permanently disabled for the new client.
     /// </summary>
-    public bool IsIntegerScalingAllowed => false;
+    public bool IsIntegerScaledClientAllowed => false;
 
     [ObservableProperty]
     public partial bool IsIntegerScaledClientEnabled { get; set; }
 
     [ObservableProperty]
-    public partial bool IsGameCompatFixAvailable { get; set; }
+    public partial bool IsGameCompatFixAllowed { get; set; }
 
     [ObservableProperty]
-    public partial bool IsFinalSunCompatFixAvailable { get; set; }
+    public partial bool IsFinalSunCompatFixAllowed { get; set; }
 
     [ObservableProperty]
     public partial bool IsRestartRequired { get; set; }
@@ -183,10 +183,10 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             subKey.SetValue("TSCompatFixInstalled", "No");
 
             gameCompatFixInstalled = false;
-            IsGameCompatFixAvailable = false;
+            IsGameCompatFixAllowed = false;
 
             if (!finalSunCompatFixInstalled)
-                IsFinalSunCompatFixAvailable = false;
+                IsFinalSunCompatFixAllowed = false;
         }
         catch (Exception ex)
         {
@@ -221,10 +221,10 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
                   "The FinalSun Compatibility Fix has been succesfully uninstalled.".L10N("Client:DTAConfig:TSFinalSunFixUninstallText"));
 
             finalSunCompatFixInstalled = false;
-            IsFinalSunCompatFixAvailable = false;
+            IsFinalSunCompatFixAllowed = false;
 
             if (!gameCompatFixInstalled)
-                IsGameCompatFixAvailable = false;
+                IsGameCompatFixAllowed = false;
         }
         catch (Exception ex)
         {
@@ -541,8 +541,8 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
             object fsCompatFixValue = regKey.GetValue("FSCompatFixInstalled", "No");
             finalSunCompatFixInstalled = (string)fsCompatFixValue == "Yes";
 
-            IsGameCompatFixAvailable = gameCompatFixInstalled;
-            IsFinalSunCompatFixAvailable = finalSunCompatFixInstalled;
+            IsGameCompatFixAllowed = gameCompatFixInstalled;
+            IsFinalSunCompatFixAllowed = finalSunCompatFixInstalled;
         }
         catch (Exception ex)
         {

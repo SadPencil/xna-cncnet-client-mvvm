@@ -27,7 +27,7 @@
             Width="133" Height="23"
             FontSize="13"
             FontWeight="Bold"
-            IsEnabled="{Binding IsLoadGameAvailable}" />
+            IsEnabled="{Binding IsLoadGameAllowed}" />
 
     <!-- Cancel button -->
     <Button Content="Cancel"
