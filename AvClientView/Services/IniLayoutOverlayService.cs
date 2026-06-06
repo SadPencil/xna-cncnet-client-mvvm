@@ -330,7 +330,7 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // {name}_c.png convention.
         if (control is Button button
             && idleTexturePath != null
-            && !section.Keys.Exists(kvp => kvp.Key == "HoverTexture"))
+            && !section.Keys.Exists(kvp => kvp.Key == "HoverTexture" || kvp.Key == "$HoverTexture"))
         {
             string hoverPath = DeriveHoverTexturePath(idleTexturePath);
             if (hoverPath != null)
@@ -343,7 +343,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
     private static void ApplySingleProperty(Control control, string key, string value, string controlName)
     {
-        switch (key)
+        // Strip $ prefix from INItializableWindow keys ($X, $Y, $Width, etc.)
+        string strippedKey = key.StartsWith('$') ? key.Substring(1) : key;
+
+        switch (strippedKey)
         {
             case "Size":
                 var sizeParts = value.Split(',');
@@ -606,7 +609,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         foreach (var kvp in section.Keys)
         {
-            switch (kvp.Key)
+            string defKey = kvp.Key.StartsWith('$') ? kvp.Key.Substring(1) : kvp.Key;
+            switch (defKey)
             {
                 case "FillWidth":
                     if (int.TryParse(kvp.Value, out int fw))
@@ -702,9 +706,10 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         foreach (var kvp in section.Keys)
         {
-            if (kvp.Key == "AnchorPoint")
+            string apKey = kvp.Key.StartsWith('$') ? kvp.Key.Substring(1) : kvp.Key;
+            if (apKey == "AnchorPoint")
                 anchorStr = kvp.Value;
-            else if (kvp.Key == "TextAnchor")
+            else if (apKey == "TextAnchor")
                 textAnchorStr = kvp.Value;
         }
 
@@ -858,7 +863,8 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
 
         foreach (var kvp in section.Keys)
         {
-            switch (kvp.Key)
+            string inlineKey = kvp.Key.StartsWith('$') ? kvp.Key.Substring(1) : kvp.Key;
+            switch (inlineKey)
             {
                 case "FillWidth":
                     if (int.TryParse(kvp.Value, out int fw))
