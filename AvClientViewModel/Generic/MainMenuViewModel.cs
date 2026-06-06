@@ -870,8 +870,28 @@ namespace AvClientViewModel.Generic
 
         private static void RestartClient()
         {
+            LaunchProcess(admin: false);
+        }
+
+        /// <summary>
+        /// Restarts the client with administrator privileges (Windows only).
+        /// On .NET Framework starts the native exe with runas verb.
+        /// On .NET 8+ starts the launcher exe with runas verb.
+        /// </summary>
+        internal static void RestartAsAdmin()
+        {
+            LaunchProcess(admin: true);
+        }
+
+        private static void LaunchProcess(bool admin)
+        {
 #if NETFRAMEWORK
-            System.Diagnostics.Process.Start(ProgramConstants.StartupExecutable);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = ProgramConstants.StartupExecutable,
+                Verb = admin ? "runas" : null,
+                UseShellExecute = admin,
+            });
 #else
             if (OperatingSystem.IsWindows())
             {
@@ -879,6 +899,8 @@ namespace AvClientViewModel.Generic
                 {
                     FileName = SafePath.CombineFilePath(ProgramConstants.GamePath, ClientConfiguration.Instance.LauncherExe),
                     Arguments = "-NET8 -Av",
+                    Verb = admin ? "runas" : null,
+                    UseShellExecute = admin,
                 });
             }
             else

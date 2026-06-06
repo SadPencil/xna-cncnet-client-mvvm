@@ -40,6 +40,7 @@ namespace AvClientViewModel
         /// Restarts the current application with administrator privileges.
         /// </summary>
         /// <returns>True if the restart was initiated successfully, false otherwise.</returns>
+        [Obsolete("Use MainMenuViewModel.RestartAsAdmin() instead.")]
         public static bool RestartAsAdmin()
         {
             bool runNativeWindowsExe = true;
