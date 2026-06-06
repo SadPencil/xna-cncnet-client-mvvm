@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ClientCore;
 
@@ -16,13 +17,21 @@ namespace AvClientViewModel.Services.Resolutions
     {
         public ResolutionProvider(IEnumerable<IScreenInfoProvider> screenInfoProviders)
         {
-            var ordered = screenInfoProviders.OrderByDescending(p => p.Priority);
+            var providers = screenInfoProviders.ToList();
 
+            // Run IsApplicable() checks in parallel
+            var results = new (IScreenInfoProvider provider, bool applicable)[providers.Count];
+            Parallel.For(0, providers.Count, i =>
+            {
+                results[i] = (providers[i], providers[i].IsApplicable());
+            });
+
+            // Pick the highest-priority applicable provider with non-empty modes
             IScreenInfoProvider? selected = null;
 
-            foreach (var provider in ordered)
+            foreach (var (provider, applicable) in results.OrderByDescending(r => r.provider.Priority))
             {
-                if (!provider.IsApplicable)
+                if (!applicable)
                     continue;
 
                 var modes = provider.GetSupportedDisplayModes();
@@ -33,11 +42,18 @@ namespace AvClientViewModel.Services.Resolutions
                 break;
             }
 
-            selected ??= ordered.First(p => p.IsApplicable);
+            // Fall back to first applicable (dummy always applies)
+            if (selected == null)
+            {
+                foreach (var (provider, applicable) in results.OrderByDescending(r => r.provider.Priority))
+                {
+                    if (applicable) { selected = provider; break; }
+                }
+            }
 
             ScreenResolution.DesktopResolution = new ScreenResolution(
-                selected.DesktopWidth,
-                selected.DesktopHeight);
+                selected!.DesktopWidth,
+                selected!.DesktopHeight);
 
             ScreenResolution.DisplayModes = selected.GetSupportedDisplayModes()
                 .Select(m => new ScreenResolution(m.Width, m.Height))

@@ -17,7 +17,7 @@ internal sealed class WindowsScreenInfoProvider : IScreenInfoProvider
 
     public int Priority => 0;
 
-    public bool IsApplicable => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+    public bool IsApplicable() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
     public int DesktopWidth { get { EnsureQueried(); return _desktopWidth; } }
     public int DesktopHeight { get { EnsureQueried(); return _desktopHeight; } }

@@ -20,30 +20,27 @@ internal sealed class LinuxScreenInfoProvider : IScreenInfoProvider
 
     public int Priority => 0;
 
-    public bool IsApplicable
+    public bool IsApplicable()
     {
-        get
-        {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                return false;
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            return false;
 
-            try
+        try
+        {
+            using var proc = Process.Start(new ProcessStartInfo
             {
-                using var proc = Process.Start(new ProcessStartInfo
-                {
-                    FileName = "which",
-                    Arguments = "xrandr",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                });
-                proc?.WaitForExit(2000);
-                return proc?.ExitCode == 0;
-            }
-            catch
-            {
-                return false;
-            }
+                FileName = "which",
+                Arguments = "xrandr",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            });
+            proc?.WaitForExit(500);
+            return proc?.ExitCode == 0;
+        }
+        catch
+        {
+            return false;
         }
     }
 
