@@ -94,7 +94,7 @@
             Canvas.Left="346" Canvas.Top="518"
             Width="314" />
 
-    <!-- Difficulty labels (dynamic from VM) -->
+    <!-- Difficulty labels (dynamic from view model) -->
     <ItemsControl x:Name="icDifficultyLabels"
                   ItemsSource="{Binding DifficultyNames}"
                   Canvas.Left="346" Canvas.Top="550"

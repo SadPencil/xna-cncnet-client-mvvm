@@ -324,8 +324,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     public void SwitchOn()
     {
-        Log.Information("[LOG-VM] SwitchOn START: IsConnected={C}, IsAttempting={A}",
-            connectionManager.IsConnected, connectionManager.IsAttemptingConnection);
         IsVisible = true;
 
         if (!connectionManager.IsConnected && !connectionManager.IsAttemptingConnection)
@@ -333,12 +331,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsLoginWindowVisible = true;
             LoginWindowViewModel.IsVisible = true;
             _loginWindowViewModel.LoadSettings();
-            Log.Information("[LOG-VM] SwitchOn: showing login window");
         }
 
         UpdateLogoutButtonText();
-        Log.Information("[LOG-VM] SwitchOn DONE: ColorOptions.Count={C}, Games.Count={G}, ChatMessages.Count={M}",
-            colorOptions.Count, games.Count, chatMessages.Count);
     }
 
     public void SwitchOff()
@@ -359,7 +354,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (isInGameRoom)
             return;
 
-        // Create the GameCreationWindow VM on first use with callbacks
+        // Create the GameCreationWindow view model on first use
         if (gameCreationWindowViewModel == null)
         {
             gameCreationWindowViewModel = new GameCreationWindowViewModel(
@@ -902,11 +897,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else
         {
             chatMessages.Add(message);
-            Log.Information("[LOG-VM] ChatMessage added to ObservableCollection: SenderName={Sender}, SenderIdent={Ident}, IsAdmin={Admin}, Color.R={R}, Color.G={G}, Color.B={B}, Message={Msg}, DateTime={Time}, concreteType={Type}, collectionCount={Count}",
-                message.SenderName, message.SenderIdent, message.SenderIsAdmin,
-                message.Color.R, message.Color.G, message.Color.B,
-                message.Message?.Substring(0, Math.Min(message.Message?.Length ?? 0, 60)),
-                message.DateTime, message.GetType().FullName, chatMessages.Count);
         }
     }
 

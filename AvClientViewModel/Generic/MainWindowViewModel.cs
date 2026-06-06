@@ -37,8 +37,8 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
 
     /// <summary>
     /// When <paramref name="gameInProgressViewModel"/> is null (before DI is ready),
-    /// the ViewModel only handles borderless fullscreen. The real VM with
-    /// game-in-progress support replaces it during ConnectAfterInit.
+    /// the view model only handles borderless fullscreen. The real
+    /// view model with game-in-progress support replaces it during ConnectAfterInit.
     /// </summary>
     public MainWindowViewModel(IGameInProgressWindowViewModel? gameInProgressViewModel)
     {
