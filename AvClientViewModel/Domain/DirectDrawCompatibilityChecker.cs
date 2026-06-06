@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 using AvClientMvvmContract.ViewServices;
@@ -164,6 +165,20 @@ public static class DirectDrawCompatibilityChecker
         }
     }
 
+    private static bool IsRunningAsAdministrator()
+    {
+        try
+        {
+            using WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     /// <summary>
     /// Checks for DirectDraw compatibility issues and prompts the user to fix them.
     /// If admin privileges are needed, offers to restart the client with admin rights.
@@ -193,7 +208,7 @@ public static class DirectDrawCompatibilityChecker
                 + "\n- " + string.Join("\n- ", problematicExeNames) + "\n\n" +
                 "Would you like to remove these compatibility settings now?".L10N("Client:Main:ProblematicCompatibilityText3");
 
-            if (requireAdmin && !AdminRestarter.IsRunningAsAdministrator())
+            if (requireAdmin && !IsRunningAsAdministrator())
             {
                 localizedMessage += "\n\n" + ("Note: Administrator privileges are required to remove compatibility settings." + " " +
                     "Clicking Yes will relaunch the client with administrator permissions.").L10N("Client:Main:ProblematicCompatibilityText4");
@@ -206,7 +221,7 @@ public static class DirectDrawCompatibilityChecker
             if (!yes)
                 return;
 
-            if (requireAdmin && !AdminRestarter.IsRunningAsAdministrator())
+            if (requireAdmin && !IsRunningAsAdministrator())
             {
                 Log.Information("Administrator privileges required. Restart with elevated privileges.");
 
