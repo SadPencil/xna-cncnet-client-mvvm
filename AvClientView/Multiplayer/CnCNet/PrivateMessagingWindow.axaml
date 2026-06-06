@@ -7,32 +7,41 @@
              Width="800" Height="500">
   <Canvas>
 
-      <!-- ========== TAB BUTTONS ========== -->
+      <!-- ========== TITLE ========== -->
+      <TextBlock x:Name="lblPrivateMessaging"
+                 Text="PRIVATE MESSAGING"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 HorizontalAlignment="Center"
+                 Canvas.Left="400" Canvas.Top="12" />
+
+      <!-- ========== TAB BUTTONS (4 tabs matching old XNAClientTabControl) ========== -->
       <StackPanel Orientation="Horizontal" Spacing="4"
-                  Canvas.Left="12" Canvas.Top="12">
-        <Button x:Name="tabPrivateMessages" Content="Private Messages"
+                  Canvas.Left="34" Canvas.Top="50">
+        <Button x:Name="tabMessages"    Content="Messages"
+                Width="133" Height="23" FontWeight="Bold" />
+        <Button x:Name="tabFriendList"  Content="Friend List"
+                Width="133" Height="23" FontWeight="Bold" />
+        <Button x:Name="tabAllPlayers"  Content="All Players"
                 Width="133" Height="23" FontWeight="Bold" />
         <Button x:Name="tabRecentPlayers" Content="Recent Players"
                 Width="133" Height="23" FontWeight="Bold" />
       </StackPanel>
 
-      <!-- ========== PRIVATE MESSAGES TAB ========== -->
-
-      <!-- Players Label -->
+      <!-- Players Label (left side, below tabs) -->
       <TextBlock x:Name="lblPlayers"
                  Text="{Binding PlayersLabelText}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
-                
-                 Canvas.Left="12" Canvas.Top="42" />
+                 Canvas.Left="12" Canvas.Top="98" />
 
-      <!-- Player List (left column) -->
+      <!-- Player List (left column, width 150 matching old LB_USERS_WIDTH) -->
       <Border x:Name="lbPlayerList"
               Background="#C8000000"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
-              Width="200" Height="380"
-              Canvas.Left="12" Canvas.Top="60">
+              Width="150" Height="326"
+              Canvas.Left="12" Canvas.Top="116">
         <ListBox ItemsSource="{Binding UserNames}"
                  SelectedIndex="{Binding SelectedUserIndex}"
                  Background="Transparent">
@@ -46,21 +55,28 @@
         </ListBox>
       </Border>
 
-      <!-- Message History (right area) -->
+      <!-- "MESSAGES:" label (to the right of user list, aligned with lblPlayers) -->
+      <TextBlock x:Name="lblMessages"
+                 Text="MESSAGES:"
+                 FontWeight="Bold"
+                 Foreground="{DynamicResource XnaTextBrush}"
+                 Canvas.Left="174" Canvas.Top="98" />
+
+      <!-- Message History (right area, left of user list + 12 gap) -->
       <Border x:Name="lbMessages"
               Background="#C8000000"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
               IsEnabled="{Binding IsMessagesPanelEnabled}"
-              Width="564" Height="340"
-              Canvas.Left="222" Canvas.Top="60">
+              Width="614" Height="310"
+              Canvas.Left="174" Canvas.Top="116">
         <ListBox ItemsSource="{Binding MessageHistory}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="x:String">
               <TextBlock Text="{Binding .}"
                          Foreground="{DynamicResource XnaTextBrush}"
-                        
+
                          TextWrapping="Wrap" />
             </DataTemplate>
           </ListBox.ItemTemplate>
@@ -72,8 +88,8 @@
                Text="{Binding DraftMessage}"
                Watermark="Type your message..."
                IsEnabled="{Binding IsMessageInputEnabled}"
-               Width="464" Height="23"
-               Canvas.Left="222" Canvas.Top="407">
+               Width="514" Height="23"
+               Canvas.Left="174" Canvas.Top="432">
         <TextBox.KeyBindings>
           <KeyBinding Gesture="Enter" Command="{Binding SendMessageCommand}" />
         </TextBox.KeyBindings>
@@ -86,8 +102,8 @@
               IsEnabled="{Binding IsMessageInputEnabled}"
               Width="92" Height="23"
               FontWeight="Bold"
-             
-              Canvas.Left="694" Canvas.Top="407" />
+
+              Canvas.Left="696" Canvas.Top="432" />
 
       <!-- ========== RECENT PLAYERS TAB ========== -->
       <Border x:Name="recentPlayersPanel"
@@ -95,8 +111,8 @@
               Background="#C8000000"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
               BorderThickness="1"
-              Width="764" Height="380"
-              Canvas.Left="12" Canvas.Top="60">
+              Width="776" Height="326"
+              Canvas.Left="12" Canvas.Top="116">
         <ListBox ItemsSource="{Binding RecentPlayerNames}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
@@ -115,8 +131,8 @@
               Command="{Binding CloseCommand}"
               Width="92" Height="23"
               FontWeight="Bold"
-             
-              Canvas.Left="694" Canvas.Top="465" />
+
+              Canvas.Left="696" Canvas.Top="465" />
 
     <!-- ========== NOTIFICATION OVERLAY ========== -->
     <Border IsVisible="{Binding IsNotificationVisible}"
