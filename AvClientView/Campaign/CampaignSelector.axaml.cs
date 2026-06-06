@@ -10,20 +10,34 @@ namespace AvClientView.Campaign;
 
 public partial class CampaignSelector : UserControl
 {
-    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+    private IIniLayoutOverlayService? _iniOverlayService;
+    private bool _layoutApplied;
+
+    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService
+    {
+        get => _iniOverlayService;
+        set
+        {
+            _iniOverlayService = value;
+            if (value != null && !_layoutApplied)
+                ApplyLayoutAndTheme(value);
+        }
+    }
 
     public CampaignSelector()
     {
         InitializeComponent();
-        Loaded += OnLoaded;
     }
 
-    private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void ApplyLayoutAndTheme(IIniLayoutOverlayService iniOverlay)
     {
-        BackgroundHelper.ApplyDefaultBackground(this, "MainMenu/dbak.png", IniOverlayService);
+        _layoutApplied = true;
 
-        var iniOverlay = IniOverlayService;
-        iniOverlay?.ApplyLayout(this, "CampaignSelector");
+        // Set default background matching old XNA client (AssetLoader.LoadTexture("missionselectorbg.png"))
+        BackgroundHelper.ApplyDefaultBackground(this, "missionselectorbg.png", iniOverlay);
+
+        // Apply INI layout which may override the background with BackgroundTexture=cncnetlobbybg.png
+        iniOverlay.ApplyLayout(this, "CampaignSelector");
     }
 
     public ICampaignSelectorViewModel? ViewModel

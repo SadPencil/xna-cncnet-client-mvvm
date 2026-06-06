@@ -61,19 +61,19 @@
       <!-- ========== Labels (positions from MainMenu.ini, INI overlay applies) ========== -->
       <TextBlock x:Name="lblCnCNetStatus"
                  Text="Players Online:"
-                 Foreground="#2DE4FF" />
+                 Foreground="{DynamicResource XnaTextBrush}" />
       <TextBlock x:Name="lblCnCNetPlayerCount"
                  Text="{Binding CnCNetPlayerCountText}"
-                 Foreground="#2DE4FF" />
+                 Foreground="{DynamicResource XnaTextBrush}" />
       <TextBlock x:Name="lblVersion"
                  Text="{Binding VersionText}"
                  IsVisible="{Binding ShowVersionInfo}"
-                 Foreground="#2DE4FF"
+                 Foreground="{DynamicResource XnaTextBrush}"
                  FontSize="12"
                  Cursor="Hand" />
       <TextBlock x:Name="lblUpdateStatus"
                  Text="{Binding UpdateStatusText}"
-                 Foreground="#2DE4FF"
+                 Foreground="{DynamicResource XnaTextBrush}"
                  IsEnabled="{Binding IsUpdateStatusEnabled}" />
 
       <!-- ========== Update Notification Banner ========== -->
