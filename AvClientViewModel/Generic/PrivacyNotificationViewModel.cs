@@ -16,22 +16,22 @@ namespace AvClientViewModel.Generic
     public partial class PrivacyNotificationViewModel : ObservableObject, IPrivacyNotificationViewModel
     {
         [ObservableProperty]
-        public partial string TitleText { get; set; }  = "Privacy Policy";
+        public partial string TitleText { get; set; } = "Privacy Policy";
 
         [ObservableProperty]
-        public partial string DescriptionText { get; set; }  = "This application makes use of CnCNet web & tunnel server services and is subject to collection of technical & other necessary information through them.";
+        public partial string DescriptionText { get; set; } = "This application makes use of CnCNet web & tunnel server services and is subject to collection of technical & other necessary information through them.";
 
         [ObservableProperty]
-        public partial string ExplanationText { get; set; }  = "By using this application you agree to the CnCNet Terms & Conditions as well as the CnCNet Privacy Policy. Privacy-related options can be configured in the client settings.";
+        public partial string ExplanationText { get; set; } = "By using this application you agree to the CnCNet Terms & Conditions as well as the CnCNet Privacy Policy. Privacy-related options can be configured in the client settings.";
 
         [ObservableProperty]
-        public partial string AcceptButtonText { get; set; }  = "Got it";
+        public partial string AcceptButtonText { get; set; } = "Got it";
 
         [ObservableProperty]
-        public partial string TermsAndConditionsUrl { get; set; }  = "https://cncnet.org/terms-and-conditions";
+        public partial string TermsAndConditionsUrl { get; set; } = "https://cncnet.org/terms-and-conditions";
 
         [ObservableProperty]
-        public partial string PrivacyPolicyUrl { get; set; }  = "https://cncnet.org/privacy-policy";
+        public partial string PrivacyPolicyUrl { get; set; } = "https://cncnet.org/privacy-policy";
 
         [ObservableProperty]
         public partial bool IsVisible { get; set; }

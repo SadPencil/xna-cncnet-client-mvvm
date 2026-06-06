@@ -46,7 +46,7 @@ public partial class GameListBoxViewModel : ObservableObject, IGameListBoxViewMo
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial int SelectedGameIndex { get; set; }  = -1;
+    public partial int SelectedGameIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial string? SelectedGameName { get; set; }

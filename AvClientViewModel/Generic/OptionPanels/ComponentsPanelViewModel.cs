@@ -42,7 +42,7 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial int SelectedComponentIndex { get; set; }  = -1;
+    public partial int SelectedComponentIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial bool IsBusy { get; set; }
@@ -53,7 +53,7 @@ public partial class ComponentsPanelViewModel : ObservableObject, IComponentsPan
     public partial bool IsConfirmationVisible { get; set; }
 
     [ObservableProperty]
-    public partial string ConfirmationMessage { get; set; }  = string.Empty;
+    public partial string ConfirmationMessage { get; set; } = string.Empty;
 
     // --- Observable collections ---
 

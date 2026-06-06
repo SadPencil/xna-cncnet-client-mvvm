@@ -28,13 +28,13 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial int SelectedUpdateServerIndex { get; set; }  = -1;
+    public partial int SelectedUpdateServerIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial bool CheckForUpdatesAutomatically { get; set; }
 
     [ObservableProperty]
-    public partial bool IsForceUpdateEnabled { get; set; }  = true;
+    public partial bool IsForceUpdateEnabled { get; set; } = true;
 
     // --- Confirmation dialog state ---
 
@@ -42,7 +42,7 @@ public partial class UpdaterOptionsPanelViewModel : ObservableObject, IUpdaterOp
     public partial bool IsConfirmationVisible { get; set; }
 
     [ObservableProperty]
-    public partial string ConfirmationMessage { get; set; }  = string.Empty;
+    public partial string ConfirmationMessage { get; set; } = string.Empty;
 
     // --- Observable collections ---
 

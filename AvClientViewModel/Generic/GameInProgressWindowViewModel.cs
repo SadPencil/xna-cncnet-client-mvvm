@@ -38,10 +38,10 @@ namespace AvClientViewModel.Generic
         public partial bool IsGameInProgress { get; set; }
 
         [ObservableProperty]
-        public partial bool IsCursorVisible { get; set; }  = true;
+        public partial bool IsCursorVisible { get; set; } = true;
 
         [ObservableProperty]
-        public partial WindowState WindowState { get; set; }  = WindowState.Normal;
+        public partial WindowState WindowState { get; set; } = WindowState.Normal;
 
         public GameInProgressWindowViewModel(IGameProcessService gameProcessService)
         {

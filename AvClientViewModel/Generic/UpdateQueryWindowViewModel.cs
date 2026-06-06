@@ -18,10 +18,10 @@ namespace AvClientViewModel.Generic
         private readonly IUpdateService updateService;
 
         [ObservableProperty]
-        public partial string DescriptionText { get; set; }  = string.Empty;
+        public partial string DescriptionText { get; set; } = string.Empty;
 
         [ObservableProperty]
-        public partial string UpdateSizeText { get; set; }  = string.Empty;
+        public partial string UpdateSizeText { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial bool IsVisible { get; set; }

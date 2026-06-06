@@ -26,7 +26,7 @@ public partial class RecentPlayerTableViewModel : ObservableObject, IRecentPlaye
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial int SelectedPlayerIndex { get; set; }  = -1;
+    public partial int SelectedPlayerIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial string? SelectedPlayerName { get; set; }

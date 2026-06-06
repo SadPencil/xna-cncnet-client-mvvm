@@ -32,7 +32,7 @@ public partial class GlobalContextMenuViewModel : ObservableObject, IGlobalConte
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string TargetUserName { get; set; }  = string.Empty;
+    public partial string TargetUserName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool CanInvitePlayer { get; set; }

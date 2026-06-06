@@ -34,7 +34,7 @@ public partial class LoadOrSaveGameOptionPresetWindowViewModel : ObservableObjec
     public partial int SelectedPresetIndex { get; set; }
 
     [ObservableProperty]
-    public partial string PresetName { get; set; }  = string.Empty;
+    public partial string PresetName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsVisible { get; set; }

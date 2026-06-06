@@ -22,19 +22,19 @@ public partial class ChoiceNotificationBoxViewModel : ObservableObject, IChoiceN
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string TitleText { get; set; }  = string.Empty;
+    public partial string TitleText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string SenderName { get; set; }  = string.Empty;
+    public partial string SenderName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MessageText { get; set; }  = string.Empty;
+    public partial string MessageText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string AcceptButtonText { get; set; }  = string.Empty;
+    public partial string AcceptButtonText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string DeclineButtonText { get; set; }  = string.Empty;
+    public partial string DeclineButtonText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsVisible { get; set; }

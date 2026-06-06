@@ -31,7 +31,7 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial int SelectedTagIndex { get; set; }  = -1;
+    public partial int SelectedTagIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial string? SelectedTagName { get; set; }

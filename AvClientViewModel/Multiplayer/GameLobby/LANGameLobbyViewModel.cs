@@ -78,7 +78,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     public partial bool IsVisible { get; set; }
 
     [ObservableProperty]
-    public partial string LocalAddressText { get; set; }  = string.Empty;
+    public partial string LocalAddressText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial int ChatColorIndex { get; set; }

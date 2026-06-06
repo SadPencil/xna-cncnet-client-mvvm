@@ -30,10 +30,10 @@ public partial class TunnelSelectionWindowViewModel : ObservableObject, ITunnelS
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string DescriptionText { get; set; }  = string.Empty;
+    public partial string DescriptionText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial int SelectedTunnelIndex { get; set; }  = -1;
+    public partial int SelectedTunnelIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial string? SelectedTunnelName { get; set; }

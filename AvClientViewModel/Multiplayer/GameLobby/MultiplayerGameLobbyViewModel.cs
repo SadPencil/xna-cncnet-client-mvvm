@@ -53,12 +53,12 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     // --- Chat ---
     [ObservableProperty]
-    public partial IReadOnlyList<string> ChatMessages { get; set; }  = Array.Empty<string>();
+    public partial IReadOnlyList<string> ChatMessages { get; set; } = Array.Empty<string>();
 
     private readonly List<string> chatMessagesList = new();
 
     [ObservableProperty]
-    public partial string DraftMessage { get; set; }  = string.Empty;
+    public partial string DraftMessage { get; set; } = string.Empty;
 
     // --- Ready / Lock ---
     [ObservableProperty]
@@ -75,24 +75,24 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     // --- Player status indicators ---
     [ObservableProperty]
-    public partial IReadOnlyList<PlayerSlotState> PlayerStatuses { get; set; }  = Enumerable.Repeat(PlayerSlotState.Empty, MAX_PLAYER_COUNT).ToArray();
+    public partial IReadOnlyList<PlayerSlotState> PlayerStatuses { get; set; } = Enumerable.Repeat(PlayerSlotState.Empty, MAX_PLAYER_COUNT).ToArray();
 
     [ObservableProperty]
-    public partial IReadOnlyList<string> PlayerStatusTooltips { get; set; }  = Enumerable.Repeat(string.Empty, MAX_PLAYER_COUNT).ToArray();
+    public partial IReadOnlyList<string> PlayerStatusTooltips { get; set; } = Enumerable.Repeat(string.Empty, MAX_PLAYER_COUNT).ToArray();
 
     [ObservableProperty]
-    public partial IReadOnlyList<int> PlayerPings { get; set; }  = Enumerable.Repeat(-1, MAX_PLAYER_COUNT).ToArray();
+    public partial IReadOnlyList<int> PlayerPings { get; set; } = Enumerable.Repeat(-1, MAX_PLAYER_COUNT).ToArray();
 
     // --- Map list visibility ---
     [ObservableProperty]
-    public partial bool IsMapListVisible { get; set; }  = true;
+    public partial bool IsMapListVisible { get; set; } = true;
 
     // --- Lock button ---
     [ObservableProperty]
-    public partial string LockGameButtonText { get; set; }  = "Lock Game".L10N("Client:Main:ButtonLockGame");
+    public partial string LockGameButtonText { get; set; } = "Lock Game".L10N("Client:Main:ButtonLockGame");
 
     [ObservableProperty]
-    public partial bool IsLockGameButtonVisible { get; set; }  = true;
+    public partial bool IsLockGameButtonVisible { get; set; } = true;
 
     // --- Save game notification ---
     [ObservableProperty]
@@ -100,7 +100,7 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
 
     // --- Map preview start location selection ---
     [ObservableProperty]
-    public partial bool IsStartLocationSelectionEnabled { get; set; }  = true;
+    public partial bool IsStartLocationSelectionEnabled { get; set; } = true;
 
     // --- Internal state ---
     private bool suppressAutoReadyChanged;

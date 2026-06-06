@@ -36,13 +36,13 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     public partial bool IsWindowVisible { get; set; }
 
     [ObservableProperty]
-    public partial string GameName { get; set; }  = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
+    public partial string GameName { get; set; } = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
 
     [ObservableProperty]
-    public partial string Password { get; set; }  = string.Empty;
+    public partial string Password { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial int MaxPlayers { get; set; }  = 8;
+    public partial int MaxPlayers { get; set; } = 8;
 
     [ObservableProperty]
     public partial bool IsPrivateGame { get; set; }
@@ -66,7 +66,7 @@ public partial class GameCreationWindowViewModel : ObservableObject, IGameCreati
     public partial bool CanLoadGame { get; set; }
 
     [ObservableProperty]
-    public partial string ValidationErrorMessage { get; set; }  = string.Empty;
+    public partial string ValidationErrorMessage { get; set; } = string.Empty;
 
     // --- Observable collections ---
 

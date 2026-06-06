@@ -40,16 +40,16 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string SelectedMapName { get; set; }  = string.Empty;
+    public partial string SelectedMapName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string SelectedGameModeName { get; set; }  = string.Empty;
+    public partial string SelectedGameModeName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MapAuthorName { get; set; }  = string.Empty;
+    public partial string MapAuthorName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MapSizeText { get; set; }  = string.Empty;
+    public partial string MapSizeText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial int SelectedStartingLocationIndex { get; set; }
@@ -67,7 +67,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     public partial bool EnableContextMenu { get; set; }
 
     [ObservableProperty]
-    public partial bool EnableStartLocationSelection { get; set; }  = true;
+    public partial bool EnableStartLocationSelection { get; set; } = true;
 
     [ObservableProperty]
     public partial byte[]? MapPreviewImageBytes { get; set; }

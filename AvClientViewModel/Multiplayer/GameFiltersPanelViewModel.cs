@@ -54,7 +54,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     public partial bool HideIncompatibleGames { get; set; }
 
     [ObservableProperty]
-    public partial int MaxPlayerCount { get; set; }  = MaxPlayerCountLimit;
+    public partial int MaxPlayerCount { get; set; } = MaxPlayerCountLimit;
 
     [ObservableProperty]
     public partial bool IsVisible { get; set; }

@@ -29,16 +29,16 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string SelectedGameName { get; set; }  = string.Empty;
+    public partial string SelectedGameName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string HostName { get; set; }  = string.Empty;
+    public partial string HostName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MapName { get; set; }  = string.Empty;
+    public partial string MapName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string GameModeName { get; set; }  = string.Empty;
+    public partial string GameModeName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial int PlayerCount { get; set; }
@@ -50,13 +50,13 @@ public partial class GameInformationPanelViewModel : ObservableObject, IGameInfo
     public partial int Ping { get; set; }
 
     [ObservableProperty]
-    public partial string GameVersion { get; set; }  = string.Empty;
+    public partial string GameVersion { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial int SkillLevelIndex { get; set; }  = -1;
+    public partial int SkillLevelIndex { get; set; } = -1;
 
     [ObservableProperty]
-    public partial string SkillLevelName { get; set; }  = string.Empty;
+    public partial string SkillLevelName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsLocked { get; set; }

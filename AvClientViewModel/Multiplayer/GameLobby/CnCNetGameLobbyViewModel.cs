@@ -81,16 +81,16 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     // --- Observable state ---
     [ObservableProperty]
-    public partial string ChannelName { get; set; }  = string.Empty;
+    public partial string ChannelName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string SelectedTunnelName { get; set; }  = string.Empty;
+    public partial string SelectedTunnelName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsEnabled { get; set; }
 
     [ObservableProperty]
-    public partial string GameRoomName { get; set; }  = string.Empty;
+    public partial string GameRoomName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial int PlayerLimit { get; set; }

@@ -50,7 +50,7 @@ public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsP
     public partial bool IsUndeployWithAltEnabled { get; set; }
 
     [ObservableProperty]
-    public partial string PlayerName { get; set; }  = string.Empty;
+    public partial string PlayerName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool ShowHotkeyConfiguration { get; set; }

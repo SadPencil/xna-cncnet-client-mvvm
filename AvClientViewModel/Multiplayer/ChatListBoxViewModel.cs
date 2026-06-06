@@ -25,10 +25,10 @@ public partial class ChatListBoxViewModel : ObservableObject, IChatListBoxViewMo
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string DraftMessage { get; set; }  = string.Empty;
+    public partial string DraftMessage { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial bool IsAutoScrollEnabled { get; set; }  = true;
+    public partial bool IsAutoScrollEnabled { get; set; } = true;
 
     [ObservableProperty]
     public partial string? PendingUntrustedUrl { get; set; }

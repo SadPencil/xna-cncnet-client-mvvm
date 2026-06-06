@@ -33,13 +33,13 @@ namespace AvClientViewModel.Generic
         private bool initialized = false;
 
         [ObservableProperty]
-        public partial List<string> GameModeNames { get; set; }  = new();
+        public partial List<string> GameModeNames { get; set; } = new();
 
         [ObservableProperty]
         public partial int SelectedGameModeIndex { get; set; }
 
         [ObservableProperty]
-        public partial List<string> GameClassNames { get; set; }  = new()
+        public partial List<string> GameClassNames { get; set; } = new()
         {
             "All games", "Online games", "Online PvP", "Online Co-Op", "Skirmish"
         };
@@ -51,10 +51,10 @@ namespace AvClientViewModel.Generic
         public partial bool ShowingTotalStats { get; set; }
 
         [ObservableProperty]
-        public partial bool IncludeSpectatedGames { get; set; }  = true;
+        public partial bool IncludeSpectatedGames { get; set; } = true;
 
         [ObservableProperty]
-        public partial List<string> StatisticEntrySummaries { get; set; }  = new();
+        public partial List<string> StatisticEntrySummaries { get; set; } = new();
 
         [ObservableProperty]
         public partial bool IsVisible { get; set; }
@@ -66,13 +66,13 @@ namespace AvClientViewModel.Generic
         /// Detailed statistics for the selected game.
         /// </summary>
         [ObservableProperty]
-        public partial List<IGamePlayerStatistics> SelectedGamePlayers { get; set; }  = new();
+        public partial List<IGamePlayerStatistics> SelectedGamePlayers { get; set; } = new();
 
         /// <summary>
         /// Total statistics values.
         /// </summary>
         [ObservableProperty]
-        public partial ITotalStatistics TotalStatistics { get; set; }  = new TotalStatistics();
+        public partial ITotalStatistics TotalStatistics { get; set; } = new TotalStatistics();
 
         public StatisticsWindowViewModel(MapLoader mapLoader)
         {

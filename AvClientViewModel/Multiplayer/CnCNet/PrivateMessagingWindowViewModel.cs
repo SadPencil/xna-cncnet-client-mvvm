@@ -56,7 +56,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     public partial int SelectedTabIndex { get; set; }
 
     [ObservableProperty]
-    public partial int SelectedUserIndex { get; set; }  = -1;
+    public partial int SelectedUserIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial bool IsMessageInputEnabled { get; set; }
@@ -65,19 +65,19 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     public partial bool IsNotificationVisible { get; set; }
 
     [ObservableProperty]
-    public partial string NotificationSender { get; set; }  = string.Empty;
+    public partial string NotificationSender { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string NotificationMessage { get; set; }  = string.Empty;
+    public partial string NotificationMessage { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string PlayersLabelText { get; set; }  = "PLAYERS:".L10N("Client:Main:Players");
+    public partial string PlayersLabelText { get; set; } = "PLAYERS:".L10N("Client:Main:Players");
 
     [ObservableProperty]
     public partial bool IsRecentPlayersVisible { get; set; }
 
     [ObservableProperty]
-    public partial bool IsMessagesPanelEnabled { get; set; }  = true;
+    public partial bool IsMessagesPanelEnabled { get; set; } = true;
 
     [ObservableProperty]
     public partial bool IsVisible { get; set; }
@@ -94,7 +94,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     public IReadOnlyList<string> RecentPlayerNames => _recentPlayerNames;
 
     [ObservableProperty]
-    public partial string DraftMessage { get; set; }  = string.Empty;
+    public partial string DraftMessage { get; set; } = string.Empty;
 
     // --- Callbacks ---
 

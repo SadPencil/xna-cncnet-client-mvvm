@@ -23,7 +23,7 @@ public partial class LANGameCreationWindowViewModel : ObservableObject, ILANGame
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string GameName { get; set; }  = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
+    public partial string GameName { get; set; } = string.Format("{0}'s Game", ProgramConstants.PLAYERNAME);
 
     [ObservableProperty]
     public partial bool IsLoadGameAvailable { get; set; }

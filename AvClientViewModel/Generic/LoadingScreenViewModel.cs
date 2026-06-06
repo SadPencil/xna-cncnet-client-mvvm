@@ -40,16 +40,16 @@ namespace AvClientViewModel.Generic
         public partial string StatusText { get; set; } = "Loading...";
 
         [ObservableProperty]
-        public partial string CurrentTaskText { get; set; }  = "Initializing...";
+        public partial string CurrentTaskText { get; set; } = "Initializing...";
 
         [ObservableProperty]
         public partial int ProgressPercentage { get; set; }
 
         [ObservableProperty]
-        public partial bool IsIndeterminate { get; set; }  = true;
+        public partial bool IsIndeterminate { get; set; } = true;
 
         [ObservableProperty]
-        public partial bool IsLoading { get; set; }  = true;
+        public partial bool IsLoading { get; set; } = true;
 
         public bool IsBorderlessClient => UserINISettings.Instance.BorderlessWindowedClient;
 

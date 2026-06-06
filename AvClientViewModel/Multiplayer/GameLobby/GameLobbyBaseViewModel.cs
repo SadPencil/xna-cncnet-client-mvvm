@@ -71,46 +71,46 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     // --- Observable state for View binding ---
 
     [ObservableProperty]
-    public partial string MapName { get; set; }  = "Map: Unknown".L10N("Client:Main:MapUnknown");
+    public partial string MapName { get; set; } = "Map: Unknown".L10N("Client:Main:MapUnknown");
 
     [ObservableProperty]
-    public partial string MapAuthor { get; set; }  = "By Unknown Author".L10N("Client:Main:AuthorByUnknown");
+    public partial string MapAuthor { get; set; } = "By Unknown Author".L10N("Client:Main:AuthorByUnknown");
 
     [ObservableProperty]
-    public partial string GameModeName { get; set; }  = "Game mode: Unknown".L10N("Client:Main:GameModeUnknown");
+    public partial string GameModeName { get; set; } = "Game mode: Unknown".L10N("Client:Main:GameModeUnknown");
 
     [ObservableProperty]
-    public partial string MapSize { get; set; }  = "Size: Not available".L10N("Client:Main:MapSizeUnknown");
+    public partial string MapSize { get; set; } = "Size: Not available".L10N("Client:Main:MapSizeUnknown");
 
     [ObservableProperty]
-    public partial string GameName { get; set; }  = string.Empty;
+    public partial string GameName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial IReadOnlyList<IMapListItem> MapListItems { get; set; }  = Array.Empty<IMapListItem>();
+    public partial IReadOnlyList<IMapListItem> MapListItems { get; set; } = Array.Empty<IMapListItem>();
 
     [ObservableProperty]
-    public partial int SelectedMapIndex { get; set; }  = -1;
+    public partial int SelectedMapIndex { get; set; } = -1;
 
     [ObservableProperty]
-    public partial IReadOnlyList<string> GameModeFilterOptions { get; set; }  = Array.Empty<string>();
+    public partial IReadOnlyList<string> GameModeFilterOptions { get; set; } = Array.Empty<string>();
 
     [ObservableProperty]
     public partial int SelectedGameModeFilterIndex { get; set; }
 
     [ObservableProperty]
-    public partial string MapSearchText { get; set; }  = string.Empty;
+    public partial string MapSearchText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MapListTooltipText { get; set; }  = string.Empty;
+    public partial string MapListTooltipText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial int SortDirectionState { get; set; }
 
     [ObservableProperty]
-    public partial bool IsMapSortButtonVisible { get; set; }  = true;
+    public partial bool IsMapSortButtonVisible { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IsMapSortButtonEnabled { get; set; }  = true;
+    public partial bool IsMapSortButtonEnabled { get; set; } = true;
 
     ObservableCollection<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => PlayerSlots;
     protected ObservableCollection<IPlayerSlotObservable> PlayerSlots { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.PlayerSlots)); } } = new();
@@ -125,13 +125,13 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     public partial int LaunchButtonRank { get; set; }
 
     [ObservableProperty]
-    public partial string LaunchButtonText { get; set; }  = "Launch Game".L10N("Client:Main:ButtonLaunchGame");
+    public partial string LaunchButtonText { get; set; } = "Launch Game".L10N("Client:Main:ButtonLaunchGame");
 
     [ObservableProperty]
-    public partial bool CanLaunchGame { get; set; }  = true;
+    public partial bool CanLaunchGame { get; set; } = true;
 
     [ObservableProperty]
-    public partial IReadOnlyList<string> PlayerNames { get; set; }  = Array.Empty<string>();
+    public partial IReadOnlyList<string> PlayerNames { get; set; } = Array.Empty<string>();
 
     [ObservableProperty]
     public partial int SelectedPlayerIndex { get; set; }

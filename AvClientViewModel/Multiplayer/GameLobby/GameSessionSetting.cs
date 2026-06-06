@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using AvClientMvvmContract.Domain.Multiplayer;
+
 using AvClientViewModel.Domain.Multiplayer;
 
 using Rampastring.Tools;

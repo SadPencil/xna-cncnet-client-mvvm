@@ -28,10 +28,10 @@ namespace AvClientViewModel.Generic
         private readonly IUIThreadMarshaller uiThreadMarshaller;
 
         [ObservableProperty]
-        public partial string DescriptionText { get; set; }  = string.Empty;
+        public partial string DescriptionText { get; set; } = string.Empty;
 
         [ObservableProperty]
-        public partial string CurrentFileName { get; set; }  = string.Empty;
+        public partial string CurrentFileName { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial int CurrentFilePercentage { get; set; }
@@ -40,7 +40,7 @@ namespace AvClientViewModel.Generic
         public partial int TotalPercentage { get; set; }
 
         [ObservableProperty]
-        public partial string UpdaterStatusText { get; set; }  = "Preparing".L10N("Client:Main:StatusPreparing");
+        public partial string UpdaterStatusText { get; set; } = "Preparing".L10N("Client:Main:StatusPreparing");
 
         [ObservableProperty]
         public partial bool IsVisible { get; set; }

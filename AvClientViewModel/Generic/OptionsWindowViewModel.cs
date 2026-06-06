@@ -73,7 +73,7 @@ namespace AvClientViewModel.Generic
 
         // Panel visibility (derived from SelectedPanelIndex)
         [ObservableProperty]
-        public partial bool IsDisplayPanelVisible { get; set; }  = true;
+        public partial bool IsDisplayPanelVisible { get; set; } = true;
 
         [ObservableProperty]
         public partial bool IsAudioPanelVisible { get; set; }

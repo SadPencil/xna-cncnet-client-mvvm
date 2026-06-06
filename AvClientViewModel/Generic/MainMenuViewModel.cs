@@ -73,10 +73,10 @@ namespace AvClientViewModel.Generic
         private DateTime lastUpdateCheckTime;
 
         [ObservableProperty]
-        public partial string VersionText { get; set; }  = string.Empty;
+        public partial string VersionText { get; set; } = string.Empty;
 
         [ObservableProperty]
-        public partial string UpdateStatusText { get; set; }  = string.Empty;
+        public partial string UpdateStatusText { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial bool IsUpdateStatusEnabled { get; set; }
@@ -85,22 +85,22 @@ namespace AvClientViewModel.Generic
         public partial bool IsUpdateStatusUnderlined { get; set; }
 
         [ObservableProperty]
-        public partial string CnCNetPlayerCountText { get; set; }  = "-";
+        public partial string CnCNetPlayerCountText { get; set; } = "-";
 
         [ObservableProperty]
-        public partial bool AreButtonsEnabled { get; set; }  = true;
+        public partial bool AreButtonsEnabled { get; set; } = true;
 
         [ObservableProperty]
         public partial bool IsUpdateNotificationVisible { get; set; }
 
         [ObservableProperty]
-        public partial string UpdateNotificationText { get; set; }  = string.Empty;
+        public partial string UpdateNotificationText { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial bool IsMapEditorButtonVisible { get; set; }
 
         [ObservableProperty]
-        public partial bool IsStatisticsButtonVisible { get; set; }  = true;
+        public partial bool IsStatisticsButtonVisible { get; set; } = true;
 
         [ObservableProperty]
         public partial bool ShowVersionInfo { get; set; }
@@ -112,7 +112,7 @@ namespace AvClientViewModel.Generic
         public partial bool IsLanMode { get; set; }
 
         [ObservableProperty]
-        public partial MainMenuPanel ActivePanel { get; set; }  = MainMenuPanel.PRIMARY;
+        public partial MainMenuPanel ActivePanel { get; set; } = MainMenuPanel.PRIMARY;
 
         /// <summary>
         /// Domain event: fired when skirmish lobby is exited. Parent subscribes.

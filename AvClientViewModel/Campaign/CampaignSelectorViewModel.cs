@@ -114,28 +114,28 @@ namespace AvClientViewModel.Campaign
         #region Observable Properties
 
         [ObservableProperty]
-        public partial IReadOnlyList<ICampaignListItem> CampaignListItems { get; set; }  = [];
+        public partial IReadOnlyList<ICampaignListItem> CampaignListItems { get; set; } = [];
 
         [ObservableProperty]
-        public partial int SelectedCampaignIndex { get; set; }  = -1;
+        public partial int SelectedCampaignIndex { get; set; } = -1;
 
         [ObservableProperty]
-        public partial string MissionDescriptionText { get; set; }  = string.Empty;
+        public partial string MissionDescriptionText { get; set; } = string.Empty;
 
         [ObservableProperty]
         public partial string? MissionPreviewImagePath { get; set; }
 
         [ObservableProperty]
-        public partial bool IsControlsEnabled { get; set; }  = true;
+        public partial bool IsControlsEnabled { get; set; } = true;
 
         [ObservableProperty]
         public partial bool IsVisible { get; set; }
 
         [ObservableProperty]
-        public partial IReadOnlyList<string> DifficultyNames { get; set; }  = DifficultyNamesArray;
+        public partial IReadOnlyList<string> DifficultyNames { get; set; } = DifficultyNamesArray;
 
         [ObservableProperty]
-        public partial int SelectedDifficultyIndex { get; set; }  = 1;
+        public partial int SelectedDifficultyIndex { get; set; } = 1;
 
         [ObservableProperty]
         public partial bool CanLaunchCampaign { get; set; }

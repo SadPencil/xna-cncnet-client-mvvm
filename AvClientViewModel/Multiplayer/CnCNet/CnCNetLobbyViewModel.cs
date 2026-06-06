@@ -80,19 +80,19 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private List<HostedCnCNetGame> hostedGames = new();
 
     [ObservableProperty]
-    public partial string CurrentChannelName { get; set; }  = string.Empty;
+    public partial string CurrentChannelName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string OnlinePlayerCountText { get; set; }  = "0";
+    public partial string OnlinePlayerCountText { get; set; } = "0";
 
     [ObservableProperty]
-    public partial string PlayerName { get; set; }  = string.Empty;
+    public partial string PlayerName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string DraftMessage { get; set; }  = string.Empty;
+    public partial string DraftMessage { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial int SelectedGameIndex { get; set; }  = -1;
+    public partial int SelectedGameIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial int SelectedColorIndex { get; set; }
@@ -101,10 +101,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public partial int SelectedChannelIndex { get; set; }
 
     [ObservableProperty]
-    public partial string GameSearchText { get; set; }  = string.Empty;
+    public partial string GameSearchText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string LogoutButtonText { get; set; }  = "Log Out".L10N("Client:Main:LogOut");
+    public partial string LogoutButtonText { get; set; } = "Log Out".L10N("Client:Main:LogOut");
 
     [ObservableProperty]
     public partial bool IsNewGameButtonEnabled { get; set; }
@@ -179,7 +179,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     // Hover state for the game info panel (driven by View's PointerMoved).
     [ObservableProperty]
-    public partial int HoveredGameIndex { get; set; }  = -1;
+    public partial int HoveredGameIndex { get; set; } = -1;
 
     [ObservableProperty]
     public partial IHostedCnCNetGame? HoveredGame { get; set; }

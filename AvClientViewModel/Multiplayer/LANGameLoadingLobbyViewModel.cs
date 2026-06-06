@@ -82,7 +82,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     public partial bool IsVisible { get; set; }
 
     [ObservableProperty]
-    public partial string LocalAddressText { get; set; }  = string.Empty;
+    public partial string LocalAddressText { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool AreAllPlayersReady { get; set; }

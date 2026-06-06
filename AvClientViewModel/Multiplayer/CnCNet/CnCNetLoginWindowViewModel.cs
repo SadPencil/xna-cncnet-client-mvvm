@@ -24,10 +24,10 @@ public partial class CnCNetLoginWindowViewModel : ObservableObject, ICnCNetLogin
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string UserName { get; set; }  = string.Empty;
+    public partial string UserName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string Password { get; set; }  = string.Empty;
+    public partial string Password { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool RememberPassword { get; set; }

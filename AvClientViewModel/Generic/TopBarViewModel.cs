@@ -41,22 +41,22 @@ namespace AvClientViewModel.Generic
         private System.Timers.Timer? _autoHideTimer;
 
         [ObservableProperty]
-        public partial string ConnectionStatusText { get; set; }  = "OFFLINE".L10N("Client:Main:StatusOffline");
+        public partial string ConnectionStatusText { get; set; } = "OFFLINE".L10N("Client:Main:StatusOffline");
 
         [ObservableProperty]
-        public partial string PlayerCountText { get; set; }  = "-";
+        public partial string PlayerCountText { get; set; } = "-";
 
         [ObservableProperty]
         public partial bool IsPlayerCountVisible { get; set; }
 
         [ObservableProperty]
-        public partial string PlayerCountLabel { get; set; }  = string.Empty;
+        public partial string PlayerCountLabel { get; set; } = string.Empty;
 
         [ObservableProperty]
-        public partial bool AreSwitchButtonsClickable { get; set; }  = true;
+        public partial bool AreSwitchButtonsClickable { get; set; } = true;
 
         [ObservableProperty]
-        public partial bool IsOptionsButtonClickable { get; set; }  = true;
+        public partial bool IsOptionsButtonClickable { get; set; } = true;
 
         [ObservableProperty]
         public partial bool IsLogoutButtonClickable { get; set; }
@@ -68,7 +68,7 @@ namespace AvClientViewModel.Generic
         public partial SwitchType LastSwitchType { get; set; }
 
         [ObservableProperty]
-        public partial string MainButtonText { get; set; }  = "Main Menu".L10N("Client:Main:MainMenu");
+        public partial string MainButtonText { get; set; } = "Main Menu".L10N("Client:Main:MainMenu");
 
         [ObservableProperty]
         public partial bool IsExpanded { get; set; }

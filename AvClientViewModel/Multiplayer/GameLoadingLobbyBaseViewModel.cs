@@ -49,16 +49,16 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
 
     // --- Observable state ---
     [ObservableProperty]
-    public partial string GameName { get; set; }  = string.Empty;
+    public partial string GameName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MapName { get; set; }  = string.Empty;
+    public partial string MapName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string GameMode { get; set; }  = string.Empty;
+    public partial string GameMode { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string HostName { get; set; }  = string.Empty;
+    public partial string HostName { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial int SelectedSavedGameIndex { get; set; }
@@ -70,10 +70,10 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     public partial bool CanLoadGame { get; set; }
 
     [ObservableProperty]
-    public partial string LoadGameButtonText { get; set; }  = "Load Game".L10N("Client:Main:ButtonLoadGame");
+    public partial string LoadGameButtonText { get; set; } = "Load Game".L10N("Client:Main:ButtonLoadGame");
 
     [ObservableProperty]
-    public partial string DraftMessage { get; set; }  = string.Empty;
+    public partial string DraftMessage { get; set; } = string.Empty;
 
     // --- Observable collections ---
     private readonly System.Collections.ObjectModel.ObservableCollection<string> _playerNames = new();

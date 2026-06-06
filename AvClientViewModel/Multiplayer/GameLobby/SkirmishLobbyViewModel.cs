@@ -45,13 +45,13 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
     public partial bool IsErrorVisible { get; set; }
 
     [ObservableProperty]
-    public partial string ErrorMessage { get; set; }  = string.Empty;
+    public partial string ErrorMessage { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsNoticeVisible { get; set; }
 
     [ObservableProperty]
-    public partial string NoticeMessage { get; set; }  = string.Empty;
+    public partial string NoticeMessage { get; set; } = string.Empty;
 
     // --- Domain events (on concrete class only, not on interface) ---
 

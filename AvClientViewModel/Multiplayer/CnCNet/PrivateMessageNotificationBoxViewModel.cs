@@ -24,10 +24,10 @@ public partial class PrivateMessageNotificationBoxViewModel : ObservableObject, 
     // --- Observable state ---
 
     [ObservableProperty]
-    public partial string SenderName { get; set; }  = string.Empty;
+    public partial string SenderName { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MessagePreview { get; set; }  = string.Empty;
+    public partial string MessagePreview { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial bool IsVisible { get; set; }

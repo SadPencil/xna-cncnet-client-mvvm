@@ -220,9 +220,9 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         catch (Exception ex)
         {
             Log.Warning("Uninstalling FinalSun Compatibility Fix failed. Error message: " + ex.ToString());
-           _ = dialogService.ShowOKDialog(
-                "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedTitle"),
-                "Uninstalling FinalSun Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedText") + " " + ex.Message);
+            _ = dialogService.ShowOKDialog(
+                 "Uninstalling Compatibility Fix Failed".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedTitle"),
+                 "Uninstalling FinalSun Compatibility Fix failed. Error message:".L10N("Client:DTAConfig:TSFinalSunFixUninstallFailedText") + " " + ex.Message);
         }
     }
 
