@@ -229,14 +229,19 @@ public class IniExpressionEvaluator
         SkipWhitespace();
         ConsumeChar(')');
 
-        // Resolve $Self / $ParentControl aliases
+        // Resolve $Self / $ParentControl aliases.
+        // In the old client, game lobby controls are direct children of the
+        // game lobby window, so $ParentControl → window. In Avalonia, controls
+        // are inside a Canvas (MainCanvas) which is inside the UserControl.
+        // $ParentControl should resolve to the primary (UserControl), not the
+        // intermediate Canvas, so getWidth/getHeight return the window size.
         if (paramName == "$ParentControl")
         {
-            if (_parsingControl?.Parent is Control parent && !string.IsNullOrEmpty(parent.Name))
-                paramName = parent.Name;
+            if (_primaryControl != null && !string.IsNullOrEmpty(_primaryControl.Name))
+                paramName = _primaryControl.Name;
             else
                 throw new FormatException(
-                    $"$ParentControl used for control that has no parent in expression: {_input}");
+                    $"$ParentControl used but no primary control set in expression: {_input}");
         }
         else if (paramName == "$Self")
         {

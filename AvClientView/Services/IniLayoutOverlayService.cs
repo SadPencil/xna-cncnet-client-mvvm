@@ -163,7 +163,11 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         // Apply hardcoded draw modes from XNA code first (even if INI has no section)
         ApplyHardcodedDrawModes(control);
 
-        // Apply properties to all named child controls (INI DrawMode can override)
+        // Apply properties to all named child controls (INI DrawMode can override).
+        // Two-pass evaluation: first pass sets sizes and non-dependent positions,
+        // second pass re-evaluates expressions so dependencies on already-positioned
+        // controls resolve correctly (e.g. lblGameModeSelect depends on ddGameMode.X).
+        ApplyToDescendants(control, iniFile);
         ApplyToDescendants(control, iniFile);
 
         // Create ExtraControls
