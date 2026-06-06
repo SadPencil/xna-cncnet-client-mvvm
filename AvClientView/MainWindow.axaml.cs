@@ -66,15 +66,15 @@ public partial class MainWindow : Window
         DataContext = sp.GetRequiredService<IMainWindowViewModel>();
 
         // Connect LoadingScreen ViewModel
-        var loadingScreenVM = sp.GetRequiredService<ILoadingScreenViewModel>();
-        _loadingScreen.ViewModel = loadingScreenVM;
+        var loadingScreenViewModel = sp.GetRequiredService<ILoadingScreenViewModel>();
+        _loadingScreen.ViewModel = loadingScreenViewModel;
 
         // MainMenu is created after DI is ready, so it receives a non-null INI service
         _mainMenu = new MainMenu(iniOverlay);
 
         // Connect MainMenu ViewModel and all child ViewModels
-        var mainMenuVM = sp.GetRequiredService<IMainMenuViewModel>();
-        _mainMenu.ViewModel = mainMenuVM;
+        var mainMenuViewModel = sp.GetRequiredService<IMainMenuViewModel>();
+        _mainMenu.ViewModel = mainMenuViewModel;
         _mainMenu.SetCampaignSelectorViewModel(sp.GetRequiredService<ICampaignSelectorViewModel>());
         _mainMenu.SetOptionsWindowViewModel(sp.GetRequiredService<IOptionsWindowViewModel>());
         _mainMenu.SetExtrasWindowViewModel(sp.GetRequiredService<IExtrasWindowViewModel>());

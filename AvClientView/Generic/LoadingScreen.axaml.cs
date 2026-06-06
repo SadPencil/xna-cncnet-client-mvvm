@@ -46,8 +46,8 @@ public partial class LoadingScreen : UserControl
     {
         if (e.PropertyName == nameof(ILoadingScreenViewModel.IsLoading))
         {
-            var loadingScreenVM = (ILoadingScreenViewModel)sender!;
-            if (!loadingScreenVM.IsLoading)
+            var loadingScreenViewModel = (ILoadingScreenViewModel)sender!;
+            if (!loadingScreenViewModel.IsLoading)
             {
                 Completed?.Invoke(this, EventArgs.Empty);
             }

@@ -17,9 +17,9 @@ internal class Program
         // WindowState (FullScreen from BorderlessWindowedClient) is
         // applied from the first frame. Replaced by the DI-created
         // instance once the service provider is ready.
-        var mainWindowVM = new MainWindowViewModel(gameInProgressVM: null);
+        var mainWindowViewModel = new MainWindowViewModel(gameInProgressViewModel: null);
 
-        AvClientView.Startup.Run(args, () => BuildServiceProvider(args), mainWindowVM);
+        AvClientView.Startup.Run(args, () => BuildServiceProvider(args), mainWindowViewModel);
     }
 
     private static ServiceProvider BuildServiceProvider(string[] args)
