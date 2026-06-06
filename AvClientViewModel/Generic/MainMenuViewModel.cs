@@ -177,6 +177,7 @@ namespace AvClientViewModel.Generic
             this.dialogService = dialogService;
 
             AppDomain.CurrentDomain.ProcessExit += (_, _) => Clean();
+            lifecycleService.ApplicationClosing += (_, _) => Clean();
 
             // Subscribe to TopBar state changes for panel switching
             topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
