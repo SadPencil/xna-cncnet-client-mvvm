@@ -31,10 +31,12 @@ public partial class MainWindow : Window
 
     public void ShowMainWindow()
     {
-        // Apply borderless fullscreen immediately so the window doesn't
-        // briefly appear in normal size before ConnectAfterInit runs.
-        if (UserINISettings.Instance.BorderlessWindowedClient)
-            WindowState = Avalonia.Controls.WindowState.FullScreen;
+        // Set an initial ViewModel immediately so the window goes fullscreen
+        // (if BorderlessWindowedClient is enabled) from the first frame,
+        // before DI is ready. Replaced by ConnectAfterInit.
+        var borderless = UserINISettings.Instance.BorderlessWindowedClient;
+        DataContext = new DefaultMainWindowViewModel(
+            borderless ? WindowState.FullScreen : WindowState.Normal);
 
         // LoadingScreen fills the Grid (design resolution). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;

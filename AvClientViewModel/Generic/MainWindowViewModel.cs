@@ -20,7 +20,7 @@ namespace AvClientViewModel.Generic;
 /// </summary>
 public partial class MainWindowViewModel : ObservableObject, IMainWindowViewModel, IRecipient<BorderlessClientToggledMessage>
 {
-    private readonly IGameInProgressWindowViewModel gameInProgressVM;
+    private readonly IGameInProgressWindowViewModel? gameInProgressVM;
 
     private bool _isUpdatingState;
     private WindowState _lastUserState = WindowState.Normal;
@@ -35,7 +35,12 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
     [ObservableProperty]
     private WindowState windowState;
 
-    public MainWindowViewModel(IGameInProgressWindowViewModel gameInProgressVM)
+    /// <summary>
+    /// When <paramref name="gameInProgressVM"/> is null (before DI is ready),
+    /// the ViewModel only handles borderless fullscreen. The real VM with
+    /// game-in-progress support replaces it during ConnectAfterInit.
+    /// </summary>
+    public MainWindowViewModel(IGameInProgressWindowViewModel? gameInProgressVM)
     {
         this.gameInProgressVM = gameInProgressVM;
 
@@ -43,11 +48,14 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
 
         ApplyEffectiveState();
 
-        gameInProgressVM.PropertyChanged += (_, e) =>
+        if (gameInProgressVM != null)
         {
-            if (e.PropertyName == nameof(IGameInProgressWindowViewModel.IsGameInProgress))
-                ApplyEffectiveState();
-        };
+            gameInProgressVM.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(IGameInProgressWindowViewModel.IsGameInProgress))
+                    ApplyEffectiveState();
+            };
+        }
     }
 
     public void Receive(BorderlessClientToggledMessage message)
@@ -95,7 +103,8 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
         _isUpdatingState = true;
         try
         {
-            if (gameInProgressVM.IsGameInProgress
+            if (gameInProgressVM != null
+                && gameInProgressVM.IsGameInProgress
                 && UserINISettings.Instance.MinimizeWindowsOnGameStart)
             {
                 WindowState = WindowState.Minimized;
