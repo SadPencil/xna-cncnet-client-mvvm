@@ -7,8 +7,13 @@
              x:DataType="vmc:IOptionsWindowViewModel"
              IsVisible="{Binding IsVisible, FallbackValue=False}"
              Width="576" Height="475">
-  <!-- TODO: TextBlock and CheckBox content does not auto-wrap. TextBlock.TextWrapping attached
-       property, AccessText selector, and ContentPresenter child selectors all failed to work. -->
+  <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <!-- TODO: CheckBox content does not auto-wrap. AccessText selector, ContentPresenter child
+         selectors, and TextBlock.TextWrapping attached property on CheckBox all failed. -->
+  </UserControl.Styles>
   <Canvas>
     <!-- Tab buttons (at top, matching original XNAClientTabControl at y=12) -->
     <StackPanel x:Name="tabControl"
