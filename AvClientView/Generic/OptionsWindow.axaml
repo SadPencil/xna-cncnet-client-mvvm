@@ -11,8 +11,8 @@
     <Style Selector="TextBlock">
       <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
-    <Style Selector="CheckBox AccessText">
-      <Setter Property="TextWrapping" Value="Wrap" />
+    <Style Selector="CheckBox">
+      <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
     </Style>
   </UserControl.Styles>
   <Canvas>
@@ -98,7 +98,7 @@
             <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
                       IsChecked="{Binding IsBorderlessClientEnabled}"
                       Foreground="{DynamicResource XnaTextBrush}" />
-            <TextBlock Text="Press Alt+Enter to toggle borderless client at any time."
+            <TextBlock Text="Alt+Enter toggles borderless client."
                        Foreground="{DynamicResource XnaTextBrush}" />
             <!-- Client Theme -->
             <StackPanel Orientation="Horizontal" Spacing="8">
