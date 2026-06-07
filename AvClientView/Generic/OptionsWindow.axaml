@@ -7,6 +7,14 @@
              x:DataType="vmc:IOptionsWindowViewModel"
              IsVisible="{Binding IsVisible, FallbackValue=False}"
              Width="576" Height="475">
+  <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="CheckBox AccessText">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+  </UserControl.Styles>
   <Canvas>
     <!-- Tab buttons (at top, matching original XNAClientTabControl at y=12) -->
     <StackPanel x:Name="tabControl"
