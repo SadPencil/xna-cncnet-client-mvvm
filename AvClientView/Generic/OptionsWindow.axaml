@@ -94,10 +94,10 @@
 
           <!-- Right Column: Client settings -->
           <StackPanel Grid.Column="1" Spacing="6" Margin="12,0,0,0">
-            <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
+            <CheckBox x:Name="chkBorderlessClient" Content="Fullscreen Client"
                       IsChecked="{Binding IsBorderlessClientEnabled}"
                       Foreground="{DynamicResource XnaTextBrush}" />
-            <TextBlock Text="Alt+Enter toggles borderless client."
+            <TextBlock Text="Alt+Enter toggles fullscreen client."
                        Foreground="{DynamicResource XnaTextBrush}" />
             <!-- Client Theme -->
             <StackPanel Orientation="Horizontal" Spacing="8">
