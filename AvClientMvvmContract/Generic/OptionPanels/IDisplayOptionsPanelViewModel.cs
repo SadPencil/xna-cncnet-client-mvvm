@@ -9,8 +9,6 @@ public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
 {
     IReadOnlyList<string> IngameResolutionOptions { get; }
     int SelectedIngameResolutionIndex { get; set; }
-    IReadOnlyList<string> ClientResolutionOptions { get; }
-    int SelectedClientResolutionIndex { get; set; }
     IReadOnlyList<string> DetailLevelOptions { get; }
     int SelectedDetailLevelIndex { get; set; }
     IReadOnlyList<string> RendererOptions { get; }
@@ -24,8 +22,6 @@ public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
     bool IsBorderlessWindowedModeAllowed { get; }
     bool IsBackBufferStoredInVideoMemory { get; set; }
     bool IsBorderlessClientEnabled { get; set; }
-    bool IsIntegerScaledClientAllowed { get; }
-    bool IsIntegerScaledClientEnabled { get; set; }
     bool IsGameCompatFixAllowed { get; }
     bool IsFinalSunCompatFixAllowed { get; }
     bool IsRestartRequired { get; }
