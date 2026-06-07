@@ -334,8 +334,7 @@ public partial class MainMenu : UserControl
     /// </summary>
     private void OnWindowLayoutUpdated(object? sender, EventArgs e)
     {
-        var window = TopLevel.GetTopLevel(this) as Window;
-        if (window == null || _lastCursorPath == null)
+        if (sender is not Window window || _lastCursorPath == null)
             return;
 
         double newScale = window.RenderScaling;
