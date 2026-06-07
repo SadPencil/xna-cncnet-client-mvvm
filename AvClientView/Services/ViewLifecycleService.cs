@@ -10,11 +10,11 @@ namespace AvClientView.Services;
 
 public class ViewLifecycleService : IViewLifecycleService
 {
-    public event EventHandler? ApplicationClosing;
+    public event EventHandler? Closing;
 
     public void Shutdown()
     {
-        ApplicationClosing?.Invoke(this, EventArgs.Empty);
+        Closing?.Invoke(this, EventArgs.Empty);
 
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

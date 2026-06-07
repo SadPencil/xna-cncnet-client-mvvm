@@ -16,32 +16,32 @@ namespace AvClientViewModel.Services;
 /// </summary>
 public class ViewModelLifecycleService : IViewModelLifecycleService
 {
-    private readonly IViewLifecycleService lifecycleService;
+    private readonly IViewLifecycleService viewLifecycleService;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
 
     public ViewModelLifecycleService(
-        IViewLifecycleService lifecycleService,
+        IViewLifecycleService viewLifecycleService,
         IUIThreadMarshaller uiThreadMarshaller)
     {
-        this.lifecycleService = lifecycleService;
+        this.viewLifecycleService = viewLifecycleService;
         this.uiThreadMarshaller = uiThreadMarshaller;
     }
 
     public void Restart()
     {
         LaunchProcess(admin: false);
-        uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
+        uiThreadMarshaller.AddCallback(viewLifecycleService.Shutdown);
     }
 
     public void RestartAsAdmin()
     {
         LaunchProcess(admin: true);
-        uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
+        uiThreadMarshaller.AddCallback(viewLifecycleService.Shutdown);
     }
 
     public void Shutdown()
     {
-        uiThreadMarshaller.AddCallback(lifecycleService.Shutdown);
+        uiThreadMarshaller.AddCallback(viewLifecycleService.Shutdown);
     }
 
     private static void LaunchProcess(bool admin)

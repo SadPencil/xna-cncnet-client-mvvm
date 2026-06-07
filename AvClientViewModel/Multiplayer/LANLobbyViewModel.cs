@@ -48,7 +48,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly ILANPlayerManagerService playerManager;
     private readonly ILANMessageDeduplicatorService messageDeduplicator;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
-    private readonly IViewLifecycleService applicationLifecycleService;
+    private readonly IViewLifecycleService viewLifecycleService;
     private readonly IGameProcessService gameProcessService;
     private readonly GameCollection gameCollection;
     private readonly MapLoader mapLoader;
@@ -119,7 +119,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         ILANPlayerManagerService playerManager,
         ILANMessageDeduplicatorService messageDeduplicator,
         IUIThreadMarshaller uiThreadMarshaller,
-        IViewLifecycleService applicationLifecycleService,
+        IViewLifecycleService viewLifecycleService,
         IGameProcessService gameProcessService,
         GameCollection gameCollection,
         MapLoader mapLoader,
@@ -130,7 +130,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         this.playerManager = playerManager;
         this.messageDeduplicator = messageDeduplicator;
         this.uiThreadMarshaller = uiThreadMarshaller;
-        this.applicationLifecycleService = applicationLifecycleService;
+        this.viewLifecycleService = viewLifecycleService;
         this.gameProcessService = gameProcessService;
         this.gameCollection = gameCollection;
         this.mapLoader = mapLoader;
@@ -163,7 +163,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         foreach (LANColor color in chatColors)
             _colorOptions.Add(color.Name);
 
-        applicationLifecycleService.ApplicationClosing += (_, _) => Cleanup();
+        viewLifecycleService.Closing += (_, _) => Cleanup();
 
         broadcastManager.MessageReceived += (sender, e) =>
             uiThreadMarshaller.AddCallback(() => UI_HandleNetworkMessage(e.Data, e.EndPoint));
@@ -326,7 +326,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             discordHandler,
             gameProcessService,
             uiThreadMarshaller,
-            applicationLifecycleService,
+            viewLifecycleService,
             random,
             chatColors);
         lanGameLobby.Initialize();
@@ -335,7 +335,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             discordHandler,
             gameProcessService,
             uiThreadMarshaller,
-            applicationLifecycleService,
+            viewLifecycleService,
             chatColors);
         lanGameLoadingLobby.Initialize();
 

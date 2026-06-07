@@ -7,7 +7,7 @@ namespace AvClientMvvmContract.ViewServices;
 /// </summary>
 public interface IViewLifecycleService
 {
-    event EventHandler ApplicationClosing;
+    event EventHandler Closing;
 
     /// <summary>
     /// Requests the application to shut down.

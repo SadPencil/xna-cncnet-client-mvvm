@@ -50,7 +50,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     private const string PLAYER_JOIN_COMMAND = "JOIN";
     private const string FILE_HASH_COMMAND = "FHASH";
 
-    private readonly IViewLifecycleService applicationLifecycleService;
+    private readonly IViewLifecycleService viewLifecycleService;
     private readonly LANColor[] chatColors;
     private readonly Encoding encoding;
 
@@ -101,11 +101,11 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
-        IViewLifecycleService applicationLifecycleService,
+        IViewLifecycleService viewLifecycleService,
         LANColor[] chatColors)
         : base(discordHandler, gameProcessService, uiThreadMarshaller)
     {
-        this.applicationLifecycleService = applicationLifecycleService;
+        this.viewLifecycleService = viewLifecycleService;
         this.chatColors = chatColors;
         this.encoding = ProgramConstants.LAN_ENCODING;
         this.localGame = ClientConfiguration.Instance.LocalGame;
@@ -125,7 +125,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
             new ClientNoParamCommandHandler(PLAYER_QUIT_COMMAND, HandleHostQuit),
         };
 
-        applicationLifecycleService.ApplicationClosing += (_, _) =>
+        viewLifecycleService.Closing += (_, _) =>
         {
             if (client != null && client.Connected)
                 Clear();

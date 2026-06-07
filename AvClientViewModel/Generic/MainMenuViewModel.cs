@@ -52,7 +52,7 @@ namespace AvClientViewModel.Generic
         private readonly IDiscordHandlerService discordHandler;
         private readonly IMusicPlayerService musicPlayer;
         private readonly IUIThreadMarshaller uiThreadMarshaller;
-        private readonly IViewLifecycleService lifecycleService;
+        private readonly IViewLifecycleService viewLifecycleService;
         private readonly CnCNetManager connectionManager;
         private readonly OptionsWindowViewModel optionsWindowViewModel;
         private readonly TopBarViewModel topBarViewModel;
@@ -145,7 +145,7 @@ namespace AvClientViewModel.Generic
             IDiscordHandlerService discordHandler,
             IMusicPlayerService musicPlayer,
             IUIThreadMarshaller uiThreadMarshaller,
-            IViewLifecycleService lifecycleService,
+            IViewLifecycleService viewLifecycleService,
             CnCNetManager connectionManager,
             OptionsWindowViewModel optionsWindowViewModel,
             TopBarViewModel topBarViewModel,
@@ -168,7 +168,7 @@ namespace AvClientViewModel.Generic
             this.discordHandler = discordHandler;
             this.musicPlayer = musicPlayer;
             this.uiThreadMarshaller = uiThreadMarshaller;
-            this.lifecycleService = lifecycleService;
+            this.viewLifecycleService = viewLifecycleService;
             this.processLifecycleService = processLifecycleService;
             this.connectionManager = connectionManager;
             this.optionsWindowViewModel = optionsWindowViewModel;
@@ -187,7 +187,7 @@ namespace AvClientViewModel.Generic
             this.dialogService = dialogService;
 
             AppDomain.CurrentDomain.ProcessExit += (_, _) => Clean();
-            lifecycleService.ApplicationClosing += (_, _) => Clean();
+            viewLifecycleService.Closing += (_, _) => Clean();
 
             // Subscribe to TopBar state changes for panel switching
             topBarViewModel.PropertyChanged += OnTopBarPropertyChanged;
@@ -880,7 +880,7 @@ namespace AvClientViewModel.Generic
         private void ExitClient()
         {
             Log.Information("Exiting.");
-            lifecycleService.Shutdown();
+            viewLifecycleService.Shutdown();
         }
 
         private void OnRestartRequested(object? sender, EventArgs e)

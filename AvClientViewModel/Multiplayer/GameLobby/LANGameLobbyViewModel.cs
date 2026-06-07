@@ -95,7 +95,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     private Timer updateTimer;
 
     // --- Services ---
-    private readonly IViewLifecycleService applicationLifecycleService;
+    private readonly IViewLifecycleService viewLifecycleService;
 
     // --- Constructor ---
 
@@ -104,7 +104,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
-        IViewLifecycleService applicationLifecycleService,
+        IViewLifecycleService viewLifecycleService,
         Random random,
         LANColor[] chatColors)
         : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)
@@ -112,7 +112,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         this.chatColors = chatColors;
         this.encoding = EncodingExt.UTF8NoBOM;
         this.localGame = ClientConfiguration.Instance.LocalGame;
-        this.applicationLifecycleService = applicationLifecycleService;
+        this.viewLifecycleService = viewLifecycleService;
 
         hostCommandHandlers = new CommandHandlerBase[]
         {
@@ -149,7 +149,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         updateTimer.AutoReset = true;
         updateTimer.Elapsed += UpdateTimer_Elapsed;
 
-        applicationLifecycleService.ApplicationClosing += OnApplicationClosing;
+        viewLifecycleService.Closing += OnApplicationClosing;
     }
 
     protected override int MaxPlayerCount => MAX_PLAYER_COUNT;
@@ -526,7 +526,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     public override void Clear()
     {
         updateTimer.Stop();
-        applicationLifecycleService.ApplicationClosing -= OnApplicationClosing;
+        viewLifecycleService.Closing -= OnApplicationClosing;
 
         if (IsHost)
         {
