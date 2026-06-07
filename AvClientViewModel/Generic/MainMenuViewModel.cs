@@ -52,7 +52,7 @@ namespace AvClientViewModel.Generic
         private readonly IDiscordHandlerService discordHandler;
         private readonly IMusicPlayerService musicPlayer;
         private readonly IUIThreadMarshaller uiThreadMarshaller;
-        private readonly IApplicationLifecycleService lifecycleService;
+        private readonly IViewLifecycleService lifecycleService;
         private readonly CnCNetManager connectionManager;
         private readonly OptionsWindowViewModel optionsWindowViewModel;
         private readonly TopBarViewModel topBarViewModel;
@@ -68,7 +68,7 @@ namespace AvClientViewModel.Generic
         private readonly LANLobbyViewModel lanLobbyViewModel;
         private readonly PrivateMessagingWindowViewModel privateMessagingWindowViewModel;
         private readonly DialogService dialogService;
-        private readonly IProcessLifecycleService processLifecycleService;
+        private readonly IViewModelLifecycleService processLifecycleService;
 
         private CancellationTokenSource cncnetPlayerCountCancellationSource;
         private DateTime lastUpdateCheckTime;
@@ -145,7 +145,7 @@ namespace AvClientViewModel.Generic
             IDiscordHandlerService discordHandler,
             IMusicPlayerService musicPlayer,
             IUIThreadMarshaller uiThreadMarshaller,
-            IApplicationLifecycleService lifecycleService,
+            IViewLifecycleService lifecycleService,
             CnCNetManager connectionManager,
             OptionsWindowViewModel optionsWindowViewModel,
             TopBarViewModel topBarViewModel,
@@ -161,7 +161,7 @@ namespace AvClientViewModel.Generic
             LANLobbyViewModel lanLobbyViewModel,
             PrivateMessagingWindowViewModel privateMessagingWindowViewModel,
             DialogService dialogService,
-            IProcessLifecycleService processLifecycleService)
+            IViewModelLifecycleService processLifecycleService)
         {
             this.updateService = updateService;
             this.gameProcessService = gameProcessService;

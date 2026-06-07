@@ -187,7 +187,7 @@ public static class DirectDrawCompatibilityChecker
     /// <param name="lifecycleService">Service for shutting down the application after admin restart.</param>
     public static async Task CheckAndPromptFixAsync(
         Services.DialogService dialogService,
-        IProcessLifecycleService processLifecycleService)
+        IViewModelLifecycleService processLifecycleService)
     {
         // Fix environment variable __COMPAT_LAYER first, for the client itself.
         FixEnvironmentVariable();

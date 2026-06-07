@@ -56,7 +56,7 @@ namespace AvClientViewModel
             // Core services
             services.AddSingleton<Random>(_ => CreateRandom());
             services.AddSingleton<DialogService>();
-            services.AddSingleton<IProcessLifecycleService, ProcessLifecycleService>();
+            services.AddSingleton<IViewModelLifecycleService, ViewModelLifecycleService>();
 
             // Domain services
             services.AddSingleton<GameCollection>();
@@ -100,7 +100,7 @@ namespace AvClientViewModel
                     sp.GetRequiredService<DirectDrawWrapperManager>(),
                     sp.GetRequiredService<IResolutionProvider>(),
                     sp.GetRequiredService<DialogService>(),
-                    sp.GetRequiredService<IProcessLifecycleService>()));
+                    sp.GetRequiredService<IViewModelLifecycleService>()));
             services.AddSingleton<IDisplayOptionsPanelViewModel>(sp =>
                 sp.GetRequiredService<DisplayOptionsPanelViewModel>());
 
@@ -238,7 +238,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<ILANPlayerManagerService>(),
                 sp.GetRequiredService<ILANMessageDeduplicatorService>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
-                sp.GetRequiredService<IApplicationLifecycleService>(),
+                sp.GetRequiredService<IViewLifecycleService>(),
                 sp.GetRequiredService<IGameProcessService>(),
                 sp.GetRequiredService<GameCollection>(),
                 sp.GetRequiredService<MapLoader>(),
@@ -264,7 +264,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<IDiscordHandlerService>(),
                 sp.GetRequiredService<IMusicPlayerService>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
-                sp.GetRequiredService<IApplicationLifecycleService>(),
+                sp.GetRequiredService<IViewLifecycleService>(),
                 sp.GetRequiredService<CnCNetManager>(),
                 sp.GetRequiredService<OptionsWindowViewModel>(),
                 sp.GetRequiredService<TopBarViewModel>(),
@@ -280,7 +280,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<LANLobbyViewModel>(),
                 sp.GetRequiredService<PrivateMessagingWindowViewModel>(),
                 sp.GetRequiredService<DialogService>(),
-                sp.GetRequiredService<IProcessLifecycleService>()));
+                sp.GetRequiredService<IViewModelLifecycleService>()));
 
             services.AddSingleton<IMainMenuViewModel>(sp =>
                 sp.GetRequiredService<MainMenuViewModel>());

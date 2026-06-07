@@ -95,7 +95,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
     private Timer updateTimer;
 
     // --- Services ---
-    private readonly IApplicationLifecycleService applicationLifecycleService;
+    private readonly IViewLifecycleService applicationLifecycleService;
 
     // --- Constructor ---
 
@@ -104,7 +104,7 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
-        IApplicationLifecycleService applicationLifecycleService,
+        IViewLifecycleService applicationLifecycleService,
         Random random,
         LANColor[] chatColors)
         : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)

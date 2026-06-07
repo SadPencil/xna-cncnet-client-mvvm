@@ -14,13 +14,13 @@ namespace AvClientViewModel.Services;
 /// Manages the client application process lifecycle.
 /// Launches a new instance and / or terminates the current one on the UI thread.
 /// </summary>
-public class ProcessLifecycleService : IProcessLifecycleService
+public class ViewModelLifecycleService : IViewModelLifecycleService
 {
-    private readonly IApplicationLifecycleService lifecycleService;
+    private readonly IViewLifecycleService lifecycleService;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
 
-    public ProcessLifecycleService(
-        IApplicationLifecycleService lifecycleService,
+    public ViewModelLifecycleService(
+        IViewLifecycleService lifecycleService,
         IUIThreadMarshaller uiThreadMarshaller)
     {
         this.lifecycleService = lifecycleService;

@@ -8,7 +8,7 @@ using AvClientMvvmContract.ViewServices;
 
 namespace AvClientView.Services;
 
-public class ApplicationLifecycleService : IApplicationLifecycleService
+public class ViewLifecycleService : IViewLifecycleService
 {
     public event EventHandler? ApplicationClosing;
 

@@ -4,7 +4,7 @@ namespace AvClientViewModel.Services;
 /// Manages the client application process lifecycle.
 /// Launches a new instance and terminates the current one.
 /// </summary>
-public interface IProcessLifecycleService
+public interface IViewModelLifecycleService
 {
     /// <summary>
     /// Launches a new client instance, then terminates the current one.

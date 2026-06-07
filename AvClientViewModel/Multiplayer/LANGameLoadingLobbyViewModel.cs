@@ -50,7 +50,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
     private const string PLAYER_JOIN_COMMAND = "JOIN";
     private const string FILE_HASH_COMMAND = "FHASH";
 
-    private readonly IApplicationLifecycleService applicationLifecycleService;
+    private readonly IViewLifecycleService applicationLifecycleService;
     private readonly LANColor[] chatColors;
     private readonly Encoding encoding;
 
@@ -101,7 +101,7 @@ public partial class LANGameLoadingLobbyViewModel : GameLoadingLobbyBaseViewMode
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
-        IApplicationLifecycleService applicationLifecycleService,
+        IViewLifecycleService applicationLifecycleService,
         LANColor[] chatColors)
         : base(discordHandler, gameProcessService, uiThreadMarshaller)
     {

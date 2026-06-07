@@ -5,7 +5,7 @@ namespace AvClientMvvmContract.ViewServices;
 /// <summary>
 /// Service that notifies ViewModels about application lifecycle events.
 /// </summary>
-public interface IApplicationLifecycleService
+public interface IViewLifecycleService
 {
     event EventHandler ApplicationClosing;
 

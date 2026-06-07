@@ -44,7 +44,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     private readonly DirectDrawWrapperManager directDrawWrapperManager;
     private readonly IResolutionProvider resolutionProvider;
     private readonly DialogService dialogService;
-    private readonly IProcessLifecycleService processLifecycleService;
+    private readonly IViewModelLifecycleService processLifecycleService;
 
     // --- State ---
 
@@ -145,7 +145,7 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         DirectDrawWrapperManager directDrawWrapperManager,
         IResolutionProvider resolutionProvider,
         DialogService dialogService,
-        IProcessLifecycleService processLifecycleService)
+        IViewModelLifecycleService processLifecycleService)
     {
         this.iniSettings = iniSettings;
         this.directDrawWrapperManager = directDrawWrapperManager;

@@ -48,7 +48,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly ILANPlayerManagerService playerManager;
     private readonly ILANMessageDeduplicatorService messageDeduplicator;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
-    private readonly IApplicationLifecycleService applicationLifecycleService;
+    private readonly IViewLifecycleService applicationLifecycleService;
     private readonly IGameProcessService gameProcessService;
     private readonly GameCollection gameCollection;
     private readonly MapLoader mapLoader;
@@ -119,7 +119,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         ILANPlayerManagerService playerManager,
         ILANMessageDeduplicatorService messageDeduplicator,
         IUIThreadMarshaller uiThreadMarshaller,
-        IApplicationLifecycleService applicationLifecycleService,
+        IViewLifecycleService applicationLifecycleService,
         IGameProcessService gameProcessService,
         GameCollection gameCollection,
         MapLoader mapLoader,
