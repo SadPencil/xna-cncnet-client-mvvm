@@ -44,6 +44,17 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     IRelayCommand DeclineUpdateCommand { get; }
     IRelayCommand AcceptUpdateCommand { get; }
     IRelayCommand ForceUpdateCommandCommand { get; }
+
+    /// <summary>
+    /// Full path to the window icon file (clienticon.ico).
+    /// </summary>
+    string WindowIconPath { get; }
+
+    /// <summary>
+    /// Full path to the native cursor file (cursor.cur).
+    /// Returns an empty string if no cursor file is found.
+    /// </summary>
+    string CursorFilePath { get; }
 }
 
 /// <summary>

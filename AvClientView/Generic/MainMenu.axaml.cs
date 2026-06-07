@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -23,6 +24,8 @@ using AvClientView.Services;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 
+using Serilog;
+
 
 namespace AvClientView.Generic;
 
@@ -36,6 +39,9 @@ public partial class MainMenu : UserControl
     private bool _isLoaded;
     private static int _dialogCounter;
     private readonly List<Action> _pendingDialogs = new();
+
+    private Cursor? _customCursor;
+    private IGameInProgressWindowViewModel? _gameInProgressVm;
 
     public MainMenu(IIniLayoutOverlayService iniOverlay)
     {
@@ -152,6 +158,9 @@ public partial class MainMenu : UserControl
         // Ensure we can receive keyboard input
         Focus();
 
+        // Apply window icon and cursor from ViewModel
+        ApplyWindowIconAndCursor();
+
         // Drain any pending dialogs that arrived before the panels were sized
         _isLoaded = true;
         foreach (var show in _pendingDialogs)
@@ -243,8 +252,17 @@ public partial class MainMenu : UserControl
 
     public void SetGameInProgressWindowViewModel(IGameInProgressWindowViewModel vm)
     {
+        // Unsubscribe from previous ViewModel
+        if (_gameInProgressVm != null)
+            _gameInProgressVm.PropertyChanged -= OnGameInProgressPropertyChanged;
+
+        _gameInProgressVm = vm;
         gameInProgressWindow.ViewModel = vm;
         WireOverlayVisibility(gameInProgressWindow, gameInProgressOverlay);
+
+        // React to cursor visibility changes (e.g. game starts → hide cursor)
+        if (vm != null)
+            vm.PropertyChanged += OnGameInProgressPropertyChanged;
     }
 
     /// <summary>
@@ -259,6 +277,61 @@ public partial class MainMenu : UserControl
                 overlay.IsPanelVisible = child.IsVisible;
         };
         overlay.IsPanelVisible = child.IsVisible;
+    }
+
+    /// <summary>
+    /// Reacts to IsCursorVisible property changes from GameInProgressWindowViewModel.
+    /// Hides cursor when game starts, shows it when game exits.
+    /// </summary>
+    private void OnGameInProgressPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IGameInProgressWindowViewModel.IsCursorVisible))
+        {
+            UpdateCursorVisibility(_gameInProgressVm?.IsCursorVisible ?? true);
+        }
+    }
+
+    /// <summary>
+    /// Applies the window icon and cursor from the ViewModel to the
+    /// containing Window. Called once during OnLoaded after ViewModel is available.
+    /// </summary>
+    private void ApplyWindowIconAndCursor()
+    {
+        var window = TopLevel.GetTopLevel(this) as Window;
+        if (window == null || ViewModel == null)
+            return;
+
+        // Apply window icon from ViewModel-provided path
+        string iconPath = ViewModel.WindowIconPath;
+        if (!string.IsNullOrEmpty(iconPath) && File.Exists(iconPath))
+        {
+            try
+            {
+                window.Icon = new WindowIcon(iconPath);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"[MainMenu] Failed to load window icon from '{iconPath}': {ex.Message}");
+            }
+        }
+
+        // Use the standard system cursor (custom .cur loading requires platform-specific
+        // API not available in Avalonia 11.3 Cursor class). The ViewModel still provides
+        // CursorFilePath so the cursor location is known if needed in the future.
+        _customCursor = Cursor.Default;
+    }
+
+    /// <summary>
+    /// Toggles the Window cursor between the custom cursor and hidden.
+    /// Called when IsCursorVisible changes on GameInProgressWindowViewModel.
+    /// </summary>
+    private void UpdateCursorVisibility(bool isVisible)
+    {
+        var window = TopLevel.GetTopLevel(this) as Window;
+        if (window == null)
+            return;
+
+        window.Cursor = isVisible ? (_customCursor ?? Cursor.Default) : new Cursor(StandardCursorType.None);
     }
 
     #region Dialog Overlay Helpers

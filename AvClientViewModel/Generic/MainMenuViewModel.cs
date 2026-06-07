@@ -112,6 +112,13 @@ namespace AvClientViewModel.Generic
         [ObservableProperty]
         public partial bool IsLanMode { get; set; }
 
+        /// <inheritdoc />
+        public string WindowIconPath =>
+            SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clienticon.ico");
+
+        /// <inheritdoc />
+        public string CursorFilePath { get; } = GetCursorPath();
+
         [ObservableProperty]
         public partial MainMenuPanel ActivePanel { get; set; } = MainMenuPanel.PRIMARY;
 
@@ -883,6 +890,24 @@ namespace AvClientViewModel.Generic
             processLifecycleService.Restart();
         }
         #endregion
+
+        /// <summary>
+        /// Returns the path to the native cursor file (cursor.cur).
+        /// Checks the theme-specific resource path first, then the base resource path.
+        /// Returns an empty string if no cursor file is found.
+        /// </summary>
+        private static string GetCursorPath()
+        {
+            FileInfo primaryCursor = SafePath.GetFile(ProgramConstants.GetResourcePath(), "cursor.cur");
+            if (primaryCursor.Exists)
+                return primaryCursor.FullName;
+
+            FileInfo alternativeCursor = SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), "cursor.cur");
+            if (alternativeCursor.Exists)
+                return alternativeCursor.FullName;
+
+            return string.Empty;
+        }
     }
 }
 
