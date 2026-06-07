@@ -11,8 +11,11 @@
     <Style Selector="TextBlock">
       <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
-    <Style Selector="CheckBox">
-      <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+    <Style Selector="ContentPresenter TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="ContentPresenter AccessText">
+      <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
   </UserControl.Styles>
   <Canvas>
