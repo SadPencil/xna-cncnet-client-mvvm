@@ -316,24 +316,43 @@ public partial class MainMenu : UserControl
         }
 
         // Apply custom cursor from ViewModel-provided cursor.png path
-        LoadCustomCursor(ViewModel.CursorFilePath);
+        LoadCustomCursor(ViewModel.CursorFilePath, window.RenderScaling);
         if (_customCursor != null)
             window.Cursor = _customCursor;
     }
 
     /// <summary>
-    /// Loads a custom cursor from a PNG image file.
+    /// Loads a custom cursor from a PNG image file, scaled to match the
+    /// window's DPI/render scaling so the cursor appears at the correct size
+    /// regardless of display scaling.
     /// The hotspot is (0, 0) to match the old XNA sprite cursor behavior.
     /// </summary>
-    private void LoadCustomCursor(string cursorFilePath)
+    private void LoadCustomCursor(string cursorFilePath, double renderScale)
     {
         if (string.IsNullOrEmpty(cursorFilePath) || !File.Exists(cursorFilePath))
             return;
 
         try
         {
-            var bitmap = new Bitmap(cursorFilePath);
-            _customCursor = new Cursor(bitmap, new PixelPoint(0, 0));
+            using var original = new Bitmap(cursorFilePath);
+            int w = original.PixelSize.Width;
+            int h = original.PixelSize.Height;
+            int newW = Math.Max(1, (int)(w * renderScale));
+            int newH = Math.Max(1, (int)(h * renderScale));
+
+            if (newW == w && newH == h)
+            {
+                _customCursor = new Cursor(original, new PixelPoint(0, 0));
+            }
+            else
+            {
+                var image = new Image { Source = original, Width = newW, Height = newH };
+                image.Measure(new Size(newW, newH));
+                image.Arrange(new Rect(0, 0, newW, newH));
+                var scaled = new RenderTargetBitmap(new PixelSize(newW, newH));
+                scaled.Render(image);
+                _customCursor = new Cursor(scaled, new PixelPoint(0, 0));
+            }
         }
         catch (Exception ex)
         {
