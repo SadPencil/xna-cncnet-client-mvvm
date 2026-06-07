@@ -88,10 +88,6 @@ public partial class MainWindow : Window
 
         // GameInProgressWindow: full-screen overlay shown while game is running
         _mainMenu.SetGameInProgressWindowViewModel(sp.GetRequiredService<IGameInProgressWindowViewModel>());
-
-        // When the user clicks the X button, invoke the same ExitCommand used by the
-        // Exit button. This triggers music fade-out, cleanup, and graceful shutdown.
-        Closing += (_, _) => _mainMenu?.ViewModel?.ExitCommand.Execute(null);
     }
 
     private void OnLoadingCompleted(object? sender, EventArgs e)

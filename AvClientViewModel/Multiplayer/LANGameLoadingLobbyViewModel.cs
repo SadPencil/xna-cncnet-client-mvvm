@@ -10,7 +10,6 @@ using System.Timers;
 
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.ViewServices;
-using AvClientViewModel.Services;
 
 using AvClientViewModel.Domain;
 using AvClientViewModel.Domain.Multiplayer;
