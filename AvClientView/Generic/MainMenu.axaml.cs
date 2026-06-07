@@ -315,10 +315,30 @@ public partial class MainMenu : UserControl
             }
         }
 
-        // Use the standard system cursor (custom .cur loading requires platform-specific
-        // API not available in Avalonia 11.3 Cursor class). The ViewModel still provides
-        // CursorFilePath so the cursor location is known if needed in the future.
-        _customCursor = Cursor.Default;
+        // Apply custom cursor from ViewModel-provided cursor.png path
+        LoadCustomCursor(ViewModel.CursorFilePath);
+        if (_customCursor != null)
+            window.Cursor = _customCursor;
+    }
+
+    /// <summary>
+    /// Loads a custom cursor from a PNG image file.
+    /// The hotspot is (0, 0) to match the old XNA sprite cursor behavior.
+    /// </summary>
+    private void LoadCustomCursor(string cursorFilePath)
+    {
+        if (string.IsNullOrEmpty(cursorFilePath) || !File.Exists(cursorFilePath))
+            return;
+
+        try
+        {
+            var bitmap = new Bitmap(cursorFilePath);
+            _customCursor = new Cursor(bitmap, new PixelPoint(0, 0));
+        }
+        catch (Exception ex)
+        {
+            Log.Warning($"[MainMenu] Failed to load cursor from '{cursorFilePath}': {ex.Message}");
+        }
     }
 
     /// <summary>

@@ -892,17 +892,17 @@ namespace AvClientViewModel.Generic
         #endregion
 
         /// <summary>
-        /// Returns the path to the native cursor file (cursor.cur).
+        /// Returns the path to the cursor image file (cursor.png).
         /// Checks the theme-specific resource path first, then the base resource path.
         /// Returns an empty string if no cursor file is found.
         /// </summary>
         private static string GetCursorPath()
         {
-            FileInfo primaryCursor = SafePath.GetFile(ProgramConstants.GetResourcePath(), "cursor.cur");
+            FileInfo primaryCursor = SafePath.GetFile(ProgramConstants.GetResourcePath(), "cursor.png");
             if (primaryCursor.Exists)
                 return primaryCursor.FullName;
 
-            FileInfo alternativeCursor = SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), "cursor.cur");
+            FileInfo alternativeCursor = SafePath.GetFile(ProgramConstants.GetBaseResourcePath(), "cursor.png");
             if (alternativeCursor.Exists)
                 return alternativeCursor.FullName;
 

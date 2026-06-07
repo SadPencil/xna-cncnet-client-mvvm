@@ -51,7 +51,7 @@ public interface IMainMenuViewModel : INotifyPropertyChanged
     string WindowIconPath { get; }
 
     /// <summary>
-    /// Full path to the native cursor file (cursor.cur).
+    /// Full path to the cursor image file (cursor.png).
     /// Returns an empty string if no cursor file is found.
     /// </summary>
     string CursorFilePath { get; }
