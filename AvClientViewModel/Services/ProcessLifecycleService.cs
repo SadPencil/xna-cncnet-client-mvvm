@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 
 using AvClientMvvmContract.ViewServices;
+using AvClientViewModel.Services;
 
 using ClientCore;
 

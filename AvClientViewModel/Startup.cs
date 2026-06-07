@@ -15,6 +15,7 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.ViewServices;
+using AvClientViewModel.Services;
 
 using AvClientViewModel.Campaign;
 using AvClientViewModel.Domain;
@@ -56,6 +57,7 @@ namespace AvClientViewModel
             // Core services
             services.AddSingleton<Random>(_ => CreateRandom());
             services.AddSingleton<DialogService>();
+            services.AddSingleton<IApplicationLifecycleService, ApplicationLifecycleService>();
             services.AddSingleton<IProcessLifecycleService, ProcessLifecycleService>();
 
             // Domain services
