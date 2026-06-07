@@ -87,22 +87,8 @@
 
           <!-- Right Column: Client settings -->
           <StackPanel Grid.Column="1" Spacing="6" Margin="12,0,0,0">
-            <!-- Client Initial Size (was "Client Resolution"; renamed since the window is resizable) -->
-            <StackPanel Orientation="Horizontal" Spacing="8">
-              <TextBlock Text="Client Initial Size:" FontWeight="Bold"
-                         Foreground="{DynamicResource XnaTextBrush}"
-                         VerticalAlignment="Center" />
-              <ComboBox x:Name="ddClientResolution"
-                        ItemsSource="{Binding ClientResolutionOptions}"
-                        SelectedIndex="{Binding SelectedClientResolutionIndex}"
-                        Width="120" Height="21" />
-            </StackPanel>
             <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
                       IsChecked="{Binding IsBorderlessClientEnabled}"
-                      Foreground="{DynamicResource XnaTextBrush}" />
-            <CheckBox x:Name="chkIntegerScaledClient" Content="Integer Scaled Client"
-                      IsChecked="{Binding IsIntegerScaledClientEnabled}"
-                      IsVisible="{Binding IsIntegerScaledClientAllowed}"
                       Foreground="{DynamicResource XnaTextBrush}" />
             <!-- Client Theme -->
             <StackPanel Orientation="Horizontal" Spacing="8">
