@@ -90,6 +90,8 @@
             <CheckBox x:Name="chkBorderlessClient" Content="Borderless Client"
                       IsChecked="{Binding IsBorderlessClientEnabled}"
                       Foreground="{DynamicResource XnaTextBrush}" />
+            <TextBlock Text="Press Alt+Enter to toggle borderless client at any time."
+                       Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,4" />
             <!-- Client Theme -->
             <StackPanel Orientation="Horizontal" Spacing="8">
               <TextBlock Text="Client Theme:" FontWeight="Bold"
