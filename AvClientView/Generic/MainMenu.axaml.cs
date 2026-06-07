@@ -42,6 +42,8 @@ public partial class MainMenu : UserControl
 
     private Cursor? _customCursor;
     private IGameInProgressWindowViewModel? _gameInProgressVm;
+    private double _lastRenderScale;
+    private string? _lastCursorPath;
 
     public MainMenu(IIniLayoutOverlayService iniOverlay)
     {
@@ -316,9 +318,36 @@ public partial class MainMenu : UserControl
         }
 
         // Apply custom cursor from ViewModel-provided cursor.png path
-        LoadCustomCursor(ViewModel.CursorFilePath, window.RenderScaling);
+        _lastCursorPath = ViewModel.CursorFilePath;
+        _lastRenderScale = window.RenderScaling;
+        LoadCustomCursor(_lastCursorPath, _lastRenderScale);
         if (_customCursor != null)
             window.Cursor = _customCursor;
+
+        // Re-create cursor when DPI changes (e.g. window moved to a different monitor)
+        window.LayoutUpdated += OnWindowLayoutUpdated;
+    }
+
+    /// <summary>
+    /// Checks if the window's RenderScaling changed and reloads the cursor.
+    /// Respects the current cursor visibility state from GameInProgressWindowViewModel.
+    /// </summary>
+    private void OnWindowLayoutUpdated(object? sender, EventArgs e)
+    {
+        var window = TopLevel.GetTopLevel(this) as Window;
+        if (window == null || _lastCursorPath == null)
+            return;
+
+        double newScale = window.RenderScaling;
+        if (Math.Abs(newScale - _lastRenderScale) < 0.001)
+            return;
+
+        _lastRenderScale = newScale;
+        LoadCustomCursor(_lastCursorPath, newScale);
+
+        // Preserve current visibility state
+        bool visible = _gameInProgressVm?.IsCursorVisible ?? true;
+        UpdateCursorVisibility(visible);
     }
 
     /// <summary>
