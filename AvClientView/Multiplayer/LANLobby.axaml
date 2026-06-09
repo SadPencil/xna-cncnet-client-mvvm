@@ -29,7 +29,7 @@
                    IsEnabled="{Binding IsEnabled}">
             <ListBox.ItemsPanel>
               <ItemsPanelTemplate>
-                <VirtualizingStackPanel VirtualizationMode="Standard" />
+                <StackPanel />
               </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
@@ -144,7 +144,7 @@
                      IsEnabled="{Binding IsEnabled}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <VirtualizingStackPanel VirtualizationMode="Standard" />
+                  <StackPanel />
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
               <ListBox.ItemTemplate>
