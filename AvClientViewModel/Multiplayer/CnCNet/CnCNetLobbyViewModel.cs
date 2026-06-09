@@ -890,10 +890,78 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else if (sortDir == SortDirection.Desc)
             filtered = filtered.OrderByDescending(g => g.RoomName).ToList();
 
-        // Single assignment avoids per-item CollectionChanged notifications (stops flash)
-        Games = filtered;
+        // Build lookup and set of channel names still present
+        var filteredByChannel = new Dictionary<string, IHostedCnCNetGame>();
+        foreach (var g in filtered)
+            filteredByChannel[g.ChannelName] = g;
+        var presentChannels = new HashSet<string>(filteredByChannel.Keys);
 
-        // Update SelectedGame if the selection is still valid
+        var oldList = Games;
+
+        // Pass 1: build list preserving positions of still-existing games.
+        // Use a nullable list internally — gaps (null) mark deleted games.
+        List<IHostedCnCNetGame?> build = new(oldList.Count);
+        var gaps = new List<int>(); // indices in 'build' that need filling
+
+        for (int i = 0; i < oldList.Count; i++)
+        {
+            var ch = oldList[i].ChannelName;
+            if (presentChannels.Contains(ch))
+            {
+                // Game still exists — keep at its original position
+                build.Add(filteredByChannel[ch]);
+                filteredByChannel.Remove(ch); // mark consumed
+            }
+            else
+            {
+                // Game was deleted — leave a gap
+                gaps.Add(build.Count);
+                build.Add(null);
+            }
+        }
+
+        // Remaining new games (sorted, not previously displayed)
+        var newGames = filteredByChannel.Values.ToList();
+        int ngIdx = 0;
+
+        // Pass 2: fill each gap with a new game, or shift an item from the end
+        foreach (int gapPos in gaps)
+        {
+            if (ngIdx < newGames.Count)
+            {
+                build[gapPos] = newGames[ngIdx++];
+            }
+            else
+            {
+                // No new games left — shift the last non-null item into this gap
+                int last = build.Count - 1;
+                while (last > gapPos && build[last] == null)
+                    last--;
+                if (last <= gapPos)
+                    break; // nothing left to shift
+
+                // Don't move the user's selected game
+                if (last == SelectedGameIndex && last > gapPos + 1)
+                    last--;
+
+                build[gapPos] = build[last];
+                build.RemoveAt(last);
+            }
+        }
+
+        // Trim any remaining nulls (gaps that couldn't be filled) and append leftover new games
+        var result = new List<IHostedCnCNetGame>(build.Count);
+        foreach (var g in build)
+        {
+            if (g != null)
+                result.Add(g);
+        }
+        if (ngIdx < newGames.Count)
+            result.AddRange(newGames.Skip(ngIdx));
+
+        Games = result;
+
+        // Preserve selection if the selected game is still present
         if (SelectedGameIndex >= 0 && SelectedGameIndex < Games.Count)
             SelectedGame = Games[SelectedGameIndex];
         else

@@ -644,8 +644,71 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void UpdateGameList()
     {
-        // Single assignment avoids per-item notifications (stops ListBox flash)
-        Games = hostedGames.ToList<ILANHostedGame>();
+        // Index hosted games by endpoint for fast lookup
+        var byEndpoint = new Dictionary<string, ILANHostedGame>();
+        foreach (var g in hostedGames)
+            byEndpoint[g.EndPoint.ToString()] = g;
+        var presentEndpoints = new HashSet<string>(byEndpoint.Keys);
+
+        var oldList = Games;
+
+        // Pass 1: build list preserving positions of still-existing games
+        List<ILANHostedGame?> build = new(oldList.Count);
+        var gaps = new List<int>();
+
+        for (int i = 0; i < oldList.Count; i++)
+        {
+            var key = ((HostedLANGame)oldList[i]).EndPoint.ToString();
+            if (presentEndpoints.Contains(key))
+            {
+                build.Add(byEndpoint[key]);
+                byEndpoint.Remove(key);
+            }
+            else
+            {
+                gaps.Add(build.Count);
+                build.Add(null);
+            }
+        }
+
+        // Remaining new games
+        var newGames = byEndpoint.Values.ToList();
+        int ngIdx = 0;
+
+        // Pass 2: fill each gap with a new game, or shift from the end
+        foreach (int gapPos in gaps)
+        {
+            if (ngIdx < newGames.Count)
+            {
+                build[gapPos] = newGames[ngIdx++];
+            }
+            else
+            {
+                int last = build.Count - 1;
+                while (last > gapPos && build[last] == null)
+                    last--;
+                if (last <= gapPos)
+                    break;
+
+                if (last == SelectedGameIndex && last > gapPos + 1)
+                    last--;
+
+                build[gapPos] = build[last];
+                build.RemoveAt(last);
+            }
+        }
+
+        // Trim nulls and append leftover new games
+        var result = new List<ILANHostedGame>(build.Count);
+        foreach (var g in build)
+        {
+            if (g != null)
+                result.Add(g);
+        }
+        if (ngIdx < newGames.Count)
+            result.AddRange(newGames.Skip(ngIdx));
+
+        Games = result;
     }
 
     private void AddChatMessage(string message)
