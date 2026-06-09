@@ -648,12 +648,11 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void UpdateGameList()
     {
-        // Build target list preserving positions — existing games stay in place.
         var byEp = new Dictionary<string, ILANHostedGame>();
         foreach (var g in hostedGames)
             byEp[g.EndPoint.ToString()] = g;
 
-        var result = new List<ILANHostedGame>();
+        List<ILANHostedGame?> target = new(games.Count);
         var newGms = new List<ILANHostedGame>();
 
         foreach (var g in byEp.Values)
@@ -661,16 +660,17 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             int oldIdx = -1;
             for (int i = 0; i < games.Count; i++)
             {
-                if (((HostedLANGame)games[i]).EndPoint.ToString() ==
-                    ((HostedLANGame)g).EndPoint.ToString())
+                if (games[i] != null
+                    && ((HostedLANGame)games[i]!).EndPoint.ToString()
+                    == ((HostedLANGame)g).EndPoint.ToString())
                 { oldIdx = i; break; }
             }
 
             if (oldIdx >= 0)
             {
-                while (result.Count <= oldIdx)
-                    result.Add(null!);
-                result[oldIdx] = g;
+                while (target.Count <= oldIdx)
+                    target.Add(null);
+                target[oldIdx] = g;
             }
             else
             {
@@ -679,24 +679,22 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         }
 
         int ngIdx = 0;
-        for (int i = 0; i < result.Count; i++)
+        for (int i = 0; i < target.Count && ngIdx < newGms.Count; i++)
         {
-            if (result[i] == null && ngIdx < newGms.Count)
-                result[i] = newGms[ngIdx++];
+            if (target[i] == null)
+                target[i] = newGms[ngIdx++];
         }
+        target.RemoveAll(g => g == null);
         while (ngIdx < newGms.Count)
-            result.Add(newGms[ngIdx++]);
-        while (result.Count > 0 && result[result.Count - 1] == null)
-            result.RemoveAt(result.Count - 1);
+            target.Add(newGms[ngIdx++]);
 
-        // Apply in-place — indexer set preserves visual containers
-        int common = Math.Min(games.Count, result.Count);
+        int common = Math.Min(games.Count, target.Count);
         for (int i = 0; i < common; i++)
-            games[i] = result[i];
-        while (games.Count > result.Count)
+            games[i] = target[i]!;
+        while (games.Count > target.Count)
             games.RemoveAt(games.Count - 1);
-        for (int i = games.Count; i < result.Count; i++)
-            games.Add(result[i]);
+        for (int i = games.Count; i < target.Count; i++)
+            games.Add(target[i]!);
     }
 
     private void AddChatMessage(string message)

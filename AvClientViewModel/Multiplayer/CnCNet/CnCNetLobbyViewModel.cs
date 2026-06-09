@@ -894,71 +894,65 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else if (sortDir == SortDirection.Desc)
             filtered = filtered.OrderByDescending(g => g.RoomName).ToList();
 
-        // Build the target list — existing games keep their positions,
-        // deleted games leave gaps, new games fill gaps then append.
+        // Index by channel name for fast lookup
         var byChannel = new Dictionary<string, IHostedCnCNetGame>();
         foreach (var g in filtered)
             byChannel[g.ChannelName] = g;
-        var present = new HashSet<string>(byChannel.Keys);
 
-        var result = new List<IHostedCnCNetGame>();
+        // Build target list: preserve existing game positions, fill gaps with
+        // new games, append any leftover new games.
+        // null placeholders mark positions of deleted games.
+        List<IHostedCnCNetGame?> target = new(games.Count);
         var newGames = new List<IHostedCnCNetGame>();
 
         foreach (var g in filtered)
         {
-            var ch = g.ChannelName;
-            // Check if this game was already displayed at some position
             int oldIdx = -1;
             for (int i = 0; i < games.Count; i++)
             {
-                if (games[i].ChannelName == ch) { oldIdx = i; break; }
+                if (games[i] != null && games[i]!.ChannelName == g.ChannelName)
+                { oldIdx = i; break; }
             }
 
             if (oldIdx >= 0)
             {
-                // Existing game — ensure its slot exists in result
-                while (result.Count <= oldIdx)
-                    result.Add(null!);
-                result[oldIdx] = g;
-                byChannel.Remove(ch);
+                while (target.Count <= oldIdx)
+                    target.Add(null);
+                target[oldIdx] = g;
+                byChannel.Remove(g.ChannelName);
             }
             else
             {
                 newGames.Add(g);
-                byChannel.Remove(ch);
+                byChannel.Remove(g.ChannelName);
             }
         }
 
-        // Fill null gaps with new games (in sorted order)
+        // Fill gaps with new games
         int ngIdx = 0;
-        for (int i = 0; i < result.Count; i++)
+        for (int i = 0; i < target.Count && ngIdx < newGames.Count; i++)
         {
-            if (result[i] == null && ngIdx < newGames.Count)
-                result[i] = newGames[ngIdx++];
+            if (target[i] == null)
+                target[i] = newGames[ngIdx++];
         }
 
-        // Append remaining new games
+        // Remove all remaining nulls (unfilled gaps) and append leftover new games
+        target.RemoveAll(g => g == null);
         while (ngIdx < newGames.Count)
-            result.Add(newGames[ngIdx++]);
+            target.Add(newGames[ngIdx++]);
 
-        // Remove trailing nulls
-        while (result.Count > 0 && result[result.Count - 1] == null)
-            result.RemoveAt(result.Count - 1);
-
-        // Apply to ObservableCollection with minimal operations —
-        // indexer set for existing positions (Replace event), Add/RemoveAt for diffs.
-        // This preserves visual containers so hover state is never lost.
-        int common = Math.Min(games.Count, result.Count);
+        // Apply in-place to ObservableCollection — indexer set for common positions
+        // (Replace event keeps containers alive), then adjust count.
+        int common = Math.Min(games.Count, target.Count);
         for (int i = 0; i < common; i++)
-            games[i] = result[i];
+            games[i] = target[i]!;
 
-        while (games.Count > result.Count)
+        while (games.Count > target.Count)
             games.RemoveAt(games.Count - 1);
 
-        for (int i = games.Count; i < result.Count; i++)
-            games.Add(result[i]);
+        for (int i = games.Count; i < target.Count; i++)
+            games.Add(target[i]!);
 
-        // Preserve selection if the selected game is still present
         if (SelectedGameIndex >= 0 && SelectedGameIndex < games.Count)
             SelectedGame = games[SelectedGameIndex];
         else
