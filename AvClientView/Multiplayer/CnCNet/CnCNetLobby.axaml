@@ -62,7 +62,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <StackPanel />
+                  <VirtualizingStackPanel BufferFactor="1" MinHeight="48" />
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
               <ListBox.ItemTemplate>
@@ -192,7 +192,7 @@
                      Background="Transparent">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <StackPanel />
+                  <VirtualizingStackPanel BufferFactor="1" MinHeight="16" />
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
               <ListBox.ItemTemplate>

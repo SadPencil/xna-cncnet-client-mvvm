@@ -29,7 +29,7 @@
                    IsEnabled="{Binding IsEnabled}">
             <ListBox.ItemsPanel>
               <ItemsPanelTemplate>
-                <StackPanel />
+                <VirtualizingStackPanel BufferFactor="1" MinHeight="48" />
               </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
@@ -144,7 +144,7 @@
                      IsEnabled="{Binding IsEnabled}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <StackPanel />
+                  <VirtualizingStackPanel BufferFactor="1" MinHeight="16" />
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
               <ListBox.ItemTemplate>
