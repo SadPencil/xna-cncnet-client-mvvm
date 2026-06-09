@@ -26,7 +26,7 @@
                    ItemsSource="{Binding Games}"
                    SelectedIndex="{Binding SelectedGameIndex}"
                    Background="Transparent"
-                   IsEnabled="{Binding IsChatInputEnabled}">
+                   IsEnabled="{Binding IsGameListEnabled}">
             <ListBox.ItemsPanel>
               <ItemsPanelTemplate>
                 <VirtualizingStackPanel MinHeight="48" />
@@ -128,7 +128,7 @@
                          VerticalAlignment="Center" />
               <ComboBox ItemsSource="{Binding ColorOptions}"
                         SelectedIndex="{Binding SelectedColorIndex}"
-                        IsEnabled="{Binding IsChatInputEnabled}"
+                        IsEnabled="{Binding IsColorDropdownEnabled}"
                         Width="100" Height="21"
                         VerticalAlignment="Center" />
             </StackPanel>
@@ -141,7 +141,7 @@
                   BorderThickness="1">
             <ListBox x:Name="playerList" ItemsSource="{Binding PlayerNames}"
                      Background="Transparent"
-                     IsEnabled="{Binding IsChatInputEnabled}">
+                     IsEnabled="{Binding IsPlayerListEnabled}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <VirtualizingStackPanel MinHeight="16" />

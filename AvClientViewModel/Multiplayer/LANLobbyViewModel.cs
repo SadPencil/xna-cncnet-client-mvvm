@@ -91,9 +91,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     [ObservableProperty]
     public partial string DraftMessage { get; set; } = string.Empty;
 
-    // Per-control enable states — mirrors CnCNet lobby pattern.
-    // Internal state flows: IsLobbyActive → all three, then
-    // IsJoinGameButtonEnabled additionally depends on selection.
     private bool _isLobbyActive;
     private bool IsLobbyActiveValue
     {
@@ -104,6 +101,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             {
                 OnPropertyChanged(nameof(IsNewGameButtonEnabled));
                 OnPropertyChanged(nameof(IsChatInputEnabled));
+                OnPropertyChanged(nameof(IsGameListEnabled));
+                OnPropertyChanged(nameof(IsPlayerListEnabled));
+                OnPropertyChanged(nameof(IsColorDropdownEnabled));
                 IsJoinGameButtonEnabled = value && SelectedGameIndex >= 0;
             }
         }
@@ -111,6 +111,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     public bool IsNewGameButtonEnabled => _isLobbyActive;
     public bool IsChatInputEnabled => _isLobbyActive;
+    public bool IsGameListEnabled => _isLobbyActive;
+    public bool IsPlayerListEnabled => _isLobbyActive;
+    public bool IsColorDropdownEnabled => _isLobbyActive;
 
     [ObservableProperty]
     public partial bool IsJoinGameButtonEnabled { get; set; }

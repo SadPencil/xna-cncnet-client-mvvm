@@ -22,6 +22,9 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     bool IsNewGameButtonEnabled { get; }
     bool IsJoinGameButtonEnabled { get; }
     bool IsChatInputEnabled { get; }
+    bool IsGameListEnabled { get; }
+    bool IsPlayerListEnabled { get; }
+    bool IsColorDropdownEnabled { get; }
 
     ILANGameCreationWindowViewModel? GameCreationWindow { get; }
     ILANGameLobbyViewModel GameLobby { get; }
