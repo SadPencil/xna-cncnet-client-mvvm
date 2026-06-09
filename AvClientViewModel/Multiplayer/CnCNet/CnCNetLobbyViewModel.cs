@@ -1235,7 +1235,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         uiThreadMarshaller.AddCallback(new Action(() =>
         {
             IsNewGameButtonEnabled = true;
-            IsJoinGameButtonEnabled = true;
+            IsJoinGameButtonEnabled = SelectedGameIndex >= 0;
             IsChatInputEnabled = true;
             IsChannelDropdownEnabled = true;
             IsGameSearchEnabled = true;
@@ -1718,6 +1718,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     partial void OnSelectedGameIndexChanged(int value)
     {
         SelectedGame = value >= 0 && value < games.Count ? games[value] : null;
+        IsJoinGameButtonEnabled = IsConnected && value >= 0;
     }
 
     #endregion

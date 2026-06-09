@@ -20,6 +20,7 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     string PlayerName { get; }
     string DraftMessage { get; set; }
     bool IsEnabled { get; }
+    bool IsJoinGameButtonEnabled { get; }
 
     ILANGameCreationWindowViewModel? GameCreationWindow { get; }
     ILANGameLobbyViewModel GameLobby { get; }

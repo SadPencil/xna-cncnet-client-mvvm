@@ -95,6 +95,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     public partial bool IsEnabled { get; set; }
 
     [ObservableProperty]
+    public partial bool IsJoinGameButtonEnabled { get; set; }
+
+    [ObservableProperty]
     public partial bool IsVisible { get; set; }
 
     // --- Observable collections ---
@@ -433,6 +436,16 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
 
     // --- Color management ---
+
+    partial void OnSelectedGameIndexChanged(int value)
+    {
+        IsJoinGameButtonEnabled = IsEnabled && value >= 0;
+    }
+
+    partial void OnIsEnabledChanged(bool value)
+    {
+        IsJoinGameButtonEnabled = value && SelectedGameIndex >= 0;
+    }
 
     partial void OnSelectedColorIndexChanged(int value)
     {

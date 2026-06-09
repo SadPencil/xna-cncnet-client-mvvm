@@ -169,7 +169,7 @@
         <Button Grid.Column="1"
                 Content="Join Game"
                 Command="{Binding JoinSelectedGameCommand}"
-                IsEnabled="{Binding IsEnabled}"
+                IsEnabled="{Binding IsJoinGameButtonEnabled}"
                 Width="133" Height="23"
                 FontWeight="Bold"
                 Margin="12,0,0,0" />
