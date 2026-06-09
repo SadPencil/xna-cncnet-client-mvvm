@@ -827,8 +827,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         }
 
         // Apply in-place to preserve visual containers
-        int oldCount = players.Count;
-        int common = Math.Min(oldCount, list.Count);
+        int common = Math.Min(players.Count, list.Count);
         for (int i = 0; i < common; i++)
             players[i] = list[i];
 
@@ -837,13 +836,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         for (int i = players.Count; i < list.Count; i++)
             players.Add(list[i]);
-
-        Log.Information(
-            "[PLAYER-REFRESH] old={Old} new={New} replaced={Replaced} removed={Removed} added={Added} sender={Sender}",
-            oldCount, list.Count, common,
-            oldCount > common ? oldCount - common : 0,
-            list.Count > common ? list.Count - common : 0,
-            sender?.GetType().Name ?? "null");
     }
 
     private void UI_RefreshPlayerList()
@@ -951,11 +943,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         // Apply in-place to ObservableCollection — indexer set for common positions
         // (Replace event keeps containers alive), then adjust count.
-        int oldCount = games.Count;
-        string? hoveredBefore = (HoveredGameIndex >= 0 && HoveredGameIndex < oldCount)
-            ? games[HoveredGameIndex].ChannelName : null;
-
-        int common = Math.Min(oldCount, target.Count);
+        int common = Math.Min(games.Count, target.Count);
         for (int i = 0; i < common; i++)
             games[i] = target[i]!;
 
@@ -964,21 +952,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         for (int i = games.Count; i < target.Count; i++)
             games.Add(target[i]!);
-
-        int hoveredAfter = -1;
-        for (int i = 0; i < target.Count; i++)
-        { if (target[i]!.ChannelName == hoveredBefore) { hoveredAfter = i; break; } }
-
-        Log.Information(
-            "[GAME-REFRESH] total={Total} filtered={Filtered} "
-            + "old={Old} new={New} replaced={Replaced} removed={Removed} added={Added} "
-            + "hovered='{HoveredBefore}' hoveredIdx={HoveredBeforeIdx}->{HoveredAfterIdx} "
-            + "newGames={NewGameCount}",
-            hostedGames.Count, filtered.Count,
-            oldCount, target.Count, common, oldCount > common ? oldCount - common : 0,
-            target.Count > common ? target.Count - common : 0,
-            hoveredBefore, HoveredGameIndex, hoveredAfter,
-            newGames.Count);
 
         if (SelectedGameIndex >= 0 && SelectedGameIndex < games.Count)
             SelectedGame = games[SelectedGameIndex];

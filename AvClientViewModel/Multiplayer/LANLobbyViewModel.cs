@@ -637,20 +637,13 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     {
         var list = playerManager.GetAllPlayers().Select(p => p.Name).ToList();
 
-        int oldCount = playerNames.Count;
-        int common = Math.Min(oldCount, list.Count);
+        int common = Math.Min(playerNames.Count, list.Count);
         for (int i = 0; i < common; i++)
             playerNames[i] = list[i];
         while (playerNames.Count > list.Count)
             playerNames.RemoveAt(playerNames.Count - 1);
         for (int i = playerNames.Count; i < list.Count; i++)
             playerNames.Add(list[i]);
-
-        Log.Information(
-            "[LAN-PLAYER-REFRESH] old={Old} new={New} replaced={Replaced} removed={Removed} added={Added}",
-            oldCount, list.Count, common,
-            oldCount > common ? oldCount - common : 0,
-            list.Count > common ? list.Count - common : 0);
     }
 
     private void UpdateGameList()
@@ -694,21 +687,13 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         while (ngIdx < newGms.Count)
             target.Add(newGms[ngIdx++]);
 
-        int oldCount = games.Count;
-        int common = Math.Min(oldCount, target.Count);
+        int common = Math.Min(games.Count, target.Count);
         for (int i = 0; i < common; i++)
             games[i] = target[i]!;
         while (games.Count > target.Count)
             games.RemoveAt(games.Count - 1);
         for (int i = games.Count; i < target.Count; i++)
             games.Add(target[i]!);
-
-        Log.Information(
-            "[LAN-GAME-REFRESH] total={Total} "
-            + "old={Old} new={New} replaced={Replaced} removed={Removed} added={Added}",
-            hostedGames.Count, oldCount, target.Count, common,
-            oldCount > common ? oldCount - common : 0,
-            target.Count > common ? target.Count - common : 0);
     }
 
     private void AddChatMessage(string message)
