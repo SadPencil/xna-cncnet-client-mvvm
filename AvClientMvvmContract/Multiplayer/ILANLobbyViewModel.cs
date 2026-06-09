@@ -19,8 +19,9 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     int SelectedColorIndex { get; set; }
     string PlayerName { get; }
     string DraftMessage { get; set; }
-    bool IsEnabled { get; }
+    bool IsNewGameButtonEnabled { get; }
     bool IsJoinGameButtonEnabled { get; }
+    bool IsChatInputEnabled { get; }
 
     ILANGameCreationWindowViewModel? GameCreationWindow { get; }
     ILANGameLobbyViewModel GameLobby { get; }
