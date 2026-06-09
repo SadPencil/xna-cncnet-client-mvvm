@@ -50,6 +50,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
         BackgroundHelper.ApplyDefaultBackground(this, "cncnetlobbybg.png", IniOverlayService);
         AutoScrollToEnd(chatList);
         AutoScrollToEnd(playerList);
+        AutoScrollToEnd(gameList);
 
         // Wire up child overlay visibility
         WireOverlayVisibility(gameCreationWindow, gameCreationOverlay);

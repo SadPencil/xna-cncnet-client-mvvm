@@ -50,6 +50,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         BackgroundHelper.ApplyDefaultBackground(this, "cncnetlobbybg.png", IniOverlayService);
         AutoScrollToEnd(chatList);
         AutoScrollToEnd(playerList);
+        AutoScrollToEnd(gameList);
     }
 
     /// <summary>
