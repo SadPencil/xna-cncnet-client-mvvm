@@ -154,7 +154,7 @@
                   Background="#C8000000"
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
-            <ListBox ItemsSource="{Binding ChatMessages}"
+            <ListBox x:Name="chatList" ItemsSource="{Binding ChatMessages}"
                      Background="Transparent"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
           </Border>
@@ -188,7 +188,7 @@
                   Background="#C8000000"
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
-            <ListBox ItemsSource="{Binding Players}"
+            <ListBox x:Name="playerList" ItemsSource="{Binding Players}"
                      Background="Transparent">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>

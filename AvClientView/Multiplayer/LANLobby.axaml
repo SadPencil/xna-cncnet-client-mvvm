@@ -97,7 +97,7 @@
                   Background="#C8000000"
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
-            <ListBox ItemsSource="{Binding ChatMessages}"
+            <ListBox x:Name="chatList" ItemsSource="{Binding ChatMessages}"
                      Background="Transparent"
                      IsEnabled="{Binding IsEnabled}">
               <ListBox.ItemTemplate>
@@ -139,7 +139,7 @@
                   Background="#C8000000"
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
-            <ListBox ItemsSource="{Binding PlayerNames}"
+            <ListBox x:Name="playerList" ItemsSource="{Binding PlayerNames}"
                      Background="Transparent"
                      IsEnabled="{Binding IsEnabled}">
               <ListBox.ItemsPanel>

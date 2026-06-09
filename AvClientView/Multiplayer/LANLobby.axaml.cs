@@ -1,6 +1,10 @@
+using System.Linq;
+
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 
 using AvClientMvvmContract.Multiplayer;
 
@@ -44,11 +48,41 @@ public partial class LANLobby : UserControl, ILANLobbyView
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         BackgroundHelper.ApplyDefaultBackground(this, "cncnetlobbybg.png", IniOverlayService);
+        AutoScrollToEnd(chatList);
+        AutoScrollToEnd(playerList);
 
         // Wire up child overlay visibility
         WireOverlayVisibility(gameCreationWindow, gameCreationOverlay);
         WireOverlayVisibility(gameLobby, gameLobbyOverlay);
         WireOverlayVisibility(gameLoadingLobby, gameLoadingLobbyOverlay);
+    }
+
+    private static void AutoScrollToEnd(ListBox listBox)
+    {
+        listBox.TemplateApplied += (_, _) =>
+        {
+            var sv = listBox.FindDescendantOfType<ScrollViewer>();
+            if (sv is null) return;
+
+            bool isAtBottom = true;
+
+            sv.ScrollChanged += (_, _) =>
+            {
+                isAtBottom = sv.Offset.Y >= sv.Extent.Height - sv.Viewport.Height - 2;
+            };
+
+            var col = listBox.Items as System.Collections.Specialized.INotifyCollectionChanged;
+            if (col is not null)
+            {
+                col.CollectionChanged += (_, _) =>
+                {
+                    if (isAtBottom)
+                        sv.ScrollToEnd();
+                };
+            }
+
+            sv.ScrollToEnd();
+        };
     }
 
     public ILANLobbyViewModel? ViewModel

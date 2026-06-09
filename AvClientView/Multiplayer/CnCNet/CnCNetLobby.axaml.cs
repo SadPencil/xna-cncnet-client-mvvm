@@ -1,5 +1,10 @@
+using System.Linq;
+
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 
@@ -26,9 +31,6 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         {
             if (ViewModel is not { } vm || vm.Games.Count == 0) return;
             var pos = e.GetPosition(gameList);
-            // Estimate item index from Y position. The ListBox item height
-            // varies with the data template, so we approximate heuristically.
-            // A typical row is ~48px (padding + 3 text lines).
             const double approxRowHeight = 48.0;
             int idx = (int)(pos.Y / approxRowHeight);
             if (idx < 0) idx = 0;
@@ -46,6 +48,41 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         BackgroundHelper.ApplyDefaultBackground(this, "cncnetlobbybg.png", IniOverlayService);
+        AutoScrollToEnd(chatList);
+        AutoScrollToEnd(playerList);
+    }
+
+    /// <summary>
+    /// Auto-scrolls the list to the end when new items arrive, but only if the user
+    /// is already at the bottom. If they've scrolled up to read history, don't jump.
+    /// </summary>
+    private static void AutoScrollToEnd(ListBox listBox)
+    {
+        listBox.TemplateApplied += (_, _) =>
+        {
+            var sv = listBox.FindDescendantOfType<ScrollViewer>();
+            if (sv is null) return;
+
+            bool isAtBottom = true;
+
+            sv.ScrollChanged += (_, _) =>
+            {
+                isAtBottom = sv.Offset.Y >= sv.Extent.Height - sv.Viewport.Height - 2;
+            };
+
+            var col = listBox.Items as System.Collections.Specialized.INotifyCollectionChanged;
+            if (col is not null)
+            {
+                col.CollectionChanged += (_, _) =>
+                {
+                    if (isAtBottom)
+                        sv.ScrollToEnd();
+                };
+            }
+
+            // initial scroll
+            sv.ScrollToEnd();
+        };
     }
 
     public ICnCNetLobbyViewModel? ViewModel
