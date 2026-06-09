@@ -150,7 +150,8 @@
               <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
                   <TextBlock Text="{Binding .}"
-                             Foreground="{DynamicResource XnaTextBrush}" />
+                             Foreground="{DynamicResource XnaTextBrush}"
+                             TextWrapping="Wrap" />
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>
