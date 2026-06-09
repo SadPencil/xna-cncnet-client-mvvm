@@ -144,10 +144,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     public partial string? SoundToPlay { get; set; }
 
-    // The lists exposed to the View - use ObservableCollection so Avalonia
-    // ListBox detects in-place modifications without needing OnPropertyChanged.
-    private readonly ObservableCollection<IHostedCnCNetGame> games = new();
-    public IReadOnlyList<IHostedCnCNetGame> Games => games;
+    // Game list - replaced wholesale to avoid per-item notifications (stops ListBox flash).
+    private IReadOnlyList<IHostedCnCNetGame> games = Array.Empty<IHostedCnCNetGame>();
+    public IReadOnlyList<IHostedCnCNetGame> Games
+    {
+        get => games;
+        set => SetProperty(ref games, value);
+    }
 
     private readonly ObservableCollection<IPlayerListItem> players = new();
     public IReadOnlyList<IPlayerListItem> Players => players;
@@ -881,13 +884,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else if (sortDir == SortDirection.Desc)
             filtered = filtered.OrderByDescending(g => g.RoomName).ToList();
 
-        games.Clear();
-        foreach (var g in filtered)
-            games.Add(g);
+        // Single assignment avoids per-item CollectionChanged notifications (stops flash)
+        Games = filtered;
 
         // Update SelectedGame if the selection is still valid
-        if (SelectedGameIndex >= 0 && SelectedGameIndex < games.Count)
-            SelectedGame = games[SelectedGameIndex];
+        if (SelectedGameIndex >= 0 && SelectedGameIndex < Games.Count)
+            SelectedGame = Games[SelectedGameIndex];
         else
             SelectedGame = null;
     }
@@ -1214,7 +1216,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsConnected = false;
 
             players.Clear();
-            games.Clear();
+            Games = Array.Empty<IHostedCnCNetGame>();
             hostedGames.Clear();
             followedGames.Clear();
 

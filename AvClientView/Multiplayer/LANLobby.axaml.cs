@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 
 using AvClientMvvmContract.Multiplayer;
 
@@ -16,6 +17,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
     {
         InitializeComponent();
         Loaded += OnLoaded;
+        gameList.DoubleTapped += (_, _) => ViewModel?.JoinSelectedGameCommand.Execute(null);
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

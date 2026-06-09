@@ -97,8 +97,12 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // --- Observable collections ---
 
-    private readonly ObservableCollection<ILANHostedGame> _games = new();
-    public IReadOnlyList<ILANHostedGame> Games => _games;
+    private IReadOnlyList<ILANHostedGame> games = Array.Empty<ILANHostedGame>();
+    public IReadOnlyList<ILANHostedGame> Games
+    {
+        get => games;
+        set => SetProperty(ref games, value);
+    }
 
     private readonly ObservableCollection<string> _playerNames = new();
     public IReadOnlyList<string> PlayerNames => _playerNames;
@@ -373,7 +377,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         playerManager.Clear();
         messageDeduplicator.Clear();
         hostedGames.Clear();
-        _games.Clear();
+        Games = Array.Empty<ILANHostedGame>();
 
         IsEnabled = true;
 
@@ -636,9 +640,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void UpdateGameList()
     {
-        _games.Clear();
-        foreach (var game in hostedGames)
-            _games.Add(game);
+        // Single assignment avoids per-item notifications (stops ListBox flash)
+        Games = hostedGames.ToList<ILANHostedGame>();
     }
 
     private void AddChatMessage(string message)

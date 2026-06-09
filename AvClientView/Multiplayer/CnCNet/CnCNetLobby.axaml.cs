@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 
@@ -15,6 +16,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     {
         InitializeComponent();
         Loaded += OnLoaded;
+        gameList.DoubleTapped += (_, _) => ViewModel?.JoinSelectedGameCommand.Execute(null);
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
