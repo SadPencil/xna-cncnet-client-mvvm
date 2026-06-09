@@ -26,7 +26,7 @@
                    ItemsSource="{Binding Games}"
                    SelectedIndex="{Binding SelectedGameIndex}"
                    Background="Transparent"
-                   IsEnabled="{Binding IsLobbyActive}">
+                   IsEnabled="{Binding IsChatInputEnabled}">
             <ListBox.ItemsPanel>
               <ItemsPanelTemplate>
                 <VirtualizingStackPanel MinHeight="48" />
@@ -99,7 +99,7 @@
                   BorderThickness="1">
             <ListBox x:Name="chatList" ItemsSource="{Binding ChatMessages}"
                      Background="Transparent"
-                     IsEnabled="{Binding IsLobbyActive}">
+                     IsEnabled="{Binding IsChatInputEnabled}">
               <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
                   <TextBlock Text="{Binding .}"
@@ -115,7 +115,7 @@
             <TextBox Grid.Column="0"
                      Text="{Binding DraftMessage}"
                      Watermark="Type here to chat..."
-                     IsEnabled="{Binding IsLobbyActive}"
+                     IsEnabled="{Binding IsChatInputEnabled}"
                      Height="23"
                      VerticalAlignment="Center">
               <TextBox.KeyBindings>
@@ -128,7 +128,7 @@
                          VerticalAlignment="Center" />
               <ComboBox ItemsSource="{Binding ColorOptions}"
                         SelectedIndex="{Binding SelectedColorIndex}"
-                        IsEnabled="{Binding IsLobbyActive}"
+                        IsEnabled="{Binding IsChatInputEnabled}"
                         Width="100" Height="21"
                         VerticalAlignment="Center" />
             </StackPanel>
@@ -141,7 +141,7 @@
                   BorderThickness="1">
             <ListBox x:Name="playerList" ItemsSource="{Binding PlayerNames}"
                      Background="Transparent"
-                     IsEnabled="{Binding IsLobbyActive}">
+                     IsEnabled="{Binding IsChatInputEnabled}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <VirtualizingStackPanel MinHeight="16" />
