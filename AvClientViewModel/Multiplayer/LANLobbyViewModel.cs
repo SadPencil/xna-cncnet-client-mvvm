@@ -29,6 +29,8 @@ using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
 
+using Serilog;
+
 using Timer = System.Timers.Timer;
 
 namespace AvClientViewModel.Multiplayer;
@@ -641,8 +643,23 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void RefreshPlayerNames()
     {
-        // Build list then assign once — one PropertyChanged event
-        PlayerNames = playerManager.GetAllPlayers().Select(p => p.Name).ToList();
+        var list = playerManager.GetAllPlayers().Select(p => p.Name).ToList();
+        var old = PlayerNames;
+        bool changed = old.Count != list.Count;
+        if (!changed)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (old[i] != list[i])
+                { changed = true; break; }
+            }
+        }
+
+        if (changed)
+        {
+            PlayerNames = list;
+            Log.Debug("[LAN-PLAYER-REFRESH] old={Old} new={New} changed=True", old.Count, list.Count);
+        }
     }
 
     private void UpdateGameList()
@@ -711,7 +728,48 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         if (ngIdx < newGames.Count)
             result.AddRange(newGames.Skip(ngIdx));
 
-        Games = result;
+        // Skip assignment if nothing changed (same endpoints, same order).
+        var old = Games;
+        bool changed = old.Count != result.Count;
+        if (!changed)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (((HostedLANGame)old[i]).EndPoint.ToString()
+                    != ((HostedLANGame)result[i]).EndPoint.ToString())
+                {
+                    changed = true;
+                    break;
+                }
+            }
+        }
+
+        string? hoveredBefore = (HoveredGameIndex >= 0 && HoveredGameIndex < old.Count)
+            ? ((HostedLANGame)old[HoveredGameIndex]).EndPoint.ToString() : null;
+        string? hoveredAfter = null;
+
+        if (changed)
+        {
+            Games = result;
+            int hoverIdx = -1;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (hoveredBefore != null
+                    && ((HostedLANGame)result[i]).EndPoint.ToString() == hoveredBefore)
+                { hoverIdx = i; break; }
+            }
+            hoveredAfter = hoverIdx >= 0
+                ? ((HostedLANGame)result[hoverIdx]).EndPoint.ToString() : null;
+        }
+        else
+        {
+            hoveredAfter = hoveredBefore;
+        }
+
+        Log.Debug("[LAN-GAME-REFRESH] total={Total} old={Old} new={New} changed={Changed} "
+            + "hoveredIdx={HoverIdx} hovered={HoverBefore}->{HoverAfter} gaps={Gaps} newGames={NewGms}",
+            hostedGames.Count, old.Count, result.Count, changed,
+            HoveredGameIndex, hoveredBefore, hoveredAfter, gaps.Count, newGames.Count);
     }
 
     private void AddChatMessage(string message)

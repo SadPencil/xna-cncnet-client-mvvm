@@ -832,8 +832,24 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 user.IRCUser.GameID));
             current = current.Next;
         }
-        // Single assignment — one PropertyChanged event, no per-item notifications
-        Players = list;
+        // Skip assignment if nothing changed (same names, same order)
+        var old = Players;
+        bool changed = old.Count != list.Count;
+        if (!changed)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (old[i].Name != list[i].Name)
+                { changed = true; break; }
+            }
+        }
+
+        if (changed)
+        {
+            Players = list;
+            Log.Debug("[PLAYER-REFRESH] old={Old} new={New} changed=True sender={Sender}",
+                old.Count, list.Count, sender?.GetType().Name ?? "null");
+        }
     }
 
     private void UI_RefreshPlayerList()
@@ -962,7 +978,48 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (ngIdx < newGames.Count)
             result.AddRange(newGames.Skip(ngIdx));
 
-        Games = result;
+        // Skip assignment if the list hasn't actually changed (same channels, same order).
+        // Otherwise Avalonia treats the new collection as entirely different items,
+        // recycles all visual containers, and the hover state flashes.
+        var old = Games;
+        bool changed = old.Count != result.Count;
+        if (!changed)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (old[i].ChannelName != result[i].ChannelName)
+                {
+                    changed = true;
+                    break;
+                }
+            }
+        }
+
+        string? hoveredBefore = (HoveredGameIndex >= 0 && HoveredGameIndex < old.Count)
+            ? old[HoveredGameIndex].ChannelName : null;
+        string? hoveredAfter = null;
+
+        if (changed)
+        {
+            Games = result;
+            // Find where the hovered item landed
+            int hoverIdx = -1;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (hoveredBefore != null && result[i].ChannelName == hoveredBefore)
+                { hoverIdx = i; break; }
+            }
+            hoveredAfter = hoverIdx >= 0 ? result[hoverIdx].ChannelName : null;
+        }
+        else
+        {
+            hoveredAfter = hoveredBefore;
+        }
+
+        Log.Debug("[GAME-REFRESH] total={Total} filtered={Filtered} old={Old} new={New} changed={Changed} "
+            + "hoveredIdx={HoverIdx} hoveredKey={HoverBefore}->{HoverAfter} gaps={Gaps} newGames={NewGms}",
+            hostedGames.Count, filtered.Count, old.Count, result.Count, changed,
+            HoveredGameIndex, hoveredBefore, hoveredAfter, gaps.Count, newGames.Count);
 
         // Preserve selection if the selected game is still present
         if (SelectedGameIndex >= 0 && SelectedGameIndex < Games.Count)
