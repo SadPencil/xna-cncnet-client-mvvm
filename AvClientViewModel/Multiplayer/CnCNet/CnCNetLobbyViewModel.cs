@@ -826,11 +826,18 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             current = current.Next;
         }
 
-        // Apply in-place to preserve visual containers
+        // Apply in-place — only touch items that actually changed
         int oldCount = players.Count;
+        int replaced = 0;
         int common = Math.Min(oldCount, list.Count);
         for (int i = 0; i < common; i++)
-            players[i] = list[i];
+        {
+            if (players[i].Name != list[i].Name)
+            {
+                players[i] = list[i];
+                replaced++;
+            }
+        }
 
         while (players.Count > list.Count)
             players.RemoveAt(players.Count - 1);
@@ -840,7 +847,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         Log.Information(
             "[PLAYER-REFRESH] old={Old} new={New} replaced={Replaced} removed={Removed} added={Added} sender={Sender}",
-            oldCount, list.Count, common,
+            oldCount, list.Count, replaced,
             oldCount > common ? oldCount - common : 0,
             list.Count > common ? list.Count - common : 0,
             sender?.GetType().Name ?? "null");
@@ -955,9 +962,16 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         string? hoveredBefore = (HoveredGameIndex >= 0 && HoveredGameIndex < oldCount)
             ? games[HoveredGameIndex].ChannelName : null;
 
+        int replaced = 0;
         int common = Math.Min(oldCount, target.Count);
         for (int i = 0; i < common; i++)
-            games[i] = target[i]!;
+        {
+            if (games[i].ChannelName != target[i]!.ChannelName)
+            {
+                games[i] = target[i]!;
+                replaced++;
+            }
+        }
 
         while (games.Count > target.Count)
             games.RemoveAt(games.Count - 1);
@@ -975,7 +989,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             + "hovered='{HoveredBefore}' hoveredIdx={HoveredBeforeIdx}->{HoveredAfterIdx} "
             + "newGames={NewGameCount}",
             hostedGames.Count, filtered.Count,
-            oldCount, target.Count, common, oldCount > common ? oldCount - common : 0,
+            oldCount, target.Count, replaced, oldCount > common ? oldCount - common : 0,
             target.Count > common ? target.Count - common : 0,
             hoveredBefore, HoveredGameIndex, hoveredAfter,
             newGames.Count);
