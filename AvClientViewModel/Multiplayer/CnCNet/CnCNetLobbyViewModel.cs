@@ -268,6 +268,22 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         PlayerName = ProgramConstants.PLAYERNAME;
 
+        // Add version info as the very first messages, before any login/connection
+        string clientVersion = GitVersionInformation.AssemblySemVer;
+#if DEVELOPMENT_BUILD
+        clientVersion = $"{GitVersionInformation.CommitDate} {GitVersionInformation.BranchName}@{GitVersionInformation.ShortSha}";
+#endif
+        chatMessages.Add(new ChatMessage(Rgb24Color.White,
+            string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion)));
+
+#if DEVELOPMENT_BUILD
+        if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
+        {
+            chatMessages.Add(new ChatMessage(Rgb24Color.Red,
+                "This is a development build of the client. Stability and reliability may not be fully guaranteed.".L10N("Client:Main:DevelopmentBuildWarning")));
+        }
+#endif
+
         InitializeChannelList();
 
         gameLobby.Initialize();
@@ -1240,23 +1256,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsChannelDropdownEnabled = true;
             IsGameSearchEnabled = true;
             IsConnected = true;
-
-            // Show version and dev-build warning BEFORE joining channels,
-            // so they appear as the first messages.
-            string clientVersion = GitVersionInformation.AssemblySemVer;
-#if DEVELOPMENT_BUILD
-            clientVersion = $"{GitVersionInformation.CommitDate} {GitVersionInformation.BranchName}@{GitVersionInformation.ShortSha}";
-#endif
-            chatMessages.Add(new ChatMessage(Rgb24Color.White,
-                string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion)));
-
-#if DEVELOPMENT_BUILD
-            if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
-            {
-                chatMessages.Add(new ChatMessage(Rgb24Color.Red,
-                    "This is a development build of the client. Stability and reliability may not be fully guaranteed.".L10N("Client:Main:DevelopmentBuildWarning")));
-            }
-#endif
 
             Channel cncnetChannel = connectionManager.FindChannel("#cncnet");
             cncnetChannel?.Join();
