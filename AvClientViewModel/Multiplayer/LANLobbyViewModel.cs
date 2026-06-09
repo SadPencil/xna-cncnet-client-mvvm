@@ -638,16 +638,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         var list = playerManager.GetAllPlayers().Select(p => p.Name).ToList();
 
         int oldCount = playerNames.Count;
-        int replaced = 0;
         int common = Math.Min(oldCount, list.Count);
         for (int i = 0; i < common; i++)
-        {
-            if (playerNames[i] != list[i])
-            {
-                playerNames[i] = list[i];
-                replaced++;
-            }
-        }
+            playerNames[i] = list[i];
         while (playerNames.Count > list.Count)
             playerNames.RemoveAt(playerNames.Count - 1);
         for (int i = playerNames.Count; i < list.Count; i++)
@@ -655,7 +648,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
         Log.Information(
             "[LAN-PLAYER-REFRESH] old={Old} new={New} replaced={Replaced} removed={Removed} added={Added}",
-            oldCount, list.Count, replaced,
+            oldCount, list.Count, common,
             oldCount > common ? oldCount - common : 0,
             list.Count > common ? list.Count - common : 0);
     }
@@ -702,17 +695,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             target.Add(newGms[ngIdx++]);
 
         int oldCount = games.Count;
-        int replaced = 0;
         int common = Math.Min(oldCount, target.Count);
         for (int i = 0; i < common; i++)
-        {
-            if (((HostedLANGame)games[i]).EndPoint.ToString()
-                != ((HostedLANGame)target[i]!).EndPoint.ToString())
-            {
-                games[i] = target[i]!;
-                replaced++;
-            }
-        }
+            games[i] = target[i]!;
         while (games.Count > target.Count)
             games.RemoveAt(games.Count - 1);
         for (int i = games.Count; i < target.Count; i++)
@@ -721,7 +706,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         Log.Information(
             "[LAN-GAME-REFRESH] total={Total} "
             + "old={Old} new={New} replaced={Replaced} removed={Removed} added={Added}",
-            hostedGames.Count, oldCount, target.Count, replaced,
+            hostedGames.Count, oldCount, target.Count, common,
             oldCount > common ? oldCount - common : 0,
             target.Count > common ? target.Count - common : 0);
     }
