@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
              x:Class="AvClientView.Multiplayer.LANGameLoadingLobby"
              x:DataType="vmc:ILANGameLoadingLobbyViewModel"
@@ -9,7 +10,7 @@
 
     <!-- Description -->
     <TextBlock x:Name="lblDescription"
-               Text="Wait for all players to join and get ready, then click Load Game to load the saved multiplayer game."
+               Text="{l:Translate 'Wait for all players to join and get ready, then click Load Game to load the saved multiplayer game.', 'Client:UI:LanGameLoadingHint'}"
                Foreground="{DynamicResource XnaTextBrush}"
                FontSize="11"
                Canvas.Left="12" Canvas.Top="12" />
@@ -42,7 +43,7 @@
 
     <!-- Map / Game Mode Info -->
     <TextBlock x:Name="lblMapName"
-               Text="MAP:"
+               Text="{l:Translate 'MAP:', 'Client:UI:LanGameLoadingMap'}"
                FontWeight="Bold"
                Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="397" Canvas.Top="32" />
@@ -52,7 +53,7 @@
                Canvas.Left="397" Canvas.Top="50" />
 
     <TextBlock x:Name="lblGameMode"
-               Text="GAME MODE:"
+               Text="{l:Translate 'GAME MODE:', 'Client:UI:LanGameLoadingGameMode'}"
                FontWeight="Bold"
                Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="397" Canvas.Top="72" />
@@ -62,7 +63,7 @@
                Canvas.Left="397" Canvas.Top="90" />
 
     <TextBlock x:Name="lblSavedGameTime"
-               Text="SAVED GAME:"
+               Text="{l:Translate 'SAVED GAME:', 'Client:UI:LanGameLoadingSavedGame'}"
                FontWeight="Bold"
                Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="397" Canvas.Top="125" />
@@ -95,7 +96,7 @@
     <!-- Chat Input -->
     <TextBox x:Name="tbChatInput"
              Text="{Binding DraftMessage}"
-             Watermark="Type a message..."
+             Watermark="{l:Translate 'Type a message...', 'Client:UI:WatermarkTypeMessageLobby'}"
              Width="566" Height="19"
              Canvas.Left="12" Canvas.Top="462">
       <TextBox.KeyBindings>
@@ -114,7 +115,7 @@
 
     <!-- Leave Game Button -->
     <Button x:Name="btnLeaveGame"
-            Content="Leave Game"
+            Content="{l:Translate 'Leave Game', 'Client:UI:ButtonLeaveGame'}"
             Command="{Binding LeaveGameCommand}"
             Width="133" Height="23"
             FontWeight="Bold"

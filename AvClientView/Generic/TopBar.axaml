@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Generic"
              x:Class="AvClientView.Generic.TopBar"
              x:DataType="vmc:ITopBarViewModel"
@@ -26,14 +27,14 @@
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center"
                 Margin="184,0,0,0" Spacing="12">
       <Button x:Name="btnCnCNetLobby"
-              Content="CnCNet Lobby"
+              Content="{l:Translate 'CnCNet Lobby', 'Client:UI:TopBarCnCNetLobby'}"
               Command="{Binding SwitchToSecondaryCommand}"
               IsEnabled="{Binding AreSwitchButtonsClickable}"
               Width="160" Height="23"
               />
       <Panel>
         <Button x:Name="btnPrivateMessages"
-                Content="Private Messages"
+                Content="{l:Translate 'Private Messages', 'Client:UI:TopBarPrivateMessages'}"
                 Command="{Binding SwitchToTertiaryCommand}"
                 IsEnabled="{Binding AreSwitchButtonsClickable}"
                 Width="160" Height="23"
@@ -87,14 +88,14 @@
                  Foreground="{DynamicResource XnaSubtleTextBrush}" />
       <!-- Options button -->
       <Button x:Name="btnOptions"
-              Content="Options"
+              Content="{l:Translate 'Options', 'Client:UI:TopBarOptions'}"
               Command="{Binding OpenOptionsCommand}"
               IsEnabled="{Binding IsOptionsButtonClickable}"
               Width="110" Height="23"
               />
       <!-- Logout button -->
       <Button x:Name="btnLogout"
-              Content="Logout"
+              Content="{l:Translate 'Logout', 'Client:UI:TopBarLogout'}"
               Command="{Binding LogoutCommand}"
               IsEnabled="{Binding IsLogoutButtonClickable}"
               Width="75" Height="23"

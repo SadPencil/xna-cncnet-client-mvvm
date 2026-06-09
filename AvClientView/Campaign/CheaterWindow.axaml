@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="using:AvClientView.MarkupExtensions"
         xmlns:vmc="using:AvClientMvvmContract.Campaign"
         x:Class="AvClientView.Campaign.CheaterWindow"
         x:DataType="vmc:ICheaterWindowViewModel"
@@ -16,9 +17,9 @@
            Height="280" />
     <StackPanel Orientation="Horizontal"
                 HorizontalAlignment="Right" Spacing="8">
-      <Button Content="Yes"
+      <Button Content="{l:Translate 'Yes', 'Client:UI:ButtonYes'}"
               Command="{Binding ConfirmCommand}" />
-      <Button Content="Cancel"
+      <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
               Command="{Binding CancelCommand}" />
     </StackPanel>
   </StackPanel>

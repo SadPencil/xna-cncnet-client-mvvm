@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              xmlns:dom="using:AvClientMvvmContract.Domain.Multiplayer"
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
@@ -18,7 +19,7 @@
 
       <!-- ===== Row 0: Top Bar ===== -->
       <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,6" VerticalAlignment="Center">
-        <TextBlock Text="Online:" FontWeight="Bold"
+        <TextBlock Text="{l:Translate 'Online:', 'Client:UI:LobbyOnlineLabel'}" FontWeight="Bold"
                    Foreground="{DynamicResource XnaTextBrush}"
                    VerticalAlignment="Center" />
         <TextBlock Text="{Binding OnlinePlayerCountText}"
@@ -36,7 +37,7 @@
           <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,4">
             <TextBox Grid.Column="0"
                      Text="{Binding GameSearchText}"
-                     Watermark="Filter by name, map, game mode, player..."
+                     Watermark="{l:Translate 'Filter by name, map, game mode, player...', 'Client:UI:WatermarkFilterGames'}"
                      IsEnabled="{Binding IsGameSearchEnabled}"
                      Height="23" />
             <Button Grid.Column="1"
@@ -93,13 +94,13 @@
                                  Foreground="{DynamicResource XnaAltBrush}"
                                  VerticalAlignment="Center">
                         <Run Text="{Binding Ping}" />
-                        <Run Text=" ms" />
+                        <Run Text="{l:Translate ' ms', 'Client:UI:GameInfoPingMs'}" />
                       </TextBlock>
 
                       <!-- Row 1: Host | Game Mode | Map -->
                       <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,2,0,0">
                         <TextBlock Foreground="{DynamicResource XnaAltBrush}">
-                          <Run Text="Host: " />
+                          <Run Text="{l:Translate 'Host: ', 'Client:UI:GameInfoHost'}" />
                           <Run Text="{Binding HostName}" />
                         </TextBlock>
                         <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
@@ -111,19 +112,19 @@
                       <!-- Row 2: Players N/M | Version | Loaded game -->
                       <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,1,0,0">
                         <TextBlock Foreground="{DynamicResource XnaAltBrush}">
-                          <Run Text="Players: " />
+                          <Run Text="{l:Translate 'Players: ', 'Client:UI:GameInfoPlayers'}" />
                           <Run Text="{Binding Players.Length}" />
                           <Run Text="/" />
                           <Run Text="{Binding MaxPlayers}" />
                         </TextBlock>
                         <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
                         <TextBlock Foreground="{DynamicResource XnaAltBrush}">
-                          <Run Text="Version: " />
+                          <Run Text="{l:Translate 'Version: ', 'Client:UI:GameInfoGameVersion'}" />
                           <Run Text="{Binding GameVersion}" />
                         </TextBlock>
                         <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}"
                                    IsVisible="{Binding IsLoadedGame}" />
-                        <TextBlock Text="Loaded game" Foreground="{DynamicResource XnaAltBrush}"
+                        <TextBlock Text="{l:Translate 'Loaded game', 'Client:UI:LobbyLoadedGame'}" Foreground="{DynamicResource XnaAltBrush}"
                                    IsVisible="{Binding IsLoadedGame}" />
                       </WrapPanel>
                     </Grid>
@@ -139,7 +140,7 @@
 
           <!-- Channel dropdown (above chat) -->
           <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,4">
-            <TextBlock Text="Channel:" FontWeight="Bold"
+            <TextBlock Text="{l:Translate 'Channel:', 'Client:UI:LobbyChannelLabel'}" FontWeight="Bold"
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" Margin="0,0,4,0" />
             <ComboBox Grid.Column="1"
@@ -172,7 +173,7 @@
           <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,4,0,4">
             <TextBox Grid.Column="0"
                      Text="{Binding DraftMessage}"
-                     Watermark="Type here to chat..."
+                     Watermark="{l:Translate 'Type here to chat...', 'Client:UI:WatermarkChat'}"
                      IsEnabled="{Binding IsChatInputEnabled}"
                      MaxLength="200"
                      Height="23"
@@ -182,7 +183,7 @@
               </TextBox.KeyBindings>
             </TextBox>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0">
-              <TextBlock Text="Color:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Color:', 'Client:UI:LobbyColorLabel'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
                          VerticalAlignment="Center" />
               <ComboBox ItemsSource="{Binding ColorOptions}"
@@ -217,7 +218,7 @@
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource XnaTextBrush}"
                                TextWrapping="Wrap" />
-                    <TextBlock Text="(Admin)"
+                    <TextBlock Text="{l:Translate '(Admin)', 'Client:UI:LobbyAdminSuffix'}"
                                IsVisible="{Binding IsAdmin}"
                                VerticalAlignment="Center"
                                Foreground="Red" />
@@ -232,20 +233,20 @@
       <!-- ===== Row 2: Bottom Buttons ===== -->
       <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto,*,Auto" Margin="0,6,0,0">
         <Button Grid.Column="0"
-                Content="Create Game"
+                Content="{l:Translate 'Create Game', 'Client:UI:ButtonCreateGame'}"
                 Command="{Binding CreateGameCommand}"
                 IsEnabled="{Binding IsNewGameButtonEnabled}"
                 Width="133" Height="23"
                 FontWeight="Bold" />
         <Button Grid.Column="1"
-                Content="Join Game"
+                Content="{l:Translate 'Join Game', 'Client:UI:ButtonJoinGame'}"
                 Command="{Binding JoinSelectedGameCommand}"
                 IsEnabled="{Binding IsJoinGameButtonEnabled}"
                 Width="133" Height="23"
                 FontWeight="Bold"
                 Margin="12,0,0,0" />
         <Button Grid.Column="2"
-                Content="&#x21BB; Refresh"
+                Content="{l:Translate '&#x21BB; Refresh', 'Client:UI:LobbyRefresh'}"
                 Command="{Binding RefreshGamesCommand}"
                 Width="133" Height="23"
                 FontWeight="Bold"
@@ -287,13 +288,13 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
           <StackPanel Spacing="12">
-            <TextBlock Text="Notice"
+            <TextBlock Text="{l:Translate 'Notice', 'Client:UI:LobbyNoticeTitle'}"
                        FontWeight="Bold"
                        Foreground="{DynamicResource XnaTextBrush}" />
             <TextBlock Text="{Binding PendingMessage}"
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaAltBrush}" />
-            <Button Content="OK"
+            <Button Content="{l:Translate 'OK', 'Client:UI:ButtonOK'}"
                     HorizontalAlignment="Center"
                     Width="100" Height="23"
                     FontWeight="Bold"
@@ -316,21 +317,21 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
           <StackPanel Spacing="12">
-            <TextBlock Text="Game Invitation"
+            <TextBlock Text="{l:Translate 'Game Invitation', 'Client:UI:LobbyGameInvitationTitle'}"
                        FontWeight="Bold"
                        Foreground="{DynamicResource XnaTextBrush}" />
             <TextBlock TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaAltBrush}">
               <Run Text="{Binding Sender}" />
-              <Run Text=" has invited you to " />
+              <Run Text="{l:Translate ' has invited you to ', 'Client:UI:LobbyGameInvitationText'}" />
               <Run Text="{Binding GameName}" />
             </TextBlock>
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-              <Button Content="Accept"
+              <Button Content="{l:Translate 'Accept', 'Client:UI:ButtonAccept'}"
                       Width="100" Height="23"
                       FontWeight="Bold"
                       Command="{Binding #CnCNetLobbyView.DataContext.AcceptGameInviteCommand}" />
-              <Button Content="Decline"
+              <Button Content="{l:Translate 'Decline', 'Client:UI:ButtonDecline'}"
                       Width="100" Height="23"
                       FontWeight="Bold"
                       Command="{Binding #CnCNetLobbyView.DataContext.DismissGameInviteCommand}" />

@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:view="using:AvClientView"
              xmlns:vmc="using:AvClientMvvmContract.Generic"
              xmlns:local="using:AvClientView.Generic"
@@ -60,7 +61,7 @@
 
       <!-- ========== Labels (positions from MainMenu.ini, INI overlay applies) ========== -->
       <TextBlock x:Name="lblCnCNetStatus"
-                 Text="Players Online:"
+                 Text="{l:Translate 'Players Online:', 'Client:UI:MainMenuPlayersOnline'}"
                  Foreground="{DynamicResource XnaTextBrush}" />
       <TextBlock x:Name="lblCnCNetPlayerCount"
                  Text="{Binding CnCNetPlayerCountText}"
@@ -90,10 +91,10 @@
                      VerticalAlignment="Center"
                      Foreground="#FFA500"
                      FontSize="12" />
-          <Button Content="Accept"
+          <Button Content="{l:Translate 'Accept', 'Client:UI:ButtonAccept'}"
                   Command="{Binding AcceptUpdateCommand}"
                   Padding="6,2" />
-          <Button Content="Decline"
+          <Button Content="{l:Translate 'Decline', 'Client:UI:ButtonDecline'}"
                   Command="{Binding DeclineUpdateCommand}"
                   Padding="6,2" />
         </StackPanel>

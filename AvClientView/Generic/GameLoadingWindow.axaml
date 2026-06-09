@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Generic"
              x:Class="AvClientView.Generic.GameLoadingWindow"
              x:DataType="vmc:IGameLoadingWindowViewModel"
@@ -15,7 +16,7 @@
              Background="{DynamicResource XnaPanelBackgroundBrush}" />
 
     <!-- Load button -->
-    <Button Content="Load"
+    <Button Content="{l:Translate 'Load', 'Client:UI:ButtonLoad'}"
             Command="{Binding LoadGameCommand}"
             Canvas.Left="125" Canvas.Top="345"
             Width="110" Height="23"
@@ -23,7 +24,7 @@
             IsEnabled="{Binding CanLoadGame}" />
 
     <!-- Delete button -->
-    <Button Content="Delete"
+    <Button Content="{l:Translate 'Delete', 'Client:UI:ButtonDelete'}"
             Command="{Binding DeleteSavedGameCommand}"
             Canvas.Left="245" Canvas.Top="345"
             Width="110" Height="23"
@@ -31,7 +32,7 @@
             IsEnabled="{Binding CanDeleteSavedGame}" />
 
     <!-- Cancel button -->
-    <Button Content="Cancel"
+    <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
             Command="{Binding CancelCommand}"
             Canvas.Left="365" Canvas.Top="345"
             Width="110" Height="23"
@@ -51,7 +52,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
           <StackPanel Spacing="12">
-            <TextBlock Text="Delete Confirmation"
+            <TextBlock Text="{l:Translate 'Delete Confirmation', 'Client:UI:DeleteConfirmationTitle'}"
                        FontWeight="Bold"
                        Foreground="{DynamicResource XnaTextBrush}" />
             <TextBlock Text="{Binding DeleteConfirmationMessage}"
@@ -59,10 +60,10 @@
                        Foreground="{DynamicResource XnaAltBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="8"
                         HorizontalAlignment="Right">
-              <Button Content="Yes"
+              <Button Content="{l:Translate 'Yes', 'Client:UI:ButtonYes'}"
                       Command="{Binding ConfirmDeleteCommand}"
                       Width="75" Height="23" />
-              <Button Content="No"
+              <Button Content="{l:Translate 'No', 'Client:UI:ButtonNo'}"
                       Command="{Binding CancelDeleteCommand}"
                       Width="75" Height="23" />
             </StackPanel>

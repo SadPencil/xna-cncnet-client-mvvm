@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              x:Class="AvClientView.Multiplayer.CnCNet.MapSharingConfirmationPanel"
              x:DataType="vmc:IMapSharingConfirmationPanelViewModel"
@@ -12,19 +13,19 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Center">
     <StackPanel Spacing="12">
-      <TextBlock Text="Map Download Required"
+      <TextBlock Text="{l:Translate 'Map Download Required', 'Client:UI:MapSharingTitle'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}" />
 
       <!-- Map name -->
       <StackPanel Orientation="Horizontal" Spacing="8">
-        <TextBlock Text="Map:" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
+        <TextBlock Text="{l:Translate 'Map:', 'Client:UI:MapSharingMap'}" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
         <TextBlock Text="{Binding MapName}" Foreground="{DynamicResource XnaAltBrush}" VerticalAlignment="Center" />
       </StackPanel>
 
       <!-- Host name -->
       <StackPanel Orientation="Horizontal" Spacing="8">
-        <TextBlock Text="Host:" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
+        <TextBlock Text="{l:Translate 'Host:', 'Client:UI:MapSharingHost'}" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
         <TextBlock Text="{Binding HostName}" Foreground="{DynamicResource XnaAltBrush}" VerticalAlignment="Center" />
       </StackPanel>
 
@@ -35,11 +36,11 @@
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-        <Button Content="Download"
+        <Button Content="{l:Translate 'Download', 'Client:UI:ButtonDownload'}"
                 Command="{Binding DownloadMapCommand}"
                 Width="92" Height="23"
                 IsEnabled="{Binding IsDownloadAllowed}" />
-        <Button Content="Cancel"
+        <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
                 Command="{Binding CancelCommand}"
                 Width="92" Height="23" />
       </StackPanel>

@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              x:Class="AvClientView.Multiplayer.CnCNet.PrivateMessagingWindow"
              x:DataType="vmc:IPrivateMessagingWindowViewModel"
@@ -9,7 +10,7 @@
 
       <!-- ========== TITLE ========== -->
       <TextBlock x:Name="lblPrivateMessaging"
-                 Text="PRIVATE MESSAGING"
+                 Text="{l:Translate 'PRIVATE MESSAGING', 'Client:UI:PmHeader'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                  HorizontalAlignment="Center"
@@ -18,13 +19,13 @@
       <!-- ========== TAB BUTTONS (4 tabs matching old XNAClientTabControl) ========== -->
       <StackPanel Orientation="Horizontal" Spacing="4"
                   Canvas.Left="34" Canvas.Top="50">
-        <Button x:Name="tabMessages"    Content="Messages"
+        <Button x:Name="tabMessages"    Content="{l:Translate 'Messages', 'Client:UI:PmTabMessages'}"
                 Width="133" Height="23" FontWeight="Bold" />
-        <Button x:Name="tabFriendList"  Content="Friend List"
+        <Button x:Name="tabFriendList"  Content="{l:Translate 'Friend List', 'Client:UI:PmTabFriendList'}"
                 Width="133" Height="23" FontWeight="Bold" />
-        <Button x:Name="tabAllPlayers"  Content="All Players"
+        <Button x:Name="tabAllPlayers"  Content="{l:Translate 'All Players', 'Client:UI:PmTabAllPlayers'}"
                 Width="133" Height="23" FontWeight="Bold" />
-        <Button x:Name="tabRecentPlayers" Content="Recent Players"
+        <Button x:Name="tabRecentPlayers" Content="{l:Translate 'Recent Players', 'Client:UI:PmTabRecentPlayers'}"
                 Width="133" Height="23" FontWeight="Bold" />
       </StackPanel>
 
@@ -57,7 +58,7 @@
 
       <!-- "MESSAGES:" label (to the right of user list, aligned with lblPlayers) -->
       <TextBlock x:Name="lblMessages"
-                 Text="MESSAGES:"
+                 Text="{l:Translate 'MESSAGES:', 'Client:UI:PmMessages'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                  Canvas.Left="174" Canvas.Top="98" />
@@ -86,7 +87,7 @@
       <!-- Message Input -->
       <TextBox x:Name="tbMessageInput"
                Text="{Binding DraftMessage}"
-               Watermark="Type your message..."
+               Watermark="{l:Translate 'Type your message...', 'Client:UI:WatermarkTypeMessage'}"
                IsEnabled="{Binding IsMessageInputEnabled}"
                Width="514" Height="23"
                Canvas.Left="174" Canvas.Top="432">
@@ -97,7 +98,7 @@
 
       <!-- Send Button -->
       <Button x:Name="btnSend"
-              Content="Send"
+              Content="{l:Translate 'Send', 'Client:UI:ButtonSend'}"
               Command="{Binding SendMessageCommand}"
               IsEnabled="{Binding IsMessageInputEnabled}"
               Width="92" Height="23"
@@ -127,7 +128,7 @@
 
       <!-- Close Button -->
       <Button x:Name="btnClose"
-              Content="Close"
+              Content="{l:Translate 'Close', 'Client:UI:ButtonClose'}"
               Command="{Binding CloseCommand}"
               Width="92" Height="23"
               FontWeight="Bold"
@@ -148,7 +149,7 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
         <StackPanel Spacing="12">
-          <TextBlock Text="New Private Message"
+          <TextBlock Text="{l:Translate 'New Private Message', 'Client:UI:PmNewMessageTitle'}"
                      FontWeight="Bold"
                      Foreground="{DynamicResource XnaTextBrush}" />
           <StackPanel Spacing="4">

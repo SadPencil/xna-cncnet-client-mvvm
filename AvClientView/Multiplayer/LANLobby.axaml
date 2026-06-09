@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
              xmlns:mp="using:AvClientView.Multiplayer"
              xmlns:gamelobby="using:AvClientView.Multiplayer.GameLobby"
@@ -59,7 +60,7 @@
                     <!-- Row 1: Host | Mode | Map -->
                     <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,2,0,0">
                       <TextBlock Foreground="{DynamicResource XnaAltBrush}">
-                        <Run Text="Host: " />
+                        <Run Text="{l:Translate 'Host: ', 'Client:UI:GameInfoHost'}" />
                         <Run Text="{Binding HostName}" />
                       </TextBlock>
                       <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
@@ -71,14 +72,14 @@
                     <!-- Row 2: Players N/M | Version -->
                     <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,1,0,0">
                       <TextBlock Foreground="{DynamicResource XnaAltBrush}">
-                        <Run Text="Players: " />
+                        <Run Text="{l:Translate 'Players: ', 'Client:UI:GameInfoPlayers'}" />
                         <Run Text="{Binding Players.Length}" />
                         <Run Text="/" />
                         <Run Text="{Binding MaxPlayers}" />
                       </TextBlock>
                       <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
                       <TextBlock Foreground="{DynamicResource XnaAltBrush}">
-                        <Run Text="Version: " />
+                        <Run Text="{l:Translate 'Version: ', 'Client:UI:GameInfoGameVersion'}" />
                         <Run Text="{Binding GameVersion}" />
                       </TextBlock>
                     </WrapPanel>
@@ -114,7 +115,7 @@
           <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,4,0,4">
             <TextBox Grid.Column="0"
                      Text="{Binding DraftMessage}"
-                     Watermark="Type here to chat..."
+                     Watermark="{l:Translate 'Type here to chat...', 'Client:UI:WatermarkChat'}"
                      IsEnabled="{Binding IsChatInputEnabled}"
                      Height="23"
                      VerticalAlignment="Center">
@@ -123,7 +124,7 @@
               </TextBox.KeyBindings>
             </TextBox>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0">
-              <TextBlock Text="Color:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Color:', 'Client:UI:LobbyColorLabel'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
                          VerticalAlignment="Center" />
               <ComboBox ItemsSource="{Binding ColorOptions}"
@@ -162,20 +163,20 @@
       <!-- ===== Row 1: Bottom Buttons ===== -->
       <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,6,0,0">
         <Button Grid.Column="0"
-                Content="Create Game"
+                Content="{l:Translate 'Create Game', 'Client:UI:ButtonCreateGame'}"
                 Command="{Binding CreateGameCommand}"
                 IsEnabled="{Binding IsNewGameButtonEnabled}"
                 Width="133" Height="23"
                 FontWeight="Bold" />
         <Button Grid.Column="1"
-                Content="Join Game"
+                Content="{l:Translate 'Join Game', 'Client:UI:ButtonJoinGame'}"
                 Command="{Binding JoinSelectedGameCommand}"
                 IsEnabled="{Binding IsJoinGameButtonEnabled}"
                 Width="133" Height="23"
                 FontWeight="Bold"
                 Margin="12,0,0,0" />
         <Button Grid.Column="3"
-                Content="Main Menu"
+                Content="{l:Translate 'Main Menu', 'Client:UI:ButtonMainMenu'}"
                 Command="{Binding ExitLobbyCommand}"
                 Width="133" Height="23"
                 FontWeight="Bold" />

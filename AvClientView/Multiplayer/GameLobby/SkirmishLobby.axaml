@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.GameLobby"
              x:Class="AvClientView.Multiplayer.GameLobby.SkirmishLobby"
              x:DataType="vmc:ISkirmishLobbyViewModel"
@@ -11,7 +12,7 @@
 
       <!-- Game Mode Label -->
       <TextBlock x:Name="lblGameModeSelect"
-                 Text="GAME MODE:"
+                 Text="{l:Translate 'GAME MODE:', 'Client:UI:GameLobbyGameMode'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                 
@@ -38,7 +39,7 @@
       <!-- Map Search Box -->
       <TextBox x:Name="tbMapSearch"
                Text="{Binding MapSearchText}"
-               Watermark="Filter by name, map, game mode..."
+               Watermark="{l:Translate 'Filter by name, map, game mode...', 'Client:UI:WatermarkFilterMaps'}"
                Width="383" Height="21"
               
                Canvas.Left="12" Canvas.Top="42" />
@@ -72,7 +73,7 @@
 
       <!-- Pick Random Map Button -->
       <Button x:Name="btnPickRandomMap"
-              Content="Random"
+              Content="{l:Translate 'Random', 'Client:UI:ButtonRandom'}"
               Command="{Binding PickRandomMapCommand}"
               Width="75" Height="17"
               FontWeight="Bold"
@@ -136,11 +137,11 @@
               Canvas.Left="437" Canvas.Top="12">
         <Canvas>
           <!-- Column Headers -->
-          <TextBlock Text="PLAYER" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="5" Canvas.Top="4" />
-          <TextBlock Text="SIDE" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="144" Canvas.Top="4" />
-          <TextBlock Text="COLOR" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="238" Canvas.Top="4" />
-          <TextBlock Text="TEAM" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="320" Canvas.Top="4" />
-          <TextBlock Text="START" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="370" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'PLAYER', 'Client:UI:PlayerOptionPlayer'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="5" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'SIDE', 'Client:UI:PlayerOptionSide'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="144" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'COLOR', 'Client:UI:PlayerOptionColor'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="238" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'TEAM', 'Client:UI:PlayerOptionTeam'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="320" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'START', 'Client:UI:PlayerOptionStart'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="370" Canvas.Top="4" />
 
           <!-- Player Slot 0 -->
           <ComboBox ItemsSource="{Binding PlayerSlots[0].Name.Options}" SelectedItem="{Binding PlayerSlots[0].Name.SelectedOption, Mode=TwoWay}" IsEnabled="{Binding PlayerSlots[0].Name.IsEnabled}" Width="136" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="22" />
@@ -259,7 +260,7 @@
 
       <!-- Leave Game Button -->
       <Button x:Name="btnLeaveGame"
-              Content="Main Menu"
+              Content="{l:Translate 'Main Menu', 'Client:UI:ButtonMainMenu'}"
               Command="{Binding LeaveGameCommand}"
               Width="133" Height="23"
               FontWeight="Bold"
@@ -270,7 +271,7 @@
 
       <!-- Add AI Player -->
       <Button x:Name="btnAddAiPlayer"
-              Content="Add AI"
+              Content="{l:Translate 'Add AI', 'Client:UI:ButtonAddAI'}"
               Command="{Binding AddAiPlayerCommand}"
               Width="75" Height="23"
               FontWeight="Bold"
@@ -279,7 +280,7 @@
 
       <!-- Remove Player -->
       <Button x:Name="btnRemovePlayer"
-              Content="Remove"
+              Content="{l:Translate 'Remove', 'Client:UI:ButtonRemove'}"
               Command="{Binding RemoveSelectedPlayerCommand}"
               Width="75" Height="23"
               FontWeight="Bold"
@@ -300,13 +301,13 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
           <StackPanel Spacing="12">
-            <TextBlock Text="Error"
+            <TextBlock Text="{l:Translate 'Error', 'Client:UI:ErrorTitle'}"
                        FontWeight="Bold"
                        Foreground="{DynamicResource XnaTextBrush}" />
             <TextBlock Text="{Binding ErrorMessage}"
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaAltBrush}" />
-            <Button Content="OK"
+            <Button Content="{l:Translate 'OK', 'Client:UI:ButtonOK'}"
                     Command="{Binding DismissErrorCommand}"
                     HorizontalAlignment="Right"
                     Width="75" Height="23" />
@@ -329,13 +330,13 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
         <StackPanel Spacing="12">
-          <TextBlock Text="Notice"
+          <TextBlock Text="{l:Translate 'Notice', 'Client:UI:LobbyNoticeTitle'}"
                      FontWeight="Bold"
                      Foreground="{DynamicResource XnaTextBrush}" />
           <TextBlock Text="{Binding NoticeMessage}"
                      TextWrapping="Wrap"
                      Foreground="{DynamicResource XnaAltBrush}" />
-          <Button Content="OK"
+          <Button Content="{l:Translate 'OK', 'Client:UI:ButtonOK'}"
                   Command="{Binding DismissNoticeCommand}"
                   HorizontalAlignment="Right"
                   Width="75" Height="23" />

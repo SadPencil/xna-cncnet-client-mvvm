@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Generic"
              x:Class="AvClientView.Generic.UpdateQueryWindow"
              x:DataType="vmc:IUpdateQueryWindowViewModel"
@@ -13,7 +14,7 @@
                Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Changelog link -->
-    <Button Content="View Changelog"
+    <Button Content="{l:Translate 'View Changelog', 'Client:UI:ButtonViewChangelog'}"
             Command="{Binding ViewChangelogCommand}"
             Canvas.Left="12" Canvas.Top="50"
             Background="Transparent"
@@ -29,13 +30,13 @@
                Foreground="{DynamicResource XnaAltBrush}" />
 
     <!-- Yes button -->
-    <Button Content="Yes"
+    <Button Content="{l:Translate 'Yes', 'Client:UI:ButtonYes'}"
             Command="{Binding AcceptCommand}"
             Canvas.Left="12" Canvas.Top="110"
             Width="75" Height="23" />
 
     <!-- No button -->
-    <Button Content="No"
+    <Button Content="{l:Translate 'No', 'Client:UI:ButtonNo'}"
             Command="{Binding DeclineCommand}"
             Canvas.Left="164" Canvas.Top="110"
             Width="75" Height="23" />

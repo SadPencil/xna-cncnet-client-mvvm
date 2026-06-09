@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Generic"
              x:Class="AvClientView.Generic.ExtrasWindow"
              x:DataType="vmc:IExtrasWindowViewModel"
@@ -7,28 +8,28 @@
              Width="284" Height="190">
   <Canvas>
     <!-- Statistics button -->
-    <Button Content="Statistics"
+    <Button Content="{l:Translate 'Statistics', 'Client:UI:ExtrasStatistics'}"
             Command="{Binding OpenStatisticsCommand}"
             Canvas.Left="76" Canvas.Top="17"
             Width="133" Height="23"
             FontSize="13" />
 
     <!-- Map Editor button -->
-    <Button Content="Map Editor"
+    <Button Content="{l:Translate 'Map Editor', 'Client:UI:ExtrasMapEditor'}"
             Command="{Binding OpenMapEditorCommand}"
             Canvas.Left="76" Canvas.Top="59"
             Width="133" Height="23"
             FontSize="13" />
 
     <!-- Credits button -->
-    <Button Content="Credits"
+    <Button Content="{l:Translate 'Credits', 'Client:UI:ExtrasCredits'}"
             Command="{Binding OpenCreditsCommand}"
             Canvas.Left="76" Canvas.Top="101"
             Width="133" Height="23"
             FontSize="13" />
 
     <!-- Cancel button -->
-    <Button Content="Cancel"
+    <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
             Command="{Binding CloseCommand}"
             Canvas.Left="76" Canvas.Top="160"
             Width="133" Height="23"
