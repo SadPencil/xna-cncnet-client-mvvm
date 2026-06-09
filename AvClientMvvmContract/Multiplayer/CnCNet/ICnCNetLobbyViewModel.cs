@@ -20,6 +20,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IReadOnlyList<IChatMessage> ChatMessages { get; }
     IHostedCnCNetGame? SelectedGame { get; }
     int SelectedGameIndex { get; set; }
+    int HoveredGameIndex { get; set; }
     int SelectedColorIndex { get; set; }
     int SelectedChannelIndex { get; set; }
     string GameSearchText { get; set; }

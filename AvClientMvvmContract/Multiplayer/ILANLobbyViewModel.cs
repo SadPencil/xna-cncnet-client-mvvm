@@ -15,6 +15,7 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     IReadOnlyList<string> ChatMessages { get; }
     IReadOnlyList<string> ColorOptions { get; }
     int SelectedGameIndex { get; set; }
+    int HoveredGameIndex { get; set; }
     int SelectedColorIndex { get; set; }
     string PlayerName { get; }
     string DraftMessage { get; set; }

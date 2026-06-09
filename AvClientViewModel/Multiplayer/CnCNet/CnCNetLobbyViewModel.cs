@@ -93,6 +93,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public partial int SelectedGameIndex { get; set; } = -1;
 
     [ObservableProperty]
+    public partial int HoveredGameIndex { get; set; } = -1;
+
+    [ObservableProperty]
     public partial int SelectedColorIndex { get; set; }
 
     [ObservableProperty]
@@ -940,8 +943,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 if (last <= gapPos)
                     break; // nothing left to shift
 
-                // Don't move the user's selected game
-                if (last == SelectedGameIndex && last > gapPos + 1)
+                // Don't move the selected or hovered game
+                while ((last == SelectedGameIndex || last == HoveredGameIndex) && last > gapPos + 1)
                     last--;
 
                 build[gapPos] = build[last];

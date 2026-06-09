@@ -81,6 +81,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     public partial int SelectedGameIndex { get; set; } = -1;
 
     [ObservableProperty]
+    public partial int HoveredGameIndex { get; set; } = -1;
+
+    [ObservableProperty]
     public partial int SelectedColorIndex { get; set; }
 
     [ObservableProperty]
@@ -690,7 +693,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 if (last <= gapPos)
                     break;
 
-                if (last == SelectedGameIndex && last > gapPos + 1)
+                if ((last == SelectedGameIndex || last == HoveredGameIndex) && last > gapPos + 1)
                     last--;
 
                 build[gapPos] = build[last];
