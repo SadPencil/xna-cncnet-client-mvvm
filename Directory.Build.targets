@@ -1,8 +1,4 @@
 <Project>
-  <Target Name="ShowBuildInfo" BeforeTargets="CoreCompile" Condition="'$(MSBuildProjectName)' == 'DXMainClient'">
-    <Message Importance="high" Text="Engine: $(Engine); Platform: $(Platform); TargetFramework: $(TargetFramework); Configuration: $(Configuration)" />
-  </Target>
-
   <!-- "GetVersion" target is defined in GitVersion package -->
   <Target Name="NonReleaseBuildWarning" AfterTargets="GetVersion" BeforeTargets="CoreCompile" Condition="'$(MSBuildProjectName)' == 'AvClientViewModel' AND ($(GitVersion_CommitsSinceVersionSource) != 0)">
     <PropertyGroup>
