@@ -6,12 +6,11 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientView.Controls;
 using AvClientView.Services;
 
-
 namespace AvClientView.Multiplayer;
 
 public partial class LANLobby : UserControl, ILANLobbyView
 {
-    public AvClientView.Services.IIniLayoutOverlayService? IniOverlayService { get; set; }
+    public IIniLayoutOverlayService? IniOverlayService { get; set; }
 
     public LANLobby()
     {
@@ -22,9 +21,6 @@ public partial class LANLobby : UserControl, ILANLobbyView
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         BackgroundHelper.ApplyDefaultBackground(this, "cncnetlobbybg.png", IniOverlayService);
-
-        var iniOverlay = IniOverlayService;
-        iniOverlay?.ApplyLayout(this, "LANLobby");
 
         // Wire up child overlay visibility
         WireOverlayVisibility(gameCreationWindow, gameCreationOverlay);
