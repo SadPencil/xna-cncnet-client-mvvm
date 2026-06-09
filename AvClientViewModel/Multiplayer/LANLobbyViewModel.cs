@@ -660,9 +660,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             int oldIdx = -1;
             for (int i = 0; i < games.Count; i++)
             {
-                if (games[i] != null
-                    && ((HostedLANGame)games[i]!).EndPoint.ToString()
-                    == ((HostedLANGame)g).EndPoint.ToString())
+                if (((HostedLANGame)games[i]).EndPoint.ToString()
+                == ((HostedLANGame)g).EndPoint.ToString())
                 { oldIdx = i; break; }
             }
 

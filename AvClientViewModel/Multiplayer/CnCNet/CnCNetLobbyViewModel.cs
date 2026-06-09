@@ -910,7 +910,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             int oldIdx = -1;
             for (int i = 0; i < games.Count; i++)
             {
-                if (games[i] != null && games[i]!.ChannelName == g.ChannelName)
+                if (games[i].ChannelName == g.ChannelName)
                 { oldIdx = i; break; }
             }
 
