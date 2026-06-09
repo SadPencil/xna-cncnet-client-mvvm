@@ -102,20 +102,11 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // --- Observable collections ---
 
-    private IReadOnlyList<ILANHostedGame> games = Array.Empty<ILANHostedGame>();
-    public IReadOnlyList<ILANHostedGame> Games
-    {
-        get => games;
-        set => SetProperty(ref games, value);
-    }
+    private readonly ObservableCollection<ILANHostedGame> games = new();
+    public IReadOnlyList<ILANHostedGame> Games => games;
 
-    // Player list — replaced wholesale to avoid per-item notifications.
-    private IReadOnlyList<string> playerNames = Array.Empty<string>();
-    public IReadOnlyList<string> PlayerNames
-    {
-        get => playerNames;
-        set => SetProperty(ref playerNames, value);
-    }
+    private readonly ObservableCollection<string> playerNames = new();
+    public IReadOnlyList<string> PlayerNames => playerNames;
 
     private readonly ObservableCollection<string> _chatMessages = new();
     public IReadOnlyList<string> ChatMessages => _chatMessages;
@@ -387,7 +378,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         playerManager.Clear();
         messageDeduplicator.Clear();
         hostedGames.Clear();
-        Games = Array.Empty<ILANHostedGame>();
+        games.Clear();
 
         IsEnabled = true;
 
@@ -644,22 +635,16 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private void RefreshPlayerNames()
     {
         var list = playerManager.GetAllPlayers().Select(p => p.Name).ToList();
-        var old = PlayerNames;
-        bool changed = old.Count != list.Count;
-        if (!changed)
+        int common = Math.Min(playerNames.Count, list.Count);
+        for (int i = 0; i < common; i++)
         {
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (old[i] != list[i])
-                { changed = true; break; }
-            }
+            if (playerNames[i] != list[i])
+                playerNames[i] = list[i];
         }
-
-        if (changed)
-        {
-            PlayerNames = list;
-            Log.Debug("[LAN-PLAYER-REFRESH] old={Old} new={New} changed=True", old.Count, list.Count);
-        }
+        while (playerNames.Count > list.Count)
+            playerNames.RemoveAt(playerNames.Count - 1);
+        for (int i = playerNames.Count; i < list.Count; i++)
+            playerNames.Add(list[i]);
     }
 
     private void UpdateGameList()
@@ -748,28 +733,18 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             ? ((HostedLANGame)old[HoveredGameIndex]).EndPoint.ToString() : null;
         string? hoveredAfter = null;
 
-        if (changed)
+        // Apply only changed positions
+        int common = Math.Min(games.Count, result.Count);
+        for (int i = 0; i < common; i++)
         {
-            Games = result;
-            int hoverIdx = -1;
-            for (int i = 0; i < result.Count; i++)
-            {
-                if (hoveredBefore != null
-                    && ((HostedLANGame)result[i]).EndPoint.ToString() == hoveredBefore)
-                { hoverIdx = i; break; }
-            }
-            hoveredAfter = hoverIdx >= 0
-                ? ((HostedLANGame)result[hoverIdx]).EndPoint.ToString() : null;
+            if (((HostedLANGame)games[i]).EndPoint.ToString()
+                != ((HostedLANGame)result[i]).EndPoint.ToString())
+                games[i] = result[i];
         }
-        else
-        {
-            hoveredAfter = hoveredBefore;
-        }
-
-        Log.Debug("[LAN-GAME-REFRESH] total={Total} old={Old} new={New} changed={Changed} "
-            + "hoveredIdx={HoverIdx} hovered={HoverBefore}->{HoverAfter} gaps={Gaps} newGames={NewGms}",
-            hostedGames.Count, old.Count, result.Count, changed,
-            HoveredGameIndex, hoveredBefore, hoveredAfter, gaps.Count, newGames.Count);
+        while (games.Count > result.Count)
+            games.RemoveAt(games.Count - 1);
+        for (int i = games.Count; i < result.Count; i++)
+            games.Add(result[i]);
     }
 
     private void AddChatMessage(string message)
