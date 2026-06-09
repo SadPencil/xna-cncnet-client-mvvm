@@ -91,9 +91,11 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     [ObservableProperty]
     public partial string DraftMessage { get; set; } = string.Empty;
 
-    // Internal lobby-active state — drives per-control enable properties.
+    // Per-control enable states — mirrors CnCNet lobby pattern.
+    // Internal state flows: IsLobbyActive → all three, then
+    // IsJoinGameButtonEnabled additionally depends on selection.
     private bool _isLobbyActive;
-    private bool IsLobbyActive
+    private bool IsLobbyActiveValue
     {
         get => _isLobbyActive;
         set
@@ -205,7 +207,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             lanGameLobby.SetUp(true,
                 new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
             lanGameLobby.IsVisible = true;
-            IsLobbyActive = false;
+            IsLobbyActiveValue = false;
         }
     }
 
@@ -292,7 +294,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 lanGameLobby.PostJoin();
             }
 
-            IsLobbyActive = false;
+            IsLobbyActiveValue = false;
         }
         catch (Exception ex)
         {
@@ -306,7 +308,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         SendMessage("QUIT");
         broadcastManager.Shutdown();
         StopUpdateTimer();
-        IsLobbyActive = false;
+        IsLobbyActiveValue = false;
         IsVisible = false;
     }
 
@@ -366,7 +368,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 lanGameLobby.SetUp(true,
                     new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT), null);
                 lanGameLobby.IsVisible = true;
-                IsLobbyActive = false;
+                IsLobbyActiveValue = false;
             },
             onLoadGameRequested: e =>
             {
@@ -374,7 +376,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                     new IPEndPoint(IPAddress.Loopback, ProgramConstants.LAN_GAME_LOBBY_PORT),
                     null, e.LoadedGameID);
                 lanGameLoadingLobby.IsVisible = true;
-                IsLobbyActive = false;
+                IsLobbyActiveValue = false;
             });
 
         // Subscribe to child ViewModel events
@@ -396,7 +398,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         hostedGames.Clear();
         games.Clear();
 
-        IsLobbyActive = true;
+        IsLobbyActiveValue = true;
 
         try
         {
@@ -419,7 +421,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         SendMessage("QUIT");
         broadcastManager.Shutdown();
         StopUpdateTimer();
-        IsLobbyActive = false;
+        IsLobbyActiveValue = false;
     }
 
     // --- Child ViewModel event handlers ---
@@ -430,7 +432,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             AddChatMessage(e.Message);
 
         lanGameLobby.IsVisible = false;
-        IsLobbyActive = true;
+        IsLobbyActiveValue = true;
     }
 
     private void LanGameLobby_GameBroadcast(object? sender, GameBroadcastEventArgs e)
@@ -441,7 +443,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private void LanGameLoadingLobby_GameLeft(object? sender, EventArgs e)
     {
         lanGameLoadingLobby.IsVisible = false;
-        IsLobbyActive = true;
+        IsLobbyActiveValue = true;
     }
 
     private void LanGameLoadingLobby_GameBroadcast(object? sender, GameBroadcastEventArgs e)
