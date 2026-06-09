@@ -27,9 +27,14 @@
                    SelectedIndex="{Binding SelectedGameIndex}"
                    Background="Transparent"
                    IsEnabled="{Binding IsEnabled}">
+            <ListBox.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel />
+              </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
               <DataTemplate x:DataType="vmc:ILANHostedGame">
-                <Border Padding="6,4"
+                <Border Padding="6,4" Height="48"
                         BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                         BorderThickness="0,0,0,1"
                         Margin="2,0">
@@ -137,9 +142,15 @@
             <ListBox ItemsSource="{Binding PlayerNames}"
                      Background="Transparent"
                      IsEnabled="{Binding IsEnabled}">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel />
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
               <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
                   <TextBlock Text="{Binding .}"
+                             Height="18"
                              Foreground="{DynamicResource XnaTextBrush}" />
                 </DataTemplate>
               </ListBox.ItemTemplate>
