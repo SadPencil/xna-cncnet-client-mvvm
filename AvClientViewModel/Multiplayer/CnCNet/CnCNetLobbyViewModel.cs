@@ -152,8 +152,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         set => SetProperty(ref games, value);
     }
 
-    private readonly ObservableCollection<IPlayerListItem> players = new();
-    public IReadOnlyList<IPlayerListItem> Players => players;
+    // Player list — replaced wholesale to avoid per-item notifications.
+    private IReadOnlyList<IPlayerListItem> players = Array.Empty<IPlayerListItem>();
+    public IReadOnlyList<IPlayerListItem> Players
+    {
+        get => players;
+        set => SetProperty(ref players, value);
+    }
 
     private readonly ObservableCollection<IChatMessage> chatMessages = new();
     public IReadOnlyList<IChatMessage> ChatMessages => chatMessages;
@@ -808,15 +813,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (currentChatChannel == null)
             return;
 
-        players.Clear();
-
+        var list = new List<IPlayerListItem>();
         var current = currentChatChannel.Users.GetFirst();
         while (current != null)
         {
             var user = current.Value;
             user.IRCUser.IsFriend = cncnetUserData.IsFriend(user.IRCUser.Name);
             user.IRCUser.IsIgnored = cncnetUserData.IsIgnored(user.IRCUser.Ident);
-            players.Add(new PlayerListItem(
+            list.Add(new PlayerListItem(
                 user.IRCUser.Name,
                 user.IsAdmin,
                 user.IRCUser.IsFriend,
@@ -825,6 +829,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 user.IRCUser.GameID));
             current = current.Next;
         }
+        // Single assignment — one PropertyChanged event, no per-item notifications
+        Players = list;
     }
 
     private void UI_RefreshPlayerList()
@@ -1215,7 +1221,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsGameSearchEnabled = false;
             IsConnected = false;
 
-            players.Clear();
+            Players = Array.Empty<IPlayerListItem>();
             Games = Array.Empty<IHostedCnCNetGame>();
             hostedGames.Clear();
             followedGames.Clear();

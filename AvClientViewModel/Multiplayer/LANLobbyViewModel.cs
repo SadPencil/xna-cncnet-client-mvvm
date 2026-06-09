@@ -104,8 +104,13 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         set => SetProperty(ref games, value);
     }
 
-    private readonly ObservableCollection<string> _playerNames = new();
-    public IReadOnlyList<string> PlayerNames => _playerNames;
+    // Player list — replaced wholesale to avoid per-item notifications.
+    private IReadOnlyList<string> playerNames = Array.Empty<string>();
+    public IReadOnlyList<string> PlayerNames
+    {
+        get => playerNames;
+        set => SetProperty(ref playerNames, value);
+    }
 
     private readonly ObservableCollection<string> _chatMessages = new();
     public IReadOnlyList<string> ChatMessages => _chatMessages;
@@ -633,9 +638,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void RefreshPlayerNames()
     {
-        _playerNames.Clear();
-        foreach (var player in playerManager.GetAllPlayers())
-            _playerNames.Add(player.Name);
+        // Build list then assign once — one PropertyChanged event
+        PlayerNames = playerManager.GetAllPlayers().Select(p => p.Name).ToList();
     }
 
     private void UpdateGameList()
