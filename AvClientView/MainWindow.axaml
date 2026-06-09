@@ -5,7 +5,7 @@
         xmlns:vmc="using:AvClientMvvmContract.Generic"
         x:Class="AvClientView.Generic.MainWindow"
         x:DataType="vmc:IMainWindowViewModel"
-        Title="CnCNet Client"
+        Title="{Binding WindowTitle}"
         Width="{x:Static view:ViewConstants.DesignResolutionWidth}"
         Height="{x:Static view:ViewConstants.DesignResolutionHeight}"
         MinWidth="800" MinHeight="600"

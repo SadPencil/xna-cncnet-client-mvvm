@@ -12,9 +12,6 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Services;
 
-using ClientCore;
-using ClientCore.Extensions;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AvClientView.Generic;
@@ -28,10 +25,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-#if DEVELOPMENT_BUILD
-        if (ClientCore.ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
-            Title += " (" + "Development Build".L10N("Client:Main:DevelopmentBuildTitle") + ")";
-#endif
     }
 
     public void ShowMainWindow()

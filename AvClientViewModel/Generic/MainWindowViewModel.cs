@@ -3,6 +3,8 @@ using System;
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Messages;
 
+using ClientCore;
+using ClientCore.Extensions;
 using ClientCore.Settings;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,6 +34,8 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
     /// </summary>
     private bool? _userFullScreenOverride;
 
+    public string WindowTitle { get; }
+
     [ObservableProperty]
     public partial WindowState WindowState { get; set; }
 
@@ -47,6 +51,15 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
         WeakReferenceMessenger.Default.Register(this);
 
         ApplyEffectiveState();
+
+        var title = string.IsNullOrEmpty(ClientConfiguration.Instance.WindowTitle)
+            ? $"{MainClientConstants.GAME_NAME_SHORT} Client"
+            : ClientConfiguration.Instance.WindowTitle;
+#if DEVELOPMENT_BUILD
+        if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
+            title += $" ({ "Development Build".L10N("Client:Main:DevelopmentBuildTitle") })";
+#endif
+        WindowTitle = title;
 
         if (gameInProgressViewModel != null)
         {

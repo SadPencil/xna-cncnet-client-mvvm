@@ -6,6 +6,7 @@ namespace AvClientMvvmContract.Generic;
 
 public interface IMainWindowViewModel : INotifyPropertyChanged
 {
+    string WindowTitle { get; }
     WindowState WindowState { get; set; }
 
     /// <summary>
