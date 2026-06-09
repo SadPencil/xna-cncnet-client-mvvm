@@ -31,7 +31,6 @@ using Rampastring.Tools;
 
 using Serilog;
 
-using SixLabors.ImageSharp;
 
 namespace AvClientViewModel.Multiplayer.CnCNet;
 
@@ -47,7 +46,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private readonly TunnelHandler tunnelHandler;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private readonly IGameProcessService gameProcessService;
-    private readonly MapLoader mapLoader;
     private readonly Random random;
 
     // Services that the lobby interacts with but does not own
@@ -177,53 +175,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     public partial IHostedCnCNetGame? SelectedGame { get; set; }
 
-    // Hover state for the game info panel (driven by View's PointerMoved).
-    [ObservableProperty]
-    public partial int HoveredGameIndex { get; set; } = -1;
-
-    [ObservableProperty]
-    public partial IHostedCnCNetGame? HoveredGame { get; set; }
-
-    [ObservableProperty]
-    public partial Image? HoveredGameMapPreview { get; set; }
-
-    private IDisposable? _mapPreviewLease;
-
-    partial void OnHoveredGameIndexChanged(int value)
-    {
-        HoveredGame = value >= 0 && value < games.Count ? games[value] : null;
-        LoadMapPreview();
-    }
-
-    private void LoadMapPreview()
-    {
-        _mapPreviewLease?.Dispose();
-        _mapPreviewLease = null;
-        HoveredGameMapPreview = null;
-
-        if (HoveredGame == null || string.IsNullOrEmpty(HoveredGame.MapHash))
-            return;
-
-        var map = mapLoader.FindMapByHash(HoveredGame.MapHash);
-        if (map == null)
-            return;
-
-        try
-        {
-            var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
-            if (lease?.Value != null)
-            {
-                _mapPreviewLease = lease;
-                HoveredGameMapPreview = lease.Value;
-            }
-            else
-            {
-                lease?.Dispose();
-            }
-        }
-        catch { }
-    }
-
     public CnCNetLobbyViewModel(
         CnCNetManager connectionManager,
         CnCNetUserData cncnetUserData,
@@ -233,7 +184,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         CnCNetGameLoadingLobbyViewModel gameLoadingLobby,
         IUIThreadMarshaller uiThreadMarshaller,
         IGameProcessService gameProcessService,
-        MapLoader mapLoader,
         Random random)
     {
         this.connectionManager = connectionManager;
@@ -244,7 +194,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         this.gameLoadingLobby = gameLoadingLobby;
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.gameProcessService = gameProcessService;
-        this.mapLoader = mapLoader;
         this.random = random;
 
         _loginWindowViewModel = new CnCNetLoginWindowViewModel(

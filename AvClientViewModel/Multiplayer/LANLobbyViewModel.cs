@@ -97,8 +97,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // --- Observable collections ---
 
-    private readonly ObservableCollection<string> _gameNames = new();
-    public IReadOnlyList<string> GameNames => _gameNames;
+    private readonly ObservableCollection<ILANHostedGame> _games = new();
+    public IReadOnlyList<ILANHostedGame> Games => _games;
 
     private readonly ObservableCollection<string> _playerNames = new();
     public IReadOnlyList<string> PlayerNames => _playerNames;
@@ -373,7 +373,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         playerManager.Clear();
         messageDeduplicator.Clear();
         hostedGames.Clear();
-        _gameNames.Clear();
+        _games.Clear();
 
         IsEnabled = true;
 
@@ -490,7 +490,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             if (hostedGames[i].TimeWithoutRefresh > TimeSpan.FromSeconds(GAME_INACTIVITY_REMOVE_TIME))
             {
                 hostedGames.RemoveAt(i);
-                RefreshGameNames();
+                UpdateGameList();
             }
         }
 
@@ -586,7 +586,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 if (closedGameIndex > -1)
                 {
                     hostedGames.RemoveAt(closedGameIndex);
-                    RefreshGameNames();
+                    UpdateGameList();
                 }
 
                 break;
@@ -609,7 +609,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 else
                     hostedGames.Add(game);
 
-                RefreshGameNames();
+                UpdateGameList();
 
                 break;
         }
@@ -634,11 +634,11 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             _playerNames.Add(player.Name);
     }
 
-    private void RefreshGameNames()
+    private void UpdateGameList()
     {
-        _gameNames.Clear();
+        _games.Clear();
         foreach (var game in hostedGames)
-            _gameNames.Add(game.RoomName);
+            _games.Add(game);
     }
 
     private void AddChatMessage(string message)

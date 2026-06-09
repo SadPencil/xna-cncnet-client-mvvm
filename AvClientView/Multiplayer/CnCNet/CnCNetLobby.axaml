@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              xmlns:dom="using:AvClientMvvmContract.Domain.Multiplayer"
-             xmlns:onl="using:AvClientMvvmContract.Online"
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
              xmlns:gamelobby="using:AvClientView.Multiplayer.GameLobby"
              xmlns:converters="using:AvClientView.Converters"
@@ -11,296 +10,245 @@
              x:DataType="vmc:ICnCNetLobbyViewModel"
              IsVisible="{Binding IsVisible}"
              Width="1220" Height="728">
-  <Canvas x:Name="MainCanvas">
 
-      <!-- ========== TOP BAR AREA ========== -->
+  <Grid>
+    <!-- ========== MAIN LAYOUT ========== -->
+    <Grid RowDefinitions="Auto,*,Auto" Margin="6,4">
 
-      <!-- Online Player Count -->
-      <TextBlock x:Name="lblOnline"
-                 Text="Online:"
-                 FontWeight="Bold"
-                 Foreground="{DynamicResource XnaTextBrush}"
-                 Canvas.Left="300" Canvas.Top="14" />
-      <TextBlock x:Name="lblOnlineCount"
-                 Text="{Binding OnlinePlayerCountText}"
-                 Foreground="{DynamicResource XnaTextBrush}"
-                 Canvas.Left="360" Canvas.Top="14" />
+      <!-- ===== Row 0: Top Bar ===== -->
+      <WrapPanel Grid.Row="0" Margin="0,0,0,6" VerticalAlignment="Center">
+        <TextBlock Text="Online:" FontWeight="Bold"
+                   Foreground="{DynamicResource XnaTextBrush}"
+                   VerticalAlignment="Center" Margin="0,0,4,0" />
+        <TextBlock Text="{Binding OnlinePlayerCountText}"
+                   Foreground="{DynamicResource XnaTextBrush}"
+                   VerticalAlignment="Center" Margin="0,0,12,0" />
 
-      <!-- Color Label + Dropdown (each item rendered in its own color) -->
-      <TextBlock x:Name="lblColor"
-                 Text="YOUR COLOR:"
-                 FontWeight="Bold"
-                 Foreground="{DynamicResource XnaTextBrush}"
-                 Canvas.Left="450" Canvas.Top="14" />
-      <ComboBox x:Name="ddColor"
-                ItemsSource="{Binding ColorOptions}"
-                SelectedIndex="{Binding SelectedColorIndex}"
-                Width="150" Height="21"
-                Canvas.Left="545" Canvas.Top="12" />
+        <TextBlock Text="YOUR COLOR:" FontWeight="Bold"
+                   Foreground="{DynamicResource XnaTextBrush}"
+                   VerticalAlignment="Center" Margin="0,0,4,0" />
+        <ComboBox ItemsSource="{Binding ColorOptions}"
+                  SelectedIndex="{Binding SelectedColorIndex}"
+                  Width="150" Height="21"
+                  VerticalAlignment="Center" Margin="0,0,12,0" />
 
-      <!-- Current Channel Label + Dropdown -->
-      <TextBlock x:Name="lblCurrentChannel"
-                 Text="CURRENT CHANNEL:"
-                 FontWeight="Bold"
-                 Foreground="{DynamicResource XnaTextBrush}"
-                 Canvas.Left="720" Canvas.Top="14" />
-      <ComboBox x:Name="ddCurrentChannel"
-                ItemsSource="{Binding ChannelOptions}"
-                SelectedIndex="{Binding SelectedChannelIndex}"
-                IsEnabled="{Binding IsChannelDropdownEnabled}"
-                Width="200" Height="21"
-                Canvas.Left="870" Canvas.Top="12" />
+        <TextBlock Text="CURRENT CHANNEL:" FontWeight="Bold"
+                   Foreground="{DynamicResource XnaTextBrush}"
+                   VerticalAlignment="Center" Margin="0,0,4,0" />
+        <ComboBox ItemsSource="{Binding ChannelOptions}"
+                  SelectedIndex="{Binding SelectedChannelIndex}"
+                  IsEnabled="{Binding IsChannelDropdownEnabled}"
+                  Width="200" Height="21"
+                  VerticalAlignment="Center" />
+      </WrapPanel>
 
-      <!-- ========== LEFT COLUMN: Game List ========== -->
+      <!-- ===== Row 1: Content (70/30 split) ===== -->
+      <Grid Grid.Row="1" ColumnDefinitions="7*,3*" Margin="0,4">
 
-      <!-- Game Search Box -->
-      <TextBox x:Name="tbGameSearch"
-               Text="{Binding GameSearchText}"
-               Watermark="Filter by name, map, game mode, player..."
-               IsEnabled="{Binding IsGameSearchEnabled}"
-               Width="216" Height="21"
-               Canvas.Left="12" Canvas.Top="12" />
+        <!-- Left: Game Search + Game List -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*" Margin="0,0,4,0">
 
-      <!-- Sort Button -->
-      <Button x:Name="btnGameSortAlpha"
-              Content="&#x2195;"
-              Command="{Binding CycleSortDirectionCommand}"
-              Width="21" Height="21"
-              Canvas.Left="238" Canvas.Top="12" />
+          <!-- Game Search + Sort/Filter -->
+          <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,4">
+            <TextBox Grid.Column="0"
+                     Text="{Binding GameSearchText}"
+                     Watermark="Filter by name, map, game mode, player..."
+                     IsEnabled="{Binding IsGameSearchEnabled}"
+                     Height="23" />
+            <Button Grid.Column="1"
+                    Content="&#x2195;"
+                    Command="{Binding CycleSortDirectionCommand}"
+                    Width="23" Height="23"
+                    Margin="4,0,0,0" />
+            <Button Grid.Column="2"
+                    Content="&#x2699;"
+                    Command="{Binding ToggleGameFiltersCommand}"
+                    Width="23" Height="23"
+                    Margin="4,0,0,0" />
+          </Grid>
 
-      <!-- Game Filter Button -->
-      <Button x:Name="btnGameFilterOptions"
-              Content="&#x2699;"
-              Command="{Binding ToggleGameFiltersCommand}"
-              Width="21" Height="21"
-              Canvas.Left="269" Canvas.Top="12" />
+          <!-- Game List -->
+          <Border Grid.Row="1"
+                  Background="#C8000000"
+                  BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                  BorderThickness="1">
+            <ListBox ItemsSource="{Binding Games}"
+                     SelectedIndex="{Binding SelectedGameIndex}"
+                     Background="Transparent"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="dom:IHostedCnCNetGame">
+                  <Border Padding="6,4"
+                          BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                          BorderThickness="0,0,0,1"
+                          Margin="2,0">
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                      <!-- Row 0: Room Name + Ping + status icons -->
+                      <StackPanel Grid.Row="0" Grid.Column="0"
+                                  Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="{Binding RoomName}" FontWeight="Bold"
+                                   Foreground="{Binding ., Converter={StaticResource GameStateToBrushConverter}}"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="&#x1F512;"
+                                   IsVisible="{Binding Passworded}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="&#x274C;"
+                                   IsVisible="{Binding Locked}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="&#x26D4;"
+                                   IsVisible="{Binding Incompatible}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                      <TextBlock Grid.Row="0" Grid.Column="1"
+                                 Foreground="{DynamicResource XnaAltBrush}"
+                                 VerticalAlignment="Center">
+                        <Run Text="{Binding Ping}" />
+                        <Run Text=" ms" />
+                      </TextBlock>
 
-      <!-- Game List (rich item template with status icons and coloring) -->
-      <Border x:Name="lbGameList"
-              Background="#C8000000"
-              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-              BorderThickness="1"
-              Width="278" Height="590"
-              Canvas.Left="12" Canvas.Top="43">
-        <ListBox x:Name="lbGames"
-                 ItemsSource="{Binding Games}"
-                 SelectedIndex="{Binding SelectedGameIndex}"
-                 Background="Transparent"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-          <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="dom:IHostedCnCNetGame">
-              <Grid ColumnDefinitions="*,Auto,Auto,Auto"
-                    Margin="2,1">
-                <!-- Room name - gray if Locked or Incompatible -->
-                <TextBlock Text="{Binding RoomName}"
-                           Foreground="{Binding ., Converter={StaticResource GameStateToBrushConverter}}"
-                           VerticalAlignment="Center"
-                           TextTrimming="CharacterEllipsis" />
+                      <!-- Row 1: Host | Game Mode | Map -->
+                      <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,2,0,0">
+                        <TextBlock Foreground="{DynamicResource XnaAltBrush}">
+                          <Run Text="Host: " />
+                          <Run Text="{Binding HostName}" />
+                        </TextBlock>
+                        <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
+                        <TextBlock Text="{Binding GameMode}" Foreground="{DynamicResource XnaAltBrush}" />
+                        <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
+                        <TextBlock Text="{Binding Map}" Foreground="{DynamicResource XnaAltBrush}" />
+                      </WrapPanel>
 
-                <!-- Password icon indicator -->
-                <TextBlock Grid.Column="1"
-                           Text="&#x1F512;"
-                           IsVisible="{Binding Passworded}"
-                           VerticalAlignment="Center"
-                           Margin="2,0,0,0" />
+                      <!-- Row 2: Players N/M | Version | Loaded game -->
+                      <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,1,0,0">
+                        <TextBlock Foreground="{DynamicResource XnaAltBrush}">
+                          <Run Text="Players: " />
+                          <Run Text="{Binding Players.Length}" />
+                          <Run Text="/" />
+                          <Run Text="{Binding MaxPlayers}" />
+                        </TextBlock>
+                        <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
+                        <TextBlock Foreground="{DynamicResource XnaAltBrush}">
+                          <Run Text="Version: " />
+                          <Run Text="{Binding GameVersion}" />
+                        </TextBlock>
+                        <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}"
+                                   IsVisible="{Binding IsLoadedGame}" />
+                        <TextBlock Text="Loaded game" Foreground="{DynamicResource XnaAltBrush}"
+                                   IsVisible="{Binding IsLoadedGame}" />
+                      </WrapPanel>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Border>
+        </Grid>
 
-                <!-- Locked indicator -->
-                <TextBlock Grid.Column="2"
-                           Text="&#x274C;"
-                           IsVisible="{Binding Locked}"
-                           VerticalAlignment="Center"
-                           Margin="2,0,0,0" />
+        <!-- Right: Chat (top) + Player List (bottom) -->
+        <Grid Grid.Column="1" RowDefinitions="3*,2*" Margin="4,0,0,0">
 
-                <!-- Incompatible indicator -->
-                <TextBlock Grid.Column="3"
-                           Text="&#x26D4;"
-                           IsVisible="{Binding Incompatible}"
-                           VerticalAlignment="Center"
-                           Margin="2,0,0,0" />
-              </Grid>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-        </ListBox>
-      </Border>
+          <!-- Chat Messages + Input -->
+          <Grid Grid.Row="0" RowDefinitions="*,Auto">
+            <Border Grid.Row="0"
+                    Background="#C8000000"
+                    BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                    BorderThickness="1">
+              <ListBox ItemsSource="{Binding ChatMessages}"
+                       Background="Transparent"
+                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+            </Border>
+            <TextBox Grid.Row="1"
+                     Text="{Binding DraftMessage}"
+                     Watermark="Type here to chat..."
+                     IsEnabled="{Binding IsChatInputEnabled}"
+                     MaxLength="200"
+                     Height="23" Margin="0,4,0,0">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding SendChatMessageCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+          </Grid>
 
-      <!-- Game Information Panel (shown on hover, floats above other content) -->
-      <Border x:Name="panelGameInfo"
-              IsVisible="{Binding HoveredGame, Converter={StaticResource IsNotNullConverter}}"
-              Background="#E0000000"
-              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-              BorderThickness="1"
-              Padding="8"
-              Width="278">
-        <StackPanel Spacing="4">
-          <!-- Map preview image -->
-          <Image Source="{Binding HoveredGameMapPreview, Converter={StaticResource ImageSharpToBitmapConverter}}"
-                 IsVisible="{Binding HoveredGameMapPreview, Converter={StaticResource IsNotNullConverter}}"
-                 Stretch="Uniform"
-                 MaxHeight="150"
-                 HorizontalAlignment="Center" />
+          <!-- Player List -->
+          <Border Grid.Row="1"
+                  Background="#C8000000"
+                  BorderBrush="{DynamicResource XnaPanelBorderBrush}"
+                  BorderThickness="1"
+                  Margin="0,4,0,0">
+            <ListBox ItemsSource="{Binding Players}"
+                     Background="Transparent">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vmc:IPlayerListItem">
+                  <StackPanel Orientation="Horizontal" Spacing="3" Margin="2,1">
+                    <TextBlock Text="&#x2B50;"
+                               IsVisible="{Binding IsFriend}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Text="&#x1F6AB;"
+                               IsVisible="{Binding IsIgnored}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Name}"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource XnaTextBrush}" />
+                    <TextBlock Text="(Admin)"
+                               IsVisible="{Binding IsAdmin}"
+                               VerticalAlignment="Center"
+                               Foreground="Red" />
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Border>
+        </Grid>
+      </Grid>
 
-          <TextBlock Text="GAME INFORMATION"
-                     FontWeight="Bold"
-                     Foreground="{DynamicResource XnaTextBrush}" />
+      <!-- ===== Row 2: Bottom Buttons ===== -->
+      <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto,*,Auto" Margin="0,6,0,0">
+        <Button Grid.Column="0"
+                Content="Create Game"
+                Command="{Binding CreateGameCommand}"
+                IsEnabled="{Binding IsNewGameButtonEnabled}"
+                Width="133" Height="23"
+                FontWeight="Bold" />
+        <Button Grid.Column="1"
+                Content="Join Game"
+                Command="{Binding JoinSelectedGameCommand}"
+                IsEnabled="{Binding IsJoinGameButtonEnabled}"
+                Width="133" Height="23"
+                FontWeight="Bold"
+                Margin="12,0,0,0" />
+        <Button Grid.Column="2"
+                Content="&#x21BB; Refresh"
+                Command="{Binding RefreshGamesCommand}"
+                Width="133" Height="23"
+                FontWeight="Bold"
+                Margin="12,0,0,0" />
+        <Button Grid.Column="4"
+                Content="{Binding LogoutButtonText}"
+                Command="{Binding LogoutCommand}"
+                Width="133" Height="23"
+                FontWeight="Bold" />
+      </Grid>
+    </Grid>
 
-          <StackPanel DataContext="{Binding HoveredGame}" Spacing="3">
-            <!-- Room name / title -->
-            <TextBlock Text="{Binding RoomName}"
-                       FontWeight="Bold"
-                       Foreground="{DynamicResource XnaTextBrush}"
-                       TextTrimming="CharacterEllipsis" />
-            <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                       Text="{Binding HostName, StringFormat='Host: {0}'}"
-                       TextTrimming="CharacterEllipsis" />
-          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                     Text="{Binding Ping, StringFormat='Ping: {0} ms'}"
-                     TextTrimming="CharacterEllipsis" />
-          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                     Text="{Binding GameMode, StringFormat='Game mode: {0}'}"
-                     TextTrimming="CharacterEllipsis" />
-          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                     Text="{Binding Map, StringFormat='Map: {0}'}"
-                     TextTrimming="CharacterEllipsis" />
-          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                     Text="{Binding GameVersion, StringFormat='Version: {0}'}"
-                     TextTrimming="CharacterEllipsis" />
-          <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                     Text="{Binding MaxPlayers, StringFormat='Max players: {0}'}" />
-          <ItemsControl ItemsSource="{Binding Players}"
-                        Margin="0,4,0,0">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-              <DataTemplate x:DataType="x:String">
-                <TextBlock Text="{Binding .}"
-                           Foreground="{DynamicResource XnaAltBrush}"
-                           Margin="0,0,8,0" />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-          </StackPanel>
-        </StackPanel>
-      </Border>
+    <!-- ========== OVERLAY PANELS ========== -->
 
-      <!-- ========== MIDDLE COLUMN: Chat ========== -->
-
-      <!-- Chat Messages -->
-      <Border x:Name="lbChatMessages"
-              Background="#C8000000"
-              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-              BorderThickness="1"
-              Width="630" Height="590"
-              Canvas.Left="300" Canvas.Top="43">
-        <ListBox x:Name="lbChatList"
-                 ItemsSource="{Binding ChatMessages}"
-                 Background="Transparent"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
-      </Border>
-
-      <!-- Chat Input -->
-      <TextBox x:Name="tbChatInput"
-               Text="{Binding DraftMessage}"
-               Watermark="Type here to chat..."
-               IsEnabled="{Binding IsChatInputEnabled}"
-               MaxLength="200"
-               Width="630" Height="23"
-               Canvas.Left="300" Canvas.Top="693">
-        <TextBox.KeyBindings>
-          <KeyBinding Gesture="Enter" Command="{Binding SendChatMessageCommand}" />
-        </TextBox.KeyBindings>
-      </TextBox>
-
-      <!-- ========== RIGHT COLUMN: Player List ========== -->
-
-      <!-- Player List (rich template with admin/friend/ignore indicators) -->
-      <Border x:Name="lbPlayerList"
-              Background="#C8000000"
-              BorderBrush="{DynamicResource XnaPanelBorderBrush}"
-              BorderThickness="1"
-              Width="278" Height="590"
-              Canvas.Left="930" Canvas.Top="43">
-        <ListBox ItemsSource="{Binding Players}"
-                 Background="Transparent">
-          <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="vmc:IPlayerListItem">
-              <StackPanel Orientation="Horizontal"
-                          Spacing="3"
-                          Margin="2,1">
-                <!-- Friend indicator -->
-                <TextBlock Text="&#x2B50;"
-                           IsVisible="{Binding IsFriend}"
-                           VerticalAlignment="Center" />
-                <!-- Ignore indicator -->
-                <TextBlock Text="&#x1F6AB;"
-                           IsVisible="{Binding IsIgnored}"
-                           VerticalAlignment="Center" />
-                <!-- Player name -->
-                <TextBlock Text="{Binding Name}"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource XnaTextBrush}" />
-                <!-- Admin suffix in red -->
-                <TextBlock Text="(Admin)"
-                           IsVisible="{Binding IsAdmin}"
-                           VerticalAlignment="Center"
-                           Foreground="Red" />
-              </StackPanel>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-        </ListBox>
-      </Border>
-
-      <!-- ========== BOTTOM BUTTONS ========== -->
-
-      <!-- Create Game Button -->
-      <Button x:Name="btnNewGame"
-              Content="Create Game"
-              Command="{Binding CreateGameCommand}"
-              IsEnabled="{Binding IsNewGameButtonEnabled}"
-              Width="133" Height="23"
-              FontWeight="Bold"
-              Canvas.Left="12" Canvas.Top="693" />
-
-      <!-- Join Game Button -->
-      <Button x:Name="btnJoinGame"
-              Content="Join Game"
-              Command="{Binding JoinSelectedGameCommand}"
-              IsEnabled="{Binding IsJoinGameButtonEnabled}"
-              Width="133" Height="23"
-              FontWeight="Bold"
-              Canvas.Left="157" Canvas.Top="693" />
-
-
-      <!-- Logout Button -->
-      <Button x:Name="btnLogout"
-              Content="{Binding LogoutButtonText}"
-              Command="{Binding LogoutCommand}"
-              Width="133" Height="23"
-              FontWeight="Bold"
-              Canvas.Left="1075" Canvas.Top="693" />
-
-    <!-- ========== LOGIN WINDOW OVERLAY ========== -->
+    <!-- Login Window Overlay -->
     <Border IsVisible="{Binding IsLoginWindowVisible}"
             Background="#80000000"
-            Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
       <local:CnCNetLoginWindow DataContext="{Binding LoginWindowViewModel}" />
     </Border>
 
-    <!-- ========== GAME CREATION PANEL OVERLAY ========== -->
+    <!-- Game Creation Panel Overlay -->
     <Border IsVisible="{Binding IsGameCreationPanelVisible}"
             Background="#80000000"
-            Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
       <local:GameCreationWindow DataContext="{Binding GameCreationWindowViewModel}" />
     </Border>
 
-    <!-- ========== MESSAGE BOX OVERLAY ========== -->
+    <!-- Message Box Overlay -->
     <Border IsVisible="{Binding PendingMessage, Converter={StaticResource IsNotNullOrEmptyConverter}}"
             Background="#80000000"
-            Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
       <Panel>
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
@@ -310,27 +258,26 @@
               Width="400"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
-        <StackPanel Spacing="12">
-          <TextBlock Text="Notice"
-                     FontWeight="Bold"
-                     Foreground="{DynamicResource XnaTextBrush}" />
-          <TextBlock Text="{Binding PendingMessage}"
-                     TextWrapping="Wrap"
-                     Foreground="{DynamicResource XnaAltBrush}" />
-          <Button Content="OK"
-                  HorizontalAlignment="Center"
-                  Width="100" Height="23"
-                  FontWeight="Bold"
-                  Command="{Binding DismissMessageCommand}" />
-        </StackPanel>
-      </Border>
+          <StackPanel Spacing="12">
+            <TextBlock Text="Notice"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource XnaTextBrush}" />
+            <TextBlock Text="{Binding PendingMessage}"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource XnaAltBrush}" />
+            <Button Content="OK"
+                    HorizontalAlignment="Center"
+                    Width="100" Height="23"
+                    FontWeight="Bold"
+                    Command="{Binding DismissMessageCommand}" />
+          </StackPanel>
+        </Border>
       </Panel>
     </Border>
 
-    <!-- ========== GAME INVITE OVERLAY ========== -->
+    <!-- Game Invite Overlay -->
     <Border IsVisible="{Binding PendingGameInvite, Converter={StaticResource IsNotNullConverter}}"
             Background="#80000000"
-            Canvas.Left="0" Canvas.Top="0"
             Width="1220" Height="728">
       <Panel DataContext="{Binding PendingGameInvite}">
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
@@ -365,10 +312,8 @@
       </Panel>
     </Border>
 
-    <!-- ========== GAME LOBBY OVERLAY (shown when creating/joining a game) ========== -->
+    <!-- Game Lobby Overlay (shown when creating/joining a game) -->
     <gamelobby:CnCNetGameLobby x:Name="gameLobby"
-                               DataContext="{Binding GameLobby}"
-                               Canvas.Left="0" Canvas.Top="0" />
-
-  </Canvas>
+                               DataContext="{Binding GameLobby}" />
+  </Grid>
 </UserControl>

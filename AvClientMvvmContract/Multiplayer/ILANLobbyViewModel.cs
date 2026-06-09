@@ -10,7 +10,7 @@ namespace AvClientMvvmContract.Multiplayer;
 public interface ILANLobbyViewModel : INotifyPropertyChanged
 {
     bool IsVisible { get; set; }
-    IReadOnlyList<string> GameNames { get; }
+    IReadOnlyList<ILANHostedGame> Games { get; }
     IReadOnlyList<string> PlayerNames { get; }
     IReadOnlyList<string> ChatMessages { get; }
     IReadOnlyList<string> ColorOptions { get; }

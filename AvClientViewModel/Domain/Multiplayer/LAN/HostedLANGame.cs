@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 
+using AvClientMvvmContract.Multiplayer;
 using AvClientViewModel.Domain.Multiplayer;
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
@@ -12,7 +13,7 @@ using Serilog;
 
 namespace AvClientViewModel.Domain.Multiplayer.LAN
 {
-    public class HostedLANGame : GenericHostedGame
+    public class HostedLANGame : GenericHostedGame, ILANHostedGame
     {
         public IPEndPoint EndPoint { get; set; }
 
