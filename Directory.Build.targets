@@ -45,7 +45,7 @@
 
   <Target Name="CopyUpdater" AfterTargets="Build" Condition="'$(PublishDir)' != '' AND '$(MSBuildProjectName)' == 'SecondStageUpdater'">
     <PropertyGroup>
-      <CNCNetUpdaterCopyTo>$(PublishDir)\..\Updater\</CNCNetUpdaterCopyTo>
+      <CNCNetUpdaterCopyTo>$(PublishDir)\Updater\</CNCNetUpdaterCopyTo>
     </PropertyGroup>
     <ItemGroup>
       <CNCNetUpdaterOutputFile Include="$(OutputPath)\*.*" />
