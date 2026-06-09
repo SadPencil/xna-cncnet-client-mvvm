@@ -28,9 +28,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
-
-using Serilog;
-
 using Timer = System.Timers.Timer;
 
 namespace AvClientViewModel.Multiplayer;
