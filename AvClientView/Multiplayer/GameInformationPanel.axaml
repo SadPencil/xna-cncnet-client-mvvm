@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
              x:Class="AvClientView.Multiplayer.GameInformationPanel"
              x:DataType="vmc:IGameInformationPanelViewModel"
@@ -10,50 +11,65 @@
           BorderThickness="1"
           Padding="8">
     <StackPanel Spacing="3">
-      <TextBlock Text="GAME INFORMATION"
+      <TextBlock Text="{l:Translate 'GAME INFORMATION', 'Client:UI:GameInfoHeader'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                  Margin="0,0,0,4" />
 
       <!-- Basic info -->
       <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                 Text="{Binding HostName, StringFormat='Host: {0}'}"
-                 TextTrimming="CharacterEllipsis" />
+                 TextTrimming="CharacterEllipsis">
+        <Run Text="{l:Translate 'Host: ', 'Client:UI:GameInfoHost'}" />
+        <Run Text="{Binding HostName}" />
+      </TextBlock>
       <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                 Text="{Binding Ping, StringFormat='Ping: {0} ms'}"
-                 TextTrimming="CharacterEllipsis" />
+                 TextTrimming="CharacterEllipsis">
+        <Run Text="{l:Translate 'Ping: ', 'Client:UI:GameInfoPing'}" />
+        <Run Text="{Binding Ping}" />
+        <Run Text="{l:Translate ' ms', 'Client:UI:GameInfoPingMs'}" />
+      </TextBlock>
       <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                 Text="{Binding GameVersion, StringFormat='Game version: {0}'}"
-                 TextTrimming="CharacterEllipsis" />
+                 TextTrimming="CharacterEllipsis">
+        <Run Text="{l:Translate 'Game version: ', 'Client:UI:GameInfoGameVersion'}" />
+        <Run Text="{Binding GameVersion}" />
+      </TextBlock>
       <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                 Text="{Binding GameModeName, StringFormat='Game mode: {0}'}"
-                 TextTrimming="CharacterEllipsis" />
+                 TextTrimming="CharacterEllipsis">
+        <Run Text="{l:Translate 'Game mode: ', 'Client:UI:GameInfoGameMode'}" />
+        <Run Text="{Binding GameModeName}" />
+      </TextBlock>
       <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                 Text="{Binding MapName, StringFormat='Map: {0}'}"
                  TextTrimming="CharacterEllipsis"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap">
+        <Run Text="{l:Translate 'Map: ', 'Client:UI:GameInfoMap'}" />
+        <Run Text="{Binding MapName}" />
+      </TextBlock>
       <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                 Text="{Binding SkillLevelName, StringFormat='Skill: {0}'}"
-                 TextTrimming="CharacterEllipsis" />
+                 TextTrimming="CharacterEllipsis">
+        <Run Text="{l:Translate 'Skill: ', 'Client:UI:GameInfoSkill'}" />
+        <Run Text="{Binding SkillLevelName}" />
+      </TextBlock>
       <TextBlock Foreground="{DynamicResource XnaAltBrush}"
-                 Text="{Binding PlayerCount, StringFormat='Players: {0} / {1}'}"
-                 TextTrimming="CharacterEllipsis" />
+                 TextTrimming="CharacterEllipsis">
+        <Run Text="{l:Translate 'Players: ', 'Client:UI:GameInfoPlayers'}" />
+        <Run Text="{Binding PlayerCount}" />
+      </TextBlock>
 
       <!-- Status icons -->
       <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-        <TextBlock Text="Locked"
+        <TextBlock Text="{l:Translate 'Locked', 'Client:UI:GameInfoLocked'}"
                    IsVisible="{Binding IsLocked}"
                    Foreground="Gray" />
-        <TextBlock Text="Passworded"
+        <TextBlock Text="{l:Translate 'Passworded', 'Client:UI:GameInfoPassworded'}"
                    IsVisible="{Binding IsPasswordProtected}"
                    Foreground="{DynamicResource XnaAltBrush}" />
-        <TextBlock Text="Incompatible"
+        <TextBlock Text="{l:Translate 'Incompatible', 'Client:UI:GameInfoIncompatible'}"
                    IsVisible="{Binding IsCompatible, Converter={StaticResource BoolNotConverter}}"
                    Foreground="Gray" />
       </StackPanel>
 
       <!-- Player names -->
-      <TextBlock Text="Players:"
+      <TextBlock Text="{l:Translate 'Players:', 'Client:UI:GameInfoPlayersLabel'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                  Margin="0,4,0,0"

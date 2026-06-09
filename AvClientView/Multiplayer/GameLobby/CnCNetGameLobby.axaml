@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.GameLobby"
              x:Class="AvClientView.Multiplayer.GameLobby.CnCNetGameLobby"
              x:DataType="vmc:ICnCNetGameLobbyViewModel"
@@ -12,7 +13,7 @@
 
       <!-- Game Mode Label -->
       <TextBlock x:Name="lblGameModeSelect"
-                 Text="GAME MODE:"
+                 Text="{l:Translate 'GAME MODE:', 'Client:UI:GameLobbyGameMode'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}"
                 
@@ -40,7 +41,7 @@
       <!-- Map Search Box -->
       <TextBox x:Name="tbMapSearch"
                Text="{Binding MapSearchText}"
-               Watermark="Filter by name, map, game mode..."
+               Watermark="{l:Translate 'Filter by name, map, game mode...', 'Client:UI:WatermarkFilterMaps'}"
                IsVisible="{Binding IsMapListVisible}"
                Width="383" Height="21"
               
@@ -76,7 +77,7 @@
 
       <!-- Pick Random Map Button (host only) -->
       <Button x:Name="btnPickRandomMap"
-              Content="Random"
+              Content="{l:Translate 'Random', 'Client:UI:ButtonRandom'}"
               Command="{Binding PickRandomMapCommand}"
               IsVisible="{Binding IsHost}"
               Width="75" Height="17"
@@ -138,11 +139,11 @@
               Canvas.Left="437" Canvas.Top="12">
         <Canvas>
           <!-- Column Headers -->
-          <TextBlock Text="PLAYER" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="5" Canvas.Top="4" />
-          <TextBlock Text="SIDE" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="97" Canvas.Top="4" />
-          <TextBlock Text="COLOR" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="219" Canvas.Top="4" />
-          <TextBlock Text="TEAM" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="301" Canvas.Top="4" />
-          <TextBlock Text="START" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="340" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'PLAYER', 'Client:UI:PlayerOptionPlayer'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="5" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'SIDE', 'Client:UI:PlayerOptionSide'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="97" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'COLOR', 'Client:UI:PlayerOptionColor'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="219" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'TEAM', 'Client:UI:PlayerOptionTeam'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="301" Canvas.Top="4" />
+          <TextBlock Text="{l:Translate 'START', 'Client:UI:PlayerOptionStart'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" FontSize="10" Canvas.Left="340" Canvas.Top="4" />
 
           <!-- Player Slot 0 -->
           <ComboBox ItemsSource="{Binding PlayerSlots[0].Name.Options}" SelectedItem="{Binding PlayerSlots[0].Name.SelectedOption, Mode=TwoWay}" IsEnabled="{Binding PlayerSlots[0].Name.IsEnabled}" Width="90" Height="21" FontSize="10" Canvas.Left="5" Canvas.Top="22" />
@@ -266,7 +267,7 @@
       <!-- Chat Input -->
       <TextBox x:Name="tbChatInput"
                Text="{Binding DraftMessage}"
-               Watermark="Type a message..."
+               Watermark="{l:Translate 'Type a message...', 'Client:UI:WatermarkTypeMessageLobby'}"
                Width="415" Height="23"
               
                Canvas.Left="12" Canvas.Top="683" />
@@ -295,7 +296,7 @@
 
       <!-- Leave Game Button -->
       <Button x:Name="btnLeaveGame"
-              Content="Leave"
+              Content="{l:Translate 'Leave', 'Client:UI:ButtonLeave'}"
               Command="{Binding LeaveGameCommand}"
               Width="133" Height="23"
               FontWeight="Bold"
@@ -311,7 +312,7 @@
 
       <!-- Change Tunnel Button -->
       <Button x:Name="btnChangeTunnel"
-              Content="Change Tunnel"
+              Content="{l:Translate 'Change Tunnel', 'Client:UI:ButtonChangeTunnel'}"
               Command="{Binding ChangeTunnelCommand}"
               IsVisible="{Binding IsHost}"
               Width="100" Height="17"
@@ -320,7 +321,7 @@
 
       <!-- Auto Ready Checkbox -->
       <CheckBox x:Name="chkAutoReady"
-                Content="Auto Ready"
+                Content="{l:Translate 'Auto Ready', 'Client:UI:ButtonAutoReady'}"
                 IsChecked="{Binding IsAutoReadyChecked}"
                 IsEnabled="{Binding IsAutoReadyEnabled}"
                 Foreground="{DynamicResource XnaTextBrush}"

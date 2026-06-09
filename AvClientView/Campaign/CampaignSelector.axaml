@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Campaign"
              x:Class="AvClientView.Campaign.CampaignSelector"
              x:DataType="vmc:ICampaignSelectorViewModel"
@@ -8,7 +9,7 @@
   <Canvas>
     <!-- MISSIONS: label -->
     <TextBlock x:Name="lblSelectCampaign"
-               Text="MISSIONS:"
+               Text="{l:Translate 'MISSIONS:', 'Client:UI:CampaignMissions'}"
                FontWeight="Bold"
                Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="12" Canvas.Top="12" />
@@ -30,7 +31,7 @@
 
     <!-- MISSION DESCRIPTION: label -->
     <TextBlock x:Name="lblMissionDescriptionHeader"
-               Text="MISSION DESCRIPTION:"
+               Text="{l:Translate 'MISSION DESCRIPTION:', 'Client:UI:CampaignMissionDescription'}"
                FontWeight="Bold"
                Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="346" Canvas.Top="12" />
@@ -78,7 +79,7 @@
 
     <!-- DIFFICULTY LEVEL label (centered above trackbar) -->
     <TextBlock x:Name="lblDifficultyLevel"
-               Text="DIFFICULTY LEVEL"
+               Text="{l:Translate 'DIFFICULTY LEVEL', 'Client:UI:CampaignDifficultyLevel'}"
                FontWeight="Bold"
                Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="440" Canvas.Top="496" />
@@ -116,7 +117,7 @@
 
     <!-- Launch button (bottom-left) -->
     <Button x:Name="btnLaunch"
-            Content="Launch"
+            Content="{l:Translate 'Launch', 'Client:UI:ButtonLaunch'}"
             Command="{Binding LaunchCampaignCommand}"
             IsEnabled="{Binding CanLaunchCampaign}"
             Width="147" Height="23"
@@ -125,7 +126,7 @@
 
     <!-- Cancel button (bottom-right) -->
     <Button x:Name="btnCancel"
-            Content="Cancel"
+            Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
             Command="{Binding CancelCommand}"
             IsEnabled="{Binding IsControlsEnabled}"
             Width="147" Height="23"
@@ -134,7 +135,7 @@
 
     <!-- Return button (optional, for CampaignTagSelector) -->
     <Button x:Name="btnReturn"
-            Content="Campaigns"
+            Content="{l:Translate 'Campaigns', 'Client:UI:ButtonCampaigns'}"
             Command="{Binding ReturnCommand}"
             IsVisible="{Binding IsReturnButtonVisible}"
             IsEnabled="{Binding IsControlsEnabled}"
@@ -163,11 +164,11 @@
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaAltBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-              <Button Content="OK"
+              <Button Content="{l:Translate 'OK', 'Client:UI:ButtonOK'}"
                       Width="100" Height="23"
                       FontWeight="Bold"
                       Command="{Binding CheaterWindow.ConfirmCommand}" />
-              <Button Content="Cancel"
+              <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
                       Width="100" Height="23"
                       FontWeight="Bold"
                       Command="{Binding CheaterWindow.CancelCommand}" />

@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer"
              x:Class="AvClientView.Multiplayer.LANGameCreationWindow"
              x:DataType="vmc:ILANGameCreationWindowViewModel"
@@ -7,13 +8,13 @@
              Width="447" Height="77">
   <Canvas>
     <!-- Description label -->
-    <TextBlock Text="SELECT SESSION TYPE"
+    <TextBlock Text="{l:Translate 'SELECT SESSION TYPE', 'Client:UI:LanSessionTypeTitle'}"
                FontWeight="Bold"
                Foreground="{DynamicResource XnaTextBrush}"
                Canvas.Left="160" Canvas.Top="12" />
 
     <!-- New Game button -->
-    <Button Content="New Game"
+    <Button Content="{l:Translate 'New Game', 'Client:UI:ButtonNewGame'}"
             Command="{Binding CreateNewGameCommand}"
             Canvas.Left="12" Canvas.Top="42"
             Width="133" Height="23"
@@ -21,7 +22,7 @@
             FontWeight="Bold" />
 
     <!-- Load Game button -->
-    <Button Content="Load Game"
+    <Button Content="{l:Translate 'Load Game', 'Client:UI:ButtonLoadGame'}"
             Command="{Binding LoadGameCommand}"
             Canvas.Left="157" Canvas.Top="42"
             Width="133" Height="23"
@@ -30,7 +31,7 @@
             IsEnabled="{Binding IsLoadGameAllowed}" />
 
     <!-- Cancel button -->
-    <Button Content="Cancel"
+    <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
             Command="{Binding CancelCommand}"
             Canvas.Left="302" Canvas.Top="42"
             Width="133" Height="23"

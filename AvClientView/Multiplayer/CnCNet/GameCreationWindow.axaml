@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Multiplayer.CnCNet.GameCreationWindow"
@@ -13,42 +14,42 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Center">
     <StackPanel Spacing="10">
-      <TextBlock Text="Create Game"
+      <TextBlock Text="{l:Translate 'Create Game', 'Client:UI:CreateGameTitle'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}" />
 
       <!-- Game name -->
       <StackPanel Spacing="4">
-        <TextBlock Text="Game Name:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+        <TextBlock Text="{l:Translate 'Game Name:', 'Client:UI:CreateGameName'}" Foreground="{DynamicResource XnaSubtleTextBrush}" />
         <TextBox Text="{Binding GameName}" />
       </StackPanel>
 
       <!-- Password -->
       <StackPanel Spacing="4">
-        <TextBlock Text="Password (optional):" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+        <TextBlock Text="{l:Translate 'Password (optional):', 'Client:UI:CreateGamePassword'}" Foreground="{DynamicResource XnaSubtleTextBrush}" />
         <TextBox Text="{Binding Password}" />
       </StackPanel>
 
       <!-- Max players -->
       <StackPanel Orientation="Horizontal" Spacing="8">
-        <TextBlock Text="Max Players:" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
+        <TextBlock Text="{l:Translate 'Max Players:', 'Client:UI:CreateGameMaxPlayers'}" Foreground="{DynamicResource XnaSubtleTextBrush}" VerticalAlignment="Center" />
         <TextBox Text="{Binding MaxPlayers}" Width="50" />
       </StackPanel>
 
       <!-- Private game -->
-      <CheckBox Content="Private Game"
+      <CheckBox Content="{l:Translate 'Private Game', 'Client:UI:CreateGamePrivateGame'}"
                 IsChecked="{Binding IsPrivateGame}"
                 Foreground="{DynamicResource XnaTextBrush}" />
 
       <!-- Tunnel selection -->
       <StackPanel Spacing="4">
-        <TextBlock Text="Tunnel Server:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+        <TextBlock Text="{l:Translate 'Tunnel Server:', 'Client:UI:CreateGameTunnelServer'}" Foreground="{DynamicResource XnaSubtleTextBrush}" />
         <ComboBox ItemsSource="{Binding TunnelNames}"
                   SelectedIndex="{Binding SelectedTunnelIndex}" />
       </StackPanel>
 
       <!-- Advanced options toggle -->
-      <Button Content="Advanced Options"
+      <Button Content="{l:Translate 'Advanced Options', 'Client:UI:CreateGameAdvancedOptions'}"
               Command="{Binding OpenAdvancedOptionsCommand}"
               Background="Transparent"
               Foreground="{DynamicResource XnaAccentBrush}"
@@ -60,7 +61,7 @@
       <!-- Advanced options (shown when expanded) -->
       <StackPanel IsVisible="{Binding IsAdvancedOptionsVisible}" Spacing="8">
         <StackPanel Spacing="4">
-          <TextBlock Text="Skill Level:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+          <TextBlock Text="{l:Translate 'Skill Level:', 'Client:UI:CreateGameSkillLevel'}" Foreground="{DynamicResource XnaSubtleTextBrush}" />
           <ComboBox ItemsSource="{Binding SkillLevelOptions}"
                     SelectedIndex="{Binding SelectedSkillLevel}" />
         </StackPanel>
@@ -73,14 +74,14 @@
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-        <Button Content="Create"
+        <Button Content="{l:Translate 'Create', 'Client:UI:ButtonCreate'}"
                 Command="{Binding CreateGameCommand}"
                 Width="92" Height="23" />
-        <Button Content="Load Game"
+        <Button Content="{l:Translate 'Load Game', 'Client:UI:ButtonLoadGame'}"
                 Command="{Binding CreateLoadedGameCommand}"
                 Width="92" Height="23"
                 IsVisible="{Binding CanLoadGame}" />
-        <Button Content="Cancel"
+        <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
                 Command="{Binding CancelCommand}"
                 Width="92" Height="23" />
       </StackPanel>

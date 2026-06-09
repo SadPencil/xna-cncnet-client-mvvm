@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Generic"
              xmlns:vmcOpt="using:AvClientMvvmContract.Generic.OptionPanels"
              xmlns:converters="using:AvClientView.Converters"
@@ -19,18 +20,18 @@
     <StackPanel x:Name="tabControl"
                 Orientation="Horizontal" Spacing="2"
                 Canvas.Left="12" Canvas.Top="12">
-      <Button x:Name="tabDisplay" Content="Display" Width="92" Height="23" FontWeight="Bold"
+      <Button x:Name="tabDisplay" Content="{l:Translate 'Display', 'Client:UI:TabDisplay'}" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectDisplayPanelCommand}" />
-      <Button x:Name="tabAudio" Content="Audio" Width="92" Height="23" FontWeight="Bold"
+      <Button x:Name="tabAudio" Content="{l:Translate 'Audio', 'Client:UI:TabAudio'}" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectAudioPanelCommand}" />
-      <Button x:Name="tabGame" Content="Game" Width="92" Height="23" FontWeight="Bold"
+      <Button x:Name="tabGame" Content="{l:Translate 'Game', 'Client:UI:TabGame'}" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectGamePanelCommand}" />
-      <Button x:Name="tabCnCNet" Content="CnCNet" Width="92" Height="23" FontWeight="Bold"
+      <Button x:Name="tabCnCNet" Content="{l:Translate 'CnCNet', 'Client:UI:TabCnCNet'}" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectCnCNetPanelCommand}" />
-      <Button x:Name="tabUpdater" Content="Updater" Width="92" Height="23" FontWeight="Bold"
+      <Button x:Name="tabUpdater" Content="{l:Translate 'Updater', 'Client:UI:TabUpdater'}" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectUpdaterPanelCommand}"
               IsVisible="{Binding IsUpdaterPanelVisible}" />
-      <Button x:Name="tabComponents" Content="Components" Width="92" Height="23" FontWeight="Bold"
+      <Button x:Name="tabComponents" Content="{l:Translate 'Components', 'Client:UI:TabComponents'}" Width="92" Height="23" FontWeight="Bold"
               Command="{Binding SelectComponentsPanelCommand}"
               IsVisible="{Binding IsComponentsPanelVisible}" />
     </StackPanel>
@@ -51,7 +52,7 @@
           <StackPanel Grid.Column="0" Spacing="6" Margin="0,0,12,0">
             <!-- In-game Resolution (label + dropdown on same line) -->
             <StackPanel Orientation="Horizontal" Spacing="8">
-              <TextBlock Text="In-game Resolution:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'In-game Resolution:', 'Client:UI:OptionIngameResolution'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
                          VerticalAlignment="Center" />
               <ComboBox x:Name="ddIngameResolution"
@@ -61,7 +62,7 @@
             </StackPanel>
             <!-- Detail Level -->
             <StackPanel Orientation="Horizontal" Spacing="8">
-              <TextBlock Text="Detail Level:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Detail Level:', 'Client:UI:OptionDetailLevel'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
                          VerticalAlignment="Center" />
               <ComboBox x:Name="ddDetailLevel"
@@ -71,7 +72,7 @@
             </StackPanel>
             <!-- Renderer -->
             <StackPanel Orientation="Horizontal" Spacing="8">
-              <TextBlock Text="Renderer:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Renderer:', 'Client:UI:OptionRenderer'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
                          VerticalAlignment="Center" />
               <ComboBox x:Name="ddRenderer"
@@ -79,29 +80,29 @@
                         SelectedIndex="{Binding SelectedRendererIndex}"
                         Width="120" Height="21" />
             </StackPanel>
-            <CheckBox x:Name="chkWindowedMode" Content="Windowed Mode"
+            <CheckBox x:Name="chkWindowedMode" Content="{l:Translate 'Windowed Mode', 'Client:UI:OptionWindowedMode'}"
                       IsChecked="{Binding IsWindowedModeEnabled}"
                       Foreground="{DynamicResource XnaTextBrush}" />
-            <CheckBox x:Name="chkBorderlessWindowedMode" Content="Borderless Windowed Mode"
+            <CheckBox x:Name="chkBorderlessWindowedMode" Content="{l:Translate 'Borderless Windowed Mode', 'Client:UI:OptionBorderlessWindowedMode'}"
                       IsChecked="{Binding IsBorderlessWindowedModeEnabled}"
                       IsEnabled="{Binding IsBorderlessWindowedModeAllowed}"
                       Foreground="{DynamicResource XnaTextBrush}" Margin="24,0,0,0" />
-            <CheckBox x:Name="chkBackBufferInVRAM" Content="Back Buffer in Video Memory"
+            <CheckBox x:Name="chkBackBufferInVRAM" Content="{l:Translate 'Back Buffer in Video Memory', 'Client:UI:OptionBackBufferInVideoMemory'}"
                       IsChecked="{Binding IsBackBufferStoredInVideoMemory}"
                       Foreground="{DynamicResource XnaTextBrush}"
-                      ToolTip.Tip="If set, the game's back buffer will be stored in VRAM instead of system RAM. May improve performance on some systems but can cause issues on others." />
+                      ToolTip.Tip="{l:Translate 'If set, the game\'s back buffer will be stored in VRAM...', 'Client:UI:OptionBackBufferToolTip'}" />
           </StackPanel>
 
           <!-- Right Column: Client settings -->
           <StackPanel Grid.Column="1" Spacing="6" Margin="12,0,0,0">
-            <CheckBox x:Name="chkBorderlessClient" Content="Fullscreen Client"
+            <CheckBox x:Name="chkBorderlessClient" Content="{l:Translate 'Fullscreen Client', 'Client:UI:OptionFullscreenClient'}"
                       IsChecked="{Binding IsBorderlessClientEnabled}"
                       Foreground="{DynamicResource XnaTextBrush}" />
-            <TextBlock Text="Alt+Enter toggles fullscreen client."
+            <TextBlock Text="{l:Translate 'Alt+Enter toggles fullscreen client.', 'Client:UI:OptionAltEnterFullscreenHint'}"
                        Foreground="{DynamicResource XnaTextBrush}" />
             <!-- Client Theme -->
             <StackPanel Orientation="Horizontal" Spacing="8">
-              <TextBlock Text="Client Theme:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Client Theme:', 'Client:UI:OptionClientTheme'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
                          VerticalAlignment="Center" />
               <ComboBox x:Name="ddClientTheme"
@@ -111,7 +112,7 @@
             </StackPanel>
             <!-- Language -->
             <StackPanel Orientation="Horizontal" Spacing="8">
-              <TextBlock Text="Language:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Language:', 'Client:UI:OptionLanguage'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
                          VerticalAlignment="Center" />
               <ComboBox x:Name="ddTranslation"
@@ -121,17 +122,17 @@
             </StackPanel>
             <!-- Compatibility fix buttons -->
             <Button x:Name="btnGameCompatibilityFix"
-                    Content="Install Game Compatibility Fix"
+                    Content="{l:Translate 'Install Game Compatibility Fix', 'Client:UI:OptionInstallGameCompatibilityFix'}"
                     Command="{Binding InstallGameCompatibilityFixCommand}"
                     IsVisible="{Binding IsGameCompatFixAllowed}"
                     Width="250" Height="23" Margin="0,4,0,0" />
             <Button x:Name="btnMapEditorCompatibilityFix"
-                    Content="Install Map Editor Compatibility Fix"
+                    Content="{l:Translate 'Install Map Editor Compatibility Fix', 'Client:UI:OptionInstallMapEditorCompatibilityFix'}"
                     Command="{Binding InstallMapEditorCompatibilityFixCommand}"
                     IsVisible="{Binding IsFinalSunCompatFixAllowed}"
                     Width="250" Height="23" />
             <!-- Restart required notice -->
-            <TextBlock Text="A restart is required for some changes to take effect."
+            <TextBlock Text="{l:Translate 'A restart is required for some changes to take effect.', 'Client:UI:OptionRestartRequiredHint'}"
                        IsVisible="{Binding IsRestartRequired}"
                        Foreground="{DynamicResource XnaAltBrush}"
                        Margin="0,4,0,0" />
@@ -152,7 +153,7 @@
         <StackPanel x:Name="audioPanel" Margin="12" Spacing="6"
                     DataContext="{Binding AudioOptions}"
                     x:DataType="vmcOpt:IAudioOptionsPanelViewModel">
-          <TextBlock Text="Music Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="{l:Translate 'Music Volume:', 'Client:UI:OptionMusicVolume'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <Grid ColumnDefinitions="*,Auto">
             <Slider x:Name="trbMusicVolume" Minimum="0" Maximum="10"
                     Value="{Binding ScoreVolume}"
@@ -161,7 +162,7 @@
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
           </Grid>
-          <TextBlock Text="Sound Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="{l:Translate 'Sound Volume:', 'Client:UI:OptionSoundVolume'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <Grid ColumnDefinitions="*,Auto">
             <Slider x:Name="trbSoundVolume" Minimum="0" Maximum="10"
                     Value="{Binding SoundVolume}"
@@ -170,7 +171,7 @@
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
           </Grid>
-          <TextBlock Text="Voice Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="{l:Translate 'Voice Volume:', 'Client:UI:OptionVoiceVolume'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <Grid ColumnDefinitions="*,Auto">
             <Slider x:Name="trbVoiceVolume" Minimum="0" Maximum="10"
                     Value="{Binding VoiceVolume}"
@@ -179,7 +180,7 @@
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
           </Grid>
-          <TextBlock Text="Client Volume:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="{l:Translate 'Client Volume:', 'Client:UI:OptionClientVolume'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <Grid ColumnDefinitions="*,Auto">
             <Slider x:Name="trbClientVolume" Minimum="0" Maximum="10"
                     Value="{Binding ClientVolume}"
@@ -188,20 +189,20 @@
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
           </Grid>
-          <CheckBox x:Name="chkShuffleMusic" Content="Shuffle Music"
+          <CheckBox x:Name="chkShuffleMusic" Content="{l:Translate 'Shuffle Music', 'Client:UI:OptionShuffleMusic'}"
                     IsChecked="{Binding IsScoreShuffleEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" Margin="0,4,0,0" />
-          <CheckBox x:Name="chkMainMenuMusic" Content="Main Menu Music"
+          <CheckBox x:Name="chkMainMenuMusic" Content="{l:Translate 'Main Menu Music', 'Client:UI:OptionMainMenuMusic'}"
                     IsChecked="{Binding IsMainMenuMusicEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkStopMusicOnMenu" Content="Don't Stop Music on Menu"
+          <CheckBox x:Name="chkStopMusicOnMenu" Content="{l:Translate 'Don\'t Stop Music on Menu', 'Client:UI:OptionDontStopMusicOnMenu'}"
                     IsChecked="{Binding IsStopMusicOnMenuDisabled}"
                     IsEnabled="{Binding IsStopMusicOnMenuAllowed}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkGameLobbyMessageSound" Content="Play Sound on Game Lobby Messages"
+          <CheckBox x:Name="chkGameLobbyMessageSound" Content="{l:Translate 'Play Sound on Game Lobby Messages', 'Client:UI:OptionPlaySoundOnGameLobbyMessages'}"
                     IsChecked="{Binding IsGameLobbyMessageSoundEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkHostedGameSound" Content="Play Sound When Game is Hosted"
+          <CheckBox x:Name="chkHostedGameSound" Content="{l:Translate 'Play Sound When Game is Hosted', 'Client:UI:OptionPlaySoundWhenGameIsHosted'}"
                     IsChecked="{Binding IsHostedGameSoundEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
         </StackPanel>
@@ -220,7 +221,7 @@
         <StackPanel x:Name="gamePanel" Margin="12" Spacing="6"
                     DataContext="{Binding GameOptions}"
                     x:DataType="vmcOpt:IGameOptionsPanelViewModel">
-          <TextBlock Text="Scroll Rate:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
+          <TextBlock Text="{l:Translate 'Scroll Rate:', 'Client:UI:OptionScrollRate'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
           <Grid ColumnDefinitions="*,Auto">
             <Slider x:Name="trbScrollRate" Minimum="0" Maximum="6"
                     Value="{Binding ScrollRate}"
@@ -229,32 +230,32 @@
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" Width="24" Margin="8,0,0,0" />
           </Grid>
-          <CheckBox x:Name="chkScrollCoasting" Content="Scroll Coasting"
+          <CheckBox x:Name="chkScrollCoasting" Content="{l:Translate 'Scroll Coasting', 'Client:UI:OptionScrollCoasting'}"
                     IsChecked="{Binding IsScrollCoastingEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" Margin="0,4,0,0" />
-          <CheckBox x:Name="chkTargetLines" Content="Target Lines"
+          <CheckBox x:Name="chkTargetLines" Content="{l:Translate 'Target Lines', 'Client:UI:OptionTargetLines'}"
                     IsChecked="{Binding AreTargetLinesEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkTooltips" Content="Tooltips"
+          <CheckBox x:Name="chkTooltips" Content="{l:Translate 'Tooltips', 'Client:UI:OptionTooltips'}"
                     IsChecked="{Binding AreTooltipsEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkShowHiddenObjects" Content="Show Hidden Objects"
+          <CheckBox x:Name="chkShowHiddenObjects" Content="{l:Translate 'Show Hidden Objects', 'Client:UI:OptionShowHiddenObjects'}"
                     IsChecked="{Binding AreHiddenObjectsVisible}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkBlackChatBackground" Content="Black Chat Background"
+          <CheckBox x:Name="chkBlackChatBackground" Content="{l:Translate 'Black Chat Background', 'Client:UI:OptionBlackChatBackground'}"
                     IsChecked="{Binding IsBlackChatBackgroundEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkAltToUndeploy" Content="Alt+Click to Undeploy"
+          <CheckBox x:Name="chkAltToUndeploy" Content="{l:Translate 'Alt+Click to Undeploy', 'Client:UI:OptionAltClickToUndeploy'}"
                     IsChecked="{Binding IsUndeployWithAltEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <TextBlock Text="Player Name:" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,0" />
+          <TextBlock Text="{l:Translate 'Player Name:', 'Client:UI:OptionPlayerName'}" FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,0" />
           <TextBox x:Name="tbPlayerName"
                    Text="{Binding PlayerName}"
                    Width="200"
                    MaxLength="16"
                    HorizontalAlignment="Left" />
           <Button x:Name="btnConfigureHotkeys"
-                  Content="Configure Hotkeys"
+                  Content="{l:Translate 'Configure Hotkeys', 'Client:UI:ButtonConfigureHotkeys'}"
                   Command="{Binding OpenHotkeyConfigurationCommand}"
                   IsVisible="{Binding ShowHotkeyConfiguration}"
                   Width="150" Height="23"
@@ -279,43 +280,43 @@
           <Grid ColumnDefinitions="*,*">
             <!-- Left Column -->
             <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,12,0">
-              <CheckBox x:Name="chkPingUnofficialTunnels" Content="Ping Unofficial CnCNet Tunnels"
+              <CheckBox x:Name="chkPingUnofficialTunnels" Content="{l:Translate 'Ping Unofficial CnCNet Tunnels', 'Client:UI:OptionPingUnofficialTunnels'}"
                         IsChecked="{Binding PingUnofficialTunnels}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkWriteInstallPathToRegistry" Content="Write Game Installation Path to Windows Registry"
+              <CheckBox x:Name="chkWriteInstallPathToRegistry" Content="{l:Translate 'Write Game Installation Path to Windows Registry', 'Client:UI:OptionWriteGamePathToRegistry'}"
                         IsChecked="{Binding WriteInstallationPathToRegistry}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkDisableMainMenuHotkeys" Content="Disable Hotkeys in Main Menu Lobby"
+              <CheckBox x:Name="chkDisableMainMenuHotkeys" Content="{l:Translate 'Disable Hotkeys in Main Menu Lobby', 'Client:UI:OptionDisableHotkeysInLobby'}"
                         IsChecked="{Binding DisableMainMenuHotkeys}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkNotifyOnUserListChange" Content="Show Notification on User List Change"
+              <CheckBox x:Name="chkNotifyOnUserListChange" Content="{l:Translate 'Show Notification on User List Change', 'Client:UI:OptionShowNotificationOnUserListChange'}"
                         IsChecked="{Binding NotifyOnUserListChanges}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkDisablePrivateMessagePopup" Content="Disable Private Message Popup Notifications"
+              <CheckBox x:Name="chkDisablePrivateMessagePopup" Content="{l:Translate 'Disable Private Message Popup Notifications', 'Client:UI:OptionDisablePrivateMessagePopup'}"
                         IsChecked="{Binding DisablePrivateMessagePopups}"
                         Foreground="{DynamicResource XnaTextBrush}" />
             </StackPanel>
 
             <!-- Right Column -->
             <StackPanel Grid.Column="1" Spacing="4" Margin="12,0,0,0">
-              <CheckBox x:Name="chkSkipLoginWindow" Content="Skip Login Dialog"
+              <CheckBox x:Name="chkSkipLoginWindow" Content="{l:Translate 'Skip Login Dialog', 'Client:UI:OptionSkipLoginDialog'}"
                         IsChecked="{Binding SkipLoginDialog}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkPersistentMode" Content="Stay Connected Outside CnCNet Lobby"
+              <CheckBox x:Name="chkPersistentMode" Content="{l:Translate 'Stay Connected Outside CnCNet Lobby', 'Client:UI:OptionStayConnectedOutsideLobby'}"
                         IsChecked="{Binding PersistentMode}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkConnectOnStartup" Content="Connect to CnCNet on Client Startup"
+              <CheckBox x:Name="chkConnectOnStartup" Content="{l:Translate 'Connect to CnCNet on Client Startup', 'Client:UI:OptionConnectOnStartup'}"
                         IsChecked="{Binding AutoConnectOnStartup}"
                         IsEnabled="{Binding IsAutoConnectOnStartupAllowed}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkDiscordIntegration" Content="Show Game Info on Discord Status"
+              <CheckBox x:Name="chkDiscordIntegration" Content="{l:Translate 'Show Game Info on Discord Status', 'Client:UI:OptionShowGameInfoOnDiscord'}"
                         IsChecked="{Binding IsDiscordIntegrationEnabled}"
                         IsEnabled="{Binding IsDiscordIntegrationGloballyDisabled, Converter={x:Static converters:BoolConverters.Not}, FallbackValue=False}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkAllowGameInvitesFromFriendsOnly" Content="Only Allow Game Invites from Friends"
+              <CheckBox x:Name="chkAllowGameInvitesFromFriendsOnly" Content="{l:Translate 'Only Allow Game Invites from Friends', 'Client:UI:OptionOnlyAllowInvitesFromFriends'}"
                         IsChecked="{Binding AllowGameInvitesOnlyFromFriends}"
                         Foreground="{DynamicResource XnaTextBrush}" />
-              <CheckBox x:Name="chkSteamIntegration" Content="Publish Game to Steam Friends"
+              <CheckBox x:Name="chkSteamIntegration" Content="{l:Translate 'Publish Game to Steam Friends', 'Client:UI:OptionPublishGameToSteamFriends'}"
                         IsChecked="{Binding IsSteamIntegrationEnabled}"
                         Foreground="{DynamicResource XnaTextBrush}" />
             </StackPanel>
@@ -323,7 +324,7 @@
 
           <!-- Allow Private Messages From (below two columns) -->
           <StackPanel Orientation="Horizontal" Spacing="8">
-            <TextBlock Text="Allow PMs From:" FontWeight="Bold"
+            <TextBlock Text="{l:Translate 'Allow PMs From:', 'Client:UI:OptionAllowPMsFrom'}" FontWeight="Bold"
                        Foreground="{DynamicResource XnaTextBrush}"
                        VerticalAlignment="Center" />
             <ComboBox x:Name="ddAllowPrivateMessagesFrom"
@@ -337,7 +338,7 @@
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
             <StackPanel Margin="8">
-              <TextBlock Text="Follow Games:" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Follow Games:', 'Client:UI:OptionFollowGames'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}" Margin="0,0,0,4" />
               <ItemsControl ItemsSource="{Binding GameListItems}">
                 <ItemsControl.ItemsPanel>
@@ -371,9 +372,9 @@
       <StackPanel x:Name="updaterPanel" Margin="12" Spacing="6"
                   DataContext="{Binding UpdaterOptions}"
                   x:DataType="vmcOpt:IUpdaterOptionsPanelViewModel">
-        <TextBlock Text="Update Server Priority"
+        <TextBlock Text="{l:Translate 'Update Server Priority', 'Client:UI:OptionUpdateServerPriority'}"
                    FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-        <TextBlock Text="Drag servers to change priority. The client will try servers from top to bottom."
+        <TextBlock Text="{l:Translate 'Drag servers to change priority. The client will try servers from top to bottom.', 'Client:UI:OptionDragServersHint'}"
                    Foreground="{DynamicResource XnaSubtleTextBrush}" TextWrapping="Wrap" />
         <Border Background="#C8000000"
                 BorderBrush="{DynamicResource XnaPanelBorderBrush}"
@@ -392,17 +393,17 @@
           </ListBox>
         </Border>
         <StackPanel Orientation="Horizontal" Spacing="8">
-          <Button x:Name="btnMoveUp" Content="Move Up"
+          <Button x:Name="btnMoveUp" Content="{l:Translate 'Move Up', 'Client:UI:ButtonMoveUp'}"
                   Command="{Binding MoveServerUpCommand}"
                   Width="133" Height="23" />
-          <Button x:Name="btnMoveDown" Content="Move Down"
+          <Button x:Name="btnMoveDown" Content="{l:Translate 'Move Down', 'Client:UI:ButtonMoveDown'}"
                   Command="{Binding MoveServerDownCommand}"
                   Width="133" Height="23" />
         </StackPanel>
-        <CheckBox x:Name="chkAutoCheck" Content="Check for updates automatically"
+        <CheckBox x:Name="chkAutoCheck" Content="{l:Translate 'Check for updates automatically', 'Client:UI:OptionCheckForUpdatesAutomatically'}"
                   IsChecked="{Binding CheckForUpdatesAutomatically}"
                   Foreground="{DynamicResource XnaTextBrush}" Margin="0,8,0,0" />
-        <Button x:Name="btnForceUpdate" Content="Force Update"
+        <Button x:Name="btnForceUpdate" Content="{l:Translate 'Force Update', 'Client:UI:ButtonForceUpdate'}"
                 Command="{Binding ForceUpdateCommand}"
                 IsEnabled="{Binding IsForceUpdateEnabled}"
                 Width="133" Height="23" Margin="0,8,0,0" />
@@ -415,8 +416,8 @@
             <TextBlock Text="{Binding ConfirmationMessage}" TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaAltBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-              <Button Content="Yes" Command="{Binding ConfirmYesCommand}" Width="75" Height="23" />
-              <Button Content="No" Command="{Binding ConfirmNoCommand}" Width="75" Height="23" />
+              <Button Content="{l:Translate 'Yes', 'Client:UI:ButtonYes'}" Command="{Binding ConfirmYesCommand}" Width="75" Height="23" />
+              <Button Content="{l:Translate 'No', 'Client:UI:ButtonNo'}" Command="{Binding ConfirmNoCommand}" Width="75" Height="23" />
             </StackPanel>
           </StackPanel>
         </Border>
@@ -435,9 +436,9 @@
              DataContext="{Binding ComponentsOptions}"
              x:DataType="vmcOpt:IComponentsPanelViewModel">
         <StackPanel Margin="12" Spacing="6">
-          <TextBlock Text="Optional Components"
+          <TextBlock Text="{l:Translate 'Optional Components', 'Client:UI:OptionOptionalComponents'}"
                      FontWeight="Bold" Foreground="{DynamicResource XnaTextBrush}" />
-          <TextBlock Text="Install or update optional game components below."
+          <TextBlock Text="{l:Translate 'Install or update optional game components below.', 'Client:UI:OptionComponentsHint'}"
                      Foreground="{DynamicResource XnaSubtleTextBrush}" TextWrapping="Wrap" />
           <!-- Component list with action buttons -->
           <Border Background="#C8000000"
@@ -457,16 +458,16 @@
             </ListBox>
           </Border>
           <StackPanel Orientation="Horizontal" Spacing="8">
-            <Button x:Name="btnInstallComponent" Content="Install"
+            <Button x:Name="btnInstallComponent" Content="{l:Translate 'Install', 'Client:UI:ButtonInstall'}"
                     Command="{Binding InstallSelectedComponentCommand}"
                     Width="100" Height="23" />
-            <Button x:Name="btnUpdateComponent" Content="Update"
+            <Button x:Name="btnUpdateComponent" Content="{l:Translate 'Update', 'Client:UI:ButtonUpdate'}"
                     Command="{Binding UpdateSelectedComponentCommand}"
                     Width="100" Height="23" />
-            <Button x:Name="btnUninstallComponent" Content="Uninstall"
+            <Button x:Name="btnUninstallComponent" Content="{l:Translate 'Uninstall', 'Client:UI:ButtonUninstall'}"
                     Command="{Binding UninstallSelectedComponentCommand}"
                     Width="100" Height="23" />
-            <Button x:Name="btnCancelDownloads" Content="Cancel"
+            <Button x:Name="btnCancelDownloads" Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
                     Command="{Binding CancelDownloadsCommand}"
                     IsVisible="{Binding IsBusy}"
                     Width="100" Height="23" />
@@ -484,8 +485,8 @@
               <TextBlock Text="{Binding ConfirmationMessage}" TextWrapping="Wrap"
                          Foreground="{DynamicResource XnaAltBrush}" />
               <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-                <Button Content="Yes" Command="{Binding ConfirmYesCommand}" Width="75" Height="23" />
-                <Button Content="No" Command="{Binding ConfirmNoCommand}" Width="75" Height="23" />
+                <Button Content="{l:Translate 'Yes', 'Client:UI:ButtonYes'}" Command="{Binding ConfirmYesCommand}" Width="75" Height="23" />
+                <Button Content="{l:Translate 'No', 'Client:UI:ButtonNo'}" Command="{Binding ConfirmNoCommand}" Width="75" Height="23" />
               </StackPanel>
             </StackPanel>
           </Border>
@@ -495,7 +496,7 @@
 
     <!-- Save button (bottom-left) -->
     <Button x:Name="btnSave"
-            Content="Save"
+            Content="{l:Translate 'Save', 'Client:UI:ButtonSave'}"
             Command="{Binding SaveCommand}"
             Width="92" Height="23"
             FontWeight="Bold"
@@ -503,7 +504,7 @@
 
     <!-- Cancel button (bottom-right) -->
     <Button x:Name="btnCancel"
-            Content="Cancel"
+            Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
             Command="{Binding CancelCommand}"
             Width="92" Height="23"
             FontWeight="Bold"

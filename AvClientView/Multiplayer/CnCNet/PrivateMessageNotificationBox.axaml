@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              x:Class="AvClientView.Multiplayer.CnCNet.PrivateMessageNotificationBox"
              x:DataType="vmc:IPrivateMessageNotificationBoxViewModel"
@@ -26,10 +27,10 @@
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-        <Button Content="Open"
+        <Button Content="{l:Translate 'Open', 'Client:UI:ButtonOpen'}"
                 Command="{Binding OpenConversationCommand}"
                 Width="75" Height="23" />
-        <Button Content="Dismiss"
+        <Button Content="{l:Translate 'Dismiss', 'Client:UI:ButtonDismiss'}"
                 Command="{Binding DismissCommand}"
                 Width="75" Height="23" />
       </StackPanel>

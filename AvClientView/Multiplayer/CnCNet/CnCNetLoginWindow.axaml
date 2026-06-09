@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLoginWindow"
              x:DataType="vmc:ICnCNetLoginWindowViewModel"
@@ -12,27 +13,27 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Center">
     <StackPanel Spacing="12">
-      <TextBlock Text="CnCNet Login"
+      <TextBlock Text="{l:Translate 'CnCNet Login', 'Client:UI:LoginTitle'}"
                  FontWeight="Bold"
                  Foreground="{DynamicResource XnaTextBrush}" />
 
       <!-- Username -->
       <StackPanel Spacing="4">
-        <TextBlock Text="Username:" Foreground="{DynamicResource XnaSubtleTextBrush}" />
+        <TextBlock Text="{l:Translate 'Username:', 'Client:UI:LoginUsername'}" Foreground="{DynamicResource XnaSubtleTextBrush}" />
         <TextBox Text="{Binding UserName}" />
       </StackPanel>
 
       <!-- Remember password -->
-      <CheckBox Content="Remember my username"
+      <CheckBox Content="{l:Translate 'Remember my username', 'Client:UI:LoginRememberMe'}"
                 IsChecked="{Binding RememberPassword}"
                 Foreground="{DynamicResource XnaTextBrush}" />
 
       <!-- Buttons -->
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
-        <Button Content="Connect"
+        <Button Content="{l:Translate 'Connect', 'Client:UI:ButtonConnect'}"
                 Command="{Binding ConnectCommand}"
                 Width="92" Height="23" />
-        <Button Content="Cancel"
+        <Button Content="{l:Translate 'Cancel', 'Client:UI:ButtonCancel'}"
                 Command="{Binding CancelCommand}"
                 Width="92" Height="23" />
       </StackPanel>
