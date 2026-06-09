@@ -147,21 +147,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     public partial string? SoundToPlay { get; set; }
 
-    // Game list - replaced wholesale to avoid per-item notifications (stops ListBox flash).
-    private IReadOnlyList<IHostedCnCNetGame> games = Array.Empty<IHostedCnCNetGame>();
-    public IReadOnlyList<IHostedCnCNetGame> Games
-    {
-        get => games;
-        set => SetProperty(ref games, value);
-    }
+    // Game list — updated in-place via ObservableCollection operations so existing
+    // visual containers stay alive and the hover state is never lost.
+    private readonly ObservableCollection<IHostedCnCNetGame> games = new();
+    public IReadOnlyList<IHostedCnCNetGame> Games => games;
 
-    // Player list — replaced wholesale to avoid per-item notifications.
-    private IReadOnlyList<IPlayerListItem> players = Array.Empty<IPlayerListItem>();
-    public IReadOnlyList<IPlayerListItem> Players
-    {
-        get => players;
-        set => SetProperty(ref players, value);
-    }
+    // Player list — updated in-place so visual containers stay alive.
+    private readonly ObservableCollection<IPlayerListItem> players = new();
+    public IReadOnlyList<IPlayerListItem> Players => players;
 
     private readonly ObservableCollection<IChatMessage> chatMessages = new();
     public IReadOnlyList<IChatMessage> ChatMessages => chatMessages;
@@ -832,24 +825,17 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 user.IRCUser.GameID));
             current = current.Next;
         }
-        // Skip assignment if nothing changed (same names, same order)
-        var old = Players;
-        bool changed = old.Count != list.Count;
-        if (!changed)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (old[i].Name != list[i].Name)
-                { changed = true; break; }
-            }
-        }
 
-        if (changed)
-        {
-            Players = list;
-            Log.Debug("[PLAYER-REFRESH] old={Old} new={New} changed=True sender={Sender}",
-                old.Count, list.Count, sender?.GetType().Name ?? "null");
-        }
+        // Apply in-place to preserve visual containers
+        int common = Math.Min(players.Count, list.Count);
+        for (int i = 0; i < common; i++)
+            players[i] = list[i];
+
+        while (players.Count > list.Count)
+            players.RemoveAt(players.Count - 1);
+
+        for (int i = players.Count; i < list.Count; i++)
+            players.Add(list[i]);
     }
 
     private void UI_RefreshPlayerList()
@@ -900,7 +886,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void SortAndRefreshHostedGames()
     {
-        // Filter and sort the hosted games
         var filtered = hostedGames.Where(g => HostedGameMatches(g)).ToList();
 
         var sortDir = GetSortDirection();
@@ -909,121 +894,73 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         else if (sortDir == SortDirection.Desc)
             filtered = filtered.OrderByDescending(g => g.RoomName).ToList();
 
-        // Build lookup and set of channel names still present
-        var filteredByChannel = new Dictionary<string, IHostedCnCNetGame>();
+        // Build the target list — existing games keep their positions,
+        // deleted games leave gaps, new games fill gaps then append.
+        var byChannel = new Dictionary<string, IHostedCnCNetGame>();
         foreach (var g in filtered)
-            filteredByChannel[g.ChannelName] = g;
-        var presentChannels = new HashSet<string>(filteredByChannel.Keys);
+            byChannel[g.ChannelName] = g;
+        var present = new HashSet<string>(byChannel.Keys);
 
-        var oldList = Games;
+        var result = new List<IHostedCnCNetGame>();
+        var newGames = new List<IHostedCnCNetGame>();
 
-        // Pass 1: build list preserving positions of still-existing games.
-        // Use a nullable list internally — gaps (null) mark deleted games.
-        List<IHostedCnCNetGame?> build = new(oldList.Count);
-        var gaps = new List<int>(); // indices in 'build' that need filling
-
-        for (int i = 0; i < oldList.Count; i++)
+        foreach (var g in filtered)
         {
-            var ch = oldList[i].ChannelName;
-            if (presentChannels.Contains(ch))
+            var ch = g.ChannelName;
+            // Check if this game was already displayed at some position
+            int oldIdx = -1;
+            for (int i = 0; i < games.Count; i++)
             {
-                // Game still exists — keep at its original position
-                build.Add(filteredByChannel[ch]);
-                filteredByChannel.Remove(ch); // mark consumed
+                if (games[i].ChannelName == ch) { oldIdx = i; break; }
+            }
+
+            if (oldIdx >= 0)
+            {
+                // Existing game — ensure its slot exists in result
+                while (result.Count <= oldIdx)
+                    result.Add(null!);
+                result[oldIdx] = g;
+                byChannel.Remove(ch);
             }
             else
             {
-                // Game was deleted — leave a gap
-                gaps.Add(build.Count);
-                build.Add(null);
+                newGames.Add(g);
+                byChannel.Remove(ch);
             }
         }
 
-        // Remaining new games (sorted, not previously displayed)
-        var newGames = filteredByChannel.Values.ToList();
+        // Fill null gaps with new games (in sorted order)
         int ngIdx = 0;
-
-        // Pass 2: fill each gap with a new game, or shift an item from the end
-        foreach (int gapPos in gaps)
+        for (int i = 0; i < result.Count; i++)
         {
-            if (ngIdx < newGames.Count)
-            {
-                build[gapPos] = newGames[ngIdx++];
-            }
-            else
-            {
-                // No new games left — shift the last non-null item into this gap
-                int last = build.Count - 1;
-                while (last > gapPos && build[last] == null)
-                    last--;
-                if (last <= gapPos)
-                    break; // nothing left to shift
-
-                // Don't move the selected or hovered game
-                while ((last == SelectedGameIndex || last == HoveredGameIndex) && last > gapPos + 1)
-                    last--;
-
-                build[gapPos] = build[last];
-                build.RemoveAt(last);
-            }
+            if (result[i] == null && ngIdx < newGames.Count)
+                result[i] = newGames[ngIdx++];
         }
 
-        // Trim any remaining nulls (gaps that couldn't be filled) and append leftover new games
-        var result = new List<IHostedCnCNetGame>(build.Count);
-        foreach (var g in build)
-        {
-            if (g != null)
-                result.Add(g);
-        }
-        if (ngIdx < newGames.Count)
-            result.AddRange(newGames.Skip(ngIdx));
+        // Append remaining new games
+        while (ngIdx < newGames.Count)
+            result.Add(newGames[ngIdx++]);
 
-        // Skip assignment if the list hasn't actually changed (same channels, same order).
-        // Otherwise Avalonia treats the new collection as entirely different items,
-        // recycles all visual containers, and the hover state flashes.
-        var old = Games;
-        bool changed = old.Count != result.Count;
-        if (!changed)
-        {
-            for (int i = 0; i < result.Count; i++)
-            {
-                if (old[i].ChannelName != result[i].ChannelName)
-                {
-                    changed = true;
-                    break;
-                }
-            }
-        }
+        // Remove trailing nulls
+        while (result.Count > 0 && result[result.Count - 1] == null)
+            result.RemoveAt(result.Count - 1);
 
-        string? hoveredBefore = (HoveredGameIndex >= 0 && HoveredGameIndex < old.Count)
-            ? old[HoveredGameIndex].ChannelName : null;
-        string? hoveredAfter = null;
+        // Apply to ObservableCollection with minimal operations —
+        // indexer set for existing positions (Replace event), Add/RemoveAt for diffs.
+        // This preserves visual containers so hover state is never lost.
+        int common = Math.Min(games.Count, result.Count);
+        for (int i = 0; i < common; i++)
+            games[i] = result[i];
 
-        if (changed)
-        {
-            Games = result;
-            // Find where the hovered item landed
-            int hoverIdx = -1;
-            for (int i = 0; i < result.Count; i++)
-            {
-                if (hoveredBefore != null && result[i].ChannelName == hoveredBefore)
-                { hoverIdx = i; break; }
-            }
-            hoveredAfter = hoverIdx >= 0 ? result[hoverIdx].ChannelName : null;
-        }
-        else
-        {
-            hoveredAfter = hoveredBefore;
-        }
+        while (games.Count > result.Count)
+            games.RemoveAt(games.Count - 1);
 
-        Log.Debug("[GAME-REFRESH] total={Total} filtered={Filtered} old={Old} new={New} changed={Changed} "
-            + "hoveredIdx={HoverIdx} hoveredKey={HoverBefore}->{HoverAfter} gaps={Gaps} newGames={NewGms}",
-            hostedGames.Count, filtered.Count, old.Count, result.Count, changed,
-            HoveredGameIndex, hoveredBefore, hoveredAfter, gaps.Count, newGames.Count);
+        for (int i = games.Count; i < result.Count; i++)
+            games.Add(result[i]);
 
         // Preserve selection if the selected game is still present
-        if (SelectedGameIndex >= 0 && SelectedGameIndex < Games.Count)
-            SelectedGame = Games[SelectedGameIndex];
+        if (SelectedGameIndex >= 0 && SelectedGameIndex < games.Count)
+            SelectedGame = games[SelectedGameIndex];
         else
             SelectedGame = null;
     }
@@ -1349,8 +1286,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsGameSearchEnabled = false;
             IsConnected = false;
 
-            Players = Array.Empty<IPlayerListItem>();
-            Games = Array.Empty<IHostedCnCNetGame>();
+            players.Clear();
+            games.Clear();
             hostedGames.Clear();
             followedGames.Clear();
 
