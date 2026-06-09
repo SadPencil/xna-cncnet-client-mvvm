@@ -35,7 +35,8 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
     /// </summary>
     private bool? _userFullScreenOverride;
 
-    public string WindowTitle { get; }
+    [ObservableProperty]
+    public partial string WindowTitle { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial WindowState WindowState { get; set; }
