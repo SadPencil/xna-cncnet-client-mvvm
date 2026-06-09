@@ -58,31 +58,31 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
     /// </summary>
     private static void AutoScrollToEnd(ListBox listBox)
     {
-        listBox.TemplateApplied += (_, _) =>
+        bool setup = false;
+        void Setup()
         {
+            if (setup) return;
             var sv = listBox.FindDescendantOfType<ScrollViewer>();
             if (sv is null) return;
+            setup = true;
 
             bool isAtBottom = true;
+            double prevExtent = 0;
 
             sv.ScrollChanged += (_, _) =>
             {
+                bool wasAtBottom = isAtBottom;
                 isAtBottom = sv.Offset.Y >= sv.Extent.Height - sv.Viewport.Height - 2;
+                if (sv.Extent.Height > prevExtent && wasAtBottom)
+                    sv.ScrollToEnd();
+                prevExtent = sv.Extent.Height;
             };
 
-            var col = listBox.Items as System.Collections.Specialized.INotifyCollectionChanged;
-            if (col is not null)
-            {
-                col.CollectionChanged += (_, _) =>
-                {
-                    if (isAtBottom)
-                        sv.ScrollToEnd();
-                };
-            }
-
-            // initial scroll
             sv.ScrollToEnd();
-        };
+        }
+
+        listBox.TemplateApplied += (_, _) => Setup();
+        listBox.LayoutUpdated += (_, _) => Setup();
     }
 
     public ICnCNetLobbyViewModel? ViewModel
