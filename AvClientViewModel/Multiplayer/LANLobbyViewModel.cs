@@ -102,12 +102,20 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // --- Observable collections ---
 
-    private readonly ObservableCollection<ILANHostedGame> games = new();
-    public IReadOnlyList<ILANHostedGame> Games => games;
+    private IReadOnlyList<ILANHostedGame> games = Array.Empty<ILANHostedGame>();
+    public IReadOnlyList<ILANHostedGame> Games
+    {
+        get => games;
+        set => SetProperty(ref games, value);
+    }
 
-    // Player list — updated in-place so visual containers stay alive.
-    private readonly ObservableCollection<string> playerNames = new();
-    public IReadOnlyList<string> PlayerNames => playerNames;
+    // Player list — replaced wholesale to avoid per-item notifications.
+    private IReadOnlyList<string> playerNames = Array.Empty<string>();
+    public IReadOnlyList<string> PlayerNames
+    {
+        get => playerNames;
+        set => SetProperty(ref playerNames, value);
+    }
 
     private readonly ObservableCollection<string> _chatMessages = new();
     public IReadOnlyList<string> ChatMessages => _chatMessages;
@@ -379,7 +387,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         playerManager.Clear();
         messageDeduplicator.Clear();
         hostedGames.Clear();
-        games.Clear();
+        Games = Array.Empty<ILANHostedGame>();
 
         IsEnabled = true;
 
@@ -636,67 +644,132 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private void RefreshPlayerNames()
     {
         var list = playerManager.GetAllPlayers().Select(p => p.Name).ToList();
+        var old = PlayerNames;
+        bool changed = old.Count != list.Count;
+        if (!changed)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (old[i] != list[i])
+                { changed = true; break; }
+            }
+        }
 
-        int common = Math.Min(playerNames.Count, list.Count);
-        for (int i = 0; i < common; i++)
-            playerNames[i] = list[i];
-        while (playerNames.Count > list.Count)
-            playerNames.RemoveAt(playerNames.Count - 1);
-        for (int i = playerNames.Count; i < list.Count; i++)
-            playerNames.Add(list[i]);
+        if (changed)
+        {
+            PlayerNames = list;
+            Log.Debug("[LAN-PLAYER-REFRESH] old={Old} new={New} changed=True", old.Count, list.Count);
+        }
     }
 
     private void UpdateGameList()
     {
-        // Build target list preserving positions — existing games stay in place.
-        var byEp = new Dictionary<string, ILANHostedGame>();
+        // Index hosted games by endpoint for fast lookup
+        var byEndpoint = new Dictionary<string, ILANHostedGame>();
         foreach (var g in hostedGames)
-            byEp[g.EndPoint.ToString()] = g;
+            byEndpoint[g.EndPoint.ToString()] = g;
+        var presentEndpoints = new HashSet<string>(byEndpoint.Keys);
 
-        var result = new List<ILANHostedGame>();
-        var newGms = new List<ILANHostedGame>();
+        var oldList = Games;
 
-        foreach (var g in byEp.Values)
+        // Pass 1: build list preserving positions of still-existing games
+        List<ILANHostedGame?> build = new(oldList.Count);
+        var gaps = new List<int>();
+
+        for (int i = 0; i < oldList.Count; i++)
         {
-            int oldIdx = -1;
-            for (int i = 0; i < games.Count; i++)
+            var key = ((HostedLANGame)oldList[i]).EndPoint.ToString();
+            if (presentEndpoints.Contains(key))
             {
-                if (((HostedLANGame)games[i]).EndPoint.ToString() ==
-                    ((HostedLANGame)g).EndPoint.ToString())
-                { oldIdx = i; break; }
-            }
-
-            if (oldIdx >= 0)
-            {
-                while (result.Count <= oldIdx)
-                    result.Add(null!);
-                result[oldIdx] = g;
+                build.Add(byEndpoint[key]);
+                byEndpoint.Remove(key);
             }
             else
             {
-                newGms.Add(g);
+                gaps.Add(build.Count);
+                build.Add(null);
             }
         }
 
+        // Remaining new games
+        var newGames = byEndpoint.Values.ToList();
         int ngIdx = 0;
-        for (int i = 0; i < result.Count; i++)
-        {
-            if (result[i] == null && ngIdx < newGms.Count)
-                result[i] = newGms[ngIdx++];
-        }
-        while (ngIdx < newGms.Count)
-            result.Add(newGms[ngIdx++]);
-        while (result.Count > 0 && result[result.Count - 1] == null)
-            result.RemoveAt(result.Count - 1);
 
-        // Apply in-place — indexer set preserves visual containers
-        int common = Math.Min(games.Count, result.Count);
-        for (int i = 0; i < common; i++)
-            games[i] = result[i];
-        while (games.Count > result.Count)
-            games.RemoveAt(games.Count - 1);
-        for (int i = games.Count; i < result.Count; i++)
-            games.Add(result[i]);
+        // Pass 2: fill each gap with a new game, or shift from the end
+        foreach (int gapPos in gaps)
+        {
+            if (ngIdx < newGames.Count)
+            {
+                build[gapPos] = newGames[ngIdx++];
+            }
+            else
+            {
+                int last = build.Count - 1;
+                while (last > gapPos && build[last] == null)
+                    last--;
+                if (last <= gapPos)
+                    break;
+
+                if ((last == SelectedGameIndex || last == HoveredGameIndex) && last > gapPos + 1)
+                    last--;
+
+                build[gapPos] = build[last];
+                build.RemoveAt(last);
+            }
+        }
+
+        // Trim nulls and append leftover new games
+        var result = new List<ILANHostedGame>(build.Count);
+        foreach (var g in build)
+        {
+            if (g != null)
+                result.Add(g);
+        }
+        if (ngIdx < newGames.Count)
+            result.AddRange(newGames.Skip(ngIdx));
+
+        // Skip assignment if nothing changed (same endpoints, same order).
+        var old = Games;
+        bool changed = old.Count != result.Count;
+        if (!changed)
+        {
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (((HostedLANGame)old[i]).EndPoint.ToString()
+                    != ((HostedLANGame)result[i]).EndPoint.ToString())
+                {
+                    changed = true;
+                    break;
+                }
+            }
+        }
+
+        string? hoveredBefore = (HoveredGameIndex >= 0 && HoveredGameIndex < old.Count)
+            ? ((HostedLANGame)old[HoveredGameIndex]).EndPoint.ToString() : null;
+        string? hoveredAfter = null;
+
+        if (changed)
+        {
+            Games = result;
+            int hoverIdx = -1;
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (hoveredBefore != null
+                    && ((HostedLANGame)result[i]).EndPoint.ToString() == hoveredBefore)
+                { hoverIdx = i; break; }
+            }
+            hoveredAfter = hoverIdx >= 0
+                ? ((HostedLANGame)result[hoverIdx]).EndPoint.ToString() : null;
+        }
+        else
+        {
+            hoveredAfter = hoveredBefore;
+        }
+
+        Log.Debug("[LAN-GAME-REFRESH] total={Total} old={Old} new={New} changed={Changed} "
+            + "hoveredIdx={HoverIdx} hovered={HoverBefore}->{HoverAfter} gaps={Gaps} newGames={NewGms}",
+            hostedGames.Count, old.Count, result.Count, changed,
+            HoveredGameIndex, hoveredBefore, hoveredAfter, gaps.Count, newGames.Count);
     }
 
     private void AddChatMessage(string message)
