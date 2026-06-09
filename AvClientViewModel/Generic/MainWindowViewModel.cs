@@ -1,6 +1,7 @@
 using System;
 
 using AvClientMvvmContract.Generic;
+using AvClientViewModel.Domain;
 using AvClientMvvmContract.Messages;
 
 using ClientCore;
