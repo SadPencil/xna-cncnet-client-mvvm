@@ -10,7 +10,7 @@
              x:Class="AvClientView.Multiplayer.LANLobby"
              x:DataType="vmc:ILANLobbyViewModel"
              IsVisible="{Binding IsVisible}"
-             Width="1220" Height="728">
+             Width="1220" Height="720">
 
   <Grid>
     <!-- ========== MAIN LAYOUT ========== -->
@@ -192,7 +192,7 @@
 
     <!-- LANGameCreationWindow (centered popup) -->
     <controls:DarkeningPanel x:Name="gameCreationOverlay"
-                             Width="1220" Height="728">
+                             Width="1220" Height="720">
       <controls:DarkeningPanel.ChildContent>
         <mp:LANGameCreationWindow x:Name="gameCreationWindow"
                                   DataContext="{Binding GameCreationWindow}" />
@@ -201,7 +201,7 @@
 
     <!-- LANGameLobby (full-screen game lobby) -->
     <controls:DarkeningPanel x:Name="gameLobbyOverlay"
-                             Width="1220" Height="728">
+                             Width="1220" Height="720">
       <controls:DarkeningPanel.ChildContent>
         <gamelobby:LANGameLobby x:Name="gameLobby"
                                 DataContext="{Binding GameLobby}" />
@@ -210,7 +210,7 @@
 
     <!-- LANGameLoadingLobby (centered popup) -->
     <controls:DarkeningPanel x:Name="gameLoadingLobbyOverlay"
-                             Width="1220" Height="728">
+                             Width="1220" Height="720">
       <controls:DarkeningPanel.ChildContent>
         <mp:LANGameLoadingLobby x:Name="gameLoadingLobby"
                                 DataContext="{Binding GameLoadingLobby}" />

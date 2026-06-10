@@ -11,7 +11,7 @@
              x:Name="CnCNetLobbyView"
              x:DataType="vmc:ICnCNetLobbyViewModel"
              IsVisible="{Binding IsVisible}"
-             Width="1220" Height="728">
+             Width="1220" Height="720">
 
   <Grid>
     <!-- ========== MAIN LAYOUT ========== -->
@@ -278,21 +278,21 @@
     <!-- Login Window Overlay -->
     <Border IsVisible="{Binding IsLoginWindowVisible}"
             Background="#80000000"
-            Width="1220" Height="728">
+            Width="1220" Height="720">
       <local:CnCNetLoginWindow DataContext="{Binding LoginWindowViewModel}" />
     </Border>
 
     <!-- Game Creation Panel Overlay -->
     <Border IsVisible="{Binding IsGameCreationPanelVisible}"
             Background="#80000000"
-            Width="1220" Height="728">
+            Width="1220" Height="720">
       <local:GameCreationWindow DataContext="{Binding GameCreationWindowViewModel}" />
     </Border>
 
     <!-- Message Box Overlay -->
     <Border IsVisible="{Binding PendingMessage, Converter={StaticResource IsNotNullOrEmptyConverter}}"
             Background="#80000000"
-            Width="1220" Height="728">
+            Width="1220" Height="720">
       <Panel>
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
               BorderBrush="{DynamicResource XnaPanelBorderBrush}"
@@ -321,7 +321,7 @@
     <!-- Game Invite Overlay -->
     <Border IsVisible="{Binding PendingGameInvite, Converter={StaticResource IsNotNullConverter}}"
             Background="#80000000"
-            Width="1220" Height="728">
+            Width="1220" Height="720">
       <Panel DataContext="{Binding PendingGameInvite}">
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
                 BorderBrush="{DynamicResource XnaPanelBorderBrush}"

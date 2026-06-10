@@ -5,7 +5,7 @@
              x:Class="AvClientView.Multiplayer.GameLobby.SkirmishLobby"
              x:DataType="vmc:ISkirmishLobbyViewModel"
              IsVisible="{Binding IsVisible}"
-             Width="1220" Height="728">
+             Width="1220" Height="720">
   <Canvas x:Name="MainCanvas">
 
       <!-- ========== LEFT COLUMN: Map List Area ========== -->
@@ -291,7 +291,7 @@
     <Border IsVisible="{Binding IsErrorVisible}"
             Background="#80000000"
             Canvas.Left="0" Canvas.Top="0"
-            Width="1220" Height="728">
+            Width="1220" Height="720">
       <Panel>
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
                 BorderBrush="{DynamicResource XnaPanelBorderBrush}"
@@ -320,7 +320,7 @@
     <Border IsVisible="{Binding IsNoticeVisible}"
             Background="#80000000"
             Canvas.Left="0" Canvas.Top="0"
-            Width="1220" Height="728">
+            Width="1220" Height="720">
       <Panel>
         <Border Background="{DynamicResource XnaPanelBackgroundBrush}"
                 BorderBrush="{DynamicResource XnaPanelBorderBrush}"

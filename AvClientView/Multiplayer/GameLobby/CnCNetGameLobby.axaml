@@ -6,7 +6,7 @@
              x:DataType="vmc:ICnCNetGameLobbyViewModel"
              IsVisible="{Binding IsEnabled}"
              Background="{DynamicResource XnaPanelBackgroundBrush}"
-             Width="1220" Height="728">
+             Width="1220" Height="720">
   <Canvas x:Name="MainCanvas">
 
       <!-- ========== LEFT COLUMN: Map List Area ========== -->
