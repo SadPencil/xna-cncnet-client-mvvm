@@ -134,10 +134,19 @@
         </Style>
         <Style Selector="CheckBox">
             <Setter Property="FontSize" Value="12" />
-            <!-- TextBlock.TextWrapping is an inheritable attached property
-                 (TextWrappingProperty is registered with inherits:true),
-                 so it propagates to the ContentPresenter-generated TextBlock. -->
-            <Setter Property="(TextBlock.TextWrapping)" Value="Wrap" />
+            <!-- TextWrapping is NOT an inherited attached property (unlike
+                 FontSize/FontFamily on TextElement), so it does not flow from
+                 CheckBox to the ContentPresenter-generated TextBlock.
+                 We supply a ContentTemplate with an explicit wrapping
+                 TextBlock.  {ReflectionBinding} (not {Binding}) is required
+                 because the DataContext is a bare string and compiled bindings
+                 cannot produce a binding path against System.String. -->
+            <Setter Property="ContentTemplate">
+                <DataTemplate>
+                    <TextBlock Text="{ReflectionBinding}"
+                               TextWrapping="Wrap" />
+                </DataTemplate>
+            </Setter>
         </Style>
 
         <!-- Visually gray out disabled controls -->
