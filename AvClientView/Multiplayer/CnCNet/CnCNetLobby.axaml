@@ -64,7 +64,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <VirtualizingStackPanel MinHeight="48" />
+                  <VirtualizingStackPanel MinHeight="54" />
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
               <ListBox.ItemTemplate>
