@@ -134,6 +134,16 @@
         </Style>
         <Style Selector="CheckBox">
             <Setter Property="FontSize" Value="12" />
+            <!-- Replace string-only content with a wrapping TextBlock so long
+                 checkbox labels don't clip. The DataTemplate receives the
+                 Content value as its DataContext; {Binding} renders it. -->
+            <Setter Property="ContentTemplate">
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource XnaTextBrush}" />
+                </DataTemplate>
+            </Setter>
         </Style>
 
         <!-- Visually gray out disabled controls -->
