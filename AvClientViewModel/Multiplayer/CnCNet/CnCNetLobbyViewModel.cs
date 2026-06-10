@@ -195,6 +195,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     // Used by SwitchToChannel to avoid index mismatch with the unfiltered GameList.
     private List<Channel> channelOptionChannels = new();
 
+    // Version and dev-warning messages that must persist across channel switches.
+    private IChatMessage? _versionMessage;
+    private IChatMessage? _devWarningMessage;
+
     private GameCreationWindowViewModel? gameCreationWindowViewModel;
     public IGameCreationWindowViewModel? GameCreationWindowViewModel => gameCreationWindowViewModel;
 
@@ -326,14 +330,16 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 #if DEVELOPMENT_BUILD
         clientVersion = $"{GitVersionInformation.CommitDate} {GitVersionInformation.BranchName}@{GitVersionInformation.ShortSha}";
 #endif
-        chatMessages.Add(new ChatMessage(Rgb24Color.White,
-            string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion)));
+        _versionMessage = new ChatMessage(Rgb24Color.White,
+            string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion));
+        chatMessages.Add(_versionMessage);
 
 #if DEVELOPMENT_BUILD
         if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
         {
-            chatMessages.Add(new ChatMessage(Rgb24Color.Red,
-                "This is a development build of the client. Stability and reliability may not be fully guaranteed.".L10N("Client:Main:DevelopmentBuildWarning")));
+            _devWarningMessage = new ChatMessage(Rgb24Color.Red,
+                "This is a development build of the client. Stability and reliability may not be fully guaranteed.".L10N("Client:Main:DevelopmentBuildWarning"));
+            chatMessages.Add(_devWarningMessage);
         }
 #endif
 
@@ -1061,6 +1067,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         ctcpInvalidGameMessageShown = false;
         ctcpNoTunnelMessageShown = false;
         ctcpNoTunnelForGamesMessageShown = false;
+
+        // Re-add version messages that must persist across channel switches
+        if (_versionMessage != null)
+            chatMessages.Add(_versionMessage);
+        if (_devWarningMessage != null)
+            chatMessages.Add(_devWarningMessage);
 
         if (currentChatChannel.Messages != null)
         {
