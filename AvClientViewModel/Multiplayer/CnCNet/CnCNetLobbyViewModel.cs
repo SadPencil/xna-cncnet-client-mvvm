@@ -195,9 +195,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     // Used by SwitchToChannel to avoid index mismatch with the unfiltered GameList.
     private List<Channel> channelOptionChannels = new();
 
-    // Version and dev-warning messages that must persist across channel switches.
-    private IChatMessage? _versionMessage;
-    private IChatMessage? _devWarningMessage;
+    // Messages pinned to the top of the chat that persist across channel switches.
+    private readonly List<IChatMessage> _pinnedMessages = new();
+    public IReadOnlyList<IChatMessage> PinnedMessages => _pinnedMessages;
 
     private GameCreationWindowViewModel? gameCreationWindowViewModel;
     public IGameCreationWindowViewModel? GameCreationWindowViewModel => gameCreationWindowViewModel;
@@ -330,18 +330,19 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 #if DEVELOPMENT_BUILD
         clientVersion = $"{GitVersionInformation.CommitDate} {GitVersionInformation.BranchName}@{GitVersionInformation.ShortSha}";
 #endif
-        _versionMessage = new ChatMessage(Rgb24Color.White,
-            string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion));
-        chatMessages.Add(_versionMessage);
+        _pinnedMessages.Add(new ChatMessage(Rgb24Color.White,
+            string.Format("*** CnCNet Client version {0} ***".L10N("Client:Main:CnCNetClientVersionMessageV2"), clientVersion)));
 
 #if DEVELOPMENT_BUILD
         if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
         {
-            _devWarningMessage = new ChatMessage(Rgb24Color.Red,
-                "This is a development build of the client. Stability and reliability may not be fully guaranteed.".L10N("Client:Main:DevelopmentBuildWarning"));
-            chatMessages.Add(_devWarningMessage);
+            _pinnedMessages.Add(new ChatMessage(Rgb24Color.Red,
+                "This is a development build of the client. Stability and reliability may not be fully guaranteed.".L10N("Client:Main:DevelopmentBuildWarning")));
         }
 #endif
+
+        foreach (var msg in _pinnedMessages)
+            chatMessages.Add(msg);
 
         InitializeChannelList();
 
@@ -1068,11 +1069,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         ctcpNoTunnelMessageShown = false;
         ctcpNoTunnelForGamesMessageShown = false;
 
-        // Re-add version messages that must persist across channel switches
-        if (_versionMessage != null)
-            chatMessages.Add(_versionMessage);
-        if (_devWarningMessage != null)
-            chatMessages.Add(_devWarningMessage);
+        // Re-add pinned messages that must persist across channel switches
+        foreach (var msg in _pinnedMessages)
+            chatMessages.Add(msg);
 
         if (currentChatChannel.Messages != null)
         {
