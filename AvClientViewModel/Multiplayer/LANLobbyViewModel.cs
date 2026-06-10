@@ -338,6 +338,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     {
         // Refresh is handled by the periodic update timer
         // This command can be used for manual refresh
+
+        // TODO: what the fuck why is it a stub?
     }
 
     // --- Lifecycle ---
