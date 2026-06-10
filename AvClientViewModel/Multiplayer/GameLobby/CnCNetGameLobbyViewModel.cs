@@ -57,6 +57,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private readonly GameCollection gameCollection;
     private readonly CnCNetUserData cncnetUserData;
     private readonly CnCNetManager connectionManager;
+    private Action<string>? onPrivateMessageRequested;
     private readonly string localGame;
     private readonly IGameHostInactiveCheckerService gameHostInactiveChecker;
 
@@ -106,6 +107,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     [ObservableProperty]
     public partial IIRCColor ChatColor { get; set; }
+
+    [ObservableProperty]
+    public partial string SelectedContextPlayerName { get; set; } = string.Empty;
 
     // --- IsHost ---
     // Note: override of abstract property, so [ObservableProperty] cannot be used.
@@ -206,6 +210,11 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     protected override int MaxPlayerCount => PlayerLimit;
 
     // --- Lifecycle ---
+
+    public void SetPrivateMessageAction(Action<string>? pmAction)
+    {
+        onPrivateMessageRequested = pmAction;
+    }
 
     public override void Initialize()
     {
@@ -447,6 +456,32 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private void ChangeTunnel()
     {
         TunnelSelectionRequested?.Invoke(this, "Select tunnel server:".L10N("Client:Main:SelectTunnelServer"));
+    }
+
+    [RelayCommand]
+    private void OpenContextPlayerPrivateMessage()
+    {
+        if (string.IsNullOrEmpty(SelectedContextPlayerName))
+            return;
+        onPrivateMessageRequested?.Invoke(SelectedContextPlayerName);
+    }
+
+    [RelayCommand]
+    private void ToggleContextPlayerFriend()
+    {
+        if (string.IsNullOrEmpty(SelectedContextPlayerName))
+            return;
+        cncnetUserData.ToggleFriend(SelectedContextPlayerName);
+    }
+
+    [RelayCommand]
+    private void ToggleContextPlayerIgnore()
+    {
+        if (string.IsNullOrEmpty(SelectedContextPlayerName))
+            return;
+        var ident = connectionManager.UserList.Find(u => u.Name == SelectedContextPlayerName)?.Ident;
+        if (!string.IsNullOrEmpty(ident))
+            cncnetUserData.ToggleIgnoreUser(ident);
     }
 
     public void OnTunnelSelected(CnCNetTunnel tunnel)

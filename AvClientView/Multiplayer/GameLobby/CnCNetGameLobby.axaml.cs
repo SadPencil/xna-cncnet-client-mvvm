@@ -15,6 +15,8 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientView.Controls;
 using AvClientView.Services;
 
+using ClientCore;
+
 
 namespace AvClientView.Multiplayer.GameLobby;
 
@@ -59,9 +61,60 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
         SetupMapListContextMenu();
         SetupSearchContextMenu();
+        SetupPlayerNameContextMenus();
 
         if (currentMapPreview != null)
             RenderIndicators();
+    }
+
+    private void SetupPlayerNameContextMenus()
+    {
+        var nameSlots = new[] { playerNameSlot0, playerNameSlot1, playerNameSlot2, playerNameSlot3,
+                                playerNameSlot4, playerNameSlot5, playerNameSlot6, playerNameSlot7 };
+
+        foreach (var cb in nameSlots)
+        {
+            cb.ContextRequested += (s, e) =>
+            {
+                e.Handled = true;
+                ShowPlayerNameContextMenu(cb, e);
+            };
+        }
+    }
+
+    private void ShowPlayerNameContextMenu(ComboBox comboBox, ContextRequestedEventArgs e)
+    {
+        var vm = ViewModel;
+        if (vm == null)
+            return;
+
+        var playerName = comboBox.SelectedItem as string;
+        if (string.IsNullOrEmpty(playerName))
+            return;
+
+        // Guard: don't show menu for local player
+        if (playerName == ProgramConstants.PLAYERNAME)
+            return;
+
+        vm.SelectedContextPlayerName = playerName;
+
+        var contextMenu = new ContextMenu();
+
+        var pmItem = new MenuItem { Header = "Private Message" };
+        pmItem.Click += (_, _) => vm.OpenContextPlayerPrivateMessageCommand.Execute(null);
+        contextMenu.Items.Add(pmItem);
+
+        contextMenu.Items.Add(new Separator());
+
+        var friendItem = new MenuItem { Header = "Toggle Friend" };
+        friendItem.Click += (_, _) => vm.ToggleContextPlayerFriendCommand.Execute(null);
+        contextMenu.Items.Add(friendItem);
+
+        var blockItem = new MenuItem { Header = "Toggle Block" };
+        blockItem.Click += (_, _) => vm.ToggleContextPlayerIgnoreCommand.Execute(null);
+        contextMenu.Items.Add(blockItem);
+
+        contextMenu.Open(comboBox);
     }
 
     private void SetupChatInputEnterKey()

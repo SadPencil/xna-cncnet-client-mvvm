@@ -275,6 +275,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     {
         this.pmWindow = pmWindow;
         pmWindow.SetJoinUserAction(JoinUserByName);
+        gameLobby.SetPrivateMessageAction(name => pmWindow.InitPM(name));
     }
 
     private void JoinUserByName(string userName)

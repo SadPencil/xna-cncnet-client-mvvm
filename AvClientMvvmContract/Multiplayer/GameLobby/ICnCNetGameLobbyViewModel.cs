@@ -20,7 +20,12 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     bool TunnelErrorMode { get; }
     IIRCColor ChatColor { get; set; }
 
+    string SelectedContextPlayerName { get; set; }
+
     // --- Commands ---
     IRelayCommand ChangeTunnelCommand { get; }
     IRelayCommand LeaveGameLobbyCommand { get; }
+    IRelayCommand OpenContextPlayerPrivateMessageCommand { get; }
+    IRelayCommand ToggleContextPlayerFriendCommand { get; }
+    IRelayCommand ToggleContextPlayerIgnoreCommand { get; }
 }
