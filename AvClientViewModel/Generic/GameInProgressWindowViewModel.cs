@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using AvClientMvvmContract.Generic;
+using AvClientMvvmContract.ViewServices;
 
 using ClientCore;
 using ClientCore.Enums;
@@ -28,6 +29,7 @@ namespace AvClientViewModel.Generic
     public partial class GameInProgressWindowViewModel : ObservableObject, IGameInProgressWindowViewModel
     {
         private readonly IGameProcessService gameProcessService;
+        private readonly IUIThreadMarshaller uiThreadMarshaller;
 
         private bool nativeCursorUsed = false;
         private List<string> debugSnapshotDirectories;
@@ -43,9 +45,10 @@ namespace AvClientViewModel.Generic
         [ObservableProperty]
         public partial WindowState WindowState { get; set; } = WindowState.Normal;
 
-        public GameInProgressWindowViewModel(IGameProcessService gameProcessService)
+        public GameInProgressWindowViewModel(IGameProcessService gameProcessService, IUIThreadMarshaller uiThreadMarshaller)
         {
             this.gameProcessService = gameProcessService;
+            this.uiThreadMarshaller = uiThreadMarshaller;
 
             if (ClientConfiguration.Instance.ClientGameType == ClientType.Ares)
             {
@@ -96,6 +99,11 @@ namespace AvClientViewModel.Generic
         }
 
         private void OnGameProcessExited()
+        {
+            uiThreadMarshaller.AddCallback(new Action(HandleGameProcessExited));
+        }
+
+        private void HandleGameProcessExited()
         {
             IsGameInProgress = false;
             IsCursorVisible = true;
