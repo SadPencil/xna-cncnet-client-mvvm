@@ -110,6 +110,8 @@ internal static class ViewLocalizedStrings
         "Alt+Enter toggles fullscreen client.".L10N("Client:UI:OptionAltEnterFullscreenHint"),
         "Client Theme:".L10N("Client:UI:OptionClientTheme"),
         "Language:".L10N("Client:UI:OptionLanguage"),
+        "Generate Translation Stub".L10N("Client:UI:OptionGenerateTranslationStub"),
+        "Output only missing values in translation stub".L10N("Client:UI:OptionTranslationStubOnlyNewValues"),
         "Install Game Compatibility Fix".L10N("Client:UI:OptionInstallGameCompatibilityFix"),
         "Install Map Editor Compatibility Fix".L10N("Client:UI:OptionInstallMapEditorCompatibilityFix"),
         "A restart is required for some changes to take effect.".L10N("Client:UI:OptionRestartRequiredHint"),

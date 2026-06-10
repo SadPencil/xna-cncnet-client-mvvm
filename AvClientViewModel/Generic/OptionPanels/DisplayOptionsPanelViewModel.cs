@@ -103,6 +103,12 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
     public partial bool IsFinalSunCompatFixAllowed { get; set; }
 
     [ObservableProperty]
+    public partial bool IsTranslationStubGenerationEnabled { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsOnlyNewValuesInTranslationStub { get; set; }
+
+    [ObservableProperty]
     public partial bool IsRestartRequired { get; set; }
 
     [ObservableProperty]
@@ -262,6 +268,8 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
 
         IsBorderlessClientEnabled = UserINISettings.Instance.BorderlessWindowedClient;
         IsIntegerScaledClientEnabled = false;
+        IsTranslationStubGenerationEnabled = UserINISettings.Instance.GenerateTranslationStub;
+        IsOnlyNewValuesInTranslationStub = UserINISettings.Instance.GenerateOnlyNewValuesInTranslationStub;
 
         // Load theme
         int themeIndex = _themeNames.FindIndex(t => t == UserINISettings.Instance.ClientTheme);
@@ -382,6 +390,10 @@ public partial class DisplayOptionsPanelViewModel : ObservableObject, IDisplayOp
         WeakReferenceMessenger.Default.Send(new BorderlessClientToggledMessage());
 
         iniSettings.IntegerScaledClient.Value = false;
+
+        // Save translation stub generation options
+        iniSettings.GenerateTranslationStub.Value = IsTranslationStubGenerationEnabled;
+        iniSettings.GenerateOnlyNewValuesInTranslationStub.Value = IsOnlyNewValuesInTranslationStub;
 
         // Save theme
         if (SelectedThemeIndex >= 0 && SelectedThemeIndex < _themeNames.Count)

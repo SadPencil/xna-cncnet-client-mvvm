@@ -22,6 +22,8 @@ public interface IDisplayOptionsPanelViewModel : INotifyPropertyChanged
     bool IsBorderlessWindowedModeAllowed { get; }
     bool IsBackBufferStoredInVideoMemory { get; set; }
     bool IsBorderlessClientEnabled { get; set; }
+    bool IsTranslationStubGenerationEnabled { get; set; }
+    bool IsOnlyNewValuesInTranslationStub { get; set; }
     bool IsGameCompatFixAllowed { get; }
     bool IsFinalSunCompatFixAllowed { get; }
     bool IsRestartRequired { get; }

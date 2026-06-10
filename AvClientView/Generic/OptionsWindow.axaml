@@ -120,6 +120,16 @@
                         SelectedIndex="{Binding SelectedTranslationIndex}"
                         Width="120" Height="21" />
             </StackPanel>
+            <!-- Translation stub generation options -->
+            <CheckBox x:Name="chkGenerateTranslationStub"
+                      Content="{l:Translate 'Generate Translation Stub', 'Client:UI:OptionGenerateTranslationStub'}"
+                      IsChecked="{Binding IsTranslationStubGenerationEnabled}"
+                      Foreground="{DynamicResource XnaTextBrush}" />
+            <CheckBox x:Name="chkTranslationStubOnlyNewValues"
+                      Content="{l:Translate 'Output only missing values in translation stub', 'Client:UI:OptionTranslationStubOnlyNewValues'}"
+                      IsChecked="{Binding IsOnlyNewValuesInTranslationStub}"
+                      Foreground="{DynamicResource XnaTextBrush}"
+                      Margin="24,0,0,0" />
             <!-- Compatibility fix buttons -->
             <Button x:Name="btnGameCompatibilityFix"
                     Content="{l:Translate 'Install Game Compatibility Fix', 'Client:UI:OptionInstallGameCompatibilityFix'}"
