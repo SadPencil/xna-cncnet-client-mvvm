@@ -11,6 +11,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
 
 using AvClientView.Controls;
 
@@ -101,21 +102,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         vm.SelectedContextPlayerName = playerName;
 
         var contextMenu = new ContextMenu();
-
-        var pmItem = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
-        pmItem.Click += (_, _) => vm.OpenContextPlayerPrivateMessageCommand.Execute(null);
-        contextMenu.Items.Add(pmItem);
-
-        contextMenu.Items.Add(new Separator());
-
-        var friendItem = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
-        friendItem.Click += (_, _) => vm.ToggleContextPlayerFriendCommand.Execute(null);
-        contextMenu.Items.Add(friendItem);
-
-        var blockItem = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
-        blockItem.Click += (_, _) => vm.ToggleContextPlayerIgnoreCommand.Execute(null);
-        contextMenu.Items.Add(blockItem);
-
+        RenderContextMenuItems(contextMenu, vm.PlayerContextMenuItems);
         contextMenu.Open(comboBox);
     }
 
@@ -433,4 +420,16 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
     public void Show() => IsVisible = true;
     public void Hide() => IsVisible = false;
     public string GetDisplayName() => "CnCNet Game Lobby";
+
+    private static void RenderContextMenuItems(ContextMenu menu, System.Collections.Generic.IReadOnlyList<IContextMenuItem> items)
+    {
+        menu.Items.Clear();
+        foreach (var item in items)
+        {
+            if (item.IsSeparator)
+                menu.Items.Add(new Separator());
+            else if (item.IsVisible)
+                menu.Items.Add(new MenuItem { Header = item.Text, Command = item.Command, IsEnabled = item.IsEnabled });
+        }
+    }
 }

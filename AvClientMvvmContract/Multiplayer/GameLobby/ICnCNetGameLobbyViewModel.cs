@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Online;
+using AvClientMvvmContract.ViewServices;
 
 using CommunityToolkit.Mvvm.Input;
 
@@ -28,4 +29,6 @@ public interface ICnCNetGameLobbyViewModel : IMultiplayerGameLobbyViewModel
     IRelayCommand OpenContextPlayerPrivateMessageCommand { get; }
     IRelayCommand ToggleContextPlayerFriendCommand { get; }
     IRelayCommand ToggleContextPlayerIgnoreCommand { get; }
+
+    IReadOnlyList<IContextMenuItem> PlayerContextMenuItems { get; }
 }

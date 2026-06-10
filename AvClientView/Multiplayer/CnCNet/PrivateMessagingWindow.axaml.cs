@@ -11,6 +11,7 @@ using Avalonia.VisualTree;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Online;
+using AvClientMvvmContract.ViewServices;
 
 using AvClientView.Services;
 
@@ -98,32 +99,19 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
     {
         if (ViewModel == null)
             return;
+        RenderContextMenuItems(menu, ViewModel.UserContextMenuItems);
+    }
 
+    private static void RenderContextMenuItems(ContextMenu menu, System.Collections.Generic.IReadOnlyList<IContextMenuItem> items)
+    {
         menu.Items.Clear();
-
-        var pmItem = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
-        pmItem.Click += (_, _) => ViewModel.SelectedTabIndex = MESSAGES_INDEX;
-        menu.Items.Add(pmItem);
-
-        menu.Items.Add(new Separator());
-
-        var friendItem = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
-        friendItem.Click += (_, _) => ViewModel.ToggleSelectedUserFriendCommand.Execute(null);
-        menu.Items.Add(friendItem);
-
-        var blockItem = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
-        blockItem.Click += (_, _) => ViewModel.ToggleSelectedUserIgnoreCommand.Execute(null);
-        menu.Items.Add(blockItem);
-
-        menu.Items.Add(new Separator());
-
-        var inviteItem = new MenuItem { Header = "Invite to Game".L10N("Client:UI:ContextMenuInviteToGame") };
-        inviteItem.Click += (_, _) => ViewModel.InviteSelectedUserToGameCommand.Execute(null);
-        menu.Items.Add(inviteItem);
-
-        var joinItem = new MenuItem { Header = "Join Game".L10N("Client:UI:ContextMenuJoinGame") };
-        joinItem.Click += (_, _) => ViewModel.JoinSelectedUserGameCommand.Execute(null);
-        menu.Items.Add(joinItem);
+        foreach (var item in items)
+        {
+            if (item.IsSeparator)
+                menu.Items.Add(new Separator());
+            else if (item.IsVisible)
+                menu.Items.Add(new MenuItem { Header = item.Text, Command = item.Command, IsEnabled = item.IsEnabled });
+        }
     }
 
     private static void SelectListBoxItemFromEvent(ListBox listBox, ContextRequestedEventArgs e)
@@ -173,62 +161,8 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
         if (messagesListBox.SelectedIndex < 0 || messagesListBox.SelectedIndex >= ViewModel.MessageHistory.Count)
             return;
 
-        var msg = ViewModel.MessageHistory[messagesListBox.SelectedIndex];
-
         var contextMenu = new ContextMenu();
-
-        if (!string.IsNullOrEmpty(msg.SenderName))
-        {
-            var pmItem1 = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
-            pmItem1.Click += (_, _) => ViewModel.OpenSelectedMessageSenderPrivateMessageCommand.Execute(null);
-            contextMenu.Items.Add(pmItem1);
-
-            contextMenu.Items.Add(new Separator());
-
-            var friendItem1 = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
-            friendItem1.Click += (_, _) => ViewModel.ToggleSelectedMessageSenderFriendCommand.Execute(null);
-            contextMenu.Items.Add(friendItem1);
-
-            var blockItem1 = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
-            blockItem1.Click += (_, _) => ViewModel.ToggleSelectedMessageSenderIgnoreCommand.Execute(null);
-            contextMenu.Items.Add(blockItem1);
-
-            contextMenu.Items.Add(new Separator());
-
-            var joinItem1 = new MenuItem { Header = "Join Game".L10N("Client:UI:ContextMenuJoinGame") };
-            joinItem1.Click += (_, _) => ViewModel.JoinSelectedMessageSenderGameCommand.Execute(null);
-            contextMenu.Items.Add(joinItem1);
-        }
-
-        // Link operations from message body
-        var links = msg.Message.GetLinks();
-        if (links != null && links.Length > 0)
-        {
-            if (contextMenu.Items.Count > 0)
-                contextMenu.Items.Add(new Separator());
-
-            foreach (string link in links)
-            {
-                string displayLink = link.Length > 40 ? link[..30] + "..." + link[^5..] : link;
-
-                var openLinkItem1 = new MenuItem { Header = string.Format("Open Link: {0}".L10N("Client:UI:OpenLink"), displayLink) };
-                openLinkItem1.Click += (_, _) =>
-                {
-                    try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(link) { UseShellExecute = true }); }
-                    catch { }
-                };
-                contextMenu.Items.Add(openLinkItem1);
-
-                var copyLinkItem1 = new MenuItem { Header = string.Format("Copy Link: {0}".L10N("Client:UI:CopyLink"), displayLink) };
-                copyLinkItem1.Click += (_, _) =>
-                {
-                    try { TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(link); }
-                    catch { }
-                };
-                contextMenu.Items.Add(copyLinkItem1);
-            }
-        }
-
+        RenderContextMenuItems(contextMenu, ViewModel.MessageContextMenuItems);
         if (contextMenu.Items.Count > 0)
             contextMenu.Open(messagesListBox);
     }
@@ -257,27 +191,7 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
             return;
 
         var contextMenu = new ContextMenu();
-
-        var pmItem2 = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
-        pmItem2.Click += (_, _) => ViewModel.OpenSelectedRecentPlayerPrivateMessageCommand.Execute(null);
-        contextMenu.Items.Add(pmItem2);
-
-        contextMenu.Items.Add(new Separator());
-
-        var friendItem2 = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
-        friendItem2.Click += (_, _) => ViewModel.ToggleSelectedRecentPlayerFriendCommand.Execute(null);
-        contextMenu.Items.Add(friendItem2);
-
-        var blockItem2 = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
-        blockItem2.Click += (_, _) => ViewModel.ToggleSelectedRecentPlayerIgnoreCommand.Execute(null);
-        contextMenu.Items.Add(blockItem2);
-
-        contextMenu.Items.Add(new Separator());
-
-        var joinItem2 = new MenuItem { Header = "Join Game".L10N("Client:UI:ContextMenuJoinGame") };
-        joinItem2.Click += (_, _) => ViewModel.JoinSelectedRecentPlayerGameCommand.Execute(null);
-        contextMenu.Items.Add(joinItem2);
-
+        RenderContextMenuItems(contextMenu, ViewModel.RecentPlayerContextMenuItems);
         contextMenu.Open(recentPlayersListBox);
     }
 

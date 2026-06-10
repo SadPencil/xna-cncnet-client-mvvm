@@ -18,6 +18,7 @@ using AvClientViewModel.Domain.Multiplayer.CnCNet;
 using AvClientViewModel.Multiplayer.GameLobby;
 using AvClientViewModel.Online;
 using AvClientViewModel.Online.EventArguments;
+using AvClientViewModel.ViewServices;
 
 using ClientCore;
 using ClientCore.Enums;
@@ -161,6 +162,15 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     [ObservableProperty]
     public partial string? SoundToPlay { get; set; }
+
+    [ObservableProperty]
+    public partial IReadOnlyList<IContextMenuItem> PlayerContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+
+    [ObservableProperty]
+    public partial IReadOnlyList<IContextMenuItem> ChatContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+
+    [ObservableProperty]
+    public partial IReadOnlyList<IContextMenuItem> GameContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
 
     // Game list — updated in-place via ObservableCollection.
     private readonly ObservableCollection<IHostedCnCNetGame> games = new();
@@ -1945,10 +1955,169 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         return hostedGames.FirstOrDefault(g => g.Players.Contains(user.Name));
     }
 
+    partial void OnSelectedPlayerIndexChanged(int value)
+    {
+        BuildPlayerContextMenuItems();
+    }
+
+    partial void OnSelectedChatMessageIndexChanged(int value)
+    {
+        BuildChatContextMenuItems();
+    }
+
     partial void OnSelectedGameIndexChanged(int value)
     {
         SelectedGame = value >= 0 && value < games.Count ? games[value] : null;
         IsJoinGameButtonEnabled = IsConnected && value >= 0;
+        BuildGameContextMenuItems();
+    }
+
+    // --- Context menu builders ---
+
+    private void BuildPlayerContextMenuItems()
+    {
+        var items = new List<IContextMenuItem>();
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+        {
+            PlayerContextMenuItems = items;
+            return;
+        }
+
+        var player = players[SelectedPlayerIndex];
+        var ircUser = connectionManager.UserList.Find(u => u.Name == player.Name);
+        bool isOnline = ircUser != null;
+        bool showInvite = !string.IsNullOrEmpty(inviteChannelName) && !ProgramConstants.IsInGame;
+
+        if (isOnline)
+            items.Add(new ContextMenuItem("Private Message".L10N("Client:Main:PrivateMessage"),
+                OpenSelectedPlayerPrivateMessageCommand));
+
+        items.Add(new ContextMenuItem(
+            player.IsFriend ? "Remove Friend".L10N("Client:Main:RemoveFriend") : "Add Friend".L10N("Client:Main:AddFriend"),
+            ToggleSelectedPlayerFriendCommand));
+
+        items.Add(new ContextMenuItem(
+            player.IsIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
+            ToggleSelectedPlayerIgnoreCommand,
+            IsEnabled:!player.IsAdmin));
+
+        if (showInvite && isOnline)
+        {
+            items.Add(new ContextMenuItem("", IsSeparator: true));
+            items.Add(new ContextMenuItem("Invite".L10N("Client:Main:Invite"),
+                InviteSelectedPlayerToGameCommand));
+        }
+
+        if (isOnline)
+        {
+            items.Add(new ContextMenuItem("", IsSeparator: true));
+            items.Add(new ContextMenuItem("Join".L10N("Client:Main:Join"),
+                JoinSelectedPlayerGameCommand));
+        }
+
+        PlayerContextMenuItems = items;
+    }
+
+    private void BuildChatContextMenuItems()
+    {
+        var items = new List<IContextMenuItem>();
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+        {
+            ChatContextMenuItems = items;
+            return;
+        }
+
+        var msg = chatMessages[SelectedChatMessageIndex];
+
+        if (!string.IsNullOrEmpty(msg.SenderName))
+        {
+            var ircUser = connectionManager.UserList.Find(u => u.Name == msg.SenderName);
+            bool isOnline = ircUser != null;
+            bool isFriend = cncnetUserData.IsFriend(msg.SenderName);
+            bool isIgnored = !string.IsNullOrEmpty(msg.SenderIdent) && cncnetUserData.IsIgnored(msg.SenderIdent);
+
+            if (isOnline)
+                items.Add(new ContextMenuItem("Private Message".L10N("Client:Main:PrivateMessage"),
+                    OpenSelectedChatMessageSenderPrivateMessageCommand));
+
+            items.Add(new ContextMenuItem(
+                isFriend ? "Remove Friend".L10N("Client:Main:RemoveFriend") : "Add Friend".L10N("Client:Main:AddFriend"),
+                ToggleSelectedChatMessageSenderFriendCommand));
+
+            items.Add(new ContextMenuItem(
+                isIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
+                ToggleSelectedChatMessageSenderIgnoreCommand));
+
+            if (isOnline)
+            {
+                items.Add(new ContextMenuItem("", IsSeparator: true));
+                items.Add(new ContextMenuItem("Join".L10N("Client:Main:Join"),
+                    JoinSelectedChatMessageSenderGameCommand));
+            }
+        }
+
+        // Link operations
+        var links = msg.Message.GetLinks();
+        if (links != null && links.Length > 0)
+        {
+            if (items.Count > 0)
+                items.Add(new ContextMenuItem("", IsSeparator: true));
+
+            foreach (string link in links)
+            {
+                string displayLink = link.Length > 40 ? link[..30] + "..." + link[^5..] : link;
+
+                items.Add(new ContextMenuItem(
+                    string.Format("Open Link {0}".L10N("Client:Main:OpenLink"), displayLink),
+                    new RelayCommand(() =>
+                    {
+                        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(link) { UseShellExecute = true }); }
+                        catch { }
+                    })));
+
+                items.Add(new ContextMenuItem(
+                    string.Format("Copy Link {0}".L10N("Client:Main:CopyLink"), displayLink),
+                    new RelayCommand(() =>
+                    {
+                        try { clipboardService.SetTextAsync(link); }
+                        catch { }
+                    })));
+            }
+        }
+
+        ChatContextMenuItems = items;
+    }
+
+    private void BuildGameContextMenuItems()
+    {
+        var items = new List<IContextMenuItem>();
+        if (SelectedGameIndex < 0 || SelectedGameIndex >= hostedGames.Count)
+        {
+            GameContextMenuItems = items;
+            return;
+        }
+
+        var game = hostedGames[SelectedGameIndex];
+        string hostName = game.HostName;
+        bool isFriend = cncnetUserData.IsFriend(hostName);
+        bool isIgnored = cncnetUserData.IsIgnored(connectionManager.UserList.Find(u => u.Name == hostName)?.Ident);
+
+        items.Add(new ContextMenuItem("Private Message".L10N("Client:Main:PrivateMessage"),
+            OpenSelectedGameHostPrivateMessageCommand));
+
+        items.Add(new ContextMenuItem(
+            isFriend ? "Remove Friend".L10N("Client:Main:RemoveFriend") : "Add Friend".L10N("Client:Main:AddFriend"),
+            ToggleSelectedGameHostFriendCommand));
+
+        items.Add(new ContextMenuItem(
+            isIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
+            ToggleSelectedGameHostIgnoreCommand));
+
+        items.Add(new ContextMenuItem("", IsSeparator: true));
+        items.Add(new ContextMenuItem("Join".L10N("Client:Main:Join"),
+            JoinSelectedGameCommand));
+
+        GameContextMenuItems = items;
     }
 
     #endregion

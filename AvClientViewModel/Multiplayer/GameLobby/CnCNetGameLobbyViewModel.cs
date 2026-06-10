@@ -17,6 +17,7 @@ using AvClientViewModel.Domain.Multiplayer.CnCNet;
 using AvClientViewModel.Multiplayer.GameLobby.CommandHandlers;
 using AvClientViewModel.Online;
 using AvClientViewModel.Online.EventArguments;
+using AvClientViewModel.ViewServices;
 
 using ClientCore;
 using ClientCore.Extensions;
@@ -110,6 +111,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     [ObservableProperty]
     public partial string SelectedContextPlayerName { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial IReadOnlyList<IContextMenuItem> PlayerContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
 
     // --- IsHost ---
     // Note: override of abstract property, so [ObservableProperty] cannot be used.
@@ -482,6 +486,43 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         var ident = connectionManager.UserList.Find(u => u.Name == SelectedContextPlayerName)?.Ident;
         if (!string.IsNullOrEmpty(ident))
             cncnetUserData.ToggleIgnoreUser(ident);
+    }
+
+    partial void OnSelectedContextPlayerNameChanged(string value)
+    {
+        BuildPlayerContextMenuItems();
+    }
+
+    private void BuildPlayerContextMenuItems()
+    {
+        var items = new List<IContextMenuItem>();
+        if (string.IsNullOrEmpty(SelectedContextPlayerName))
+        {
+            PlayerContextMenuItems = items;
+            return;
+        }
+
+        string playerName = SelectedContextPlayerName;
+        var ircUser = connectionManager.UserList.Find(u => u.Name == playerName);
+        bool isOnline = ircUser != null;
+        bool isFriend = cncnetUserData.IsFriend(playerName);
+        bool isIgnored = !string.IsNullOrEmpty(ircUser?.Ident) && cncnetUserData.IsIgnored(ircUser.Ident);
+        bool isAdmin = channel.Users.Find(playerName)?.IsAdmin ?? false;
+
+        if (isOnline)
+            items.Add(new ContextMenuItem("Private Message".L10N("Client:Main:PrivateMessage"),
+                OpenContextPlayerPrivateMessageCommand));
+
+        items.Add(new ContextMenuItem(
+            isFriend ? "Remove Friend".L10N("Client:Main:RemoveFriend") : "Add Friend".L10N("Client:Main:AddFriend"),
+            ToggleContextPlayerFriendCommand));
+
+        items.Add(new ContextMenuItem(
+            isIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
+            ToggleContextPlayerIgnoreCommand,
+            IsEnabled:!isAdmin));
+
+        PlayerContextMenuItems = items;
     }
 
     public void OnTunnelSelected(CnCNetTunnel tunnel)

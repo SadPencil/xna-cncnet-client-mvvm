@@ -4,6 +4,7 @@ using System.ComponentModel;
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.Online;
+using AvClientMvvmContract.ViewServices;
 
 using CommunityToolkit.Mvvm.Input;
 
@@ -52,6 +53,10 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     int SelectedChatMessageIndex { get; set; }
 
     string? PendingLink { get; set; }
+
+    IReadOnlyList<IContextMenuItem> PlayerContextMenuItems { get; }
+    IReadOnlyList<IContextMenuItem> ChatContextMenuItems { get; }
+    IReadOnlyList<IContextMenuItem> GameContextMenuItems { get; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }

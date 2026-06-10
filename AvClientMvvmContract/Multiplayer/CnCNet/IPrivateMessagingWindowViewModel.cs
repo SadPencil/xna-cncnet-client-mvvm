@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using AvClientMvvmContract.Online;
+using AvClientMvvmContract.ViewServices;
 
 using CommunityToolkit.Mvvm.Input;
 
@@ -46,4 +47,8 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     IRelayCommand ToggleSelectedRecentPlayerFriendCommand { get; }
     IRelayCommand ToggleSelectedRecentPlayerIgnoreCommand { get; }
     IRelayCommand JoinSelectedRecentPlayerGameCommand { get; }
+
+    IReadOnlyList<IContextMenuItem> UserContextMenuItems { get; }
+    IReadOnlyList<IContextMenuItem> MessageContextMenuItems { get; }
+    IReadOnlyList<IContextMenuItem> RecentPlayerContextMenuItems { get; }
 }
