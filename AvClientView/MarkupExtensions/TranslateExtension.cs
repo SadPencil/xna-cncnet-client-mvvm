@@ -6,9 +6,20 @@ namespace AvClientView.MarkupExtensions;
 
 /// <summary>
 /// Avalonia markup extension that resolves translated strings at runtime via
-/// <see cref="Translation.Instance"/>. The default (English) text must be literal;
+/// <see cref="Translation.Instance"/>. The default (English) text must be a literal;
 /// the key identifies the string in translation files.
 /// </summary>
+/// <remarks>
+/// <para>
+/// <see cref="Translation.LookUp(string, string, bool)"/> defaults <c>notify=true</c>,
+/// which registers every key in <c>MissingKeys</c> and <c>Values</c> the first time
+/// it is seen. Avalonia eagerly instantiates all controls in the visual tree (even
+/// those with <c>IsVisible="False"</c>), so <c>ProvideValue</c> runs for every
+/// <c>{l:Translate}</c> in every view at startup. Together this means every View
+/// translation key is automatically registered for stub generation — no separate
+/// registration file is needed.
+/// </para>
+/// </remarks>
 /// <example>
 /// <c>Text="{l:Translate 'Launch', 'Client:UI:ButtonLaunch'}"</c>
 /// </example>
@@ -25,8 +36,8 @@ public sealed class TranslateExtension : MarkupExtension
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        // Translation.Instance is always non-null (initialized as a default "en" instance).
-        // LookUp returns the translated value if found, otherwise the defaultValue.
+        // Translation.Instance is always non-null (a default "en" instance is assigned inline).
+        // LookUp(key, defaultValue) defaults notify=true → registers the key for stub generation.
         return Translation.Instance.LookUp(_key, _defaultValue);
     }
 }

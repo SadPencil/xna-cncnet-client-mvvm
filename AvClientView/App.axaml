@@ -134,16 +134,10 @@
         </Style>
         <Style Selector="CheckBox">
             <Setter Property="FontSize" Value="12" />
-            <!-- Replace string-only content with a wrapping TextBlock so long
-                 checkbox labels don't clip. The DataTemplate receives the
-                 Content value as its DataContext; {Binding} renders it. -->
-            <Setter Property="ContentTemplate">
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               TextWrapping="Wrap"
-                               Foreground="{DynamicResource XnaTextBrush}" />
-                </DataTemplate>
-            </Setter>
+            <!-- TextBlock.TextWrapping is an inheritable attached property
+                 (TextWrappingProperty is registered with inherits:true),
+                 so it propagates to the ContentPresenter-generated TextBlock. -->
+            <Setter Property="(TextBlock.TextWrapping)" Value="Wrap" />
         </Style>
 
         <!-- Visually gray out disabled controls -->
