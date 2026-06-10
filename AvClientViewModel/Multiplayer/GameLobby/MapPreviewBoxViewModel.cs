@@ -311,14 +311,16 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
         {
             if (gameModeMap == null || gameModeMap.Map == null)
             {
-                uiThreadMarshaller.AddCallback(() => MapPreviewImage = null);
+                var defaultImage = mapLoader.GetDefaultPreviewImage();
+                uiThreadMarshaller.AddCallback(() => MapPreviewImage = defaultImage);
                 return;
             }
 
             using var lease = mapLoader.GetCachedPreviewImageFromMap(gameModeMap.Map, syncLoadOnCacheMiss: true);
             if (lease?.Value == null)
             {
-                uiThreadMarshaller.AddCallback(() => MapPreviewImage = null);
+                var defaultImage = mapLoader.GetDefaultPreviewImage();
+                uiThreadMarshaller.AddCallback(() => MapPreviewImage = defaultImage);
                 return;
             }
 
@@ -331,7 +333,8 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
         }
         catch
         {
-            uiThreadMarshaller.AddCallback(() => MapPreviewImage = null);
+            var defaultImage = mapLoader.GetDefaultPreviewImage();
+            uiThreadMarshaller.AddCallback(() => MapPreviewImage = defaultImage);
         }
     }
 

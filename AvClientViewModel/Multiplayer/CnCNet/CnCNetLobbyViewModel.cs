@@ -1982,11 +1982,19 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             {
                 var map = mapLoader.FindMapByHash(game.MapHash);
                 if (map == null)
+                {
+                    var defaultImage = mapLoader.GetDefaultPreviewImage();
+                    uiThreadMarshaller.AddCallback(() => game.MapPreviewImage = defaultImage);
                     return;
+                }
 
                 using var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
                 if (lease?.Value == null)
+                {
+                    var defaultImage = mapLoader.GetDefaultPreviewImage();
+                    uiThreadMarshaller.AddCallback(() => game.MapPreviewImage = defaultImage);
                     return;
+                }
 
                 using var ms = new MemoryStream();
                 lease.Value.Save(ms, new SixLabors.ImageSharp.Formats.Bmp.BmpEncoder
@@ -2001,6 +2009,8 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             catch (Exception ex)
             {
                 Log.Warning("Failed to load map preview for game " + game.RoomName + ": " + ex);
+                var defaultImage = mapLoader.GetDefaultPreviewImage();
+                uiThreadMarshaller.AddCallback(() => game.MapPreviewImage = defaultImage);
             }
         });
     }

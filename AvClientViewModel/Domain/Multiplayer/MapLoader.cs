@@ -845,6 +845,30 @@ namespace AvClientViewModel.Domain.Multiplayer
 
         public Map FindMapByHash(string mapHash) => GameModeMaps?.FindMapByHash(mapHash);
 
+        private Image? cachedDefaultPreviewImage;
+
+        public Image GetDefaultPreviewImage()
+        {
+            if (cachedDefaultPreviewImage != null)
+                return cachedDefaultPreviewImage;
+
+            try
+            {
+                var path = SafePath.GetFile(ProgramConstants.GamePath, "Resources/noMapPreview.png");
+                if (path.Exists)
+                {
+                    cachedDefaultPreviewImage = Image.Load(path.FullName);
+                    return cachedDefaultPreviewImage;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Failed to load default map preview image: " + ex);
+            }
+
+            return null;
+        }
+
         public void Dispose() => mapPreviewCacheManager?.Dispose();
     }
 }
