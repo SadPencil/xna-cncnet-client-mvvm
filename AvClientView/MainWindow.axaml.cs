@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 
 using AvClientMvvmContract.Campaign;
@@ -25,6 +27,13 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Closing += MainWindow_Closing;
+    }
+
+    private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
+    {
+        if (_mainMenu?.ViewModel is not null)
+            _mainMenu.ViewModel.ExitCommand.Execute(null);
     }
 
     public void ShowMainWindow()
