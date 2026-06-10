@@ -100,12 +100,6 @@
                                    IsVisible="{Binding Incompatible}"
                                    VerticalAlignment="Center" />
                       </StackPanel>
-                      <TextBlock Grid.Row="0" Grid.Column="2"
-                                 Foreground="{DynamicResource XnaAltBrush}"
-                                 VerticalAlignment="Center">
-                        <Run Text="{Binding Ping}" />
-                        <Run Text="{l:Translate ' ms', 'Client:UI:GameInfoPingMs'}" />
-                      </TextBlock>
 
                       <!-- Row 1: Host | Game Mode | Map -->
                       <WrapPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,2,0,0">
@@ -136,6 +130,11 @@
                                    IsVisible="{Binding IsLoadedGame}" />
                         <TextBlock Text="{l:Translate 'Loaded game', 'Client:UI:LobbyLoadedGame'}" Foreground="{DynamicResource XnaAltBrush}"
                                    IsVisible="{Binding IsLoadedGame}" />
+                        <TextBlock Text="  |  " Foreground="{DynamicResource XnaAltBrush}" />
+                        <TextBlock Foreground="{DynamicResource XnaAltBrush}">
+                          <Run Text="{Binding Ping}" />
+                          <Run Text="{l:Translate ' ms', 'Client:UI:GameInfoPingMs'}" />
+                        </TextBlock>
                       </WrapPanel>
                     </Grid>
                   </Border>
@@ -198,10 +197,12 @@
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0">
               <TextBlock Text="{l:Translate 'Color:', 'Client:UI:LobbyColorLabel'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}"
+                         IsEnabled="{Binding IsChatInputEnabled}"
                          VerticalAlignment="Center" />
               <ComboBox ItemsSource="{Binding ColorOptions}"
                         SelectedIndex="{Binding SelectedColorIndex}"
                         Width="100" Height="21"
+                        IsEnabled="{Binding IsChatInputEnabled}"
                         VerticalAlignment="Center" />
             </StackPanel>
           </Grid>
