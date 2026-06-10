@@ -1,5 +1,7 @@
 using System.ComponentModel;
 
+using SixLabors.ImageSharp;
+
 namespace AvClientMvvmContract.Multiplayer.GameLobby;
 
 /// <summary>
@@ -9,6 +11,6 @@ public interface IPlayerName : INotifyPropertyChanged
 {
     int Index { get; set; }
     string Name { get; set; }
-    byte[]? Icon { get; set; }
+    Image? Icon { get; set; }
     int Latency { get; set; }
 }

@@ -18,7 +18,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Bmp;
 
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
@@ -70,7 +70,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     public partial bool EnableStartLocationSelection { get; set; } = true;
 
     [ObservableProperty]
-    public partial byte[]? MapPreviewImageBytes { get; set; }
+    public partial Image? MapPreviewImage { get; set; }
 
     // --- Observable collections ---
 
@@ -287,7 +287,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
             MapAuthorName = string.Empty;
             MapSizeText = string.Empty;
             IsFavorite = false;
-            MapPreviewImageBytes = null;
+            MapPreviewImage = null;
             return;
         }
 
@@ -311,25 +311,27 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
         {
             if (gameModeMap == null || gameModeMap.Map == null)
             {
-                uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = null);
+                uiThreadMarshaller.AddCallback(() => MapPreviewImage = null);
                 return;
             }
 
             using var lease = mapLoader.GetCachedPreviewImageFromMap(gameModeMap.Map, syncLoadOnCacheMiss: true);
             if (lease?.Value == null)
             {
-                uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = null);
+                uiThreadMarshaller.AddCallback(() => MapPreviewImage = null);
                 return;
             }
 
+            // Deep-clone the image to own the lifetime independently from the cache
             using var ms = new MemoryStream();
-            lease.Value.Save(ms, new PngEncoder());
-            byte[] bytes = ms.ToArray();
-            uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = bytes);
+            lease.Value.Save(ms, new BmpEncoder { BitsPerPixel = BmpBitsPerPixel.Pixel32, SupportTransparency = true });
+            ms.Position = 0;
+            var image = Image.Load(ms);
+            uiThreadMarshaller.AddCallback(() => MapPreviewImage = image);
         }
         catch
         {
-            uiThreadMarshaller.AddCallback(() => MapPreviewImageBytes = null);
+            uiThreadMarshaller.AddCallback(() => MapPreviewImage = null);
         }
     }
 
@@ -345,22 +347,11 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     {
         _startingLocationIndicators.Clear();
 
-        if (gameModeMap == null || gameModeMap.Map == null || MapPreviewImageBytes == null)
+        if (gameModeMap == null || gameModeMap.Map == null || MapPreviewImage == null)
             return;
 
-        // Get preview image dimensions from the loaded image
-        int previewW, previewH;
-        try
-        {
-            using var ms = new MemoryStream(MapPreviewImageBytes);
-            using var img = SixLabors.ImageSharp.Image.Load(ms);
-            previewW = img.Width;
-            previewH = img.Height;
-        }
-        catch
-        {
-            return;
-        }
+        int previewW = MapPreviewImage.Width;
+        int previewH = MapPreviewImage.Height;
 
         // Compute scale ratio and texture position (matching old MapPreviewBox.UpdateMap)
         double xRatio = (PREVIEW_WIDTH - 2) / (double)previewW;

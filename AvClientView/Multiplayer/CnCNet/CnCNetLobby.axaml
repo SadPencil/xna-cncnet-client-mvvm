@@ -73,9 +73,17 @@
                           BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                           BorderThickness="0,0,0,1"
                           Margin="2,0">
-                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto">
+                      <!-- Map Preview Image (leftmost, spans all 3 rows) -->
+                      <Image Grid.Row="0" Grid.RowSpan="3" Grid.Column="0"
+                             Source="{Binding MapPreviewImage, Converter={StaticResource ImageSharpToBitmapConverter}}"
+                             Width="72" Height="54"
+                             Stretch="Uniform"
+                             Margin="0,0,8,0"
+                             VerticalAlignment="Center" />
+
                       <!-- Row 0: Room Name + Ping + status icons -->
-                      <StackPanel Grid.Row="0" Grid.Column="0"
+                      <StackPanel Grid.Row="0" Grid.Column="1"
                                   Orientation="Horizontal" Spacing="4">
                         <TextBlock Text="{Binding RoomName}" FontWeight="Bold"
                                    Foreground="{Binding ., Converter={StaticResource GameStateToBrushConverter}}"
@@ -90,7 +98,7 @@
                                    IsVisible="{Binding Incompatible}"
                                    VerticalAlignment="Center" />
                       </StackPanel>
-                      <TextBlock Grid.Row="0" Grid.Column="1"
+                      <TextBlock Grid.Row="0" Grid.Column="2"
                                  Foreground="{DynamicResource XnaAltBrush}"
                                  VerticalAlignment="Center">
                         <Run Text="{Binding Ping}" />
@@ -98,7 +106,7 @@
                       </TextBlock>
 
                       <!-- Row 1: Host | Game Mode | Map -->
-                      <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,2,0,0">
+                      <WrapPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,2,0,0">
                         <TextBlock Foreground="{DynamicResource XnaAltBrush}">
                           <Run Text="{l:Translate 'Host: ', 'Client:UI:GameInfoHost'}" />
                           <Run Text="{Binding HostName}" />
@@ -110,7 +118,7 @@
                       </WrapPanel>
 
                       <!-- Row 2: Players N/M | Version | Loaded game -->
-                      <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,1,0,0">
+                      <WrapPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,1,0,0">
                         <TextBlock Foreground="{DynamicResource XnaAltBrush}">
                           <Run Text="{l:Translate 'Players: ', 'Client:UI:GameInfoPlayers'}" />
                           <Run Text="{Binding Players.Length}" />

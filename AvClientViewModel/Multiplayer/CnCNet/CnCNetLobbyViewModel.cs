@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
@@ -45,6 +46,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private readonly CnCNetUserData cncnetUserData;
     private readonly GameCollection gameCollection;
     private readonly TunnelHandler tunnelHandler;
+    private readonly MapLoader mapLoader;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private readonly IGameProcessService gameProcessService;
     private readonly IClipboardService clipboardService;
@@ -208,6 +210,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         CnCNetUserData cncnetUserData,
         GameCollection gameCollection,
         TunnelHandler tunnelHandler,
+        MapLoader mapLoader,
         CnCNetGameLobbyViewModel gameLobby,
         CnCNetGameLoadingLobbyViewModel gameLoadingLobby,
         IUIThreadMarshaller uiThreadMarshaller,
@@ -219,6 +222,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         this.cncnetUserData = cncnetUserData;
         this.gameCollection = gameCollection;
         this.tunnelHandler = tunnelHandler;
+        this.mapLoader = mapLoader;
         this.gameLobby = gameLobby;
         this.gameLoadingLobby = gameLoadingLobby;
         this.uiThreadMarshaller = uiThreadMarshaller;
@@ -1934,6 +1938,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                     hostedGames.Add(game);
                 }
                 SortAndRefreshHostedGames();
+                LoadMapPreviewForGame(game);
             }));
         }
         catch (Exception ex)
@@ -1967,6 +1972,37 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 PendingGameInvite = null;
             }
         }
+    }
+
+    private void LoadMapPreviewForGame(HostedCnCNetGame game)
+    {
+        Task.Run(() =>
+        {
+            try
+            {
+                var map = mapLoader.FindMapByHash(game.MapHash);
+                if (map == null)
+                    return;
+
+                using var lease = mapLoader.GetCachedPreviewImageFromMap(map, syncLoadOnCacheMiss: true);
+                if (lease?.Value == null)
+                    return;
+
+                using var ms = new MemoryStream();
+                lease.Value.Save(ms, new SixLabors.ImageSharp.Formats.Bmp.BmpEncoder
+                {
+                    BitsPerPixel = SixLabors.ImageSharp.Formats.Bmp.BmpBitsPerPixel.Pixel32,
+                    SupportTransparency = true
+                });
+                ms.Position = 0;
+                var image = SixLabors.ImageSharp.Image.Load(ms);
+                uiThreadMarshaller.AddCallback(() => game.MapPreviewImage = image);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Failed to load map preview for game " + game.RoomName + ": " + ex);
+            }
+        });
     }
 
     private HostedCnCNetGame? GetHostedGameForUser(IRCUser user)

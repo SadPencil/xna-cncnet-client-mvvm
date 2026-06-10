@@ -3,6 +3,8 @@ using System.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 
+using SixLabors.ImageSharp;
+
 namespace AvClientMvvmContract.Multiplayer.GameLobby;
 
 public interface IMapPreviewBoxViewModel : INotifyPropertyChanged
@@ -12,7 +14,7 @@ public interface IMapPreviewBoxViewModel : INotifyPropertyChanged
     string SelectedGameModeName { get; }
     string MapAuthorName { get; }
     string MapSizeText { get; }
-    byte[]? MapPreviewImageBytes { get; }
+    Image? MapPreviewImage { get; }
     int SelectedStartingLocationIndex { get; set; }
     int SelectedPlayerIndex { get; set; }
     bool IsFavorite { get; }

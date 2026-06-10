@@ -1,5 +1,7 @@
 using System;
 
+using SixLabors.ImageSharp;
+
 namespace AvClientMvvmContract.Domain.Multiplayer;
 
 /// <summary>
@@ -33,4 +35,5 @@ public interface IHostedCnCNetGame
     string MatchID { get; }
     ICnCNetTunnel TunnelServer { get; }
     int[] BroadcastedGameOptionValues { get; }
+    Image? MapPreviewImage { get; }
 }

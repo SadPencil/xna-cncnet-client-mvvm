@@ -2,6 +2,8 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using SixLabors.ImageSharp;
+
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
 public partial class PlayerNameOption : ObservableObject, IPlayerName
@@ -13,7 +15,7 @@ public partial class PlayerNameOption : ObservableObject, IPlayerName
     public partial string Name { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial byte[]? Icon { get; set; }
+    public partial Image? Icon { get; set; }
 
     [ObservableProperty]
     public partial int Latency { get; set; }

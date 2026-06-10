@@ -4,13 +4,15 @@ using AvClientViewModel.Domain.Multiplayer.CnCNet;
 
 using ClientCore;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace AvClientViewModel.Domain.Multiplayer
 {
     /// <summary>
     /// A base class for hosted games.
     /// CnCNet and LAN games derive from this.
     /// </summary>
-    public abstract class GenericHostedGame : IEquatable<GenericHostedGame>
+    public abstract class GenericHostedGame : ObservableObject, IEquatable<GenericHostedGame>
     {
         public virtual string RoomName { get; set; }
         public bool Incompatible { get; set; }

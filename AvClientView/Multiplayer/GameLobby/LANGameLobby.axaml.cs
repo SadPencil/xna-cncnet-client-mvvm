@@ -14,6 +14,7 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.ViewServices;
 
 using AvClientView.Controls;
+using AvClientView.Converters;
 
 using ClientCore.Extensions;
 using AvClientView.Services;
@@ -48,7 +49,7 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
         if (currentMapPreview != null)
         {
             currentMapPreview.PropertyChanged += OnMapPreviewPropertyChanged;
-            UpdateMapPreviewImage(currentMapPreview.MapPreviewImageBytes);
+            UpdateMapPreviewImage(currentMapPreview.MapPreviewImage);
             RenderIndicators();
         }
     }
@@ -103,10 +104,10 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
 
     private void OnMapPreviewPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(IMapPreviewBoxViewModel.MapPreviewImageBytes)
+        if (e.PropertyName == nameof(IMapPreviewBoxViewModel.MapPreviewImage)
             && sender is IMapPreviewBoxViewModel preview)
         {
-            UpdateMapPreviewImage(preview.MapPreviewImageBytes);
+            UpdateMapPreviewImage(preview.MapPreviewImage);
         }
         else if (e.PropertyName == nameof(IMapPreviewBoxViewModel.StartingLocationIndicators))
         {
@@ -114,23 +115,9 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
         }
     }
 
-    private void UpdateMapPreviewImage(byte[]? imageBytes)
+    private void UpdateMapPreviewImage(SixLabors.ImageSharp.Image? image)
     {
-        if (imageBytes == null || imageBytes.Length == 0)
-        {
-            mapPreviewImage.Source = null;
-            return;
-        }
-
-        try
-        {
-            using var ms = new MemoryStream(imageBytes);
-            mapPreviewImage.Source = new Bitmap(ms);
-        }
-        catch
-        {
-            mapPreviewImage.Source = null;
-        }
+        mapPreviewImage.Source = ImageSharpToBitmapConverter.Instance.Convert(image, typeof(Avalonia.Media.Imaging.Bitmap), null, System.Globalization.CultureInfo.InvariantCulture) as Avalonia.Media.Imaging.Bitmap;
     }
 
     // --- Indicator rendering ---

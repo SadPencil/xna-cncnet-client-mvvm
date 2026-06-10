@@ -2,9 +2,13 @@ using System;
 
 using AvClientMvvmContract.Domain.Multiplayer;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using SixLabors.ImageSharp;
+
 namespace AvClientViewModel.Domain.Multiplayer.CnCNet
 {
-    public class HostedCnCNetGame : GenericHostedGame, IHostedCnCNetGame
+    public partial class HostedCnCNetGame : GenericHostedGame, IHostedCnCNetGame
     {
         public HostedCnCNetGame() { }
 
@@ -34,6 +38,9 @@ namespace AvClientViewModel.Domain.Multiplayer.CnCNet
         public string MatchID { get; set; }
         public ICnCNetTunnel TunnelServer { get; set; }
         public int[] BroadcastedGameOptionValues { get; set; }
+
+        [ObservableProperty]
+        public partial Image? MapPreviewImage { get; set; }
 
         public override int Ping => TunnelServer.PingInMs;
 

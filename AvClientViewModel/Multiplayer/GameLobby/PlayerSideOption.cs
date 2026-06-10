@@ -2,6 +2,8 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using SixLabors.ImageSharp;
+
 namespace AvClientViewModel.Multiplayer.GameLobby;
 
 public partial class PlayerSideOption : ObservableObject, IPlayerSide
@@ -13,7 +15,7 @@ public partial class PlayerSideOption : ObservableObject, IPlayerSide
     public partial string Name { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial byte[]? Icon { get; set; }
+    public partial Image? Icon { get; set; }
 
     public override string ToString() => Name;
 }

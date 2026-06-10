@@ -223,6 +223,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<CnCNetUserData>(),
                 sp.GetRequiredService<GameCollection>(),
                 sp.GetRequiredService<TunnelHandler>(),
+                sp.GetRequiredService<MapLoader>(),
                 sp.GetRequiredService<CnCNetGameLobbyViewModel>(),
                 sp.GetRequiredService<CnCNetGameLoadingLobbyViewModel>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
