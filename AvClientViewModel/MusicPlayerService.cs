@@ -25,20 +25,14 @@ namespace AvClientViewModel
 
         public void PlayThemeSong()
         {
-            Log.Warning("MusicPlayerService: Music playback not available on this platform.");
+            Log.Warning("MusicPlayerService: Music playback not implemented yet.");
         }
 
         public void Stop() { }
 
-        public void StartFadeOut(float fadeStepPerSecond, Action onComplete)
-        {
-            onComplete?.Invoke();
-        }
+        public void StartFadeOut(float fadeStepPerSecond) { }
 
-        public void StartExitFade(float fadeStep, Action onComplete)
-        {
-            onComplete?.Invoke();
-        }
+        public void StartExitFade(float fadeStep) { }
 
         public void UpdateFade(float elapsedSeconds) { }
 

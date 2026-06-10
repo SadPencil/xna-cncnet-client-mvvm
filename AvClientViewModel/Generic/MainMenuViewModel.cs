@@ -368,7 +368,8 @@ namespace AvClientViewModel.Generic
         [RelayCommand]
         private void Exit()
         {
-            musicPlayer.StartExitFade(0.025f * (float)UserINISettings.Instance.ClientVolume, ExitClient);
+            musicPlayer.StartExitFade(0.025f * (float)UserINISettings.Instance.ClientVolume);
+            ExitClient();
         }
 
         [RelayCommand]
@@ -476,7 +477,7 @@ namespace AvClientViewModel.Generic
         public void SwitchOff()
         {
             if (UserINISettings.Instance.StopMusicOnMenu)
-                musicPlayer.StartFadeOut(1.0f, null);
+                musicPlayer.StartFadeOut(1.0f);
         }
 
         public void Clean()
@@ -580,7 +581,7 @@ namespace AvClientViewModel.Generic
         private void OnGameProcessStarted()
         {
             // Original calls MusicOff() which initiates a fade-out
-            musicPlayer.StartFadeOut(1.0f, null);
+            musicPlayer.StartFadeOut(1.0f);
             IsMusicPlaying = false;
         }
 
@@ -622,7 +623,7 @@ namespace AvClientViewModel.Generic
                 if (musicPlayer.IsPlaying)
                 {
                     if (!UserINISettings.Instance.PlayMainMenuMusic)
-                        musicPlayer.StartFadeOut(1.0f, null);
+                        musicPlayer.StartFadeOut(1.0f);
                 }
                 else if (topBarViewModel.LastSwitchType == SwitchType.PRIMARY && !IsLanMode)
                 {

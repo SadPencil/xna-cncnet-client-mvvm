@@ -39,14 +39,14 @@ namespace AvClientViewModel
         void Stop();
 
         /// <summary>
-        /// Starts fading the music out. Calls onComplete when fade finishes.
+        /// Starts fading the music out.
         /// </summary>
-        void StartFadeOut(float fadeStepPerSecond, Action onComplete);
+        void StartFadeOut(float fadeStepPerSecond);
 
         /// <summary>
-        /// Starts a quick fade-out for exiting. Calls onComplete when fade finishes.
+        /// Starts a quick fade-out for exiting.
         /// </summary>
-        void StartExitFade(float fadeStep, Action onComplete);
+        void StartExitFade(float fadeStep);
 
         /// <summary>
         /// Updates the fade animation. Called each frame by the View.
