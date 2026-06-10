@@ -253,7 +253,8 @@ namespace AvClientViewModel
                 sp.GetRequiredService<CnCNetUserData>(),
                 sp.GetRequiredService<PrivateMessageHandler>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
-                sp.GetRequiredService<IGameProcessService>()));
+                sp.GetRequiredService<IGameProcessService>(),
+                sp.GetRequiredService<IClipboardService>()));
             services.AddSingleton<IPrivateMessagingWindowViewModel>(sp =>
                 sp.GetRequiredService<PrivateMessagingWindowViewModel>());
 

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Online;
 using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Online;
@@ -82,13 +83,22 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [ObservableProperty]
     public partial bool IsVisible { get; set; }
 
+    [ObservableProperty]
+    public partial int SelectedMessageIndex { get; set; } = -1;
+
+    [ObservableProperty]
+    public partial int SelectedRecentPlayerIndex { get; set; } = -1;
+
+    [ObservableProperty]
+    public partial string? PendingLink { get; set; }
+
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _userNames = new();
     public IReadOnlyList<string> UserNames => _userNames;
 
-    private readonly ObservableCollection<string> _messageHistory = new();
-    public IReadOnlyList<string> MessageHistory => _messageHistory;
+    private readonly ObservableCollection<IChatMessage> _messageHistory = new();
+    public IReadOnlyList<IChatMessage> MessageHistory => _messageHistory;
 
     private readonly ObservableCollection<string> _recentPlayerNames = new();
     public IReadOnlyList<string> RecentPlayerNames => _recentPlayerNames;
@@ -100,6 +110,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     private readonly Action<string>? onSoundPlayRequested;
     private Action<string>? onJoinUserRequested;
+    private readonly IClipboardService clipboardService;
 
     // --- Constructor ---
 
@@ -109,6 +120,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         PrivateMessageHandler privateMessageHandler,
         IUIThreadMarshaller uiThreadMarshaller,
         IGameProcessService gameProcessService,
+        IClipboardService clipboardService,
         Action<string>? onSoundPlayRequested = null,
         Action<string>? onJoinUserRequested = null)
     {
@@ -117,6 +129,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         this.privateMessageHandler = privateMessageHandler;
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.gameProcessService = gameProcessService;
+        this.clipboardService = clipboardService;
         this.onSoundPlayRequested = onSoundPlayRequested;
         this.onJoinUserRequested = onJoinUserRequested;
     }
@@ -153,9 +166,10 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         }
 
         string sentMessage = $"[{ProgramConstants.PLAYERNAME}] {DraftMessage}";
-        pmUser.Messages.Add(new ChatMessage(sentMessage));
+        var sentChatMessage = new ChatMessage(sentMessage);
+        pmUser.Messages.Add(sentChatMessage);
 
-        _messageHistory.Add(sentMessage);
+        _messageHistory.Add(sentChatMessage);
         onSoundPlayRequested?.Invoke("message.wav");
 
         lastConversationPartner = userName;
@@ -266,6 +280,114 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         return _userNames[SelectedUserIndex];
     }
 
+    // --- Message context menu commands ---
+
+    [RelayCommand]
+    private void OpenSelectedMessageSenderPrivateMessage()
+    {
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+            return;
+        var msg = _messageHistory[SelectedMessageIndex];
+        if (!string.IsNullOrEmpty(msg.SenderName))
+            InitPM(msg.SenderName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedMessageSenderFriend()
+    {
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+            return;
+        var msg = _messageHistory[SelectedMessageIndex];
+        if (!string.IsNullOrEmpty(msg.SenderName))
+            cncnetUserData.ToggleFriend(msg.SenderName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedMessageSenderIgnore()
+    {
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+            return;
+        var msg = _messageHistory[SelectedMessageIndex];
+        if (string.IsNullOrEmpty(msg.SenderIdent))
+            return;
+        cncnetUserData.ToggleIgnoreUser(msg.SenderIdent);
+    }
+
+    [RelayCommand]
+    private void JoinSelectedMessageSenderGame()
+    {
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+            return;
+        var msg = _messageHistory[SelectedMessageIndex];
+        if (string.IsNullOrEmpty(msg.SenderName))
+            return;
+        onJoinUserRequested?.Invoke(msg.SenderName);
+    }
+
+    [RelayCommand]
+    private void OpenPendingLink()
+    {
+        if (string.IsNullOrEmpty(PendingLink))
+            return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(PendingLink) { UseShellExecute = true }); }
+        catch { }
+    }
+
+    [RelayCommand]
+    private void CopyPendingLink()
+    {
+        if (string.IsNullOrEmpty(PendingLink))
+            return;
+        clipboardService.SetTextAsync(PendingLink);
+    }
+
+    // --- Recent player context menu commands ---
+
+    private string? GetSelectedRecentPlayerName()
+    {
+        if (SelectedRecentPlayerIndex < 0 || SelectedRecentPlayerIndex >= _recentPlayerNames.Count)
+            return null;
+        return _recentPlayerNames[SelectedRecentPlayerIndex];
+    }
+
+    [RelayCommand]
+    private void OpenSelectedRecentPlayerPrivateMessage()
+    {
+        var userName = GetSelectedRecentPlayerName();
+        if (userName == null)
+            return;
+        InitPM(userName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedRecentPlayerFriend()
+    {
+        var userName = GetSelectedRecentPlayerName();
+        if (userName == null)
+            return;
+        cncnetUserData.ToggleFriend(userName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedRecentPlayerIgnore()
+    {
+        var userName = GetSelectedRecentPlayerName();
+        if (userName == null)
+            return;
+        var ident = connectionManager.UserList.Find(u => u.Name == userName)?.Ident;
+        if (!string.IsNullOrEmpty(ident))
+            cncnetUserData.ToggleIgnoreUser(ident);
+    }
+
+    [RelayCommand]
+    private void JoinSelectedRecentPlayerGame()
+    {
+        var userName = GetSelectedRecentPlayerName();
+        if (userName == null)
+            return;
+        onJoinUserRequested?.Invoke(userName);
+    }
+
     // --- Lifecycle ---
 
     public void Initialize()
@@ -367,7 +489,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
         foreach (ChatMessage message in pmUser.Messages)
         {
-            _messageHistory.Add(message.ToString());
+            _messageHistory.Add(message);
         }
     }
 
@@ -521,7 +643,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
             return;
         }
 
-        _messageHistory.Add(messageText);
+        _messageHistory.Add(message);
         onSoundPlayRequested?.Invoke("message.wav");
     }
 
@@ -529,12 +651,12 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     {
         var pmUser = privateMessageUsers.Find(pmsgUser => pmsgUser.IrcUser.Name == e.User.Name);
 
-        string? joinMessage = null;
+        ChatMessage? joinMessage = null;
 
         if (pmUser != null)
         {
-            joinMessage = string.Format("{0} is now online.".L10N("Client:Main:PlayerOnline"), e.User.Name);
-            pmUser.Messages.Add(new ChatMessage(joinMessage));
+            joinMessage = new ChatMessage(string.Format("{0} is now online.".L10N("Client:Main:PlayerOnline"), e.User.Name));
+            pmUser.Messages.Add(joinMessage);
         }
 
         if (SelectedTabIndex == ALL_PLAYERS_VIEW_INDEX)
@@ -558,12 +680,12 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     {
         var pmUser = privateMessageUsers.Find(pmsgUser => pmsgUser.IrcUser.Name == e.UserName);
 
-        string? leaveMessage = null;
+        ChatMessage? leaveMessage = null;
 
         if (pmUser != null)
         {
-            leaveMessage = string.Format("{0} is now offline.".L10N("Client:Main:PlayerOffline"), e.UserName);
-            pmUser.Messages.Add(new ChatMessage(leaveMessage));
+            leaveMessage = new ChatMessage(string.Format("{0} is now offline.".L10N("Client:Main:PlayerOffline"), e.UserName));
+            pmUser.Messages.Add(leaveMessage);
         }
 
         if (SelectedTabIndex == ALL_PLAYERS_VIEW_INDEX)

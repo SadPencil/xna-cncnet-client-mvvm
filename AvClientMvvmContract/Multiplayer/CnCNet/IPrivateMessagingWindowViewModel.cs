@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
+using AvClientMvvmContract.Online;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Multiplayer.CnCNet;
@@ -11,7 +13,7 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     IReadOnlyList<string> UserNames { get; }
     int SelectedUserIndex { get; set; }
     bool IsMessageInputEnabled { get; }
-    IReadOnlyList<string> MessageHistory { get; }
+    IReadOnlyList<IChatMessage> MessageHistory { get; }
     string DraftMessage { get; set; }
     bool IsNotificationVisible { get; set; }
     string NotificationSender { get; }
@@ -21,6 +23,9 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     bool IsMessagesPanelEnabled { get; }
     IReadOnlyList<string> RecentPlayerNames { get; }
     bool IsVisible { get; set; }
+    int SelectedMessageIndex { get; set; }
+    int SelectedRecentPlayerIndex { get; set; }
+    string? PendingLink { get; set; }
 
     IRelayCommand SendMessageCommand { get; }
     IRelayCommand CloseCommand { get; }
@@ -30,4 +35,14 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     IRelayCommand ToggleSelectedUserIgnoreCommand { get; }
     IRelayCommand JoinSelectedUserGameCommand { get; }
     IRelayCommand InviteSelectedUserToGameCommand { get; }
+    IRelayCommand OpenSelectedMessageSenderPrivateMessageCommand { get; }
+    IRelayCommand ToggleSelectedMessageSenderFriendCommand { get; }
+    IRelayCommand ToggleSelectedMessageSenderIgnoreCommand { get; }
+    IRelayCommand JoinSelectedMessageSenderGameCommand { get; }
+    IRelayCommand OpenPendingLinkCommand { get; }
+    IRelayCommand CopyPendingLinkCommand { get; }
+    IRelayCommand OpenSelectedRecentPlayerPrivateMessageCommand { get; }
+    IRelayCommand ToggleSelectedRecentPlayerFriendCommand { get; }
+    IRelayCommand ToggleSelectedRecentPlayerIgnoreCommand { get; }
+    IRelayCommand JoinSelectedRecentPlayerGameCommand { get; }
 }

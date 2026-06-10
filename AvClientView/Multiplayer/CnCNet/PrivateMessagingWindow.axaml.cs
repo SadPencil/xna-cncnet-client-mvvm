@@ -1,5 +1,8 @@
+using System;
 using System.ComponentModel;
+using System.Linq;
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -7,8 +10,11 @@ using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Online;
 
 using AvClientView.Services;
+
+using ClientCore.Extensions;
 
 
 namespace AvClientView.Multiplayer.CnCNet;
@@ -52,6 +58,8 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
         tabRecentPlayers.Click += (_, _) => { if (ViewModel != null) ViewModel.SelectedTabIndex = RECENT_PLAYERS_VIEW_INDEX; };
 
         SetupUserListHandlers();
+        SetupMessagesListHandlers();
+        SetupRecentPlayersContextMenu();
     }
 
     private void SetupUserListHandlers()
@@ -126,6 +134,151 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
             if (listBoxItem != null)
                 listBox.SelectedIndex = listBox.IndexFromContainer(listBoxItem);
         }
+    }
+
+    // ========================================================================
+    // Messages list context menu + double-click
+    // ========================================================================
+
+    private void SetupMessagesListHandlers()
+    {
+        messagesListBox.ContextRequested += (s, e) =>
+        {
+            e.Handled = true;
+            ShowMessagesContextMenu(e);
+        };
+
+        messagesListBox.DoubleTapped += (_, _) =>
+        {
+            if (ViewModel == null) return;
+            int idx = messagesListBox.SelectedIndex;
+            if (idx < 0 || idx >= ViewModel.MessageHistory.Count) return;
+            var msg = ViewModel.MessageHistory[idx];
+            var links = msg.Message.GetLinks();
+            if (links != null && links.Length == 1)
+            {
+                try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(links[0]) { UseShellExecute = true }); }
+                catch { }
+            }
+        };
+    }
+
+    private void ShowMessagesContextMenu(ContextRequestedEventArgs e)
+    {
+        if (ViewModel == null)
+            return;
+
+        SelectListBoxItemFromEvent(messagesListBox, e);
+
+        if (messagesListBox.SelectedIndex < 0 || messagesListBox.SelectedIndex >= ViewModel.MessageHistory.Count)
+            return;
+
+        var msg = ViewModel.MessageHistory[messagesListBox.SelectedIndex];
+
+        var contextMenu = new ContextMenu();
+
+        if (!string.IsNullOrEmpty(msg.SenderName))
+        {
+            var pmItem = new MenuItem { Header = "Private Message" };
+            pmItem.Click += (_, _) => ViewModel.OpenSelectedMessageSenderPrivateMessageCommand.Execute(null);
+            contextMenu.Items.Add(pmItem);
+
+            contextMenu.Items.Add(new Separator());
+
+            var friendItem = new MenuItem { Header = "Toggle Friend" };
+            friendItem.Click += (_, _) => ViewModel.ToggleSelectedMessageSenderFriendCommand.Execute(null);
+            contextMenu.Items.Add(friendItem);
+
+            var blockItem = new MenuItem { Header = "Toggle Block" };
+            blockItem.Click += (_, _) => ViewModel.ToggleSelectedMessageSenderIgnoreCommand.Execute(null);
+            contextMenu.Items.Add(blockItem);
+
+            contextMenu.Items.Add(new Separator());
+
+            var joinItem = new MenuItem { Header = "Join Game" };
+            joinItem.Click += (_, _) => ViewModel.JoinSelectedMessageSenderGameCommand.Execute(null);
+            contextMenu.Items.Add(joinItem);
+        }
+
+        // Link operations from message body
+        var links = msg.Message.GetLinks();
+        if (links != null && links.Length > 0)
+        {
+            if (contextMenu.Items.Count > 0)
+                contextMenu.Items.Add(new Separator());
+
+            foreach (string link in links)
+            {
+                string displayLink = link.Length > 40 ? link[..30] + "..." + link[^5..] : link;
+
+                var openLinkItem = new MenuItem { Header = $"Open Link: {displayLink}" };
+                openLinkItem.Click += (_, _) =>
+                {
+                    try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(link) { UseShellExecute = true }); }
+                    catch { }
+                };
+                contextMenu.Items.Add(openLinkItem);
+
+                var copyLinkItem = new MenuItem { Header = $"Copy Link: {displayLink}" };
+                copyLinkItem.Click += (_, _) =>
+                {
+                    try { TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(link); }
+                    catch { }
+                };
+                contextMenu.Items.Add(copyLinkItem);
+            }
+        }
+
+        if (contextMenu.Items.Count > 0)
+            contextMenu.Open(messagesListBox);
+    }
+
+    // ========================================================================
+    // Recent players context menu
+    // ========================================================================
+
+    private void SetupRecentPlayersContextMenu()
+    {
+        recentPlayersListBox.ContextRequested += (s, e) =>
+        {
+            e.Handled = true;
+            ShowRecentPlayersContextMenu(e);
+        };
+    }
+
+    private void ShowRecentPlayersContextMenu(ContextRequestedEventArgs e)
+    {
+        if (ViewModel == null)
+            return;
+
+        SelectListBoxItemFromEvent(recentPlayersListBox, e);
+
+        if (recentPlayersListBox.SelectedIndex < 0 || recentPlayersListBox.SelectedIndex >= ViewModel.RecentPlayerNames.Count)
+            return;
+
+        var contextMenu = new ContextMenu();
+
+        var pmItem = new MenuItem { Header = "Private Message" };
+        pmItem.Click += (_, _) => ViewModel.OpenSelectedRecentPlayerPrivateMessageCommand.Execute(null);
+        contextMenu.Items.Add(pmItem);
+
+        contextMenu.Items.Add(new Separator());
+
+        var friendItem = new MenuItem { Header = "Toggle Friend" };
+        friendItem.Click += (_, _) => ViewModel.ToggleSelectedRecentPlayerFriendCommand.Execute(null);
+        contextMenu.Items.Add(friendItem);
+
+        var blockItem = new MenuItem { Header = "Toggle Block" };
+        blockItem.Click += (_, _) => ViewModel.ToggleSelectedRecentPlayerIgnoreCommand.Execute(null);
+        contextMenu.Items.Add(blockItem);
+
+        contextMenu.Items.Add(new Separator());
+
+        var joinItem = new MenuItem { Header = "Join Game" };
+        joinItem.Click += (_, _) => ViewModel.JoinSelectedRecentPlayerGameCommand.Execute(null);
+        contextMenu.Items.Add(joinItem);
+
+        contextMenu.Open(recentPlayersListBox);
     }
 
     private void ApplyLayoutAndCaptureBrushes(IIniLayoutOverlayService iniOverlay)
