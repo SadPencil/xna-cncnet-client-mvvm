@@ -13,6 +13,8 @@ using Avalonia.Threading;
 using AvClientMvvmContract.Campaign;
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Generic.OptionPanels;
+
+using ClientCore.Extensions;
 using AvClientMvvmContract.Messages;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
@@ -432,7 +434,7 @@ public partial class MainMenu : UserControl
         var okButton = new Button
         {
             Name = $"btnOK_{id}",
-            Content = "OK",
+            Content = "OK".L10N("Client:UI:ButtonOK"),
             Width = 80,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
             VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
@@ -520,7 +522,7 @@ public partial class MainMenu : UserControl
         var yesButton = new Button
         {
             Name = $"btnYes_{id}",
-            Content = "Yes",
+            Content = "Yes".L10N("Client:UI:ButtonYes"),
             Width = 80,
             Height = 23,
         };
@@ -528,7 +530,7 @@ public partial class MainMenu : UserControl
         var noButton = new Button
         {
             Name = $"btnNo_{id}",
-            Content = "No",
+            Content = "No".L10N("Client:UI:ButtonNo"),
             Width = 80,
             Height = 23,
         };

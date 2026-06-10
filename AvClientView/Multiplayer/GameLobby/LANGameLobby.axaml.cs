@@ -13,6 +13,8 @@ using Avalonia.Media.Imaging;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Controls;
+
+using ClientCore.Extensions;
 using AvClientView.Services;
 
 
@@ -289,7 +291,7 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
             return;
 
         var contextMenu = new ContextMenu();
-        var toggleSearchItem = new MenuItem { Header = "Toggle Search All Game Modes" };
+        var toggleSearchItem = new MenuItem { Header = "Toggle Search All Game Modes".L10N("Client:UI:ToggleSearchAllGameModes") };
         toggleSearchItem.Click += (s, e) => lobbyViewModel.ToggleSearchAllModesCommand.Execute(null);
         contextMenu.Items.Add(toggleSearchItem);
         contextMenu.Open(tbMapSearch);
@@ -314,16 +316,18 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
 
         var toggleFavItem = new MenuItem
         {
-            Header = currentMapPreview?.IsFavorite == true ? "Remove Favorite" : "Add Favorite"
+            Header = currentMapPreview?.IsFavorite == true
+                ? "Remove Favorite".L10N("Client:UI:RemoveFavorite")
+                : "Add Favorite".L10N("Client:UI:AddFavorite")
         };
         toggleFavItem.Click += (s, e) => lobbyViewModel.ToggleFavoriteCommand.Execute(null);
         menu.Items.Add(toggleFavItem);
 
-        var deleteItem = new MenuItem { Header = "Delete Map" };
+        var deleteItem = new MenuItem { Header = "Delete Map".L10N("Client:UI:DeleteMap") };
         deleteItem.Click += (s, e) => lobbyViewModel.DeleteMapCommand.Execute(null);
         menu.Items.Add(deleteItem);
 
-        var showFolderItem = new MenuItem { Header = "Show in Folder" };
+        var showFolderItem = new MenuItem { Header = "Show in Folder".L10N("Client:UI:ShowInFolder") };
         showFolderItem.Click += (s, e) => lobbyViewModel.ShowMapInFolderCommand.Execute(null);
         menu.Items.Add(showFolderItem);
     }

@@ -13,6 +13,8 @@ using Avalonia.Media.Imaging;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Controls;
+
+using ClientCore.Extensions;
 using AvClientView.Services;
 
 using ClientCore;
@@ -100,17 +102,17 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
         var contextMenu = new ContextMenu();
 
-        var pmItem = new MenuItem { Header = "Private Message" };
+        var pmItem = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
         pmItem.Click += (_, _) => vm.OpenContextPlayerPrivateMessageCommand.Execute(null);
         contextMenu.Items.Add(pmItem);
 
         contextMenu.Items.Add(new Separator());
 
-        var friendItem = new MenuItem { Header = "Toggle Friend" };
+        var friendItem = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
         friendItem.Click += (_, _) => vm.ToggleContextPlayerFriendCommand.Execute(null);
         contextMenu.Items.Add(friendItem);
 
-        var blockItem = new MenuItem { Header = "Toggle Block" };
+        var blockItem = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
         blockItem.Click += (_, _) => vm.ToggleContextPlayerIgnoreCommand.Execute(null);
         contextMenu.Items.Add(blockItem);
 
@@ -342,7 +344,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
             return;
 
         var contextMenu = new ContextMenu();
-        var toggleSearchItem = new MenuItem { Header = "Toggle Search All Game Modes" };
+        var toggleSearchItem = new MenuItem { Header = "Toggle Search All Game Modes".L10N("Client:UI:ToggleSearchAllGameModes") };
         toggleSearchItem.Click += (s, e) => lobbyViewModel.ToggleSearchAllModesCommand.Execute(null);
         contextMenu.Items.Add(toggleSearchItem);
         contextMenu.Open(tbMapSearch);
@@ -367,16 +369,18 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
 
         var toggleFavItem = new MenuItem
         {
-            Header = currentMapPreview?.IsFavorite == true ? "Remove Favorite" : "Add Favorite"
+            Header = currentMapPreview?.IsFavorite == true
+                ? "Remove Favorite".L10N("Client:UI:RemoveFavorite")
+                : "Add Favorite".L10N("Client:UI:AddFavorite")
         };
         toggleFavItem.Click += (s, e) => lobbyViewModel.ToggleFavoriteCommand.Execute(null);
         menu.Items.Add(toggleFavItem);
 
-        var deleteItem = new MenuItem { Header = "Delete Map" };
+        var deleteItem = new MenuItem { Header = "Delete Map".L10N("Client:UI:DeleteMap") };
         deleteItem.Click += (s, e) => lobbyViewModel.DeleteMapCommand.Execute(null);
         menu.Items.Add(deleteItem);
 
-        var showFolderItem = new MenuItem { Header = "Show in Folder" };
+        var showFolderItem = new MenuItem { Header = "Show in Folder".L10N("Client:UI:ShowInFolder") };
         showFolderItem.Click += (s, e) => lobbyViewModel.ShowMapInFolderCommand.Execute(null);
         menu.Items.Add(showFolderItem);
     }

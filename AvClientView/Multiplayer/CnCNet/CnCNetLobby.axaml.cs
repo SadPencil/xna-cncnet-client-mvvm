@@ -89,27 +89,27 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
         menu.Items.Clear();
 
-        var pmItem = new MenuItem { Header = "Private Message" };
+        var pmItem = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
         pmItem.Click += (_, _) => ViewModel.OpenSelectedPlayerPrivateMessageCommand.Execute(null);
         menu.Items.Add(pmItem);
 
         menu.Items.Add(new Separator());
 
-        var friendItem = new MenuItem { Header = "Toggle Friend" };
+        var friendItem = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
         friendItem.Click += (_, _) => ViewModel.ToggleSelectedPlayerFriendCommand.Execute(null);
         menu.Items.Add(friendItem);
 
-        var blockItem = new MenuItem { Header = "Toggle Block" };
+        var blockItem = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
         blockItem.Click += (_, _) => ViewModel.ToggleSelectedPlayerIgnoreCommand.Execute(null);
         menu.Items.Add(blockItem);
 
         menu.Items.Add(new Separator());
 
-        var inviteItem = new MenuItem { Header = "Invite to Game" };
+        var inviteItem = new MenuItem { Header = "Invite to Game".L10N("Client:UI:ContextMenuInviteToGame") };
         inviteItem.Click += (_, _) => ViewModel.InviteSelectedPlayerToGameCommand.Execute(null);
         menu.Items.Add(inviteItem);
 
-        var joinItem = new MenuItem { Header = "Join Game" };
+        var joinItem = new MenuItem { Header = "Join Game".L10N("Client:UI:ContextMenuJoinGame") };
         joinItem.Click += (_, _) => ViewModel.JoinSelectedPlayerGameCommand.Execute(null);
         menu.Items.Add(joinItem);
     }
@@ -157,25 +157,25 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
         if (!string.IsNullOrEmpty(msg.SenderName))
         {
-            var pmItem = new MenuItem { Header = "Private Message" };
-            pmItem.Click += (_, _) => ViewModel.OpenSelectedChatMessageSenderPrivateMessageCommand.Execute(null);
-            contextMenu.Items.Add(pmItem);
+            var pmItem2 = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
+            pmItem2.Click += (_, _) => ViewModel.OpenSelectedChatMessageSenderPrivateMessageCommand.Execute(null);
+            contextMenu.Items.Add(pmItem2);
 
             contextMenu.Items.Add(new Separator());
 
-            var friendItem = new MenuItem { Header = "Toggle Friend" };
-            friendItem.Click += (_, _) => ViewModel.ToggleSelectedChatMessageSenderFriendCommand.Execute(null);
-            contextMenu.Items.Add(friendItem);
+            var friendItem2 = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
+            friendItem2.Click += (_, _) => ViewModel.ToggleSelectedChatMessageSenderFriendCommand.Execute(null);
+            contextMenu.Items.Add(friendItem2);
 
-            var blockItem = new MenuItem { Header = "Toggle Block" };
-            blockItem.Click += (_, _) => ViewModel.ToggleSelectedChatMessageSenderIgnoreCommand.Execute(null);
-            contextMenu.Items.Add(blockItem);
+            var blockItem2 = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
+            blockItem2.Click += (_, _) => ViewModel.ToggleSelectedChatMessageSenderIgnoreCommand.Execute(null);
+            contextMenu.Items.Add(blockItem2);
 
             contextMenu.Items.Add(new Separator());
 
-            var joinItem = new MenuItem { Header = "Join Game" };
-            joinItem.Click += (_, _) => ViewModel.JoinSelectedChatMessageSenderGameCommand.Execute(null);
-            contextMenu.Items.Add(joinItem);
+            var joinItem2 = new MenuItem { Header = "Join Game".L10N("Client:UI:ContextMenuJoinGame") };
+            joinItem2.Click += (_, _) => ViewModel.JoinSelectedChatMessageSenderGameCommand.Execute(null);
+            contextMenu.Items.Add(joinItem2);
         }
 
         // Link operations from message body
@@ -189,21 +189,21 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             {
                 string displayLink = link.Length > 40 ? link[..30] + "..." + link[^5..] : link;
 
-                var openLinkItem = new MenuItem { Header = $"Open Link: {displayLink}" };
-                openLinkItem.Click += (_, _) =>
+                var openLinkItem2 = new MenuItem { Header = string.Format("Open Link: {0}".L10N("Client:UI:OpenLink"), displayLink) };
+                openLinkItem2.Click += (_, _) =>
                 {
                     try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(link) { UseShellExecute = true }); }
                     catch { }
                 };
-                contextMenu.Items.Add(openLinkItem);
+                contextMenu.Items.Add(openLinkItem2);
 
-                var copyLinkItem = new MenuItem { Header = $"Copy Link: {displayLink}" };
-                copyLinkItem.Click += (_, _) =>
+                var copyLinkItem2 = new MenuItem { Header = string.Format("Copy Link: {0}".L10N("Client:UI:CopyLink"), displayLink) };
+                copyLinkItem2.Click += (_, _) =>
                 {
                     try { TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(link); }
                     catch { }
                 };
-                contextMenu.Items.Add(copyLinkItem);
+                contextMenu.Items.Add(copyLinkItem2);
             }
         }
 
@@ -236,25 +236,25 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
         var contextMenu = new ContextMenu();
 
-        var pmItem = new MenuItem { Header = "Private Message" };
-        pmItem.Click += (_, _) => ViewModel.OpenSelectedGameHostPrivateMessageCommand.Execute(null);
-        contextMenu.Items.Add(pmItem);
+        var pmItem3 = new MenuItem { Header = "Private Message".L10N("Client:UI:ContextMenuPrivateMessage") };
+        pmItem3.Click += (_, _) => ViewModel.OpenSelectedGameHostPrivateMessageCommand.Execute(null);
+        contextMenu.Items.Add(pmItem3);
 
         contextMenu.Items.Add(new Separator());
 
-        var friendItem = new MenuItem { Header = "Toggle Friend" };
-        friendItem.Click += (_, _) => ViewModel.ToggleSelectedGameHostFriendCommand.Execute(null);
-        contextMenu.Items.Add(friendItem);
+        var friendItem3 = new MenuItem { Header = "Toggle Friend".L10N("Client:UI:ContextMenuToggleFriend") };
+        friendItem3.Click += (_, _) => ViewModel.ToggleSelectedGameHostFriendCommand.Execute(null);
+        contextMenu.Items.Add(friendItem3);
 
-        var blockItem = new MenuItem { Header = "Toggle Block" };
-        blockItem.Click += (_, _) => ViewModel.ToggleSelectedGameHostIgnoreCommand.Execute(null);
-        contextMenu.Items.Add(blockItem);
+        var blockItem3 = new MenuItem { Header = "Toggle Block".L10N("Client:UI:ContextMenuToggleBlock") };
+        blockItem3.Click += (_, _) => ViewModel.ToggleSelectedGameHostIgnoreCommand.Execute(null);
+        contextMenu.Items.Add(blockItem3);
 
         contextMenu.Items.Add(new Separator());
 
-        var joinItem = new MenuItem { Header = "Join Game" };
-        joinItem.Click += (_, _) => ViewModel.JoinSelectedGameCommand.Execute(null);
-        contextMenu.Items.Add(joinItem);
+        var joinItem3 = new MenuItem { Header = "Join Game".L10N("Client:UI:ContextMenuJoinGame") };
+        joinItem3.Click += (_, _) => ViewModel.JoinSelectedGameCommand.Execute(null);
+        contextMenu.Items.Add(joinItem3);
 
         contextMenu.Open(gameList);
     }
