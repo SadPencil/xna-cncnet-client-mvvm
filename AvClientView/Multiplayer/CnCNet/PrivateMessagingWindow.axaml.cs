@@ -136,19 +136,7 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
             ShowMessagesContextMenu(e);
         };
 
-        messagesListBox.DoubleTapped += (_, _) =>
-        {
-            if (ViewModel == null) return;
-            int idx = messagesListBox.SelectedIndex;
-            if (idx < 0 || idx >= ViewModel.MessageHistory.Count) return;
-            var msg = ViewModel.MessageHistory[idx];
-            var links = msg.Message.GetLinks();
-            if (links != null && links.Length == 1)
-            {
-                try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(links[0]) { UseShellExecute = true }); }
-                catch { }
-            }
-        };
+        messagesListBox.DoubleTapped += (_, _) => ViewModel?.MessageDoubleClickCommand.Execute(null);
     }
 
     private void ShowMessagesContextMenu(ContextRequestedEventArgs e)

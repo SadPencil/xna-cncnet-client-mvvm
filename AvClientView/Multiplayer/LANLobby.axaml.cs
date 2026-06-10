@@ -21,7 +21,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
         LobbyHelper.SetUpHoverTracking(gameList, idx =>
         {
             if (ViewModel is { } vm)
-                vm.HoveredGameIndex = idx >= vm.Games.Count ? -1 : idx;
+                vm.HoveredGameIndex = idx;
         });
     }
 

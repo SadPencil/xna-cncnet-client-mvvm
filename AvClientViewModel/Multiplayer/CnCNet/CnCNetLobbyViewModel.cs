@@ -620,6 +620,19 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         clipboardService.SetTextAsync(PendingLink);
     }
 
+    [RelayCommand]
+    private void ChatMessageDoubleClick()
+    {
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+            return;
+        var msg = chatMessages[SelectedChatMessageIndex];
+        var links = msg.Message.GetLinks();
+        if (links == null || links.Length != 1)
+            return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(links[0]) { UseShellExecute = true }); }
+        catch { }
+    }
+
     // --- Game list context menu ---
 
     [RelayCommand]
@@ -666,6 +679,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             gameLobby.ChatColor = selectedColor;
             gameLoadingLobby.ChangeChatColor(selectedColor);
         }
+    }
+
+    partial void OnHoveredGameIndexChanged(int value)
+    {
+        if (value >= hostedGames.Count)
+            HoveredGameIndex = -1;
     }
 
     partial void OnSelectedChannelIndexChanged(int value)

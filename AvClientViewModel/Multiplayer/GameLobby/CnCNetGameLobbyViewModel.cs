@@ -496,7 +496,8 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     private void BuildPlayerContextMenuItems()
     {
         var items = new List<IContextMenuItem>();
-        if (string.IsNullOrEmpty(SelectedContextPlayerName))
+        if (string.IsNullOrEmpty(SelectedContextPlayerName)
+            || SelectedContextPlayerName == ProgramConstants.PLAYERNAME)
         {
             PlayerContextMenuItems = items;
             return;

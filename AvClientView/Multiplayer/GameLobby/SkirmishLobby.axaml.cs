@@ -11,6 +11,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.ViewServices;
 
 using AvClientView.Controls;
 
@@ -328,46 +329,23 @@ public partial class SkirmishLobby : UserControl, ISkirmishLobbyView
             return;
 
         var contextMenu = new ContextMenu();
-
-        int menuId = 1;
-        for (int i = 0; i < lobbyViewModel.PlayerSlots.Count; i++)
-        {
-            var slot = lobbyViewModel.PlayerSlots[i];
-            if (slot.Name.SelectedOption == null || slot.Name.SelectedOption.Index < 1)
-                continue;
-
-            string playerName;
-            if (i < lobbyViewModel.PlayerNames.Count)
-                playerName = lobbyViewModel.PlayerNames[i];
-            else
-            {
-                playerName = slot.PlayerName ?? string.Empty;
-                if (slot.Name.SelectedOption != null)
-                    playerName = slot.Name.SelectedOption.Name;
-            }
-
-            if (string.IsNullOrEmpty(playerName))
-                continue;
-
-            var displayName = $"{menuId}. {playerName}";
-            var playerIndex = i;
-            var item = new MenuItem { Header = displayName };
-            item.Click += (s, e) =>
-            {
-                if (currentMapPreview != null)
-                {
-                    currentMapPreview.SelectedPlayerIndex = playerIndex;
-                    currentMapPreview.AssignStartingLocationCommand.Execute(null);
-                }
-            };
-            contextMenu.Items.Add(item);
-            menuId++;
-        }
-
+        RenderContextMenuItems(contextMenu, lobbyViewModel.StartingLocationAssignMenuItems);
         contextMenu.Open(mapPreviewPanel);
     }
 
     void ISwitchableView.Show() => IsVisible = true;
     void ISwitchableView.Hide() => IsVisible = false;
     string ISwitchableView.GetDisplayName() => "Skirmish";
+
+    private static void RenderContextMenuItems(ContextMenu menu, IReadOnlyList<IContextMenuItem> items)
+    {
+        menu.Items.Clear();
+        foreach (var item in items)
+        {
+            if (item.IsSeparator)
+                menu.Items.Add(new Separator());
+            else if (item.IsVisible)
+                menu.Items.Add(new MenuItem { Header = item.Text, Command = item.Command, IsEnabled = item.IsEnabled });
+        }
+    }
 }

@@ -28,7 +28,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
         LobbyHelper.SetUpHoverTracking(gameList, idx =>
         {
             if (ViewModel is { } vm)
-                vm.HoveredGameIndex = idx >= vm.Games.Count ? -1 : idx;
+                vm.HoveredGameIndex = idx;
         });
 
         playerList.DoubleTapped += (_, _) => ViewModel?.OpenSelectedPlayerPrivateMessageCommand.Execute(null);
@@ -102,19 +102,7 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
             ShowChatContextMenu(e);
         };
 
-        chatList.DoubleTapped += (_, _) =>
-        {
-            if (ViewModel == null) return;
-            int idx = chatList.SelectedIndex;
-            if (idx < 0 || idx >= ViewModel.ChatMessages.Count) return;
-            var msg = ViewModel.ChatMessages[idx];
-            var links = msg.Message.GetLinks();
-            if (links != null && links.Length == 1)
-            {
-                try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(links[0]) { UseShellExecute = true }); }
-                catch { }
-            }
-        };
+        chatList.DoubleTapped += (_, _) => ViewModel?.ChatMessageDoubleClickCommand.Execute(null);
     }
 
     private void ShowChatContextMenu(ContextRequestedEventArgs e)

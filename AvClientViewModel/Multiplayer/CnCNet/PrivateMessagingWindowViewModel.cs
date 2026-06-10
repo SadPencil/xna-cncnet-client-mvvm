@@ -358,6 +358,19 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         clipboardService.SetTextAsync(PendingLink);
     }
 
+    [RelayCommand]
+    private void MessageDoubleClick()
+    {
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+            return;
+        var msg = _messageHistory[SelectedMessageIndex];
+        var links = msg.Message.GetLinks();
+        if (links == null || links.Length != 1)
+            return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(links[0]) { UseShellExecute = true }); }
+        catch { }
+    }
+
     // --- Recent player context menu commands ---
 
     private string? GetSelectedRecentPlayerName()

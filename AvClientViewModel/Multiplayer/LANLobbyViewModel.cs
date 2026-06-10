@@ -465,6 +465,12 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // --- Color management ---
 
+    partial void OnHoveredGameIndexChanged(int value)
+    {
+        if (value >= games.Count)
+            HoveredGameIndex = -1;
+    }
+
     partial void OnSelectedGameIndexChanged(int value)
     {
         IsJoinGameButtonEnabled = _isLobbyActive && value >= 0;

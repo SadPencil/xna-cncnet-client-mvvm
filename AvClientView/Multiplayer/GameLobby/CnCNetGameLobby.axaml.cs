@@ -95,15 +95,12 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         if (string.IsNullOrEmpty(playerName))
             return;
 
-        // Guard: don't show menu for local player
-        if (playerName == ProgramConstants.PLAYERNAME)
-            return;
-
         vm.SelectedContextPlayerName = playerName;
 
         var contextMenu = new ContextMenu();
         RenderContextMenuItems(contextMenu, vm.PlayerContextMenuItems);
-        contextMenu.Open(comboBox);
+        if (contextMenu.Items.Count > 0)
+            contextMenu.Open(comboBox);
     }
 
     private void SetupChatInputEnterKey()
@@ -378,42 +375,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
             return;
 
         var contextMenu = new ContextMenu();
-
-        int menuId = 1;
-        for (int i = 0; i < lobbyViewModel.PlayerSlots.Count; i++)
-        {
-            var slot = lobbyViewModel.PlayerSlots[i];
-            if (slot.Name.SelectedOption == null || slot.Name.SelectedOption.Index < 1)
-                continue;
-
-            string playerName;
-            if (i < lobbyViewModel.PlayerNames.Count)
-                playerName = lobbyViewModel.PlayerNames[i];
-            else
-            {
-                playerName = slot.PlayerName ?? string.Empty;
-                if (slot.Name.SelectedOption != null)
-                    playerName = slot.Name.SelectedOption.Name;
-            }
-
-            if (string.IsNullOrEmpty(playerName))
-                continue;
-
-            var displayName = $"{menuId}. {playerName}";
-            var playerIndex = i;
-            var item = new MenuItem { Header = displayName };
-            item.Click += (s, e) =>
-            {
-                if (currentMapPreview != null)
-                {
-                    currentMapPreview.SelectedPlayerIndex = playerIndex;
-                    currentMapPreview.AssignStartingLocationCommand.Execute(null);
-                }
-            };
-            contextMenu.Items.Add(item);
-            menuId++;
-        }
-
+        RenderContextMenuItems(contextMenu, lobbyViewModel.StartingLocationAssignMenuItems);
         contextMenu.Open(mapPreviewPanel);
     }
 

@@ -84,4 +84,5 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand OpenSelectedGameHostPrivateMessageCommand { get; }
     IRelayCommand ToggleSelectedGameHostFriendCommand { get; }
     IRelayCommand ToggleSelectedGameHostIgnoreCommand { get; }
+    IRelayCommand ChatMessageDoubleClickCommand { get; }
 }

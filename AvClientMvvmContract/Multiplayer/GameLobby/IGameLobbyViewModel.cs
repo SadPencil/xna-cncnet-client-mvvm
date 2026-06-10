@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
+using AvClientMvvmContract.ViewServices;
+
 using CommunityToolkit.Mvvm.Input;
 
 namespace AvClientMvvmContract.Multiplayer.GameLobby;
@@ -60,4 +62,6 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     IRelayCommand ToggleSearchAllModesCommand { get; }
     IRelayCommand OpenGameSettingsCommand { get; }
     IRelayCommand OpenMapSelectionCommand { get; }
+
+    IReadOnlyList<IContextMenuItem> StartingLocationAssignMenuItems { get; }
 }

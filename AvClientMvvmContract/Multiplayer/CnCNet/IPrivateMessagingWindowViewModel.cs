@@ -47,6 +47,7 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     IRelayCommand ToggleSelectedRecentPlayerFriendCommand { get; }
     IRelayCommand ToggleSelectedRecentPlayerIgnoreCommand { get; }
     IRelayCommand JoinSelectedRecentPlayerGameCommand { get; }
+    IRelayCommand MessageDoubleClickCommand { get; }
 
     IReadOnlyList<IContextMenuItem> UserContextMenuItems { get; }
     IReadOnlyList<IContextMenuItem> MessageContextMenuItems { get; }

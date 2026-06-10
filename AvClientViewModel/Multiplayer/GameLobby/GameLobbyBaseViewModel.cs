@@ -10,6 +10,7 @@ using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain;
 using AvClientViewModel.Domain.Multiplayer;
+using AvClientViewModel.ViewServices;
 
 using ClientCore;
 using ClientCore.Enums;
@@ -134,6 +135,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     public partial IReadOnlyList<string> PlayerNames { get; set; } = Array.Empty<string>();
 
     [ObservableProperty]
+    public partial IReadOnlyList<IContextMenuItem> StartingLocationAssignMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+
+    [ObservableProperty]
     public partial int SelectedPlayerIndex { get; set; }
 
     // --- Player updating guard ---
@@ -191,6 +195,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         this.random = random;
 
         mapPreviewBox = new MapPreviewBoxViewModel(mapLoader, uiThreadMarshaller);
+        mapPreviewBox.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(IMapPreviewBoxViewModel.SelectedStartingLocationIndex))
+                BuildStartingLocationAssignMenuItems();
+        };
 
         // Initialize player slots (must be done in constructor, not Initialize, because
         // CopyPlayerDataToUI can be called from SetUp before Initialize runs)
@@ -1591,6 +1600,43 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         UserINISettings.Instance.SearchAllGameModes.Value = searchAllGameModes;
         UserINISettings.Instance.SaveSettings();
         ListMaps();
+    }
+
+    private void BuildStartingLocationAssignMenuItems()
+    {
+        var items = new List<IContextMenuItem>();
+        int menuId = 1;
+        var playerSlots = PlayerSlots;
+        var playerNames = PlayerNames;
+        for (int i = 0; i < playerSlots.Count; i++)
+        {
+            var slot = playerSlots[i];
+            if (slot.Name.SelectedOption == null || slot.Name.SelectedOption.Index < 1)
+                continue;
+
+            string playerName;
+            if (i < playerNames.Count)
+                playerName = playerNames[i];
+            else
+            {
+                playerName = slot.PlayerName ?? string.Empty;
+                if (slot.Name.SelectedOption != null)
+                    playerName = slot.Name.SelectedOption.Name;
+            }
+
+            if (string.IsNullOrEmpty(playerName))
+                continue;
+
+            var displayName = $"{menuId}. {playerName}";
+            var playerIndex = i;
+            items.Add(new ContextMenuItem(displayName, new RelayCommand(() =>
+            {
+                mapPreviewBox.SelectedPlayerIndex = playerIndex;
+                mapPreviewBox.AssignStartingLocationCommand.Execute(null);
+            })));
+            menuId++;
+        }
+        StartingLocationAssignMenuItems = items;
     }
 
     // --- Presets ---
