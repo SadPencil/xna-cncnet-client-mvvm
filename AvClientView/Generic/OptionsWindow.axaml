@@ -12,6 +12,8 @@
     <Style Selector="TextBlock">
       <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
+    <!-- TODO: CheckBox content does not auto-wrap. AccessText selector, ContentPresenter child
+         selectors, and TextBlock.TextWrapping attached property on CheckBox all failed. -->
   </UserControl.Styles>
   <Canvas>
     <!-- Tab buttons (at top, matching original XNAClientTabControl at y=12) -->
