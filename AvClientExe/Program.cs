@@ -14,6 +14,14 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        // Note: we have a strict order of operations for startup:
+        // 1. AvClientViewModel.PreStartup.Initialize()
+        // 2. AvClientView.Startup.Run()
+        // 3. AvClientViewModel.Startup.Initialize()
+        // 4. AvClientView.Startup.ConfigureServices()
+        // 5. AvClientViewModel.Startup.ConfigureServices()
+        // 4 and 5 can be in either order.
+
         StartupParams viewModelStartupParams = new(args);
         AvClientViewModel.PreStartup.Initialize(viewModelStartupParams, new ViewTranslationNotifierService());
 

@@ -67,6 +67,8 @@ public partial class MainWindow : Window
 
         // Connect LoadingScreen ViewModel
         var loadingScreenViewModel = sp.GetRequiredService<ILoadingScreenViewModel>();
+        if (_loadingScreen is null)
+            throw new InvalidOperationException("LoadingScreen should be initialized before connecting ViewModel.");
         _loadingScreen.ViewModel = loadingScreenViewModel;
 
         // MainMenu is created after DI is ready, so it receives a non-null INI service
