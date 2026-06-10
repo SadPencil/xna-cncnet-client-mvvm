@@ -37,18 +37,6 @@ namespace AvClientViewModel.Generic
         public event EventHandler? Completed;
 
         [ObservableProperty]
-        public partial string StatusText { get; set; } = "Loading...";
-
-        [ObservableProperty]
-        public partial string CurrentTaskText { get; set; } = "Initializing...";
-
-        [ObservableProperty]
-        public partial int ProgressPercentage { get; set; }
-
-        [ObservableProperty]
-        public partial bool IsIndeterminate { get; set; } = true;
-
-        [ObservableProperty]
         public partial bool IsLoading { get; set; } = true;
 
         public bool IsBorderlessClient => UserINISettings.Instance.BorderlessWindowedClient;
@@ -98,7 +86,6 @@ namespace AvClientViewModel.Generic
             {
                 pollingTimer?.Dispose();
                 pollingTimer = null;
-                CurrentTaskText = "Loading complete.";
                 Finish();
                 return;
             }
@@ -136,7 +123,6 @@ namespace AvClientViewModel.Generic
                     throw new Exception("Assert failed. No pending tasks. This should not happen.");
 
                 Log.Information(logMessage);
-                CurrentTaskText = logMessage;
             }
         }
 
