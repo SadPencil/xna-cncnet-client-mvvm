@@ -78,6 +78,8 @@ namespace AvClientViewModel.Online
 
         public bool IsUser => SenderIdent != null;
 
+        public string FormattedText => ToString();
+
         public override string ToString()
         {
             string timestamp = DateTime.ToShortTimeString();

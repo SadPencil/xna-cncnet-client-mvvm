@@ -14,4 +14,7 @@ public interface IChatMessage
     string Message { get; }
     bool SenderIsAdmin { get; }
     bool IsUser { get; }
+
+    /// <summary>Formatted as "[HH:mm] SenderName: Message" or "[HH:mm] Message" (system).</summary>
+    string FormattedText { get; }
 }

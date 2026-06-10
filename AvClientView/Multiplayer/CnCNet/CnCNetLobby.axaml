@@ -162,7 +162,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
               <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="online:IChatMessage">
-                  <TextBlock Text="{Binding Message}"
+                  <TextBlock Text="{Binding FormattedText}"
                              Foreground="{Binding Color, Converter={StaticResource Rgb24ToBrushConverter}}"
                              TextWrapping="Wrap" />
                 </DataTemplate>

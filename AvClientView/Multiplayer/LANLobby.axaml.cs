@@ -6,6 +6,8 @@ using AvClientMvvmContract.Multiplayer;
 using AvClientView.Controls;
 using AvClientView.Services;
 
+using ClientCore.Extensions;
+
 namespace AvClientView.Multiplayer;
 
 public partial class LANLobby : UserControl, ILANLobbyView
@@ -17,6 +19,7 @@ public partial class LANLobby : UserControl, ILANLobbyView
         InitializeComponent();
         Loaded += OnLoaded;
         gameList.DoubleTapped += (_, _) => ViewModel?.JoinSelectedGameCommand.Execute(null);
+        chatList.DoubleTapped += OnChatListDoubleTapped;
         LobbyHelper.SetUpHoverTracking(gameList, idx =>
         {
             if (ViewModel is { } vm)
@@ -45,6 +48,18 @@ public partial class LANLobby : UserControl, ILANLobbyView
     void ISwitchableView.Show() => IsVisible = true;
     void ISwitchableView.Hide() => IsVisible = false;
     string ISwitchableView.GetDisplayName() => "LAN Lobby";
+
+    private void OnChatListDoubleTapped(object? sender, Avalonia.Input.TappedEventArgs e)
+    {
+        if (ViewModel == null) return;
+        int idx = chatList.SelectedIndex;
+        if (idx < 0 || idx >= ViewModel.ChatMessages.Count) return;
+        var text = ViewModel.ChatMessages[idx];
+        var links = text?.GetLinks();
+        if (links == null || links.Length != 1) return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(links[0]) { UseShellExecute = true }); }
+        catch { }
+    }
 
     private static void WireOverlayVisibility(Control child, DarkeningPanel overlay)
     {
