@@ -5,7 +5,7 @@
              xmlns:dom="using:AvClientMvvmContract.Domain.Multiplayer"
              xmlns:local="using:AvClientView.Multiplayer.CnCNet"
              xmlns:gamelobby="using:AvClientView.Multiplayer.GameLobby"
-             xmlns:onl="using:AvClientMvvmContract.Online"
+             xmlns:online="using:AvClientMvvmContract.Online"
              xmlns:converters="using:AvClientView.Converters"
              x:Class="AvClientView.Multiplayer.CnCNet.CnCNetLobby"
              x:Name="CnCNetLobbyView"
@@ -161,7 +161,7 @@
                      Background="Transparent"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
               <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="onl:IChatMessage">
+                <DataTemplate x:DataType="online:IChatMessage">
                   <TextBlock Text="{Binding Message}"
                              Foreground="{Binding Color, Converter={StaticResource Rgb24ToBrushConverter}}"
                              TextWrapping="Wrap" />

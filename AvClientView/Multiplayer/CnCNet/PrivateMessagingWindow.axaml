@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:l="using:AvClientView.MarkupExtensions"
              xmlns:vmc="using:AvClientMvvmContract.Multiplayer.CnCNet"
-             xmlns:onl="using:AvClientMvvmContract.Online"
+             xmlns:online="using:AvClientMvvmContract.Online"
              x:Class="AvClientView.Multiplayer.CnCNet.PrivateMessagingWindow"
              x:DataType="vmc:IPrivateMessagingWindowViewModel"
              IsVisible="{Binding IsVisible}"
@@ -76,7 +76,7 @@
                  SelectedIndex="{Binding SelectedMessageIndex}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="onl:IChatMessage">
+            <DataTemplate x:DataType="online:IChatMessage">
               <TextBlock Text="{Binding Message}"
                          Foreground="{DynamicResource XnaTextBrush}"
 
