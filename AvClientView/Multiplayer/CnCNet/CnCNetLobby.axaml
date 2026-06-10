@@ -84,10 +84,12 @@
 
                       <!-- Row 0: Room Name + Ping + status icons -->
                       <StackPanel Grid.Row="0" Grid.Column="1"
-                                  Orientation="Horizontal" Spacing="4">
+                                  Orientation="Horizontal" Spacing="4"
+                                  VerticalAlignment="Center">
                         <TextBlock Text="{Binding RoomName}" FontWeight="Bold"
                                    Foreground="{Binding ., Converter={StaticResource GameStateToBrushConverter}}"
-                                   TextTrimming="CharacterEllipsis" />
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center" />
                         <TextBlock Text="&#x1F512;"
                                    IsVisible="{Binding Passworded}"
                                    VerticalAlignment="Center" />
