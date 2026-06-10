@@ -157,6 +157,7 @@
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
             <ListBox x:Name="chatList" ItemsSource="{Binding ChatMessages}"
+                     SelectedIndex="{Binding SelectedChatMessageIndex}"
                      Background="Transparent"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
               <ListBox.ItemTemplate>

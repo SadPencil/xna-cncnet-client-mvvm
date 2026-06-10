@@ -227,6 +227,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<CnCNetGameLoadingLobbyViewModel>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
                 sp.GetRequiredService<IGameProcessService>(),
+                sp.GetRequiredService<IClipboardService>(),
                 sp.GetRequiredService<Random>()));
             services.AddSingleton<ICnCNetLobbyViewModel>(sp =>
                 sp.GetRequiredService<CnCNetLobbyViewModel>());

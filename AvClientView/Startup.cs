@@ -25,6 +25,7 @@ public static class Startup
     internal static IMainWindowViewModel? MainWindowViewModel { get; private set; }
 
     private static UrlService UrlService => field ??= new UrlService();
+    private static ClipboardService ClipboardService => field ??= new ClipboardService();
     internal static IniLayoutOverlayService IniLayoutOverlayService => field ??= new IniLayoutOverlayService(UrlService);
 
     [STAThread]
@@ -67,5 +68,6 @@ public static class Startup
         services.AddSingleton<IClientSoundService, ClientSoundService>();
         services.AddSingleton<IViewLifecycleService, ViewLifecycleService>();
         services.AddSingleton<IViewTranslationNotifierService, ViewTranslationNotifierService>();
+        services.AddSingleton<IClipboardService, ClipboardService>();
     }
 }

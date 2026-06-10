@@ -49,6 +49,9 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     ICnCNetGameLoadingLobbyViewModel GameLoadingLobby { get; }
 
     int SelectedPlayerIndex { get; set; }
+    int SelectedChatMessageIndex { get; set; }
+
+    string? PendingLink { get; set; }
 
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }
@@ -66,4 +69,13 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand ToggleSelectedPlayerFriendCommand { get; }
     IRelayCommand ToggleSelectedPlayerIgnoreCommand { get; }
     IRelayCommand JoinSelectedPlayerGameCommand { get; }
+    IRelayCommand OpenSelectedChatMessageSenderPrivateMessageCommand { get; }
+    IRelayCommand ToggleSelectedChatMessageSenderFriendCommand { get; }
+    IRelayCommand ToggleSelectedChatMessageSenderIgnoreCommand { get; }
+    IRelayCommand JoinSelectedChatMessageSenderGameCommand { get; }
+    IRelayCommand OpenPendingLinkCommand { get; }
+    IRelayCommand CopyPendingLinkCommand { get; }
+    IRelayCommand OpenSelectedGameHostPrivateMessageCommand { get; }
+    IRelayCommand ToggleSelectedGameHostFriendCommand { get; }
+    IRelayCommand ToggleSelectedGameHostIgnoreCommand { get; }
 }

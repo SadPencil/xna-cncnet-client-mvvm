@@ -46,6 +46,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private readonly TunnelHandler tunnelHandler;
     private readonly IUIThreadMarshaller uiThreadMarshaller;
     private readonly IGameProcessService gameProcessService;
+    private readonly IClipboardService clipboardService;
     private readonly Random random;
 
     // Services that the lobby interacts with but does not own
@@ -97,6 +98,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     [ObservableProperty]
     public partial int SelectedPlayerIndex { get; set; } = -1;
+
+    [ObservableProperty]
+    public partial int SelectedChatMessageIndex { get; set; } = -1;
+
+    [ObservableProperty]
+    public partial string? PendingLink { get; set; }
 
     [ObservableProperty]
     public partial int SelectedColorIndex { get; set; }
@@ -190,6 +197,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         CnCNetGameLoadingLobbyViewModel gameLoadingLobby,
         IUIThreadMarshaller uiThreadMarshaller,
         IGameProcessService gameProcessService,
+        IClipboardService clipboardService,
         Random random)
     {
         this.connectionManager = connectionManager;
@@ -200,6 +208,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         this.gameLoadingLobby = gameLoadingLobby;
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.gameProcessService = gameProcessService;
+        this.clipboardService = clipboardService;
         this.random = random;
 
         _loginWindowViewModel = new CnCNetLoginWindowViewModel(
@@ -477,9 +486,111 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         JoinGameByIndex(gameIndex, string.Empty);
     }
 
-    #endregion
+    // --- Chat message context menu ---
 
-    #region Public Methods (called by MainMenu, not View)
+    [RelayCommand]
+    private void OpenSelectedChatMessageSenderPrivateMessage()
+    {
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+            return;
+        var msg = chatMessages[SelectedChatMessageIndex];
+        if (!string.IsNullOrEmpty(msg.SenderName))
+            pmWindow?.InitPM(msg.SenderName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedChatMessageSenderFriend()
+    {
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+            return;
+        var msg = chatMessages[SelectedChatMessageIndex];
+        if (!string.IsNullOrEmpty(msg.SenderName))
+            cncnetUserData.ToggleFriend(msg.SenderName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedChatMessageSenderIgnore()
+    {
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+            return;
+        var msg = chatMessages[SelectedChatMessageIndex];
+        if (string.IsNullOrEmpty(msg.SenderIdent))
+            return;
+        cncnetUserData.ToggleIgnoreUser(msg.SenderIdent);
+    }
+
+    [RelayCommand]
+    private void JoinSelectedChatMessageSenderGame()
+    {
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+            return;
+        var msg = chatMessages[SelectedChatMessageIndex];
+        if (string.IsNullOrEmpty(msg.SenderName))
+            return;
+        var user = connectionManager.UserList.Find(u => u.Name == msg.SenderName);
+        if (user == null)
+        {
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, "User is not currently available!".L10N("Client:Main:UserNotAvailable")));
+            return;
+        }
+        var game = GetHostedGameForUser(user);
+        if (game == null)
+        {
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
+            return;
+        }
+        int gameIndex = hostedGames.IndexOf(game);
+        if (gameIndex >= 0)
+            SelectedGameIndex = gameIndex;
+        JoinGameByIndex(gameIndex, string.Empty);
+    }
+
+    [RelayCommand]
+    private void OpenPendingLink()
+    {
+        if (string.IsNullOrEmpty(PendingLink))
+            return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(PendingLink) { UseShellExecute = true }); }
+        catch { }
+    }
+
+    [RelayCommand]
+    private void CopyPendingLink()
+    {
+        if (string.IsNullOrEmpty(PendingLink))
+            return;
+        clipboardService.SetTextAsync(PendingLink);
+    }
+
+    // --- Game list context menu ---
+
+    [RelayCommand]
+    private void OpenSelectedGameHostPrivateMessage()
+    {
+        var game = GetSelectedHostedGame();
+        if (game == null) return;
+        pmWindow?.InitPM(game.HostName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedGameHostFriend()
+    {
+        var game = GetSelectedHostedGame();
+        if (game == null) return;
+        cncnetUserData.ToggleFriend(game.HostName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedGameHostIgnore()
+    {
+        var game = GetSelectedHostedGame();
+        if (game == null) return;
+        var ident = connectionManager.UserList.Find(u => u.Name == game.HostName)?.Ident;
+        if (!string.IsNullOrEmpty(ident))
+            cncnetUserData.ToggleIgnoreUser(ident);
+    }
+
+    #endregion
 
     partial void OnGameSearchTextChanged(string value)
     {
@@ -753,8 +864,6 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         return true;
     }
-
-    #endregion
 
     #region Private Methods
 
