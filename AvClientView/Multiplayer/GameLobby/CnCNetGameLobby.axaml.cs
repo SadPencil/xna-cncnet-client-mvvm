@@ -91,11 +91,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         if (vm == null)
             return;
 
-        var playerName = comboBox.SelectedItem as string;
-        if (string.IsNullOrEmpty(playerName))
-            return;
-
-        vm.SelectedContextPlayerName = playerName;
+        vm.SelectedContextPlayerName = comboBox.SelectedItem as string ?? string.Empty;
 
         var contextMenu = new ContextMenu();
         RenderContextMenuItems(contextMenu, vm.PlayerContextMenuItems);
