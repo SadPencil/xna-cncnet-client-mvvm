@@ -462,13 +462,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         var user = connectionManager.UserList.Find(u => u.Name == player.Name);
         if (user == null)
         {
-            chatMessages.Add(new ChatMessage(Rgb24Color.White, "User is not currently available!".L10N("Client:Main:UserNotAvailable")));
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, "User is not currently available!".L10N("Client:Main:UserNotAvailable")));
             return;
         }
         var game = GetHostedGameForUser(user);
         if (game == null)
         {
-            chatMessages.Add(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
             return;
         }
         int gameIndex = hostedGames.IndexOf(game);
