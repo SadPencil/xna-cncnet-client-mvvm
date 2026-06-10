@@ -30,6 +30,7 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     IRelayCommand SendMessageCommand { get; }
     IRelayCommand CloseCommand { get; }
     IRelayCommand SwitchOnCommand { get; }
+    IRelayCommand DismissNotificationCommand { get; }
     IRelayCommand RefreshConversationsCommand { get; }
     IRelayCommand ToggleSelectedUserFriendCommand { get; }
     IRelayCommand ToggleSelectedUserIgnoreCommand { get; }

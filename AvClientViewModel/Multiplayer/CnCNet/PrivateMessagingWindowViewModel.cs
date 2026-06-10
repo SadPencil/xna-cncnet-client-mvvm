@@ -192,6 +192,13 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     }
 
     [RelayCommand]
+    private void DismissNotification()
+    {
+        IsNotificationVisible = false;
+        privateMessageHandler.IncrementUnreadMessageCount();
+    }
+
+    [RelayCommand]
     private void SwitchOn()
     {
         SelectedTabIndex = MESSAGES_INDEX;

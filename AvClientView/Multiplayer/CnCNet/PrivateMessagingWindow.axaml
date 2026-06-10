@@ -165,6 +165,15 @@
                        TextWrapping="Wrap"
                        Foreground="{DynamicResource XnaTextBrush}" />
           </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="8"
+                      HorizontalAlignment="Center">
+            <Button Content="{l:Translate 'View', 'Client:UI:ButtonView'}"
+                    Command="{Binding SwitchOnCommand}"
+                    Width="92" Height="23" />
+            <Button Content="{l:Translate 'Dismiss', 'Client:UI:ButtonDismiss'}"
+                    Command="{Binding DismissNotificationCommand}"
+                    Width="92" Height="23" />
+          </StackPanel>
         </StackPanel>
       </Border>
       </Panel>
