@@ -99,6 +99,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     // --- Callbacks ---
 
     private readonly Action<string>? onSoundPlayRequested;
+    private Action<string>? onJoinUserRequested;
 
     // --- Constructor ---
 
@@ -108,7 +109,8 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         PrivateMessageHandler privateMessageHandler,
         IUIThreadMarshaller uiThreadMarshaller,
         IGameProcessService gameProcessService,
-        Action<string>? onSoundPlayRequested = null)
+        Action<string>? onSoundPlayRequested = null,
+        Action<string>? onJoinUserRequested = null)
     {
         this.connectionManager = connectionManager;
         this.cncnetUserData = cncnetUserData;
@@ -116,6 +118,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         this.uiThreadMarshaller = uiThreadMarshaller;
         this.gameProcessService = gameProcessService;
         this.onSoundPlayRequested = onSoundPlayRequested;
+        this.onJoinUserRequested = onJoinUserRequested;
     }
 
     // --- Commands ---
@@ -209,6 +212,60 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         RefreshUserList();
     }
 
+    [RelayCommand]
+    private void ToggleSelectedUserFriend()
+    {
+        var userName = GetSelectedUserName();
+        if (userName == null)
+            return;
+        cncnetUserData.ToggleFriend(userName);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedUserIgnore()
+    {
+        var userName = GetSelectedUserName();
+        if (userName == null)
+            return;
+        var ident = connectionManager.UserList.Find(u => u.Name == userName)?.Ident;
+        if (!string.IsNullOrEmpty(ident))
+            cncnetUserData.ToggleIgnoreUser(ident);
+    }
+
+    [RelayCommand]
+    private void JoinSelectedUserGame()
+    {
+        var userName = GetSelectedUserName();
+        if (userName == null)
+            return;
+        onJoinUserRequested?.Invoke(userName);
+    }
+
+    [RelayCommand]
+    private void InviteSelectedUserToGame()
+    {
+        var userName = GetSelectedUserName();
+        if (userName == null || string.IsNullOrEmpty(inviteChannelName) || ProgramConstants.IsInGame)
+            return;
+
+        string messageBody = ProgramConstants.GAME_INVITE_CTCP_COMMAND + " "
+            + inviteChannelName + ";" + inviteGameName;
+
+        if (!string.IsNullOrEmpty(inviteChannelPassword))
+            messageBody += ";" + inviteChannelPassword;
+
+        connectionManager.SendCustomMessage(new QueuedMessage(
+            "PRIVMSG " + userName + " :\u0001" + messageBody + "\u0001",
+            QueuedMessageType.CHAT_MESSAGE, 0));
+    }
+
+    private string? GetSelectedUserName()
+    {
+        if (SelectedUserIndex < 0 || SelectedUserIndex >= _userNames.Count)
+            return null;
+        return _userNames[SelectedUserIndex];
+    }
+
     // --- Lifecycle ---
 
     public void Initialize()
@@ -258,6 +315,11 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     }
 
     public void ClearInviteChannelInfo() => SetInviteChannelInfo(string.Empty, string.Empty, string.Empty);
+
+    public void SetJoinUserAction(Action<string>? joinUserAction)
+    {
+        onJoinUserRequested = joinUserAction;
+    }
 
     // --- Tab switching ---
 

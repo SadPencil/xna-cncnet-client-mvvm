@@ -274,6 +274,27 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public void SetPrivateMessagingWindow(PrivateMessagingWindowViewModel pmWindow)
     {
         this.pmWindow = pmWindow;
+        pmWindow.SetJoinUserAction(JoinUserByName);
+    }
+
+    private void JoinUserByName(string userName)
+    {
+        var user = connectionManager.UserList.Find(u => u.Name == userName);
+        if (user == null)
+        {
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, "User is not currently available!".L10N("Client:Main:UserNotAvailable")));
+            return;
+        }
+        var game = GetHostedGameForUser(user);
+        if (game == null)
+        {
+            connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
+            return;
+        }
+        int gameIndex = hostedGames.IndexOf(game);
+        if (gameIndex >= 0)
+            SelectedGameIndex = gameIndex;
+        JoinGameByIndex(gameIndex, string.Empty);
     }
 
     public void Initialize()

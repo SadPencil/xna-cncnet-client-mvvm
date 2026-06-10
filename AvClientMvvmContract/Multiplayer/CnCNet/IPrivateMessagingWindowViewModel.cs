@@ -26,4 +26,8 @@ public interface IPrivateMessagingWindowViewModel : INotifyPropertyChanged
     IRelayCommand CloseCommand { get; }
     IRelayCommand SwitchOnCommand { get; }
     IRelayCommand RefreshConversationsCommand { get; }
+    IRelayCommand ToggleSelectedUserFriendCommand { get; }
+    IRelayCommand ToggleSelectedUserIgnoreCommand { get; }
+    IRelayCommand JoinSelectedUserGameCommand { get; }
+    IRelayCommand InviteSelectedUserToGameCommand { get; }
 }

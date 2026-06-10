@@ -1,8 +1,10 @@
 using System.ComponentModel;
 
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.VisualTree;
 
 using AvClientMvvmContract.Multiplayer.CnCNet;
 
@@ -48,6 +50,82 @@ public partial class PrivateMessagingWindow : UserControl, IPrivateMessagingWind
         tabFriendList.Click += (_, _) => { if (ViewModel != null) ViewModel.SelectedTabIndex = FRIEND_LIST_VIEW_INDEX; };
         tabAllPlayers.Click += (_, _) => { if (ViewModel != null) ViewModel.SelectedTabIndex = ALL_PLAYERS_VIEW_INDEX; };
         tabRecentPlayers.Click += (_, _) => { if (ViewModel != null) ViewModel.SelectedTabIndex = RECENT_PLAYERS_VIEW_INDEX; };
+
+        SetupUserListHandlers();
+    }
+
+    private void SetupUserListHandlers()
+    {
+        // Double-click on user → switch to Messages tab
+        userListBox.DoubleTapped += (_, _) =>
+        {
+            if (ViewModel != null)
+                ViewModel.SelectedTabIndex = MESSAGES_INDEX;
+        };
+
+        // Right-click on user → context menu
+        userListBox.ContextRequested += (s, e) =>
+        {
+            e.Handled = true;
+            ShowUserContextMenu(e);
+        };
+    }
+
+    private void ShowUserContextMenu(ContextRequestedEventArgs e)
+    {
+        if (ViewModel == null)
+            return;
+
+        SelectListBoxItemFromEvent(userListBox, e);
+
+        if (userListBox.SelectedIndex < 0 || userListBox.SelectedIndex >= ViewModel.UserNames.Count)
+            return;
+
+        var contextMenu = new ContextMenu();
+        PopulateUserContextMenu(contextMenu);
+        contextMenu.Open(userListBox);
+    }
+
+    private void PopulateUserContextMenu(ContextMenu menu)
+    {
+        if (ViewModel == null)
+            return;
+
+        menu.Items.Clear();
+
+        var pmItem = new MenuItem { Header = "Private Message" };
+        pmItem.Click += (_, _) => ViewModel.SelectedTabIndex = MESSAGES_INDEX;
+        menu.Items.Add(pmItem);
+
+        menu.Items.Add(new Separator());
+
+        var friendItem = new MenuItem { Header = "Toggle Friend" };
+        friendItem.Click += (_, _) => ViewModel.ToggleSelectedUserFriendCommand.Execute(null);
+        menu.Items.Add(friendItem);
+
+        var blockItem = new MenuItem { Header = "Toggle Block" };
+        blockItem.Click += (_, _) => ViewModel.ToggleSelectedUserIgnoreCommand.Execute(null);
+        menu.Items.Add(blockItem);
+
+        menu.Items.Add(new Separator());
+
+        var inviteItem = new MenuItem { Header = "Invite to Game" };
+        inviteItem.Click += (_, _) => ViewModel.InviteSelectedUserToGameCommand.Execute(null);
+        menu.Items.Add(inviteItem);
+
+        var joinItem = new MenuItem { Header = "Join Game" };
+        joinItem.Click += (_, _) => ViewModel.JoinSelectedUserGameCommand.Execute(null);
+        menu.Items.Add(joinItem);
+    }
+
+    private static void SelectListBoxItemFromEvent(ListBox listBox, ContextRequestedEventArgs e)
+    {
+        if (e.Source is Control control)
+        {
+            var listBoxItem = control.FindAncestorOfType<ListBoxItem>();
+            if (listBoxItem != null)
+                listBox.SelectedIndex = listBox.IndexFromContainer(listBoxItem);
+        }
     }
 
     private void ApplyLayoutAndCaptureBrushes(IIniLayoutOverlayService iniOverlay)

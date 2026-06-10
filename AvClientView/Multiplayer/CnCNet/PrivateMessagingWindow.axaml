@@ -43,7 +43,7 @@
               BorderThickness="1"
               Width="150" Height="326"
               Canvas.Left="12" Canvas.Top="116">
-        <ListBox ItemsSource="{Binding UserNames}"
+        <ListBox x:Name="userListBox" ItemsSource="{Binding UserNames}"
                  SelectedIndex="{Binding SelectedUserIndex}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
@@ -71,7 +71,7 @@
               IsEnabled="{Binding IsMessagesPanelEnabled}"
               Width="614" Height="310"
               Canvas.Left="174" Canvas.Top="116">
-        <ListBox ItemsSource="{Binding MessageHistory}"
+        <ListBox x:Name="messagesListBox" ItemsSource="{Binding MessageHistory}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="x:String">
@@ -114,7 +114,7 @@
               BorderThickness="1"
               Width="776" Height="326"
               Canvas.Left="12" Canvas.Top="116">
-        <ListBox ItemsSource="{Binding RecentPlayerNames}"
+        <ListBox x:Name="recentPlayersListBox" ItemsSource="{Binding RecentPlayerNames}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="x:String">
