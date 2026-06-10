@@ -16,8 +16,7 @@ namespace AvClientView.MarkupExtensions;
 /// it is seen. Avalonia eagerly instantiates all controls in the visual tree (even
 /// those with <c>IsVisible="False"</c>), so <c>ProvideValue</c> runs for every
 /// <c>{l:Translate}</c> in every view at startup. Together this means every View
-/// translation key is automatically registered for stub generation — no separate
-/// registration file is needed.
+/// translation key is automatically registered for stub generation.
 /// </para>
 /// </remarks>
 /// <example>
@@ -36,8 +35,6 @@ public sealed class TranslateExtension : MarkupExtension
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        // Translation.Instance is always non-null (a default "en" instance is assigned inline).
-        // LookUp(key, defaultValue) defaults notify=true → registers the key for stub generation.
         return Translation.Instance.LookUp(_key, _defaultValue);
     }
 }
