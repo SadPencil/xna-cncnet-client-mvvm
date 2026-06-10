@@ -120,7 +120,9 @@
                      Height="23"
                      VerticalAlignment="Center">
               <TextBox.KeyBindings>
-                <KeyBinding Gesture="Enter" Command="{Binding SendChatMessageCommand}" />
+                <KeyBinding Command="{Binding SendChatMessageCommand}">
+                  <KeyBinding.Gesture>Enter</KeyBinding.Gesture>
+                </KeyBinding>
               </TextBox.KeyBindings>
             </TextBox>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0">

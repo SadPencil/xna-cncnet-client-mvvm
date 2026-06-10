@@ -14,7 +14,9 @@
         WindowState="{Binding WindowState, Converter={x:Static conv:WindowStateConverters.ToAvalonia}, Mode=TwoWay}"
         Background="#000000">
   <Window.KeyBindings>
-    <KeyBinding Gesture="Alt+Enter" Command="{Binding ToggleFullScreenCommand}" />
+    <KeyBinding Command="{Binding ToggleFullScreenCommand}">
+      <KeyBinding.Gesture>Alt+Enter</KeyBinding.Gesture>
+    </KeyBinding>
   </Window.KeyBindings>
   <Viewbox Stretch="Uniform" ClipToBounds="False">
     <Grid Width="{x:Static view:ViewConstants.DesignResolutionWidth}"

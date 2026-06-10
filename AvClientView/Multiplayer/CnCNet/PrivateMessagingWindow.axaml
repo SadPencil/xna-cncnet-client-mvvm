@@ -94,7 +94,9 @@
                Width="514" Height="23"
                Canvas.Left="174" Canvas.Top="432">
         <TextBox.KeyBindings>
-          <KeyBinding Gesture="Enter" Command="{Binding SendMessageCommand}" />
+          <KeyBinding Command="{Binding SendMessageCommand}">
+            <KeyBinding.Gesture>Enter</KeyBinding.Gesture>
+          </KeyBinding>
         </TextBox.KeyBindings>
       </TextBox>
 
