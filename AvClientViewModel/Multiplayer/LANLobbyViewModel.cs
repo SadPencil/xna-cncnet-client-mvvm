@@ -7,8 +7,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Timers;
 
+using AvClientMvvmContract;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.Online;
 using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain;
@@ -126,11 +128,14 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly ObservableCollection<ILANHostedGame> games = new();
     public IReadOnlyList<ILANHostedGame> Games => games;
 
+    [ObservableProperty]
+    public partial int SelectedChatMessageIndex { get; set; } = -1;
+
     private readonly ObservableCollection<string> playerNames = new();
     public IReadOnlyList<string> PlayerNames => playerNames;
 
-    private readonly ObservableCollection<string> _chatMessages = new();
-    public IReadOnlyList<string> ChatMessages => _chatMessages;
+    private readonly ObservableCollection<IChatMessage> _chatMessages = new();
+    public IReadOnlyList<IChatMessage> ChatMessages => _chatMessages;
 
     private readonly ObservableCollection<string> _colorOptions = new();
     public IReadOnlyList<string> ColorOptions => _colorOptions;
@@ -601,7 +606,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
                 if (colorIndex < 0 || colorIndex >= chatColors.Length)
                     return;
 
-                AddChatMessage($"[{user.Name}] {parameters[1]}");
+                AddChatMessage(user.Name, parameters[1], chatColors[colorIndex].Color);
 
                 break;
 
@@ -777,7 +782,25 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void AddChatMessage(string message)
     {
-        _chatMessages.Add(message);
+        _chatMessages.Add(new ChatMessage(message));
+    }
+
+    private void AddChatMessage(string sender, string message, IRgb24Color color)
+    {
+        _chatMessages.Add(new ChatMessage(sender, color, DateTime.Now, message));
+    }
+
+    [RelayCommand]
+    private void ChatMessageDoubleClick()
+    {
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= _chatMessages.Count)
+            return;
+        var msg = _chatMessages[SelectedChatMessageIndex];
+        var links = msg.FormattedText.GetLinks();
+        if (links == null || links.Length != 1)
+            return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(links[0]) { UseShellExecute = true }); }
+        catch { }
     }
 
     private void Cleanup()

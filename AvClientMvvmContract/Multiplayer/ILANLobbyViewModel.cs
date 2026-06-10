@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.Online;
 
 using CommunityToolkit.Mvvm.Input;
 
@@ -12,9 +13,10 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     bool IsVisible { get; set; }
     IReadOnlyList<ILANHostedGame> Games { get; }
     IReadOnlyList<string> PlayerNames { get; }
-    IReadOnlyList<string> ChatMessages { get; }
+    IReadOnlyList<IChatMessage> ChatMessages { get; }
     IReadOnlyList<string> ColorOptions { get; }
     int SelectedGameIndex { get; set; }
+    int SelectedChatMessageIndex { get; set; }
     int HoveredGameIndex { get; set; }
     int SelectedColorIndex { get; set; }
     string PlayerName { get; }
@@ -35,4 +37,5 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
     IRelayCommand ExitLobbyCommand { get; }
     IRelayCommand SendChatMessageCommand { get; }
     IRelayCommand RefreshGamesCommand { get; }
+    IRelayCommand ChatMessageDoubleClickCommand { get; }
 }
