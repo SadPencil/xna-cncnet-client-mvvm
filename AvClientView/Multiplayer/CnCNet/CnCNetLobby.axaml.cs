@@ -105,6 +105,10 @@ public partial class CnCNetLobby : UserControl, ICnCNetLobbyView
 
         menu.Items.Add(new Separator());
 
+        var inviteItem = new MenuItem { Header = "Invite to Game" };
+        inviteItem.Click += (_, _) => ViewModel.InviteSelectedPlayerToGameCommand.Execute(null);
+        menu.Items.Add(inviteItem);
+
         var joinItem = new MenuItem { Header = "Join Game" };
         joinItem.Click += (_, _) => ViewModel.JoinSelectedPlayerGameCommand.Execute(null);
         menu.Items.Add(joinItem);

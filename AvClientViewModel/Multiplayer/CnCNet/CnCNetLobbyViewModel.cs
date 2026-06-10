@@ -75,6 +75,11 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     // Invitation tracking
     private Dictionary<Tuple<string, string>, WeakReference> invitationIndex = new();
 
+    // Invite channel info (for sending invites from lobby context menu)
+    private string inviteChannelName = string.Empty;
+    private string inviteGameName = string.Empty;
+    private string inviteChannelPassword = string.Empty;
+
     // Pending hosted games for the View to display
     private List<HostedCnCNetGame> hostedGames = new();
 
@@ -485,6 +490,27 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     }
 
     [RelayCommand]
+    private void InviteSelectedPlayerToGame()
+    {
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+            return;
+
+        if (ProgramConstants.IsInGame || string.IsNullOrEmpty(inviteChannelName))
+            return;
+
+        var player = players[SelectedPlayerIndex];
+        string messageBody = ProgramConstants.GAME_INVITE_CTCP_COMMAND + " "
+            + inviteChannelName + ";" + inviteGameName;
+
+        if (!string.IsNullOrEmpty(inviteChannelPassword))
+            messageBody += ";" + inviteChannelPassword;
+
+        connectionManager.SendCustomMessage(new QueuedMessage(
+            "PRIVMSG " + player.Name + " :\u0001" + messageBody + "\u0001",
+            QueuedMessageType.CHAT_MESSAGE, 0));
+    }
+
+    [RelayCommand]
     private void JoinSelectedPlayerGame()
     {
         if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
@@ -667,6 +693,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             gameCreationWindowViewModel.IsWindowVisible = false;
 
         pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
+        inviteChannelName = channelName;
+        inviteGameName = gameRoomName;
+        inviteChannelPassword = string.IsNullOrEmpty(password) ? string.Empty : password;
     }
 
     /// <summary>
@@ -692,6 +721,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             gameCreationWindowViewModel.IsWindowVisible = false;
 
         pmWindow?.SetInviteChannelInfo(channelName, gameRoomName, string.IsNullOrEmpty(password) ? string.Empty : password);
+        inviteChannelName = channelName;
+        inviteGameName = gameRoomName;
+        inviteChannelPassword = string.IsNullOrEmpty(password) ? string.Empty : password;
     }
 
     /// <summary>
@@ -761,6 +793,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         isInGameRoom = false;
         UpdateLogoutButtonText();
         pmWindow.ClearInviteChannelInfo();
+        inviteChannelName = string.Empty;
+        inviteGameName = string.Empty;
+        inviteChannelPassword = string.Empty;
     }
 
     /// <summary>
@@ -771,6 +806,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         isInGameRoom = false;
         UpdateLogoutButtonText();
         pmWindow?.ClearInviteChannelInfo();
+        inviteChannelName = string.Empty;
+        inviteGameName = string.Empty;
+        inviteChannelPassword = string.Empty;
     }
 
     /// <summary>
@@ -1892,6 +1930,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         foreach (var invitationIdentity in toDismiss)
         {
             invitationIndex.Remove(invitationIdentity);
+
+            if (PendingGameInvite != null &&
+                PendingGameInvite.Sender == invitationIdentity.Item1 &&
+                PendingGameInvite.ChannelName == invitationIdentity.Item2)
+            {
+                PendingGameInvite = null;
+            }
         }
     }
 

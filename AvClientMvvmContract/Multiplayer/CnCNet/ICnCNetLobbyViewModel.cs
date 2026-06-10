@@ -68,6 +68,7 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand OpenSelectedPlayerPrivateMessageCommand { get; }
     IRelayCommand ToggleSelectedPlayerFriendCommand { get; }
     IRelayCommand ToggleSelectedPlayerIgnoreCommand { get; }
+    IRelayCommand InviteSelectedPlayerToGameCommand { get; }
     IRelayCommand JoinSelectedPlayerGameCommand { get; }
     IRelayCommand OpenSelectedChatMessageSenderPrivateMessageCommand { get; }
     IRelayCommand ToggleSelectedChatMessageSenderFriendCommand { get; }
