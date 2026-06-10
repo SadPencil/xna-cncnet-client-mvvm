@@ -199,6 +199,7 @@
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
             <ListBox x:Name="playerList" ItemsSource="{Binding Players}"
+                     SelectedIndex="{Binding SelectedPlayerIndex}"
                      Background="Transparent">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>

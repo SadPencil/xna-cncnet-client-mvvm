@@ -48,6 +48,8 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     ICnCNetGameLobbyViewModel GameLobby { get; }
     ICnCNetGameLoadingLobbyViewModel GameLoadingLobby { get; }
 
+    int SelectedPlayerIndex { get; set; }
+
     IRelayCommand CreateGameCommand { get; }
     IRelayCommand JoinSelectedGameCommand { get; }
     IRelayCommand RefreshGamesCommand { get; }
@@ -60,4 +62,8 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     IRelayCommand AcceptUpdateCommand { get; }
     IRelayCommand DenyUpdateCommand { get; }
     IRelayCommand DismissMessageCommand { get; }
+    IRelayCommand OpenSelectedPlayerPrivateMessageCommand { get; }
+    IRelayCommand ToggleSelectedPlayerFriendCommand { get; }
+    IRelayCommand ToggleSelectedPlayerIgnoreCommand { get; }
+    IRelayCommand JoinSelectedPlayerGameCommand { get; }
 }

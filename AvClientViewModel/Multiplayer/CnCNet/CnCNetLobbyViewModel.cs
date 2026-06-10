@@ -96,6 +96,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public partial int HoveredGameIndex { get; set; } = -1;
 
     [ObservableProperty]
+    public partial int SelectedPlayerIndex { get; set; } = -1;
+
+    [ObservableProperty]
     public partial int SelectedColorIndex { get; set; }
 
     [ObservableProperty]
@@ -419,6 +422,59 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         // View handles showing/hiding the filters panel
         // After filters change, refresh the game list
         SortAndRefreshHostedGames();
+    }
+
+    [RelayCommand]
+    private void OpenSelectedPlayerPrivateMessage()
+    {
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+            return;
+        var player = players[SelectedPlayerIndex];
+        pmWindow?.InitPM(player.Name);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedPlayerFriend()
+    {
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+            return;
+        var player = players[SelectedPlayerIndex];
+        cncnetUserData.ToggleFriend(player.Name);
+    }
+
+    [RelayCommand]
+    private void ToggleSelectedPlayerIgnore()
+    {
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+            return;
+        var player = players[SelectedPlayerIndex];
+        var ident = connectionManager.UserList.Find(u => u.Name == player.Name)?.Ident;
+        if (!string.IsNullOrEmpty(ident))
+            cncnetUserData.ToggleIgnoreUser(ident);
+    }
+
+    [RelayCommand]
+    private void JoinSelectedPlayerGame()
+    {
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+            return;
+        var player = players[SelectedPlayerIndex];
+        var user = connectionManager.UserList.Find(u => u.Name == player.Name);
+        if (user == null)
+        {
+            chatMessages.Add(new ChatMessage(Rgb24Color.White, "User is not currently available!".L10N("Client:Main:UserNotAvailable")));
+            return;
+        }
+        var game = GetHostedGameForUser(user);
+        if (game == null)
+        {
+            chatMessages.Add(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
+            return;
+        }
+        int gameIndex = hostedGames.IndexOf(game);
+        if (gameIndex >= 0)
+            SelectedGameIndex = gameIndex;
+        JoinGameByIndex(gameIndex, string.Empty);
     }
 
     #endregion
