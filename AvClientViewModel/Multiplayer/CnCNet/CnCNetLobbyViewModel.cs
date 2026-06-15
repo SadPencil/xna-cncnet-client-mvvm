@@ -175,8 +175,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public partial IReadOnlyList<IContextMenuItem> GameContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
 
     // Game list — updated in-place via ObservableCollection.
-    private readonly ObservableCollection<IHostedCnCNetGame> games = new();
-    public IReadOnlyList<IHostedCnCNetGame> Games => games;
+    private readonly CovariantReadOnlyObservableCollection<HostedCnCNetGame, IHostedCnCNetGame> _gamesAdapter = new();
+    public ObservableCollection<HostedCnCNetGame> Games => _gamesAdapter.Source;
+    IReadOnlyList<IHostedCnCNetGame> ICnCNetLobbyViewModel.Games => _gamesAdapter.Target;
 
     // Player list — updated in-place via ObservableCollection.
     private readonly ObservableCollection<IPlayerListItem> players = new();
@@ -315,7 +316,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
             return;
         }
-        int displayIndex = games.IndexOf(game);
+        int displayIndex = Games.IndexOf(game);
         int hostIndex = hostedGames.IndexOf(game);
         SelectedGameIndex = displayIndex;
         JoinGameByIndex(hostIndex, string.Empty);
@@ -549,7 +550,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
             return;
         }
-        int displayIndex = games.IndexOf(game);
+        int displayIndex = Games.IndexOf(game);
         int hostIndex = hostedGames.IndexOf(game);
         SelectedGameIndex = displayIndex;
         JoinGameByIndex(hostIndex, string.Empty);
@@ -608,7 +609,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
             return;
         }
-        int displayIndex = games.IndexOf(game);
+        int displayIndex = Games.IndexOf(game);
         int hostIndex = hostedGames.IndexOf(game);
         SelectedGameIndex = displayIndex;
         JoinGameByIndex(hostIndex, string.Empty);
@@ -874,9 +875,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// </summary>
     public HostedCnCNetGame? GetSelectedHostedGame()
     {
-        if (SelectedGameIndex < 0 || SelectedGameIndex >= games.Count)
+        if (SelectedGameIndex < 0 || SelectedGameIndex >= Games.Count)
             return null;
-        return (HostedCnCNetGame)games[SelectedGameIndex];
+        return Games[SelectedGameIndex];
     }
 
     /// <summary>
@@ -1180,7 +1181,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             filtered = filtered.OrderByDescending(g => g.RoomName).ToList();
 
         // Build lookup and set of channel names still present
-        var filteredByChannel = new Dictionary<string, IHostedCnCNetGame>();
+        var filteredByChannel = new Dictionary<string, HostedCnCNetGame>();
         foreach (var g in filtered)
             filteredByChannel[g.ChannelName] = g;
         var presentChannels = new HashSet<string>(filteredByChannel.Keys);
@@ -1189,7 +1190,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         // Pass 1: build list preserving positions of still-existing games.
         // Use a nullable list internally — gaps (null) mark deleted games.
-        List<IHostedCnCNetGame?> build = new(oldList.Count);
+        List<HostedCnCNetGame?> build = new(oldList.Count);
         var gaps = new List<int>(); // indices in 'build' that need filling
 
         for (int i = 0; i < oldList.Count; i++)
@@ -1239,7 +1240,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         }
 
         // Trim nulls and append leftover new games
-        var result = new List<IHostedCnCNetGame>(build.Count);
+        var result = new List<HostedCnCNetGame>(build.Count);
         foreach (var g in build)
         { if (g != null) result.Add(g); }
         while (ngIdx < newGames.Count)
@@ -1247,19 +1248,19 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         // Apply only changed positions to ObservableCollection.
         // Unchanged items are left alone — zero CollectionChanged events.
-        int common = Math.Min(games.Count, result.Count);
+        int common = Math.Min(Games.Count, result.Count);
         for (int i = 0; i < common; i++)
         {
-            if (games[i].ChannelName != result[i].ChannelName)
-                games[i] = result[i];
+            if (Games[i].ChannelName != result[i].ChannelName)
+                Games[i] = result[i];
         }
-        while (games.Count > result.Count)
-            games.RemoveAt(games.Count - 1);
-        for (int i = games.Count; i < result.Count; i++)
-            games.Add(result[i]);
+        while (Games.Count > result.Count)
+            Games.RemoveAt(Games.Count - 1);
+        for (int i = Games.Count; i < result.Count; i++)
+            Games.Add(result[i]);
 
-        if (SelectedGameIndex >= 0 && SelectedGameIndex < games.Count)
-            SelectedGame = games[SelectedGameIndex];
+        if (SelectedGameIndex >= 0 && SelectedGameIndex < Games.Count)
+            SelectedGame = Games[SelectedGameIndex];
         else
             SelectedGame = null;
     }
@@ -1568,7 +1569,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsConnected = false;
 
             players.Clear();
-            games.Clear();
+            Games.Clear();
             hostedGames.Clear();
             followedGames.Clear();
 
@@ -2043,7 +2044,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     partial void OnSelectedGameIndexChanged(int value)
     {
-        SelectedGame = value >= 0 && value < games.Count ? games[value] : null;
+        SelectedGame = value >= 0 && value < Games.Count ? Games[value] : null;
         IsJoinGameButtonEnabled = IsConnected && value >= 0;
         BuildGameContextMenuItems();
     }
@@ -2167,13 +2168,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void BuildGameContextMenuItems()
     {
         var items = new List<IContextMenuItem>();
-        if (SelectedGameIndex < 0 || SelectedGameIndex >= games.Count)
+        if (SelectedGameIndex < 0 || SelectedGameIndex >= Games.Count)
         {
             GameContextMenuItems = items;
             return;
         }
 
-        var game = games[SelectedGameIndex];
+        var game = Games[SelectedGameIndex];
         string hostName = game.HostName;
         bool isFriend = cncnetUserData.IsFriend(hostName);
         bool isIgnored = cncnetUserData.IsIgnored(connectionManager.UserList.Find(u => u.Name == hostName)?.Ident);
