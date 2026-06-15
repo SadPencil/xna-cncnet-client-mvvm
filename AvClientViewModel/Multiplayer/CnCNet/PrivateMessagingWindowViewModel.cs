@@ -97,8 +97,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     public ObservableCollection<ContextMenuItem> UserContextMenuItems => _userContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.UserContextMenuItems => _userContextMenuItemsAdapter.Target;
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IContextMenuItem> MessageContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _messageContextMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> MessageContextMenuItems => _messageContextMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.MessageContextMenuItems => _messageContextMenuItemsAdapter.Target;
 
     [ObservableProperty]
     public partial IReadOnlyList<IContextMenuItem> RecentPlayerContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
@@ -892,11 +893,13 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     private void BuildMessageContextMenuItems()
     {
-        var items = new List<IContextMenuItem>();
+        var items = new List<ContextMenuItem>();
         int idx = SelectedMessageIndex;
         if (idx < 0 || idx >= MessageHistory.Count)
         {
-            MessageContextMenuItems = items;
+            MessageContextMenuItems.Clear();
+            foreach (var item in items)
+                MessageContextMenuItems.Add(item);
             return;
         }
 
@@ -958,7 +961,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
             }
         }
 
-        MessageContextMenuItems = items;
+        MessageContextMenuItems.Clear();
+        foreach (var item in items)
+            MessageContextMenuItems.Add(item);
     }
 
     private void BuildRecentPlayerContextMenuItems()
