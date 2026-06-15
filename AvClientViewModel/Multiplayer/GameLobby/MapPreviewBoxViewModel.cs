@@ -77,8 +77,9 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     private readonly ObservableCollection<string> _startingLocationSummaries = new();
     public IReadOnlyList<string> StartingLocationSummaries => _startingLocationSummaries;
 
-    private readonly ObservableCollection<StartingLocationIndicatorData> _startingLocationIndicators = new();
-    public IReadOnlyList<IStartingLocationIndicatorData> StartingLocationIndicators => _startingLocationIndicators;
+    private readonly CovariantReadOnlyObservableCollection<StartingLocationIndicatorData, IStartingLocationIndicatorData> _startingLocationIndicatorsAdapter = new();
+    public ObservableCollection<StartingLocationIndicatorData> StartingLocationIndicators => _startingLocationIndicatorsAdapter.Source;
+    IReadOnlyList<IStartingLocationIndicatorData> IMapPreviewBoxViewModel.StartingLocationIndicators => _startingLocationIndicatorsAdapter.Target;
 
     private readonly Action? onFavoriteToggled;
     private Action? onStartingLocationApplied;
@@ -348,7 +349,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     /// </summary>
     public void UpdateStartingLocationIndicators()
     {
-        _startingLocationIndicators.Clear();
+        StartingLocationIndicators.Clear();
 
         if (gameModeMap == null || gameModeMap.Map == null || MapPreviewImage == null)
             return;
@@ -425,7 +426,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
                 ? playerList![0].Color
                 : new Rgb24Color(255, 255, 255);
 
-            _startingLocationIndicators.Add(new StartingLocationIndicatorData(
+            StartingLocationIndicators.Add(new StartingLocationIndicatorData(
                 waypoint, x, y, true, isOccupied, tintColor,
                 playerList ?? new List<IIndicatorPlayerInfo>()));
         }
@@ -434,7 +435,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     }
 }
 
-internal record StartingLocationIndicatorData(
+public record StartingLocationIndicatorData(
     int WaypointNumber,
     double X,
     double Y,
