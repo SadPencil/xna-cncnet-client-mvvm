@@ -91,7 +91,7 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
     public IReadOnlyList<string> FollowedGameNames => _followedGameNames;
 
     // Store game data for View
-    private readonly CovariantReadOnlyObservableCollection<GameListItemData, IGameListItemData> _gameListItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<GameListItemData, IGameListItemData> _gameListItemsAdapter = new();
     public ObservableCollection<GameListItemData> GameListItems => _gameListItemsAdapter.Source;
     IReadOnlyList<IGameListItemData> ICnCNetOptionsPanelViewModel.GameListItems => _gameListItemsAdapter.Target;
 

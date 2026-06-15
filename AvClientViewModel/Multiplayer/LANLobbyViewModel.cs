@@ -127,7 +127,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // --- Observable collections ---
 
-    private readonly CovariantReadOnlyObservableCollection<HostedLANGame, ILANHostedGame> _gamesAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<HostedLANGame, ILANHostedGame> _gamesAdapter = new();
     public ObservableCollection<HostedLANGame> Games => _gamesAdapter.Source;
     IReadOnlyList<ILANHostedGame> ILANLobbyViewModel.Games => _gamesAdapter.Target;
 
@@ -137,7 +137,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly ObservableCollection<string> playerNames = new();
     public IReadOnlyList<string> PlayerNames => playerNames;
 
-    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _chatMessagesAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ChatMessage, IChatMessage> _chatMessagesAdapter = new();
     public ObservableCollection<ChatMessage> ChatMessages => _chatMessagesAdapter.Source;
     IReadOnlyList<IChatMessage> ILANLobbyViewModel.ChatMessages => _chatMessagesAdapter.Target;
 

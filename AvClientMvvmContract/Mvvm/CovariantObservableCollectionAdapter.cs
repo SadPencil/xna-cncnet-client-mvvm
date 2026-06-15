@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 
 namespace AvClientMvvmContract.Mvvm;
 
-public sealed class CovariantObservableCollection<TSource, TTarget> : IDisposable
+public sealed class CovariantObservableCollectionAdapter<TSource, TTarget> : IDisposable
     where TSource : TTarget
 {
     private readonly ObservableCollection<TSource> _source;
@@ -14,7 +14,7 @@ public sealed class CovariantObservableCollection<TSource, TTarget> : IDisposabl
     /// <summary>
     /// Creates a new adapter with an empty internal collection.
     /// </summary>
-    public CovariantObservableCollection()
+    public CovariantObservableCollectionAdapter()
         : this(new ObservableCollection<TSource>())
     {
     }
@@ -22,10 +22,10 @@ public sealed class CovariantObservableCollection<TSource, TTarget> : IDisposabl
     /// <summary>
     /// Creates a new adapter wrapping an existing collection.
     /// </summary>
-    public CovariantObservableCollection(ObservableCollection<TSource> source)
+    public CovariantObservableCollectionAdapter(ObservableCollection<TSource> source)
     {
         if (source == null)
-            throw new ArgumentNullException("source");
+            throw new ArgumentNullException(nameof(source));
 
         _source = source;
         _target = new ObservableCollection<TTarget>();
