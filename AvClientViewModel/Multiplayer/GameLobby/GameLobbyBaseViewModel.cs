@@ -76,6 +76,15 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     public partial string MapName { get; set; } = "Map: Unknown".L10N("Client:Main:MapUnknown");
 
     [ObservableProperty]
+    public partial string MapRawName { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string MapOriginalName { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial bool HasMapOriginalName { get; set; }
+
+    [ObservableProperty]
     public partial string MapAuthor { get; set; } = "By Unknown Author".L10N("Client:Main:AuthorByUnknown");
 
     [ObservableProperty]
@@ -104,7 +113,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     public partial string MapSearchText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string MapListTooltipText { get; set; } = string.Empty;
+    public partial string? MapListTooltipText { get; set; }
 
     [ObservableProperty]
     public partial int SortDirectionState { get; set; }
@@ -775,7 +784,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         if (hoveredIndex < 0 || hoveredIndex >= MapListItems.Count)
         {
-            MapListTooltipText = string.Empty;
+            MapListTooltipText = null;
             return;
         }
 
@@ -783,7 +792,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         if (gmm.Map.UntranslatedName != gmm.Map.Name)
             MapListTooltipText = "Original name:".L10N("Client:Main:OriginalMapName") + " " + gmm.Map.UntranslatedName;
         else
-            MapListTooltipText = string.Empty;
+            MapListTooltipText = null;
     }
 
     partial void OnSelectedGameModeFilterIndexChanged(int value)
@@ -1022,6 +1031,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         if (GameMode == null || Map == null)
         {
             MapName = "Map: Unknown".L10N("Client:Main:MapUnknown");
+            MapRawName = string.Empty;
+            MapOriginalName = string.Empty;
+            HasMapOriginalName = false;
             MapAuthor = "By Unknown Author".L10N("Client:Main:AuthorByUnknown");
             GameModeName = "Game mode: Unknown".L10N("Client:Main:GameModeUnknown");
             MapSize = "Size: Not available".L10N("Client:Main:MapSizeUnknown");
@@ -1029,6 +1041,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }
 
         MapName = "Map:".L10N("Client:Main:Map") + " " + Map.Name;
+        MapRawName = Map.Name;
+        MapOriginalName = Map.UntranslatedName;
+        HasMapOriginalName = Map.UntranslatedName != Map.Name;
         MapAuthor = "By".L10N("Client:Main:AuthorBy") + " " + Map.Author;
         GameModeName = "Game mode:".L10N("Client:Main:GameModeLabel") + " " + GameMode.UIName;
         MapSize = "Size:".L10N("Client:Main:MapSize") + " " + Map.GetSizeString();

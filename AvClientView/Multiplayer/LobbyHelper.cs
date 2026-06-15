@@ -16,12 +16,12 @@ internal static class LobbyHelper
     /// Sets up hover tracking on a game list. Calls <paramref name="setHoveredIndex"/>
     /// with the estimated item index under the pointer.
     /// </summary>
-    public static void SetUpHoverTracking(ListBox listBox, Action<int> setHoveredIndex)
+    public static void SetUpHoverTracking(ListBox listBox, Action<int> setHoveredIndex, double rowHeight = 48.0)
     {
         listBox.AddHandler(InputElement.PointerMovedEvent, (_, e) =>
         {
             var pos = e.GetPosition(listBox);
-            int idx = (int)(pos.Y / 48.0);
+            int idx = (int)(pos.Y / rowHeight);
             if (idx < 0) idx = 0;
             setHoveredIndex(idx);
         }, handledEventsToo: true);

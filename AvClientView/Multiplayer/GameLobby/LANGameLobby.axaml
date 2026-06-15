@@ -52,7 +52,8 @@
         <ListBox x:Name="mapListBox"
                  ItemsSource="{Binding MapListItems}"
                  SelectedIndex="{Binding SelectedMapIndex}"
-                 Background="Transparent">
+                 Background="Transparent"
+                 ToolTip.Tip="{Binding MapListTooltipText}">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="vmc:IMapListItem">
               <StackPanel Orientation="Horizontal">

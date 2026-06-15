@@ -63,6 +63,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         iniOverlay?.ApplyLayout(this, "MultiplayerGameLobby");
 
         SetupMapListContextMenu();
+        SetupMapListHoverTracking();
         SetupSearchContextMenu();
         SetupPlayerNameContextMenus();
 
@@ -295,6 +296,15 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         };
     }
 
+    private void SetupMapListHoverTracking()
+    {
+        LobbyHelper.SetUpHoverTracking(mapListBox, idx =>
+        {
+            if (lobbyViewModel != null)
+                lobbyViewModel.SetHoveredMapIndexCommand.Execute(idx);
+        }, rowHeight: 20.0);
+    }
+
     private void SetupSearchContextMenu()
     {
         tbMapSearch.ContextRequested += (s, e) =>
@@ -342,6 +352,21 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         toggleFavItem.Click += (s, e) => lobbyViewModel.ToggleFavoriteCommand.Execute(null);
         menu.Items.Add(toggleFavItem);
 
+        menu.Items.Add(new Separator());
+
+        var copyNameItem = new MenuItem { Header = "Copy Map Name".L10N("Client:Main:CopyMapName") };
+        copyNameItem.Click += (s, e) => CopyTextToClipboard(lobbyViewModel.MapRawName);
+        menu.Items.Add(copyNameItem);
+
+        if (lobbyViewModel.HasMapOriginalName)
+        {
+            var copyOriginalItem = new MenuItem { Header = "Copy Original Name".L10N("Client:Main:CopyOriginalMapName") };
+            copyOriginalItem.Click += (s, e) => CopyTextToClipboard(lobbyViewModel.MapOriginalName);
+            menu.Items.Add(copyOriginalItem);
+        }
+
+        menu.Items.Add(new Separator());
+
         var deleteItem = new MenuItem { Header = "Delete Map".L10N("Client:UI:DeleteMap") };
         deleteItem.Click += (s, e) => lobbyViewModel.DeleteMapCommand.Execute(null);
         menu.Items.Add(deleteItem);
@@ -349,6 +374,15 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         var showFolderItem = new MenuItem { Header = "Show in Folder".L10N("Client:UI:ShowInFolder") };
         showFolderItem.Click += (s, e) => lobbyViewModel.ShowMapInFolderCommand.Execute(null);
         menu.Items.Add(showFolderItem);
+    }
+
+    private async void CopyTextToClipboard(string? text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel?.Clipboard != null)
+            await topLevel.Clipboard.SetTextAsync(text);
     }
 
     private void ShowIndicatorContextMenu(int waypointNumber)

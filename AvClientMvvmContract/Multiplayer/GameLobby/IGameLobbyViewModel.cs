@@ -12,6 +12,9 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
 {
     // --- Map info ---
     string MapName { get; }
+    string MapRawName { get; }
+    string MapOriginalName { get; }
+    bool HasMapOriginalName { get; }
     string MapAuthor { get; }
     string GameModeName { get; }
     string MapSize { get; }
@@ -28,7 +31,7 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     IReadOnlyList<string> GameModeFilterOptions { get; }
     int SelectedGameModeFilterIndex { get; set; }
     string MapSearchText { get; set; }
-    string MapListTooltipText { get; }
+    string? MapListTooltipText { get; }
     int SortDirectionState { get; set; }
     bool IsMapSortButtonVisible { get; }
     bool IsMapSortButtonEnabled { get; }
