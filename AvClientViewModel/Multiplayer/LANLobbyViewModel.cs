@@ -142,7 +142,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     public IReadOnlyList<IChatMessage> ChatMessages => _chatMessages;
 
     private readonly ObservableCollection<string> _colorOptions = new();
-    public IReadOnlyList<string> ColorOptions => _colorOptions;
+    private readonly ReadOnlyObservableCollection<string> readOnlyColorOptions;
+    ReadOnlyObservableCollection<string> ILANLobbyViewModel.ColorOptions => readOnlyColorOptions;
 
     // Internal game list for tracking
     private readonly List<HostedLANGame> hostedGames = new();
@@ -199,6 +200,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
         foreach (LANColor color in chatColors)
             _colorOptions.Add(color.Name);
+
+        readOnlyColorOptions = new ReadOnlyObservableCollection<string>(_colorOptions);
 
         viewLifecycleService.Closing += (_, _) => Cleanup();
 
