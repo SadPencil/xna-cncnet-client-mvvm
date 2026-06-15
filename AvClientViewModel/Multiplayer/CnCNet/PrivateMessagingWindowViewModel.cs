@@ -101,8 +101,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     public ObservableCollection<ContextMenuItem> MessageContextMenuItems => _messageContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.MessageContextMenuItems => _messageContextMenuItemsAdapter.Target;
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IContextMenuItem> RecentPlayerContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _recentPlayerContextMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> RecentPlayerContextMenuItems => _recentPlayerContextMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.RecentPlayerContextMenuItems => _recentPlayerContextMenuItemsAdapter.Target;
 
     // --- Observable collections ---
 
@@ -968,11 +969,13 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     private void BuildRecentPlayerContextMenuItems()
     {
-        var items = new List<IContextMenuItem>();
+        var items = new List<ContextMenuItem>();
         int idx = SelectedRecentPlayerIndex;
         if (idx < 0 || idx >= _recentPlayerNames.Count)
         {
-            RecentPlayerContextMenuItems = items;
+            RecentPlayerContextMenuItems.Clear();
+            foreach (var item in items)
+                RecentPlayerContextMenuItems.Add(item);
             return;
         }
 
@@ -1001,7 +1004,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
                 JoinSelectedRecentPlayerGameCommand));
         }
 
-        RecentPlayerContextMenuItems = items;
+        RecentPlayerContextMenuItems.Clear();
+        foreach (var item in items)
+            RecentPlayerContextMenuItems.Add(item);
     }
 
     // --- Nested types ---
