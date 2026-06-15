@@ -42,8 +42,7 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
     // --- Observable collections ---
 
     private readonly ObservableCollection<string> _campaignTags = new();
-    private readonly ReadOnlyObservableCollection<string> _readOnlyCampaignTags;
-    ReadOnlyObservableCollection<string> ICampaignTagSelectorViewModel.CampaignTags => _readOnlyCampaignTags;
+    public IReadOnlyList<string> CampaignTags => _campaignTags;
 
     private readonly List<bool> _campaignTagEnabled = new();
 
@@ -64,8 +63,6 @@ public partial class CampaignTagSelectorViewModel : ObservableObject, ICampaignT
         this.discordHandler = discordHandler;
         this.gameProcessService = gameProcessService;
         this.fileIntegrityService = fileIntegrityService;
-
-        _readOnlyCampaignTags = new ReadOnlyObservableCollection<string>(_campaignTags);
     }
 
     // --- Commands ---

@@ -135,16 +135,13 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     public partial int SelectedChatMessageIndex { get; set; } = -1;
 
     private readonly ObservableCollection<string> playerNames = new();
-    private readonly ReadOnlyObservableCollection<string> readOnlyPlayerNames;
-    ReadOnlyObservableCollection<string> ILANLobbyViewModel.PlayerNames => readOnlyPlayerNames;
+    public IReadOnlyList<string> PlayerNames => playerNames;
 
-    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _chatMessagesAdapter = new();
-    private ObservableCollection<ChatMessage> ChatMessages => _chatMessagesAdapter.Source;
-    ReadOnlyObservableCollection<IChatMessage> ILANLobbyViewModel.ChatMessages => _chatMessagesAdapter.Target;
+    private readonly ObservableCollection<IChatMessage> _chatMessages = new();
+    public IReadOnlyList<IChatMessage> ChatMessages => _chatMessages;
 
     private readonly ObservableCollection<string> _colorOptions = new();
-    private readonly ReadOnlyObservableCollection<string> readOnlyColorOptions;
-    ReadOnlyObservableCollection<string> ILANLobbyViewModel.ColorOptions => readOnlyColorOptions;
+    public IReadOnlyList<string> ColorOptions => _colorOptions;
 
     // Internal game list for tracking
     private readonly List<HostedLANGame> hostedGames = new();
@@ -174,8 +171,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         this.discordHandler = discordHandler;
         this.random = random;
 
-        readOnlyPlayerNames = new ReadOnlyObservableCollection<string>(playerNames);
-
         this.localGame = ClientConfiguration.Instance.LocalGame;
         this.localGameIndex = gameCollection.GameList.FindIndex(
             g => g.InternalName.ToUpper() == localGame.ToUpper());
@@ -201,8 +196,6 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
         foreach (LANColor color in chatColors)
             _colorOptions.Add(color.Name);
-
-        readOnlyColorOptions = new ReadOnlyObservableCollection<string>(_colorOptions);
 
         viewLifecycleService.Closing += (_, _) => Cleanup();
 
@@ -798,20 +791,20 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void AddChatMessage(string message)
     {
-        ChatMessages.Add(new ChatMessage(message));
+        _chatMessages.Add(new ChatMessage(message));
     }
 
     private void AddChatMessage(string sender, string message, IRgb24Color color)
     {
-        ChatMessages.Add(new ChatMessage(sender, color, DateTime.Now, message));
+        _chatMessages.Add(new ChatMessage(sender, color, DateTime.Now, message));
     }
 
     [RelayCommand]
     private void ChatMessageDoubleClick()
     {
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= _chatMessages.Count)
             return;
-        var msg = ChatMessages[SelectedChatMessageIndex];
+        var msg = _chatMessages[SelectedChatMessageIndex];
         var links = msg.FormattedText.GetLinks();
         if (links == null || links.Length != 1)
             return;

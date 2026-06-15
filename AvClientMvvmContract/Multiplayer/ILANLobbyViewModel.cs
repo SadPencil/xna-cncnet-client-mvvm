@@ -13,9 +13,9 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
 {
     bool IsVisible { get; set; }
     ReadOnlyObservableCollection<ILANHostedGame> Games { get; }
-    ReadOnlyObservableCollection<string> PlayerNames { get; }
-    ReadOnlyObservableCollection<IChatMessage> ChatMessages { get; }
-    ReadOnlyObservableCollection<string> ColorOptions { get; }
+    IReadOnlyList<string> PlayerNames { get; }
+    IReadOnlyList<IChatMessage> ChatMessages { get; }
+    IReadOnlyList<string> ColorOptions { get; }
     int SelectedGameIndex { get; set; }
     int SelectedChatMessageIndex { get; set; }
     int HoveredGameIndex { get; set; }
