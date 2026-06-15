@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 using AvClientMvvmContract.Domain;
@@ -9,7 +10,7 @@ namespace AvClientMvvmContract.Campaign;
 
 public interface ICampaignTagSelectorViewModel : INotifyPropertyChanged
 {
-    IReadOnlyList<string> CampaignTags { get; }
+    ReadOnlyObservableCollection<string> CampaignTags { get; }
     int SelectedTagIndex { get; set; }
     string? SelectedTagName { get; }
     bool IsVisible { get; set; }
