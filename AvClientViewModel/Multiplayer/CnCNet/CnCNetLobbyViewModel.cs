@@ -1941,8 +1941,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                     int index = hostedGames.FindIndex(g => g.HostName == e.UserName);
                     if (index > -1)
                     {
+                        string closedGameName = hostedGames[index].RoomName;
                         hostedGames.RemoveAt(index);
                         DismissInvalidInvitations();
+                        SortAndRefreshHostedGames();
+                        connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.Gray,
+                            string.Format("The game {0} has been closed.".L10N("Client:Main:GameClosed"), closedGameName)));
                     }
                     return;
                 }
