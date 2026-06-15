@@ -188,8 +188,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public ObservableCollection<ChatMessage> ChatMessages => _chatMessagesAdapter.Source;
     IReadOnlyList<IChatMessage> ICnCNetLobbyViewModel.ChatMessages => _chatMessagesAdapter.Target;
 
-    private readonly ObservableCollection<IIRCColor> colorOptions = new();
-    public IReadOnlyList<IIRCColor> ColorOptions => colorOptions;
+    private readonly CovariantReadOnlyObservableCollection<IRCColor, IIRCColor> _colorOptionsAdapter = new();
+    public ObservableCollection<IRCColor> ColorOptions => _colorOptionsAdapter.Source;
+    IReadOnlyList<IIRCColor> ICnCNetLobbyViewModel.ColorOptions => _colorOptionsAdapter.Target;
 
     private List<string> channelOptions = new();
     public IReadOnlyList<string> ChannelOptions => channelOptions;
@@ -261,13 +262,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         {
             if (color.Selectable)
             {
-                colorOptions.Add(color);
+                ColorOptions.Add(color);
             }
         }
 
         // Set initial color from settings
         int savedColor = UserINISettings.Instance.ChatColor;
-        SelectedColorIndex = (savedColor >= colorOptions.Count || savedColor < 0)
+        SelectedColorIndex = (savedColor >= ColorOptions.Count || savedColor < 0)
             ? ClientConfiguration.Instance.DefaultPersonalChatColorIndex
             : savedColor;
 
