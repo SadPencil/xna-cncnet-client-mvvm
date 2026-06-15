@@ -136,8 +136,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     public partial IReadOnlyList<string> PlayerNames { get; set; } = Array.Empty<string>();
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IContextMenuItem> StartingLocationAssignMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _startingLocationAssignMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> StartingLocationAssignMenuItems => _startingLocationAssignMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> IGameLobbyViewModel.StartingLocationAssignMenuItems => _startingLocationAssignMenuItemsAdapter.Target;
 
     [ObservableProperty]
     public partial int SelectedPlayerIndex { get; set; }
@@ -1604,7 +1605,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     private void BuildStartingLocationAssignMenuItems()
     {
-        var items = new List<IContextMenuItem>();
+        var items = new List<ContextMenuItem>();
         int menuId = 1;
         var playerSlots = PlayerSlots;
         var playerNames = PlayerNames;
@@ -1636,7 +1637,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             })));
             menuId++;
         }
-        StartingLocationAssignMenuItems = items;
+        StartingLocationAssignMenuItems.Clear();
+        foreach (var item in items)
+            StartingLocationAssignMenuItems.Add(item);
     }
 
     // --- Presets ---
