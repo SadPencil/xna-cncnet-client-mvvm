@@ -107,8 +107,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     private readonly ObservableCollection<string> _userNames = new();
     public IReadOnlyList<string> UserNames => _userNames;
 
-    private readonly ObservableCollection<IChatMessage> _messageHistory = new();
-    public IReadOnlyList<IChatMessage> MessageHistory => _messageHistory;
+    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _messageHistoryAdapter = new();
+    public ObservableCollection<ChatMessage> MessageHistory => _messageHistoryAdapter.Source;
+    IReadOnlyList<IChatMessage> IPrivateMessagingWindowViewModel.MessageHistory => _messageHistoryAdapter.Target;
 
     private readonly ObservableCollection<string> _recentPlayerNames = new();
     public IReadOnlyList<string> RecentPlayerNames => _recentPlayerNames;
@@ -179,7 +180,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         var sentChatMessage = new ChatMessage(sentMessage);
         pmUser.Messages.Add(sentChatMessage);
 
-        _messageHistory.Add(sentChatMessage);
+        MessageHistory.Add(sentChatMessage);
         onSoundPlayRequested?.Invoke("message.wav");
 
         lastConversationPartner = userName;
@@ -302,9 +303,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [RelayCommand]
     private void OpenSelectedMessageSenderPrivateMessage()
     {
-        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= MessageHistory.Count)
             return;
-        var msg = _messageHistory[SelectedMessageIndex];
+        var msg = MessageHistory[SelectedMessageIndex];
         if (!string.IsNullOrEmpty(msg.SenderName))
             InitPM(msg.SenderName);
     }
@@ -312,9 +313,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [RelayCommand]
     private void ToggleSelectedMessageSenderFriend()
     {
-        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= MessageHistory.Count)
             return;
-        var msg = _messageHistory[SelectedMessageIndex];
+        var msg = MessageHistory[SelectedMessageIndex];
         if (!string.IsNullOrEmpty(msg.SenderName))
             cncnetUserData.ToggleFriend(msg.SenderName);
     }
@@ -322,9 +323,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [RelayCommand]
     private void ToggleSelectedMessageSenderIgnore()
     {
-        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= MessageHistory.Count)
             return;
-        var msg = _messageHistory[SelectedMessageIndex];
+        var msg = MessageHistory[SelectedMessageIndex];
         if (string.IsNullOrEmpty(msg.SenderIdent))
             return;
         cncnetUserData.ToggleIgnoreUser(msg.SenderIdent);
@@ -333,9 +334,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [RelayCommand]
     private void JoinSelectedMessageSenderGame()
     {
-        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= MessageHistory.Count)
             return;
-        var msg = _messageHistory[SelectedMessageIndex];
+        var msg = MessageHistory[SelectedMessageIndex];
         if (string.IsNullOrEmpty(msg.SenderName))
             return;
         onJoinUserRequested?.Invoke(msg.SenderName);
@@ -361,9 +362,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [RelayCommand]
     private void MessageDoubleClick()
     {
-        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= _messageHistory.Count)
+        if (SelectedMessageIndex < 0 || SelectedMessageIndex >= MessageHistory.Count)
             return;
-        var msg = _messageHistory[SelectedMessageIndex];
+        var msg = MessageHistory[SelectedMessageIndex];
         var links = msg.Message.GetLinks();
         if (links == null || links.Length != 1)
             return;
@@ -478,7 +479,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     partial void OnSelectedTabIndexChanged(int value)
     {
         _userNames.Clear();
-        _messageHistory.Clear();
+        MessageHistory.Clear();
         DraftMessage = string.Empty;
 
         switch (value)
@@ -500,7 +501,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     partial void OnSelectedUserIndexChanged(int value)
     {
-        _messageHistory.Clear();
+        MessageHistory.Clear();
         DraftMessage = string.Empty;
         BuildUserContextMenuItems();
 
@@ -520,7 +521,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
         foreach (ChatMessage message in pmUser.Messages)
         {
-            _messageHistory.Add(message);
+            MessageHistory.Add(message);
         }
     }
 
@@ -620,7 +621,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         {
             DraftMessage = string.Empty;
             IsMessageInputEnabled = false;
-            _messageHistory.Clear();
+            MessageHistory.Clear();
         }
     }
 
@@ -674,7 +675,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
             return;
         }
 
-        _messageHistory.Add(message);
+        MessageHistory.Add(message);
         onSoundPlayRequested?.Invoke("message.wav");
     }
 
@@ -702,7 +703,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
                 IsMessageInputEnabled = true;
 
                 if (joinMessage != null)
-                    _messageHistory.Add(joinMessage);
+                    MessageHistory.Add(joinMessage);
             }
         }
     }
@@ -737,7 +738,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
             {
                 IsMessageInputEnabled = false;
                 if (leaveMessage != null)
-                    _messageHistory.Add(leaveMessage);
+                    MessageHistory.Add(leaveMessage);
             }
         }
     }
@@ -816,7 +817,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         {
             DraftMessage = string.Empty;
             IsMessageInputEnabled = false;
-            _messageHistory.Clear();
+            MessageHistory.Clear();
         }
     }
 
@@ -888,13 +889,13 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     {
         var items = new List<IContextMenuItem>();
         int idx = SelectedMessageIndex;
-        if (idx < 0 || idx >= _messageHistory.Count)
+        if (idx < 0 || idx >= MessageHistory.Count)
         {
             MessageContextMenuItems = items;
             return;
         }
 
-        var msg = _messageHistory[idx];
+        var msg = MessageHistory[idx];
 
         if (!string.IsNullOrEmpty(msg.SenderName))
         {
