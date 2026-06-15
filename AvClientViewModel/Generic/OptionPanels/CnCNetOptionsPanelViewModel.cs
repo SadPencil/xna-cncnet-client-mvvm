@@ -91,8 +91,9 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
     public IReadOnlyList<string> FollowedGameNames => _followedGameNames;
 
     // Store game data for View
-    private readonly List<GameListItemData> _gameListItems = new();
-    public IReadOnlyList<IGameListItemData> GameListItems => _gameListItems;
+    private readonly CovariantReadOnlyObservableCollection<GameListItemData, IGameListItemData> _gameListItemsAdapter = new();
+    public ObservableCollection<GameListItemData> GameListItems => _gameListItemsAdapter.Source;
+    IReadOnlyList<IGameListItemData> ICnCNetOptionsPanelViewModel.GameListItems => _gameListItemsAdapter.Target;
 
     // --- Constructor ---
 
@@ -133,7 +134,7 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
 
         // Load followed games
         _followedGameNames.Clear();
-        _gameListItems.Clear();
+        GameListItems.Clear();
         string localGame = ClientConfiguration.Instance.LocalGame.ToUpperInvariant();
         foreach (var game in gameCollection.GameList.Where(g => g.Supported && !string.IsNullOrEmpty(g.GameBroadcastChannel)))
         {
@@ -143,7 +144,7 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
             if (isFollowed)
                 _followedGameNames.Add(game.InternalName);
 
-            _gameListItems.Add(new GameListItemData(game.InternalName, game.UIName, isLocalGame, isFollowed));
+            GameListItems.Add(new GameListItemData(game.InternalName, game.UIName, isLocalGame, isFollowed));
         }
     }
 
