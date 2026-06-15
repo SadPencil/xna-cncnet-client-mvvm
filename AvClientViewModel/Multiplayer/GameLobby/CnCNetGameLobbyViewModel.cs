@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 
+using AvClientMvvmContract;
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.Mvvm;
 using AvClientMvvmContract.Online;
 using AvClientMvvmContract.ViewServices;
 
@@ -18,7 +20,6 @@ using AvClientViewModel.Domain.Multiplayer.CnCNet;
 using AvClientViewModel.Multiplayer.GameLobby.CommandHandlers;
 using AvClientViewModel.Online;
 using AvClientViewModel.Online.EventArguments;
-using AvClientViewModel.ViewServices;
 
 using ClientCore;
 using ClientCore.Extensions;

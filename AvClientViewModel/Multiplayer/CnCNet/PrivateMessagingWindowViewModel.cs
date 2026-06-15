@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+using AvClientMvvmContract;
 using AvClientMvvmContract.Multiplayer.CnCNet;
+using AvClientMvvmContract.Mvvm;
 using AvClientMvvmContract.Online;
 using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Online;
 using AvClientViewModel.Online.EventArguments;
-using AvClientViewModel.ViewServices;
 
 using ClientCore;
 using ClientCore.Enums;

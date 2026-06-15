@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using AvClientMvvmContract.Generic.OptionPanels;
+using AvClientMvvmContract.Mvvm;
 
 using AvClientViewModel.Domain.Multiplayer.CnCNet;
 

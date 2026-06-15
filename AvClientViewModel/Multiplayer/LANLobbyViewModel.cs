@@ -11,6 +11,7 @@ using AvClientMvvmContract;
 using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.Mvvm;
 using AvClientMvvmContract.Online;
 using AvClientMvvmContract.ViewServices;
 

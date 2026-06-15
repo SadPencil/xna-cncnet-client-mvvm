@@ -6,12 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
+using AvClientMvvmContract;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.Mvvm;
 using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain;
 using AvClientViewModel.Domain.Multiplayer;
-using AvClientViewModel.ViewServices;
 
 using ClientCore;
 using ClientCore.Enums;

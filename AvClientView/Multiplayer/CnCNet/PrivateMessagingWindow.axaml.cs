@@ -9,6 +9,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 
+using AvClientMvvmContract;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.Online;
 using AvClientMvvmContract.ViewServices;

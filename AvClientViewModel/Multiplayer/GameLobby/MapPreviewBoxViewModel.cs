@@ -6,6 +6,7 @@ using System.Linq;
 
 using AvClientMvvmContract;
 using AvClientMvvmContract.Multiplayer.GameLobby;
+using AvClientMvvmContract.Mvvm;
 using AvClientMvvmContract.ViewServices;
 
 using AvClientViewModel.Domain.Multiplayer;

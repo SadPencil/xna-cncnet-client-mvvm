@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 
+using AvClientMvvmContract;
 using AvClientMvvmContract.Multiplayer.CnCNet;
 using AvClientMvvmContract.ViewServices;
 

@@ -1,5 +1,6 @@
 using AvClientMvvmContract.Domain;
 using AvClientMvvmContract.Campaign;
+using AvClientMvvmContract.Mvvm;
 
 #nullable enable
 using System;
