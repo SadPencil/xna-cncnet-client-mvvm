@@ -1,6 +1,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -112,8 +113,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     [ObservableProperty]
     public partial string SelectedContextPlayerName { get; set; } = string.Empty;
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IContextMenuItem> PlayerContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _playerContextMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> PlayerContextMenuItems => _playerContextMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> ICnCNetGameLobbyViewModel.PlayerContextMenuItems => _playerContextMenuItemsAdapter.Target;
 
     // --- IsHost ---
     // Note: override of abstract property, so [ObservableProperty] cannot be used.
@@ -496,11 +498,13 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
 
     private void BuildPlayerContextMenuItems()
     {
-        var items = new List<IContextMenuItem>();
+        var items = new List<ContextMenuItem>();
         if (string.IsNullOrEmpty(SelectedContextPlayerName)
             || SelectedContextPlayerName == ProgramConstants.PLAYERNAME)
         {
-            PlayerContextMenuItems = items;
+            PlayerContextMenuItems.Clear();
+            foreach (var item in items)
+                PlayerContextMenuItems.Add(item);
             return;
         }
 
@@ -524,7 +528,9 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             ToggleContextPlayerIgnoreCommand,
             IsEnabled:!isAdmin));
 
-        PlayerContextMenuItems = items;
+        PlayerContextMenuItems.Clear();
+        foreach (var item in items)
+            PlayerContextMenuItems.Add(item);
     }
 
     public void OnTunnelSelected(CnCNetTunnel tunnel)
