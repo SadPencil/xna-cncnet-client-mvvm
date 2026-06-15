@@ -67,6 +67,7 @@ public partial class CnCNetGameLobby : UserControl, ICnCNetGameLobbyView
         SetupMapListHoverTracking();
         SetupSearchContextMenu();
         SetupPlayerNameContextMenus();
+        LobbyHelper.AutoScrollToEnd(chatMessageList);
 
         if (currentMapPreview != null)
             RenderIndicators();

@@ -226,7 +226,8 @@
               BorderThickness="1"
               Width="415" Height="200"
               Canvas.Left="12" Canvas.Top="480">
-        <ListBox ItemsSource="{Binding ChatMessages}"
+        <ListBox x:Name="chatMessageList"
+                 ItemsSource="{Binding ChatMessages}"
                  Background="Transparent">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="x:String">

@@ -65,6 +65,7 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
         SetupMapListContextMenu();
         SetupMapListHoverTracking();
         SetupSearchContextMenu();
+        LobbyHelper.AutoScrollToEnd(chatMessageList);
 
         if (currentMapPreview != null)
             RenderIndicators();
