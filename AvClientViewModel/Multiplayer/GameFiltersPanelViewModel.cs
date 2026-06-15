@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 using AvClientMvvmContract.Multiplayer;
@@ -25,14 +26,15 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
 
     // --- Game option filters ---
 
-    private readonly List<GameOptionFilterDefinition> _filterDefinitions = new();
+    private readonly CovariantReadOnlyObservableCollection<GameOptionFilterDefinition, IGameOptionFilterDefinition> _filterDefinitionsAdapter = new();
     private readonly List<GameOptionFilterValue> _filterValues = new();
 
     /// <summary>
     /// The available game option filter definitions.
     /// The View uses these to create the filter UI controls.
     /// </summary>
-    public IReadOnlyList<IGameOptionFilterDefinition> FilterDefinitions => _filterDefinitions;
+    public ObservableCollection<GameOptionFilterDefinition> FilterDefinitions => _filterDefinitionsAdapter.Source;
+    IReadOnlyList<IGameOptionFilterDefinition> IGameFiltersPanelViewModel.FilterDefinitions => _filterDefinitionsAdapter.Target;
 
     /// <summary>
     /// The current filter values. The View binds dropdown selected indices to these.
@@ -102,11 +104,12 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     /// </summary>
     public void RegisterGameOptionFilters(IEnumerable<GameOptionFilterDefinition> definitions)
     {
-        _filterDefinitions.Clear();
-        _filterDefinitions.AddRange(definitions);
+        FilterDefinitions.Clear();
+        foreach (var d in definitions)
+            FilterDefinitions.Add(d);
         _filterValues.Clear();
 
-        foreach (var def in _filterDefinitions)
+        foreach (var def in FilterDefinitions)
         {
             int? storedValue = iniSettings.GetGameOptionFilterValue(def.OptionName);
             int selectedIndex;
