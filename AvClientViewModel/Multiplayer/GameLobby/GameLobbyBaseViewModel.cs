@@ -118,8 +118,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     ObservableCollection<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => PlayerSlots;
     protected ObservableCollection<IPlayerSlotObservable> PlayerSlots { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.PlayerSlots)); } } = new();
 
-    IReadOnlyList<IGameOptionCheckBox> IGameLobbyViewModel.CheckBoxes => CheckBoxes.Cast<IGameOptionCheckBox>().ToList().AsReadOnly();
-    protected IReadOnlyList<GameOptionCheckBox> CheckBoxes { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.CheckBoxes)); } } = [];
+    private readonly CovariantReadOnlyObservableCollection<GameOptionCheckBox, IGameOptionCheckBox> _checkBoxesAdapter = new();
+    protected ObservableCollection<GameOptionCheckBox> CheckBoxes => _checkBoxesAdapter.Source;
+    IReadOnlyList<IGameOptionCheckBox> IGameLobbyViewModel.CheckBoxes => _checkBoxesAdapter.Target;
 
     IReadOnlyList<IGameOptionDropDown> IGameLobbyViewModel.DropDowns => DropDowns.Cast<IGameOptionDropDown>().ToList().AsReadOnly();
     protected IReadOnlyList<GameOptionDropDown> DropDowns { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.DropDowns)); } } = [];
@@ -475,12 +476,14 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     private void RefreshGameOptionWrappers()
     {
         // Unsubscribe from old items
-        foreach (var cb in CheckBoxes.Cast<GameOptionCheckBox>())
+        foreach (var cb in CheckBoxes)
             cb.PropertyChanged -= GameOptionCheckBox_PropertyChanged;
         foreach (var dd in DropDowns.Cast<GameOptionDropDown>())
             dd.PropertyChanged -= GameOptionDropDown_PropertyChanged;
 
-        CheckBoxes = CheckBoxSettings.Select(s => new GameOptionCheckBox(s)).ToList();
+        CheckBoxes.Clear();
+        foreach (var cb in CheckBoxSettings.Select(s => new GameOptionCheckBox(s)))
+            CheckBoxes.Add(cb);
         DropDowns = DropDownSettings.Select(s =>
         {
             var dd = new GameOptionDropDown(s);
@@ -492,7 +495,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         }).ToList();
 
         // Subscribe to new items
-        foreach (var cb in CheckBoxes.Cast<GameOptionCheckBox>())
+        foreach (var cb in CheckBoxes)
             cb.PropertyChanged += GameOptionCheckBox_PropertyChanged;
         foreach (var dd in DropDowns.Cast<GameOptionDropDown>())
             dd.PropertyChanged += GameOptionDropDown_PropertyChanged;
@@ -957,7 +960,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             AIPlayers.Clear();
 
         // Clone lists to track which options were NOT forced
-        var checkBoxListClone = CheckBoxes.Cast<GameOptionCheckBox>().ToList();
+        var checkBoxListClone = CheckBoxes.ToList();
         var dropDownListClone = DropDowns.Cast<GameOptionDropDown>().ToList();
 
         // Apply forced options from GameMode and Map
@@ -1041,7 +1044,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     {
         foreach (var option in forcedOptions)
         {
-            var cb = CheckBoxes.Cast<GameOptionCheckBox>().FirstOrDefault(c => c.Name == option.Key);
+            var cb = CheckBoxes.FirstOrDefault(c => c.Name == option.Key);
             if (cb != null)
             {
                 cb.IsChecked = option.Value;
@@ -1700,7 +1703,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         foreach (var kvp in preset.GetCheckBoxValues())
         {
-            var cb = CheckBoxes.Cast<GameOptionCheckBox>().FirstOrDefault(c => c.Name == kvp.Key);
+            var cb = CheckBoxes.FirstOrDefault(c => c.Name == kvp.Key);
             if (cb != null && cb.IsEnabled)
             {
                 cb.IsChecked = kvp.Value;
