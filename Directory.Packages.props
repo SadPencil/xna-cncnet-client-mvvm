@@ -2,6 +2,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <DotnetLibrariesVersion>8.0.0</DotnetLibrariesVersion>
+    <!-- Avalonia v11 is the last version supporting .NET 4.8 and operating systems prior than Windows 10 -->
     <AvaloniaVersion>11.3.17</AvaloniaVersion>
   </PropertyGroup>
   <ItemGroup>
