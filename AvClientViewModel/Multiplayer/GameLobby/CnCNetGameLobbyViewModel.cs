@@ -113,7 +113,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
     [ObservableProperty]
     public partial string SelectedContextPlayerName { get; set; } = string.Empty;
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _playerContextMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _playerContextMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> PlayerContextMenuItems => _playerContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> ICnCNetGameLobbyViewModel.PlayerContextMenuItems => _playerContextMenuItemsAdapter.Target;
 

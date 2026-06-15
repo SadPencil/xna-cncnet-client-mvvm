@@ -114,7 +114,7 @@ namespace AvClientViewModel.Campaign
 
         #region Observable Properties
 
-        private readonly CovariantReadOnlyObservableCollection<CampaignListItem, ICampaignListItem> _campaignListItemsAdapter = new();
+        private readonly CovariantReadOnlyObservableCollectionAdapter<CampaignListItem, ICampaignListItem> _campaignListItemsAdapter = new();
         public ObservableCollection<CampaignListItem> CampaignListItems => _campaignListItemsAdapter.Source;
         IReadOnlyList<ICampaignListItem> ICampaignSelectorViewModel.CampaignListItems => _campaignListItemsAdapter.Target;
 

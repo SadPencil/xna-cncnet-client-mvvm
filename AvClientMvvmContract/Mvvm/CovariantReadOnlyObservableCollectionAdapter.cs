@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-public sealed class CovariantReadOnlyObservableCollection<TSource, TTarget> : IDisposable
+public sealed class CovariantReadOnlyObservableCollectionAdapter<TSource, TTarget> : IDisposable
     where TSource : TTarget
 {
     private readonly ObservableCollection<TSource> _source;
@@ -12,7 +12,7 @@ public sealed class CovariantReadOnlyObservableCollection<TSource, TTarget> : ID
     /// <summary>
     /// Creates a new adapter with an empty internal collection.
     /// </summary>
-    public CovariantReadOnlyObservableCollection()
+    public CovariantReadOnlyObservableCollectionAdapter()
         : this(new ObservableCollection<TSource>())
     {
     }
@@ -20,10 +20,10 @@ public sealed class CovariantReadOnlyObservableCollection<TSource, TTarget> : ID
     /// <summary>
     /// Creates a new adapter wrapping an existing collection.
     /// </summary>
-    public CovariantReadOnlyObservableCollection(ObservableCollection<TSource> source)
+    public CovariantReadOnlyObservableCollectionAdapter(ObservableCollection<TSource> source)
     {
         if (source == null)
-            throw new ArgumentNullException("source");
+            throw new ArgumentNullException(nameof(source));
 
         _source = source;
         _shadow = new ObservableCollection<TTarget>();

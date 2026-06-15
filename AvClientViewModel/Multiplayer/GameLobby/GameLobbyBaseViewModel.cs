@@ -87,7 +87,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     public partial string GameName { get; set; } = string.Empty;
 
-    private readonly CovariantReadOnlyObservableCollection<MapListItem, IMapListItem> _mapListItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<MapListItem, IMapListItem> _mapListItemsAdapter = new();
     public ObservableCollection<MapListItem> MapListItems => _mapListItemsAdapter.Source;
     IReadOnlyList<IMapListItem> IGameLobbyViewModel.MapListItems => _mapListItemsAdapter.Target;
 
@@ -115,15 +115,15 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     public partial bool IsMapSortButtonEnabled { get; set; } = true;
 
-    private readonly AvClientMvvmContract.Mvvm.CovariantObservableCollection<PlayerSlotObservable, IPlayerSlotObservable> _playerSlotsAdapter = new();
+    private readonly AvClientMvvmContract.Mvvm.CovariantObservableCollectionAdapter<PlayerSlotObservable, IPlayerSlotObservable> _playerSlotsAdapter = new();
     ObservableCollection<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => _playerSlotsAdapter.Target;
     protected ObservableCollection<PlayerSlotObservable> PlayerSlots => _playerSlotsAdapter.Source;
 
-    private readonly CovariantReadOnlyObservableCollection<GameOptionCheckBox, IGameOptionCheckBox> _checkBoxesAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<GameOptionCheckBox, IGameOptionCheckBox> _checkBoxesAdapter = new();
     public ObservableCollection<GameOptionCheckBox> CheckBoxes => _checkBoxesAdapter.Source;
     IReadOnlyList<IGameOptionCheckBox> IGameLobbyViewModel.CheckBoxes => _checkBoxesAdapter.Target;
 
-    private readonly CovariantReadOnlyObservableCollection<GameOptionDropDown, IGameOptionDropDown> _dropDownsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<GameOptionDropDown, IGameOptionDropDown> _dropDownsAdapter = new();
     public ObservableCollection<GameOptionDropDown> DropDowns => _dropDownsAdapter.Source;
     IReadOnlyList<IGameOptionDropDown> IGameLobbyViewModel.DropDowns => _dropDownsAdapter.Target;
 
@@ -139,7 +139,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     public partial IReadOnlyList<string> PlayerNames { get; set; } = Array.Empty<string>();
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _startingLocationAssignMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _startingLocationAssignMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> StartingLocationAssignMenuItems => _startingLocationAssignMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> IGameLobbyViewModel.StartingLocationAssignMenuItems => _startingLocationAssignMenuItemsAdapter.Target;
 

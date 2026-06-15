@@ -165,33 +165,33 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     public partial string? SoundToPlay { get; set; }
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _playerContextMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _playerContextMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> PlayerContextMenuItems => _playerContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> ICnCNetLobbyViewModel.PlayerContextMenuItems => _playerContextMenuItemsAdapter.Target;
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _chatContextMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _chatContextMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> ChatContextMenuItems => _chatContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> ICnCNetLobbyViewModel.ChatContextMenuItems => _chatContextMenuItemsAdapter.Target;
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _gameContextMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _gameContextMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> GameContextMenuItems => _gameContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> ICnCNetLobbyViewModel.GameContextMenuItems => _gameContextMenuItemsAdapter.Target;
 
     // Game list — updated in-place via ObservableCollection.
-    private readonly CovariantReadOnlyObservableCollection<HostedCnCNetGame, IHostedCnCNetGame> _gamesAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<HostedCnCNetGame, IHostedCnCNetGame> _gamesAdapter = new();
     public ObservableCollection<HostedCnCNetGame> Games => _gamesAdapter.Source;
     IReadOnlyList<IHostedCnCNetGame> ICnCNetLobbyViewModel.Games => _gamesAdapter.Target;
 
     // Player list — updated in-place via ObservableCollection.
-    private readonly CovariantReadOnlyObservableCollection<PlayerListItem, IPlayerListItem> _playersAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<PlayerListItem, IPlayerListItem> _playersAdapter = new();
     public ObservableCollection<PlayerListItem> Players => _playersAdapter.Source;
     IReadOnlyList<IPlayerListItem> ICnCNetLobbyViewModel.Players => _playersAdapter.Target;
 
-    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _chatMessagesAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ChatMessage, IChatMessage> _chatMessagesAdapter = new();
     public ObservableCollection<ChatMessage> ChatMessages => _chatMessagesAdapter.Source;
     IReadOnlyList<IChatMessage> ICnCNetLobbyViewModel.ChatMessages => _chatMessagesAdapter.Target;
 
-    private readonly CovariantReadOnlyObservableCollection<IRCColor, IIRCColor> _colorOptionsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<IRCColor, IIRCColor> _colorOptionsAdapter = new();
     public ObservableCollection<IRCColor> ColorOptions => _colorOptionsAdapter.Source;
     IReadOnlyList<IIRCColor> ICnCNetLobbyViewModel.ColorOptions => _colorOptionsAdapter.Target;
 

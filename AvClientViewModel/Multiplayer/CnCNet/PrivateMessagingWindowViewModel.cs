@@ -93,15 +93,15 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [ObservableProperty]
     public partial string? PendingLink { get; set; }
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _userContextMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _userContextMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> UserContextMenuItems => _userContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.UserContextMenuItems => _userContextMenuItemsAdapter.Target;
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _messageContextMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _messageContextMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> MessageContextMenuItems => _messageContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.MessageContextMenuItems => _messageContextMenuItemsAdapter.Target;
 
-    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _recentPlayerContextMenuItemsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _recentPlayerContextMenuItemsAdapter = new();
     public ObservableCollection<ContextMenuItem> RecentPlayerContextMenuItems => _recentPlayerContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.RecentPlayerContextMenuItems => _recentPlayerContextMenuItemsAdapter.Target;
 
@@ -110,7 +110,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     private readonly ObservableCollection<string> _userNames = new();
     public IReadOnlyList<string> UserNames => _userNames;
 
-    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _messageHistoryAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ChatMessage, IChatMessage> _messageHistoryAdapter = new();
     public ObservableCollection<ChatMessage> MessageHistory => _messageHistoryAdapter.Source;
     IReadOnlyList<IChatMessage> IPrivateMessagingWindowViewModel.MessageHistory => _messageHistoryAdapter.Target;
 

@@ -86,7 +86,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     private readonly System.Collections.ObjectModel.ObservableCollection<string> _savedGameNames = new();
     public IReadOnlyList<string> SavedGameNames => _savedGameNames;
 
-    private readonly CovariantReadOnlyObservableCollection<PlayerDisplayInfo, IPlayerDisplayInfo> _playerDisplayInfoAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<PlayerDisplayInfo, IPlayerDisplayInfo> _playerDisplayInfoAdapter = new();
     public ObservableCollection<PlayerDisplayInfo> PlayerDisplayInfo => _playerDisplayInfoAdapter.Source;
     IReadOnlyList<IPlayerDisplayInfo> IGameLoadingLobbyViewModel.PlayerDisplayInfo => _playerDisplayInfoAdapter.Target;
 

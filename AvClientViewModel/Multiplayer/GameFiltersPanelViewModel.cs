@@ -26,8 +26,8 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
 
     // --- Game option filters ---
 
-    private readonly CovariantReadOnlyObservableCollection<GameOptionFilterDefinition, IGameOptionFilterDefinition> _filterDefinitionsAdapter = new();
-    private readonly CovariantReadOnlyObservableCollection<GameOptionFilterValue, IGameOptionFilterValue> _filterValuesAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<GameOptionFilterDefinition, IGameOptionFilterDefinition> _filterDefinitionsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<GameOptionFilterValue, IGameOptionFilterValue> _filterValuesAdapter = new();
 
     /// <summary>
     /// The available game option filter definitions.

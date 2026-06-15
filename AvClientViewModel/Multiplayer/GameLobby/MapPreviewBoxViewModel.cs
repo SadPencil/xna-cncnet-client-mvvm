@@ -77,7 +77,7 @@ public partial class MapPreviewBoxViewModel : ObservableObject, IMapPreviewBoxVi
     private readonly ObservableCollection<string> _startingLocationSummaries = new();
     public IReadOnlyList<string> StartingLocationSummaries => _startingLocationSummaries;
 
-    private readonly CovariantReadOnlyObservableCollection<StartingLocationIndicatorData, IStartingLocationIndicatorData> _startingLocationIndicatorsAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<StartingLocationIndicatorData, IStartingLocationIndicatorData> _startingLocationIndicatorsAdapter = new();
     public ObservableCollection<StartingLocationIndicatorData> StartingLocationIndicators => _startingLocationIndicatorsAdapter.Source;
     IReadOnlyList<IStartingLocationIndicatorData> IMapPreviewBoxViewModel.StartingLocationIndicators => _startingLocationIndicatorsAdapter.Target;
 
