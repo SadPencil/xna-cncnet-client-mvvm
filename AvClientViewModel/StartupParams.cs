@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AvClientViewModel;
 
@@ -14,15 +13,38 @@ public class StartupParams
     {
         NoAudio = noAudio;
         MultipleInstanceMode = multipleInstanceMode;
+        UnknownStartupParams = unknownParams;
     }
 
     public StartupParams(string[] args)
     {
-        NoAudio = args.Contains("--noaudio", StringComparer.InvariantCultureIgnoreCase);
-        MultipleInstanceMode = args.Contains("--multipleinstances", StringComparer.InvariantCultureIgnoreCase)
-            || args.Contains("--multiple-instances", StringComparer.InvariantCultureIgnoreCase);
+        var unknownParams = new List<string>();
+
+        for (int arg = 0; arg < args.Length; arg++)
+        {
+            string argument = args[arg].ToUpperInvariant();
+
+            switch (argument)
+            {
+                case "-NOAUDIO":
+                case "--NOAUDIO":
+                    NoAudio = true;
+                    break;
+                case "-MULTIPLEINSTANCE":
+                case "--MULTIPLEINSTANCES":
+                case "--MULTIPLE-INSTANCES":
+                    MultipleInstanceMode = true;
+                    break;
+                default:
+                    unknownParams.Add(args[arg]);
+                    break;
+            }
+        }
+
+        UnknownStartupParams = unknownParams;
     }
 
     public bool NoAudio { get; }
     public bool MultipleInstanceMode { get; }
+    public List<string> UnknownStartupParams { get; }
 }

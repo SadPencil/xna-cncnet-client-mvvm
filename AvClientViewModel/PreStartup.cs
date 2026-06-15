@@ -105,6 +105,8 @@ public static class PreStartup
         if (parameters.MultipleInstanceMode)
             Log.Information("Startup parameter: Allow multiple client instances");
 
+        parameters.UnknownStartupParams.ForEach(p => Log.Information("Unknown startup parameter: " + p));
+
         Log.Information("Loading settings.");
 
         // --- Settings initialization (same as DXMainClient PreStartup lines 127-129) ---
