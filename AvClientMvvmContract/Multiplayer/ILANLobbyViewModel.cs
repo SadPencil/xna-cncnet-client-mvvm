@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 using AvClientMvvmContract.Multiplayer.GameLobby;
@@ -11,7 +12,7 @@ namespace AvClientMvvmContract.Multiplayer;
 public interface ILANLobbyViewModel : INotifyPropertyChanged
 {
     bool IsVisible { get; set; }
-    IReadOnlyList<ILANHostedGame> Games { get; }
+    ReadOnlyObservableCollection<ILANHostedGame> Games { get; }
     IReadOnlyList<string> PlayerNames { get; }
     IReadOnlyList<IChatMessage> ChatMessages { get; }
     IReadOnlyList<string> ColorOptions { get; }
