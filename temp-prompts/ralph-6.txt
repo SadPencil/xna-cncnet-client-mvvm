@@ -24,7 +24,7 @@ Git commit and push often.
 
 Now, your task is: 
 
-observe the diff in 2ab39ae9804721e2b14f2b1686e9f418d1e7abf7. Follow this pattern. There are a lot of IReadOnlyList in contract project. I need you to replace them following 2ab39ae9804721e2b14f2b1686e9f418d1e7abf7. For each property change, make one commit and push it. You can only choose one property to migrate per session.
+observe the diff in 6eae6480277004315729280a2a36454085a7ddb1. Follow this pattern. There are a lot of IReadOnlyList<IT> or (ReadOnly)ObservableCollection<IT> in contract project. I need you to replace them following 6eae6480277004315729280a2a36454085a7ddb1 so the class uses <T> instead of <IT> using Covariant(ReadOnly)ObservableCollection. For each property change, make one commit and push it. You can only choose one property to migrate per session.
 
 YOU MUST PAY ATTENTION TO THE DIFF DETAILS. The private field, ObservableCollection<T> is now named `Games` instead of `games`. The CASE matter! The interface ObservableCollection<I> is also named `Games`, and is implemented via an explicit interface implementation. You MUST follow my pattern. You MUST NOT keep the old private field name or the old interface property name. You MUST NOT create new private property name other than for Covariant(ReadOnly)ObservableCollection.
 
