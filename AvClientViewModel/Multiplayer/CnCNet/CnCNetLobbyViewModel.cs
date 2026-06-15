@@ -184,8 +184,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public ObservableCollection<PlayerListItem> Players => _playersAdapter.Source;
     IReadOnlyList<IPlayerListItem> ICnCNetLobbyViewModel.Players => _playersAdapter.Target;
 
-    private readonly ObservableCollection<IChatMessage> chatMessages = new();
-    public IReadOnlyList<IChatMessage> ChatMessages => chatMessages;
+    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _chatMessagesAdapter = new();
+    public ObservableCollection<ChatMessage> ChatMessages => _chatMessagesAdapter.Source;
+    IReadOnlyList<IChatMessage> ICnCNetLobbyViewModel.ChatMessages => _chatMessagesAdapter.Target;
 
     private readonly ObservableCollection<IIRCColor> colorOptions = new();
     public IReadOnlyList<IIRCColor> ColorOptions => colorOptions;
@@ -344,7 +345,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 #endif
 
         foreach (var msg in _pinnedMessages)
-            chatMessages.Add(msg);
+            ChatMessages.Add(msg);
 
         InitializeChannelList();
 
@@ -562,9 +563,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void OpenSelectedChatMessageSenderPrivateMessage()
     {
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
             return;
-        var msg = chatMessages[SelectedChatMessageIndex];
+        var msg = ChatMessages[SelectedChatMessageIndex];
         if (!string.IsNullOrEmpty(msg.SenderName))
             pmWindow?.InitPM(msg.SenderName);
     }
@@ -572,9 +573,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void ToggleSelectedChatMessageSenderFriend()
     {
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
             return;
-        var msg = chatMessages[SelectedChatMessageIndex];
+        var msg = ChatMessages[SelectedChatMessageIndex];
         if (!string.IsNullOrEmpty(msg.SenderName))
             cncnetUserData.ToggleFriend(msg.SenderName);
     }
@@ -582,9 +583,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void ToggleSelectedChatMessageSenderIgnore()
     {
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
             return;
-        var msg = chatMessages[SelectedChatMessageIndex];
+        var msg = ChatMessages[SelectedChatMessageIndex];
         if (string.IsNullOrEmpty(msg.SenderIdent))
             return;
         cncnetUserData.ToggleIgnoreUser(msg.SenderIdent);
@@ -593,9 +594,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void JoinSelectedChatMessageSenderGame()
     {
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
             return;
-        var msg = chatMessages[SelectedChatMessageIndex];
+        var msg = ChatMessages[SelectedChatMessageIndex];
         if (string.IsNullOrEmpty(msg.SenderName))
             return;
         var user = connectionManager.UserList.Find(u => u.Name == msg.SenderName);
@@ -636,9 +637,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void ChatMessageDoubleClick()
     {
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
             return;
-        var msg = chatMessages[SelectedChatMessageIndex];
+        var msg = ChatMessages[SelectedChatMessageIndex];
         var links = msg.Message.GetLinks();
         if (links == null || links.Length != 1)
             return;
@@ -1066,14 +1067,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         connectionManager.SetMainChannel(currentChatChannel);
 
         // Clear and reload chat messages
-        chatMessages.Clear();
+        ChatMessages.Clear();
         ctcpInvalidGameMessageShown = false;
         ctcpNoTunnelMessageShown = false;
         ctcpNoTunnelForGamesMessageShown = false;
 
         // Re-add pinned messages that must persist across channel switches
         foreach (var msg in _pinnedMessages)
-            chatMessages.Add(msg);
+            ChatMessages.Add(msg);
 
         if (currentChatChannel.Messages != null)
         {
@@ -1145,12 +1146,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             cncnetUserData.IsIgnored(message.SenderIdent) &&
             !message.SenderIsAdmin)
         {
-            chatMessages.Add(new ChatMessage(
+            ChatMessages.Add(new ChatMessage(
                 string.Format("Message blocked from - {0}".L10N("Client:Main:PMBlockedFrom"), message.SenderName)));
         }
         else
         {
-            chatMessages.Add(message);
+            ChatMessages.Add(message);
         }
     }
 
@@ -2099,13 +2100,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void BuildChatContextMenuItems()
     {
         var items = new List<IContextMenuItem>();
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= chatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
         {
             ChatContextMenuItems = items;
             return;
         }
 
-        var msg = chatMessages[SelectedChatMessageIndex];
+        var msg = ChatMessages[SelectedChatMessageIndex];
 
         if (!string.IsNullOrEmpty(msg.SenderName))
         {
