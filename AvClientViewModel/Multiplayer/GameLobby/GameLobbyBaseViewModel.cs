@@ -208,7 +208,16 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         ClipboardService = clipboardService;
         this.random = random;
 
-        mapPreviewBox = new MapPreviewBoxViewModel(mapLoader, uiThreadMarshaller);
+        mapPreviewBox = new MapPreviewBoxViewModel(mapLoader, uiThreadMarshaller,
+            onFavoriteToggled: () =>
+            {
+                if (GameModeMap != null)
+                {
+                    GameModeMap.IsFavorite = UserINISettings.Instance.ToggleFavoriteMap(
+                        Map.SHA1, GameMode.Name, GameModeMap.IsFavorite);
+                    BuildMapContextMenuItems();
+                }
+            });
         mapPreviewBox.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(IMapPreviewBoxViewModel.SelectedStartingLocationIndex))
@@ -1553,7 +1562,10 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         {
             GameModeMap.IsFavorite = UserINISettings.Instance.ToggleFavoriteMap(
                 Map.SHA1, GameMode.Name, GameModeMap.IsFavorite);
+            mapPreviewBox.IsFavorite = GameModeMap.IsFavorite;
         }
+
+        BuildMapContextMenuItems();
     }
 
     [RelayCommand]

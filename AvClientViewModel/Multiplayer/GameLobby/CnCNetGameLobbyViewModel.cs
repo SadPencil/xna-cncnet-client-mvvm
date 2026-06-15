@@ -481,6 +481,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         if (string.IsNullOrEmpty(SelectedContextPlayerName))
             return;
         cncnetUserData.ToggleFriend(SelectedContextPlayerName);
+        BuildPlayerContextMenuItems();
     }
 
     [RelayCommand]
@@ -491,6 +492,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         var ident = connectionManager.UserList.Find(u => u.Name == SelectedContextPlayerName)?.Ident;
         if (!string.IsNullOrEmpty(ident))
             cncnetUserData.ToggleIgnoreUser(ident);
+        BuildPlayerContextMenuItems();
     }
 
     partial void OnSelectedContextPlayerNameChanged(string value)

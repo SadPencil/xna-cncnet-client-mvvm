@@ -255,6 +255,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         if (userName == null)
             return;
         cncnetUserData.ToggleFriend(userName);
+        BuildUserContextMenuItems();
     }
 
     [RelayCommand]
@@ -266,6 +267,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         var ident = connectionManager.UserList.Find(u => u.Name == userName)?.Ident;
         if (!string.IsNullOrEmpty(ident))
             cncnetUserData.ToggleIgnoreUser(ident);
+        BuildUserContextMenuItems();
     }
 
     [RelayCommand]
@@ -322,6 +324,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         var msg = MessageHistory[SelectedMessageIndex];
         if (!string.IsNullOrEmpty(msg.SenderName))
             cncnetUserData.ToggleFriend(msg.SenderName);
+        BuildMessageContextMenuItems();
     }
 
     [RelayCommand]
@@ -333,6 +336,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         if (string.IsNullOrEmpty(msg.SenderIdent))
             return;
         cncnetUserData.ToggleIgnoreUser(msg.SenderIdent);
+        BuildMessageContextMenuItems();
     }
 
     [RelayCommand]
@@ -401,6 +405,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         if (userName == null)
             return;
         cncnetUserData.ToggleFriend(userName);
+        BuildRecentPlayerContextMenuItems();
     }
 
     [RelayCommand]
@@ -412,6 +417,7 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
         var ident = connectionManager.UserList.Find(u => u.Name == userName)?.Ident;
         if (!string.IsNullOrEmpty(ident))
             cncnetUserData.ToggleIgnoreUser(ident);
+        BuildRecentPlayerContextMenuItems();
     }
 
     [RelayCommand]

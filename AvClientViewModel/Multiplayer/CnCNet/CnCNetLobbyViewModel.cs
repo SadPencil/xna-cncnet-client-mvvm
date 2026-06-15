@@ -505,6 +505,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             return;
         var player = Players[SelectedPlayerIndex];
         cncnetUserData.ToggleFriend(player.Name);
+        BuildPlayerContextMenuItems();
     }
 
     [RelayCommand]
@@ -516,6 +517,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         var ident = connectionManager.UserList.Find(u => u.Name == player.Name)?.Ident;
         if (!string.IsNullOrEmpty(ident))
             cncnetUserData.ToggleIgnoreUser(ident);
+        BuildPlayerContextMenuItems();
     }
 
     [RelayCommand]
@@ -583,6 +585,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         var msg = ChatMessages[SelectedChatMessageIndex];
         if (!string.IsNullOrEmpty(msg.SenderName))
             cncnetUserData.ToggleFriend(msg.SenderName);
+        BuildChatContextMenuItems();
     }
 
     [RelayCommand]
@@ -594,6 +597,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (string.IsNullOrEmpty(msg.SenderIdent))
             return;
         cncnetUserData.ToggleIgnoreUser(msg.SenderIdent);
+        BuildChatContextMenuItems();
     }
 
     [RelayCommand]
@@ -668,6 +672,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         var game = GetSelectedHostedGame();
         if (game == null) return;
         cncnetUserData.ToggleFriend(game.HostName);
+        BuildGameContextMenuItems();
     }
 
     [RelayCommand]
@@ -678,6 +683,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         var ident = connectionManager.UserList.Find(u => u.Name == game.HostName)?.Ident;
         if (!string.IsNullOrEmpty(ident))
             cncnetUserData.ToggleIgnoreUser(ident);
+        BuildGameContextMenuItems();
     }
 
     #endregion
