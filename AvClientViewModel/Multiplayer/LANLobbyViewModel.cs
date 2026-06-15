@@ -137,8 +137,9 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly ObservableCollection<string> playerNames = new();
     public IReadOnlyList<string> PlayerNames => playerNames;
 
-    private readonly ObservableCollection<IChatMessage> _chatMessages = new();
-    public IReadOnlyList<IChatMessage> ChatMessages => _chatMessages;
+    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _chatMessagesAdapter = new();
+    public ObservableCollection<ChatMessage> ChatMessages => _chatMessagesAdapter.Source;
+    IReadOnlyList<IChatMessage> ILANLobbyViewModel.ChatMessages => _chatMessagesAdapter.Target;
 
     private readonly ObservableCollection<string> _colorOptions = new();
     public IReadOnlyList<string> ColorOptions => _colorOptions;
@@ -791,20 +792,20 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     private void AddChatMessage(string message)
     {
-        _chatMessages.Add(new ChatMessage(message));
+        ChatMessages.Add(new ChatMessage(message));
     }
 
     private void AddChatMessage(string sender, string message, IRgb24Color color)
     {
-        _chatMessages.Add(new ChatMessage(sender, color, DateTime.Now, message));
+        ChatMessages.Add(new ChatMessage(sender, color, DateTime.Now, message));
     }
 
     [RelayCommand]
     private void ChatMessageDoubleClick()
     {
-        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= _chatMessages.Count)
+        if (SelectedChatMessageIndex < 0 || SelectedChatMessageIndex >= ChatMessages.Count)
             return;
-        var msg = _chatMessages[SelectedChatMessageIndex];
+        var msg = ChatMessages[SelectedChatMessageIndex];
         var links = msg.FormattedText.GetLinks();
         if (links == null || links.Length != 1)
             return;
