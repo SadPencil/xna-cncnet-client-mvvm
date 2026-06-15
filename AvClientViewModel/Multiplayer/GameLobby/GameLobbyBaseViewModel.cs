@@ -47,6 +47,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     protected DiscordHandler DiscordHandler { get; }
     protected IGameProcessService GameProcessService { get; }
     protected IUIThreadMarshaller UIThreadMarshaller { get; }
+    protected IClipboardService ClipboardService { get; }
     protected IReadOnlyGameModeMapCollection GameModeMaps => MapLoader.GameModeMaps;
 
     protected List<MultiplayerColor> MPColors;
@@ -74,15 +75,6 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
     [ObservableProperty]
     public partial string MapName { get; set; } = "Map: Unknown".L10N("Client:Main:MapUnknown");
-
-    [ObservableProperty]
-    public partial string MapRawName { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    public partial string MapOriginalName { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    public partial bool HasMapOriginalName { get; set; }
 
     [ObservableProperty]
     public partial string MapAuthor { get; set; } = "By Unknown Author".L10N("Client:Main:AuthorByUnknown");
@@ -152,6 +144,10 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     public ObservableCollection<ContextMenuItem> StartingLocationAssignMenuItems => _startingLocationAssignMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> IGameLobbyViewModel.StartingLocationAssignMenuItems => _startingLocationAssignMenuItemsAdapter.Target;
 
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ContextMenuItem, IContextMenuItem> _mapContextMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> MapContextMenuItems => _mapContextMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> IGameLobbyViewModel.MapContextMenuItems => _mapContextMenuItemsAdapter.Target;
+
     [ObservableProperty]
     public partial int SelectedPlayerIndex { get; set; }
 
@@ -201,12 +197,14 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
+        IClipboardService clipboardService,
         Random random)
     {
         MapLoader = mapLoader;
         DiscordHandler = discordHandler;
         GameProcessService = gameProcessService;
         UIThreadMarshaller = uiThreadMarshaller;
+        ClipboardService = clipboardService;
         this.random = random;
 
         mapPreviewBox = new MapPreviewBoxViewModel(mapLoader, uiThreadMarshaller);
@@ -1031,22 +1029,18 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         if (GameMode == null || Map == null)
         {
             MapName = "Map: Unknown".L10N("Client:Main:MapUnknown");
-            MapRawName = string.Empty;
-            MapOriginalName = string.Empty;
-            HasMapOriginalName = false;
             MapAuthor = "By Unknown Author".L10N("Client:Main:AuthorByUnknown");
             GameModeName = "Game mode: Unknown".L10N("Client:Main:GameModeUnknown");
             MapSize = "Size: Not available".L10N("Client:Main:MapSizeUnknown");
+            BuildMapContextMenuItems();
             return;
         }
 
         MapName = "Map:".L10N("Client:Main:Map") + " " + Map.Name;
-        MapRawName = Map.Name;
-        MapOriginalName = Map.UntranslatedName;
-        HasMapOriginalName = Map.UntranslatedName != Map.Name;
         MapAuthor = "By".L10N("Client:Main:AuthorBy") + " " + Map.Author;
         GameModeName = "Game mode:".L10N("Client:Main:GameModeLabel") + " " + GameMode.UIName;
         MapSize = "Size:".L10N("Client:Main:MapSize") + " " + Map.GetSizeString();
+        BuildMapContextMenuItems();
     }
 
     // --- Game options ---
@@ -1604,6 +1598,20 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     }
 
     [RelayCommand]
+    private void CopyMapName()
+    {
+        if (Map != null)
+            ClipboardService.SetTextAsync(Map.Name);
+    }
+
+    [RelayCommand]
+    private void CopyOriginalMapName()
+    {
+        if (Map != null)
+            ClipboardService.SetTextAsync(Map.UntranslatedName);
+    }
+
+    [RelayCommand]
     private void CycleSortDirection()
     {
         SortDirectionState = SortDirectionState switch
@@ -1660,6 +1668,47 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         StartingLocationAssignMenuItems.Clear();
         foreach (var item in items)
             StartingLocationAssignMenuItems.Add(item);
+    }
+
+    private void BuildMapContextMenuItems()
+    {
+        var items = new List<ContextMenuItem>();
+
+        bool isFavorite = GameModeMap?.IsFavorite ?? false;
+        items.Add(new ContextMenuItem(
+            isFavorite
+                ? "Remove Favorite".L10N("Client:UI:RemoveFavorite")
+                : "Add Favorite".L10N("Client:UI:AddFavorite"),
+            ToggleFavoriteCommand));
+
+        items.Add(new ContextMenuItem("", IsSeparator: true));
+
+        items.Add(new ContextMenuItem(
+            "Copy Map Name".L10N("Client:Main:CopyMapName"),
+            CopyMapNameCommand));
+
+        if (Map != null && Map.UntranslatedName != Map.Name)
+        {
+            items.Add(new ContextMenuItem(
+                "Copy Original Name".L10N("Client:Main:CopyOriginalMapName"),
+                CopyOriginalMapNameCommand));
+        }
+
+        items.Add(new ContextMenuItem("", IsSeparator: true));
+
+        bool canDelete = Map != null && !Map.Official && !IsMultiplayer;
+        items.Add(new ContextMenuItem(
+            "Delete Map".L10N("Client:UI:DeleteMap"),
+            DeleteMapCommand,
+            IsVisible: canDelete));
+
+        items.Add(new ContextMenuItem(
+            "Show in Folder".L10N("Client:UI:ShowInFolder"),
+            ShowMapInFolderCommand));
+
+        MapContextMenuItems.Clear();
+        foreach (var item in items)
+            MapContextMenuItems.Add(item);
     }
 
     // --- Presets ---

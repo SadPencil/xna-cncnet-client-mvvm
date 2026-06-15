@@ -64,8 +64,9 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
+        IClipboardService clipboardService,
         Random random)
-        : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)
+        : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, clipboardService, random)
     {
         this.random = random;
 

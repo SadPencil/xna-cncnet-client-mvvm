@@ -12,9 +12,6 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
 {
     // --- Map info ---
     string MapName { get; }
-    string MapRawName { get; }
-    string MapOriginalName { get; }
-    bool HasMapOriginalName { get; }
     string MapAuthor { get; }
     string GameModeName { get; }
     string MapSize { get; }
@@ -67,4 +64,5 @@ public interface IGameLobbyViewModel : INotifyPropertyChanged
     IRelayCommand OpenMapSelectionCommand { get; }
 
     IReadOnlyList<IContextMenuItem> StartingLocationAssignMenuItems { get; }
+    IReadOnlyList<IContextMenuItem> MapContextMenuItems { get; }
 }

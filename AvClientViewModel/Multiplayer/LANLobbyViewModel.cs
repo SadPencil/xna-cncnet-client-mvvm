@@ -56,6 +56,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private readonly GameCollection gameCollection;
     private readonly MapLoader mapLoader;
     private readonly DiscordHandler discordHandler;
+    private readonly IClipboardService clipboardService;
     private readonly Random random;
     private readonly Encoding encoding = EncodingExt.UTF8NoBOM;
 
@@ -159,6 +160,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         GameCollection gameCollection,
         MapLoader mapLoader,
         DiscordHandler discordHandler,
+        IClipboardService clipboardService,
         Random random)
     {
         this.broadcastManager = broadcastManager;
@@ -170,6 +172,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         this.gameCollection = gameCollection;
         this.mapLoader = mapLoader;
         this.discordHandler = discordHandler;
+        this.clipboardService = clipboardService;
         this.random = random;
 
         this.localGame = ClientConfiguration.Instance.LocalGame;
@@ -363,6 +366,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
             discordHandler,
             gameProcessService,
             uiThreadMarshaller,
+            clipboardService,
             viewLifecycleService,
             random,
             chatColors);

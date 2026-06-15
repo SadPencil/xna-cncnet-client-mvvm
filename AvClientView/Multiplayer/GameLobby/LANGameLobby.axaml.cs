@@ -301,57 +301,8 @@ public partial class LANGameLobby : UserControl, ILANGameLobbyView
             return;
 
         var contextMenu = new ContextMenu();
-        PopulateMapContextMenu(contextMenu);
+        RenderContextMenuItems(contextMenu, lobbyViewModel.MapContextMenuItems);
         contextMenu.Open(mapListBox);
-    }
-
-    private void PopulateMapContextMenu(ContextMenu menu)
-    {
-        if (lobbyViewModel == null)
-            return;
-
-        menu.Items.Clear();
-
-        var toggleFavItem = new MenuItem
-        {
-            Header = currentMapPreview?.IsFavorite == true
-                ? "Remove Favorite".L10N("Client:UI:RemoveFavorite")
-                : "Add Favorite".L10N("Client:UI:AddFavorite")
-        };
-        toggleFavItem.Click += (s, e) => lobbyViewModel.ToggleFavoriteCommand.Execute(null);
-        menu.Items.Add(toggleFavItem);
-
-        menu.Items.Add(new Separator());
-
-        var copyNameItem = new MenuItem { Header = "Copy Map Name".L10N("Client:Main:CopyMapName") };
-        copyNameItem.Click += (s, e) => CopyTextToClipboard(lobbyViewModel.MapRawName);
-        menu.Items.Add(copyNameItem);
-
-        if (lobbyViewModel.HasMapOriginalName)
-        {
-            var copyOriginalItem = new MenuItem { Header = "Copy Original Name".L10N("Client:Main:CopyOriginalMapName") };
-            copyOriginalItem.Click += (s, e) => CopyTextToClipboard(lobbyViewModel.MapOriginalName);
-            menu.Items.Add(copyOriginalItem);
-        }
-
-        menu.Items.Add(new Separator());
-
-        var deleteItem = new MenuItem { Header = "Delete Map".L10N("Client:UI:DeleteMap") };
-        deleteItem.Click += (s, e) => lobbyViewModel.DeleteMapCommand.Execute(null);
-        menu.Items.Add(deleteItem);
-
-        var showFolderItem = new MenuItem { Header = "Show in Folder".L10N("Client:UI:ShowInFolder") };
-        showFolderItem.Click += (s, e) => lobbyViewModel.ShowMapInFolderCommand.Execute(null);
-        menu.Items.Add(showFolderItem);
-    }
-
-    private async void CopyTextToClipboard(string? text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return;
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel?.Clipboard != null)
-            await topLevel.Clipboard.SetTextAsync(text);
     }
 
     private void ShowIndicatorContextMenu(int waypointNumber)
