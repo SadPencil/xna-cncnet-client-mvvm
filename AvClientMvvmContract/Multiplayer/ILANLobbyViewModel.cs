@@ -13,7 +13,7 @@ public interface ILANLobbyViewModel : INotifyPropertyChanged
 {
     bool IsVisible { get; set; }
     ReadOnlyObservableCollection<ILANHostedGame> Games { get; }
-    IReadOnlyList<string> PlayerNames { get; }
+    ReadOnlyObservableCollection<string> PlayerNames { get; }
     IReadOnlyList<IChatMessage> ChatMessages { get; }
     IReadOnlyList<string> ColorOptions { get; }
     int SelectedGameIndex { get; set; }

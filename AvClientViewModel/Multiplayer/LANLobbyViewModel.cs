@@ -135,7 +135,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     public partial int SelectedChatMessageIndex { get; set; } = -1;
 
     private readonly ObservableCollection<string> playerNames = new();
-    public IReadOnlyList<string> PlayerNames => playerNames;
+    private readonly ReadOnlyObservableCollection<string> readOnlyPlayerNames;
+    ReadOnlyObservableCollection<string> ILANLobbyViewModel.PlayerNames => readOnlyPlayerNames;
 
     private readonly ObservableCollection<IChatMessage> _chatMessages = new();
     public IReadOnlyList<IChatMessage> ChatMessages => _chatMessages;
@@ -170,6 +171,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         this.mapLoader = mapLoader;
         this.discordHandler = discordHandler;
         this.random = random;
+
+        readOnlyPlayerNames = new ReadOnlyObservableCollection<string>(playerNames);
 
         this.localGame = ClientConfiguration.Instance.LocalGame;
         this.localGameIndex = gameCollection.GameList.FindIndex(
