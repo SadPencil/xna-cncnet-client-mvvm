@@ -2084,12 +2084,15 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             items.Add(new ContextMenuItem("Private Message".L10N("Client:Main:PrivateMessage"),
                 OpenSelectedPlayerPrivateMessageCommand));
 
+        bool isFriend = cncnetUserData.IsFriend(player.Name);
+        bool isIgnored = !string.IsNullOrEmpty(ircUser?.Ident) && cncnetUserData.IsIgnored(ircUser.Ident);
+
         items.Add(new ContextMenuItem(
-            player.IsFriend ? "Remove Friend".L10N("Client:Main:RemoveFriend") : "Add Friend".L10N("Client:Main:AddFriend"),
+            isFriend ? "Remove Friend".L10N("Client:Main:RemoveFriend") : "Add Friend".L10N("Client:Main:AddFriend"),
             ToggleSelectedPlayerFriendCommand));
 
         items.Add(new ContextMenuItem(
-            player.IsIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
+            isIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
             ToggleSelectedPlayerIgnoreCommand,
             IsEnabled: !player.IsAdmin));
 
