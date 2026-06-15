@@ -950,9 +950,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
 
         // Reset forced options
         foreach (GameOptionCheckBox cb in CheckBoxes)
-            cb.IsEnabled = true;
+            cb.IsEnabled = IsHost;
         foreach (GameOptionDropDown dd in DropDowns)
-            dd.IsEnabled = true;
+            dd.IsEnabled = IsHost;
 
         // Enable all sides and colors by default
         foreach (var slot in PlayerSlots)
