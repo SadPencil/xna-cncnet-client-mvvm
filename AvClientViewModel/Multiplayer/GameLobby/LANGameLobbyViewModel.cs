@@ -712,6 +712,10 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
 
         SendMessageToHost(RETURN_COMMAND);
 
+        // Auto-ready for non-host must fire after RETURN
+        if (!IsHost && IsAutoReadyChecked)
+            RequestReadyStatus();
+
         if (IsHost)
         {
             RandomSeed = random.Next();

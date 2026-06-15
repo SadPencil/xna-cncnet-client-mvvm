@@ -971,10 +971,8 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         {
             GenerateGameID();
         }
-        else if (IsAutoReadyChecked)
-        {
-            RequestReadyStatus();
-        }
+        // Auto-ready is handled by subclasses (CnCNetGameLobby / LANGameLobby)
+        // to ensure RETURN is sent before R 2.
     }
 
     private void GenerateGameID()

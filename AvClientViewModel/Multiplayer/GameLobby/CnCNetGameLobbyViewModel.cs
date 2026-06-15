@@ -1470,6 +1470,11 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         channel.SendCTCPMessage("RETURN", QueuedMessageType.SYSTEM_MESSAGE, 20);
         ReturnNotification(ProgramConstants.PLAYERNAME);
 
+        // Auto-ready for non-host must fire after RETURN so host
+        // receives RETURN before the ready status (R 2).
+        if (!IsHost && IsAutoReadyChecked)
+            RequestReadyStatus();
+
         if (IsHost)
         {
             RandomSeed = random.Next();
