@@ -970,7 +970,6 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         if (IsHost)
         {
             GenerateGameID();
-            RefreshGameModeFilter();
         }
         else if (IsAutoReadyChecked)
         {
