@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace AvClientMvvmContract.ViewServices;
+namespace AvClientMvvmContract;
 
 /// <summary>
 /// Describes a single item in a context menu.

@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
+namespace AvClientMvvmContract.Mvvm;
+
 public sealed class CovariantReadOnlyObservableCollectionAdapter<TSource, TTarget> : IDisposable
     where TSource : TTarget
 {

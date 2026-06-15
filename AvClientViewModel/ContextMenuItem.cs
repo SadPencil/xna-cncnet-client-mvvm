@@ -1,8 +1,8 @@
 using System.Windows.Input;
 
-using AvClientMvvmContract.ViewServices;
+using AvClientMvvmContract;
 
-namespace AvClientViewModel.ViewServices;
+namespace AvClientViewModel;
 
 /// <summary>
 /// Default implementation of IContextMenuItem.
