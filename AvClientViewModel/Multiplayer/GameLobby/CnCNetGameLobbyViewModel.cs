@@ -141,13 +141,14 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
+        IClipboardService clipboardService,
         Random random,
         CnCNetManager connectionManager,
         TunnelHandler tunnelHandler,
         GameCollection gameCollection,
         CnCNetUserData cncnetUserData,
         IGameHostInactiveCheckerService gameHostInactiveChecker)
-        : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)
+        : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, clipboardService, random)
     {
         this.connectionManager = connectionManager;
         this.tunnelHandler = tunnelHandler;

@@ -187,6 +187,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<DiscordHandler>(),
                 sp.GetRequiredService<IGameProcessService>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
+                sp.GetRequiredService<IClipboardService>(),
                 sp.GetRequiredService<Random>()));
             services.AddSingleton<ISkirmishLobbyViewModel>(sp =>
                 sp.GetRequiredService<SkirmishLobbyViewModel>());
@@ -200,6 +201,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<DiscordHandler>(),
                 sp.GetRequiredService<IGameProcessService>(),
                 sp.GetRequiredService<IUIThreadMarshaller>(),
+                sp.GetRequiredService<IClipboardService>(),
                 sp.GetRequiredService<Random>(),
                 sp.GetRequiredService<CnCNetManager>(),
                 sp.GetRequiredService<TunnelHandler>(),
@@ -244,6 +246,7 @@ namespace AvClientViewModel
                 sp.GetRequiredService<GameCollection>(),
                 sp.GetRequiredService<MapLoader>(),
                 sp.GetRequiredService<DiscordHandler>(),
+                sp.GetRequiredService<IClipboardService>(),
                 sp.GetRequiredService<Random>()));
             services.AddSingleton<ILANLobbyViewModel>(sp =>
                 sp.GetRequiredService<LANLobbyViewModel>());

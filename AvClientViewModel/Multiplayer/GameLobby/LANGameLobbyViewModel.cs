@@ -104,10 +104,11 @@ public partial class LANGameLobbyViewModel : MultiplayerGameLobbyViewModel, ILAN
         DiscordHandler discordHandler,
         IGameProcessService gameProcessService,
         IUIThreadMarshaller uiThreadMarshaller,
+        IClipboardService clipboardService,
         IViewLifecycleService viewLifecycleService,
         Random random,
         LANColor[] chatColors)
-        : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, random)
+        : base(mapLoader, discordHandler, gameProcessService, uiThreadMarshaller, clipboardService, random)
     {
         this.chatColors = chatColors;
         this.encoding = EncodingExt.UTF8NoBOM;
