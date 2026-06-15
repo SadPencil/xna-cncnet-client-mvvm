@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -85,8 +86,9 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
     private readonly System.Collections.ObjectModel.ObservableCollection<string> _savedGameNames = new();
     public IReadOnlyList<string> SavedGameNames => _savedGameNames;
 
-    private readonly System.Collections.ObjectModel.ObservableCollection<PlayerDisplayInfo> _playerDisplayInfo = new();
-    public IReadOnlyList<IPlayerDisplayInfo> PlayerDisplayInfo => _playerDisplayInfo;
+    private readonly CovariantReadOnlyObservableCollection<PlayerDisplayInfo, IPlayerDisplayInfo> _playerDisplayInfoAdapter = new();
+    public ObservableCollection<PlayerDisplayInfo> PlayerDisplayInfo => _playerDisplayInfoAdapter.Source;
+    IReadOnlyList<IPlayerDisplayInfo> IGameLoadingLobbyViewModel.PlayerDisplayInfo => _playerDisplayInfoAdapter.Target;
 
     // --- Events ---
     public event EventHandler? GameLeft;
@@ -238,7 +240,7 @@ public abstract partial class GameLoadingLobbyBaseViewModel : ObservableObject, 
                 displayInfo.Add(new PlayerDisplayInfo(sgPlayer.Name, true, pInfo.Ready, mc?.Color ?? Rgb24Color.White));
             }
         }
-        _playerDisplayInfo.Clear(); foreach (var info in displayInfo) _playerDisplayInfo.Add(info);
+        PlayerDisplayInfo.Clear(); foreach (var info in displayInfo) PlayerDisplayInfo.Add(info);
     }
 
     protected void CopyPlayerDataToUI() => UpdatePlayerDisplayInfo();
