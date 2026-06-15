@@ -13,4 +13,9 @@ public interface IMainWindowViewModel : INotifyPropertyChanged
     /// Toggles between FullScreen and Normal window state (Alt+Enter).
     /// </summary>
     IRelayCommand ToggleFullScreenCommand { get; }
+
+    /// <summary>
+    /// Full path to the window icon file (clienticon.ico).
+    /// </summary>
+    string WindowIconPath { get; }
 }

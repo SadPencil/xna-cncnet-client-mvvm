@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -30,6 +31,27 @@ public partial class MainWindow : Window
         Closing += MainWindow_Closing;
     }
 
+    /// <summary>
+    /// Sets the window icon from the ViewModel-provided path immediately
+    /// so clienticon.ico is visible during the loading screen phase.
+    /// </summary>
+    private void ApplyWindowIcon()
+    {
+        var vm = DataContext as IMainWindowViewModel;
+        string iconPath = vm?.WindowIconPath ?? string.Empty;
+        if (!string.IsNullOrEmpty(iconPath) && File.Exists(iconPath))
+        {
+            try
+            {
+                Icon = new WindowIcon(iconPath);
+            }
+            catch (Exception ex)
+            {
+                Serilog.Log.Warning($"[MainWindow] Failed to load window icon from '{iconPath}': {ex.Message}");
+            }
+        }
+    }
+
     private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
         if (_mainMenu?.ViewModel is not null)
@@ -40,6 +62,10 @@ public partial class MainWindow : Window
     {
         if (Startup.MainWindowViewModel != null)
             DataContext = Startup.MainWindowViewModel;
+
+        // Set window icon immediately so it's visible during the loading phase.
+        // The old DXMainClient set the icon before the loading screen appeared.
+        ApplyWindowIcon();
 
         // LoadingScreen fills the Grid (design resolution). MainMenu will be centered.
         MainContent.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;

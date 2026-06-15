@@ -8,6 +8,8 @@ using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.Settings;
 
+using Rampastring.Tools;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -40,6 +42,10 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
 
     [ObservableProperty]
     public partial WindowState WindowState { get; set; }
+
+    /// <inheritdoc />
+    public string WindowIconPath =>
+        SafePath.CombineFilePath(ProgramConstants.GetBaseResourcePath(), "clienticon.ico");
 
     /// <summary>
     /// When <paramref name="gameInProgressViewModel"/> is null (before DI is ready),
