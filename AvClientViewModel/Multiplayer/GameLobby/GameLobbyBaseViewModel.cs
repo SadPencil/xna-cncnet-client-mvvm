@@ -115,8 +115,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     public partial bool IsMapSortButtonEnabled { get; set; } = true;
 
-    ObservableCollection<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => PlayerSlots;
-    protected ObservableCollection<IPlayerSlotObservable> PlayerSlots { get => field; set { field = value; OnPropertyChanged(nameof(IGameLobbyViewModel.PlayerSlots)); } } = new();
+    private readonly AvClientMvvmContract.Mvvm.CovariantObservableCollection<PlayerSlotObservable, IPlayerSlotObservable> _playerSlotsAdapter = new();
+    ObservableCollection<IPlayerSlotObservable> IGameLobbyViewModel.PlayerSlots => _playerSlotsAdapter.Target;
+    protected ObservableCollection<PlayerSlotObservable> PlayerSlots => _playerSlotsAdapter.Source;
 
     private readonly CovariantReadOnlyObservableCollection<GameOptionCheckBox, IGameOptionCheckBox> _checkBoxesAdapter = new();
     protected ObservableCollection<GameOptionCheckBox> CheckBoxes => _checkBoxesAdapter.Source;
@@ -221,7 +222,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         GetRandomSelectors(selectorNames, RandomSelectors);
         RandomSelectorCount = RandomSelectors.Count + 1;
 
-        var slots = new ObservableCollection<IPlayerSlotObservable>();
+        PlayerSlots.Clear();
         for (int i = 0; i < MAX_PLAYER_COUNT; i++)
         {
             var slot = new PlayerSlotObservable();
@@ -232,9 +233,8 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             slot.Start.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReadyStatuses: true);
             slot.Team.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReadyStatuses: true);
             InitPlayerSlotOptions(slot, sides, selectorNames);
-            slots.Add(slot);
+            PlayerSlots.Add(slot);
         }
-        PlayerSlots = slots;
 
         LoadGameOptions();
         RefreshGameOptionWrappers();
