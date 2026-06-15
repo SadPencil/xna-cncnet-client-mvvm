@@ -87,8 +87,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     [ObservableProperty]
     public partial string GameName { get; set; } = string.Empty;
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IMapListItem> MapListItems { get; set; } = Array.Empty<IMapListItem>();
+    private readonly CovariantReadOnlyObservableCollection<MapListItem, IMapListItem> _mapListItemsAdapter = new();
+    public ObservableCollection<MapListItem> MapListItems => _mapListItemsAdapter.Source;
+    IReadOnlyList<IMapListItem> IGameLobbyViewModel.MapListItems => _mapListItemsAdapter.Target;
 
     [ObservableProperty]
     public partial int SelectedMapIndex { get; set; } = -1;
@@ -723,7 +724,9 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             }
         }
 
-        MapListItems = items;
+        MapListItems.Clear();
+        foreach (var item in items)
+            MapListItems.Add(item);
 
         if (mapIndex > -1)
             SelectedMapIndex = mapIndex;
@@ -748,7 +751,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             return;
         }
 
-        var item = (MapListItem)MapListItems[SelectedMapIndex];
+        var item = MapListItems[SelectedMapIndex];
         ChangeMap(item.Source);
     }
 
@@ -770,7 +773,7 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
             return;
         }
 
-        var gmm = ((MapListItem)MapListItems[hoveredIndex]).Source;
+        var gmm = (MapListItems[hoveredIndex]).Source;
         if (gmm.Map.UntranslatedName != gmm.Map.Name)
             MapListTooltipText = "Original name:".L10N("Client:Main:OriginalMapName") + " " + gmm.Map.UntranslatedName;
         else
