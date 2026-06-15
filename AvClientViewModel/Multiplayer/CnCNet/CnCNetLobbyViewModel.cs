@@ -173,8 +173,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public ObservableCollection<ContextMenuItem> ChatContextMenuItems => _chatContextMenuItemsAdapter.Source;
     IReadOnlyList<IContextMenuItem> ICnCNetLobbyViewModel.ChatContextMenuItems => _chatContextMenuItemsAdapter.Target;
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IContextMenuItem> GameContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _gameContextMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> GameContextMenuItems => _gameContextMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> ICnCNetLobbyViewModel.GameContextMenuItems => _gameContextMenuItemsAdapter.Target;
 
     // Game list — updated in-place via ObservableCollection.
     private readonly CovariantReadOnlyObservableCollection<HostedCnCNetGame, IHostedCnCNetGame> _gamesAdapter = new();
@@ -2180,10 +2181,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void BuildGameContextMenuItems()
     {
-        var items = new List<IContextMenuItem>();
+        var items = new List<ContextMenuItem>();
         if (SelectedGameIndex < 0 || SelectedGameIndex >= Games.Count)
         {
-            GameContextMenuItems = items;
+            GameContextMenuItems.Clear();
+            foreach (var item in items)
+                GameContextMenuItems.Add(item);
             return;
         }
 
@@ -2207,7 +2210,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         items.Add(new ContextMenuItem("Join".L10N("Client:Main:Join"),
             JoinSelectedGameCommand));
 
-        GameContextMenuItems = items;
+        GameContextMenuItems.Clear();
+        foreach (var item in items)
+            GameContextMenuItems.Add(item);
     }
 
     #endregion
