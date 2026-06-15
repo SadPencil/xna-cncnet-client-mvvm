@@ -165,8 +165,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [ObservableProperty]
     public partial string? SoundToPlay { get; set; }
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IContextMenuItem> PlayerContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _playerContextMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> PlayerContextMenuItems => _playerContextMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> ICnCNetLobbyViewModel.PlayerContextMenuItems => _playerContextMenuItemsAdapter.Target;
 
     [ObservableProperty]
     public partial IReadOnlyList<IContextMenuItem> ChatContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
@@ -2056,10 +2057,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private void BuildPlayerContextMenuItems()
     {
-        var items = new List<IContextMenuItem>();
+        var items = new List<ContextMenuItem>();
         if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= Players.Count)
         {
-            PlayerContextMenuItems = items;
+            PlayerContextMenuItems.Clear();
+            foreach (var item in items)
+                PlayerContextMenuItems.Add(item);
             return;
         }
 
@@ -2095,7 +2098,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
                 JoinSelectedPlayerGameCommand));
         }
 
-        PlayerContextMenuItems = items;
+        PlayerContextMenuItems.Clear();
+        foreach (var item in items)
+            PlayerContextMenuItems.Add(item);
     }
 
     private void BuildChatContextMenuItems()
