@@ -69,6 +69,8 @@ public partial class GameOptionsPanelViewModel : ObservableObject, IGameOptionsP
 
     // --- Commands ---
 
+    // TODO: HotkeyConfigurationWindow has not yet been migrated from XNAUI (ClientGUI/HotkeyConfigurationWindow.cs) to Avalonia.
+    // A new Avalonia view/viewmodel with INotifyPropertyChanged support for hotkey rebinding needs to be created.
     [RelayCommand]
     private void OpenHotkeyConfiguration()
     {

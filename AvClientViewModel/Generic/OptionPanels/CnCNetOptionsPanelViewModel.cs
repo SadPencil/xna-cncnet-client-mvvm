@@ -145,7 +145,14 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
             if (isFollowed)
                 _followedGameNames.Add(game.InternalName);
 
-            GameListItems.Add(new GameListItemData(game.InternalName, game.UIName, isLocalGame, isFollowed));
+            Action<string> onToggle = name =>
+            {
+                ToggleGameFollowed(name);
+                var item = GameListItems.FirstOrDefault(i => i.InternalName == name);
+                if (item != null)
+                    item.IsFollowed = _followedGameNames.Contains(name);
+            };
+            GameListItems.Add(new GameListItemData(game.InternalName, game.UIName, isLocalGame, isFollowed, onToggle));
         }
     }
 
@@ -221,8 +228,37 @@ public partial class CnCNetOptionsPanelViewModel : ObservableObject, ICnCNetOpti
 }
 
 /// <summary>
-/// Data for a game list item.
+/// Data for a game list item in the "Follow Games" section.
+/// Implements IGameListItemData for View binding, with ToggleFollowCommand
+/// that delegates to the parent ViewModel's ToggleGameFollowed logic.
 /// </summary>
-public record GameListItemData(string InternalName, string UIName, bool IsLocalGame, bool IsFollowed) : IGameListItemData;
+public partial class GameListItemData : ObservableObject, IGameListItemData
+{
+    private readonly Action<string> _onToggleFollowed;
+
+    public string InternalName { get; }
+    public string UIName { get; }
+    public bool IsLocalGame { get; }
+
+    [ObservableProperty]
+    public partial bool IsFollowed { get; set; }
+
+    public bool IsNotLocalGame => !IsLocalGame;
+
+    public GameListItemData(string internalName, string uiName, bool isLocalGame, bool isFollowed, Action<string> onToggleFollowed)
+    {
+        InternalName = internalName;
+        UIName = uiName;
+        IsLocalGame = isLocalGame;
+        IsFollowed = isFollowed;
+        _onToggleFollowed = onToggleFollowed;
+    }
+
+    [RelayCommand]
+    private void ToggleFollow()
+    {
+        _onToggleFollowed(InternalName);
+    }
+}
 
 

@@ -754,6 +754,12 @@ public class IniLayoutOverlayService : IIniLayoutOverlayService
         Log.Debug($"INI Layout: AnchorPoint '{anchorStr}' + TextAnchor '{textAnchorStr}' → Canvas.Left={x:F0}, Canvas.Top={y:F0} for '{control.Name}' (size={controlWidth:F0}x{controlHeight:F0})");
     }
 
+    // TODO: Per-panel extra control sections (e.g. [AudioOptionsPanelExtraControls],
+    // [GameOptionsPanelExtraControls], [UpdaterOptionsPanelExtraControls]) are not yet handled.
+    // The legacy XNA code calls panel.ParseUserOptions(iniFile) which reads per-panel sections
+    // via ParseExtraControls(iniFile, Name + "ExtraControls"). Additionally, SettingCheckBox,
+    // FileSettingCheckBox, SettingDropDown, and FileSettingDropDown controls are created as
+    // bare Avalonia controls without INI read/write binding — they need ViewModel support.
     private static void CreateExtraControls(Control root, CCIniFile iniFile, string sectionName, double? effectiveWidth = null, double? effectiveHeight = null)
     {
         var hostPanel = FindFirstPanel(root);

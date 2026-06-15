@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Input;
+
 namespace AvClientMvvmContract.Generic.OptionPanels;
 
 /// <summary>
@@ -8,5 +10,7 @@ public interface IGameListItemData
     string InternalName { get; }
     string UIName { get; }
     bool IsLocalGame { get; }
-    bool IsFollowed { get; }
+    bool IsFollowed { get; set; }
+    bool IsNotLocalGame { get; }
+    IRelayCommand ToggleFollowCommand { get; }
 }

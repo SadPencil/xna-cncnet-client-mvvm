@@ -160,6 +160,9 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <ScrollViewer>
+        <!-- TODO: [AudioOptionsPanelExtraControls] INI extra controls (e.g. Allow Taunts checkbox)
+             are not yet supported. IniLayoutOverlayService currently only handles [ExtraControls],
+             not per-panel sections. SettingCheckBox/FileSettingDropDown also lack INI binding. -->
         <StackPanel x:Name="audioPanel" Margin="12" Spacing="6"
                     DataContext="{Binding AudioOptions}"
                     x:DataType="vmcOpt:IAudioOptionsPanelViewModel">
@@ -205,7 +208,7 @@
           <CheckBox x:Name="chkMainMenuMusic" Content="{l:Translate 'Main Menu Music', 'Client:UI:OptionMainMenuMusic'}"
                     IsChecked="{Binding IsMainMenuMusicEnabled}"
                     Foreground="{DynamicResource XnaTextBrush}" />
-          <CheckBox x:Name="chkStopMusicOnMenu" Content="{l:Translate 'Don\'t Stop Music on Menu', 'Client:UI:OptionDontStopMusicOnMenu'}"
+          <CheckBox x:Name="chkStopMusicOnMenu" Content="{l:Translate 'Don\'t play main menu music in lobbies', 'Client:DTAConfig:NoLobbiesMusic'}"
                     IsChecked="{Binding IsStopMusicOnMenuDisabled}"
                     IsEnabled="{Binding IsStopMusicOnMenuAllowed}"
                     Foreground="{DynamicResource XnaTextBrush}" />
@@ -228,6 +231,9 @@
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
       <ScrollViewer>
+        <!-- TODO: [GameOptionsPanelExtraControls] INI extra controls (e.g. Allow Chat, Quick Exit,
+             Skip Score Screen, Speed Control, Mass Selection Filtering, Harvester Counter,
+             Power Delta, Building Placement Preview) are not yet supported. -->
         <StackPanel x:Name="gamePanel" Margin="12" Spacing="6"
                     DataContext="{Binding GameOptions}"
                     x:DataType="vmcOpt:IGameOptionsPanelViewModel">
@@ -267,7 +273,6 @@
           <Button x:Name="btnConfigureHotkeys"
                   Content="{l:Translate 'Configure Hotkeys', 'Client:UI:ButtonConfigureHotkeys'}"
                   Command="{Binding OpenHotkeyConfigurationCommand}"
-                  IsVisible="{Binding ShowHotkeyConfiguration}"
                   Width="150" Height="23"
                   Margin="0,4,0,0" />
         </StackPanel>
@@ -348,7 +353,7 @@
                   BorderBrush="{DynamicResource XnaPanelBorderBrush}"
                   BorderThickness="1">
             <StackPanel Margin="8">
-              <TextBlock Text="{l:Translate 'Follow Games:', 'Client:UI:OptionFollowGames'}" FontWeight="Bold"
+              <TextBlock Text="{l:Translate 'Show game rooms from the following games:', 'Client:DTAConfig:ShowRoomFromGame'}" FontWeight="Bold"
                          Foreground="{DynamicResource XnaTextBrush}" Margin="0,0,0,4" />
               <ItemsControl ItemsSource="{Binding GameListItems}">
                 <ItemsControl.ItemsPanel>
@@ -359,7 +364,9 @@
                 <ItemsControl.ItemTemplate>
                   <DataTemplate x:DataType="vmcOpt:IGameListItemData">
                     <CheckBox Content="{Binding UIName}"
-                              IsChecked="{Binding IsFollowed}"
+                              IsChecked="{Binding IsFollowed, Mode=OneWay}"
+                              Command="{Binding ToggleFollowCommand}"
+                              IsEnabled="{Binding IsNotLocalGame}"
                               Foreground="{DynamicResource XnaTextBrush}"
                               Margin="0,1" />
                   </DataTemplate>
@@ -379,6 +386,8 @@
             IsVisible="{Binding IsUpdaterPanelVisibleInner}"
             Canvas.Left="12" Canvas.Top="37"
             Width="552" Height="389">
+      <!-- TODO: [UpdaterOptionsPanelExtraControls] INI extra controls (e.g. Update Channel dropdown
+           with Live/Pre-release/Dev/Legacy options) are not yet supported. -->
       <StackPanel x:Name="updaterPanel" Margin="12" Spacing="6"
                   DataContext="{Binding UpdaterOptions}"
                   x:DataType="vmcOpt:IUpdaterOptionsPanelViewModel">
