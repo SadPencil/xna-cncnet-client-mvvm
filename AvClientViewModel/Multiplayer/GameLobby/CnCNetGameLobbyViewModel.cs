@@ -526,7 +526,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
         items.Add(new ContextMenuItem(
             isIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
             ToggleContextPlayerIgnoreCommand,
-            IsEnabled:!isAdmin));
+            IsEnabled: !isAdmin));
 
         PlayerContextMenuItems.Clear();
         foreach (var item in items)

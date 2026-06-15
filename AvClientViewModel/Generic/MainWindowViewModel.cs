@@ -1,18 +1,19 @@
 using System;
 
 using AvClientMvvmContract.Generic;
-using AvClientViewModel.Domain;
 using AvClientMvvmContract.Messages;
+
+using AvClientViewModel.Domain;
 
 using ClientCore;
 using ClientCore.Extensions;
 using ClientCore.Settings;
 
-using Rampastring.Tools;
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+
+using Rampastring.Tools;
 
 namespace AvClientViewModel.Generic;
 
@@ -65,7 +66,7 @@ public partial class MainWindowViewModel : ObservableObject, IMainWindowViewMode
             : ClientConfiguration.Instance.WindowTitle;
 #if DEVELOPMENT_BUILD
         if (ClientConfiguration.Instance.ShowDevelopmentBuildWarnings)
-            title += $" ({ "Development Build".L10N("Client:Main:DevelopmentBuildTitle") })";
+            title += $" ({"Development Build".L10N("Client:Main:DevelopmentBuildTitle")})";
 #endif
         WindowTitle = title;
 
