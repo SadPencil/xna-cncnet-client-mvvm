@@ -93,8 +93,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
     [ObservableProperty]
     public partial string? PendingLink { get; set; }
 
-    [ObservableProperty]
-    public partial IReadOnlyList<IContextMenuItem> UserContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
+    private readonly CovariantReadOnlyObservableCollection<ContextMenuItem, IContextMenuItem> _userContextMenuItemsAdapter = new();
+    public ObservableCollection<ContextMenuItem> UserContextMenuItems => _userContextMenuItemsAdapter.Source;
+    IReadOnlyList<IContextMenuItem> IPrivateMessagingWindowViewModel.UserContextMenuItems => _userContextMenuItemsAdapter.Target;
 
     [ObservableProperty]
     public partial IReadOnlyList<IContextMenuItem> MessageContextMenuItems { get; set; } = Array.Empty<IContextMenuItem>();
@@ -841,11 +842,13 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
 
     private void BuildUserContextMenuItems()
     {
-        var items = new List<IContextMenuItem>();
+        var items = new List<ContextMenuItem>();
         int idx = SelectedUserIndex;
         if (idx < 0 || idx >= _userNames.Count)
         {
-            UserContextMenuItems = items;
+            UserContextMenuItems.Clear();
+            foreach (var item in items)
+                UserContextMenuItems.Add(item);
             return;
         }
 
@@ -882,7 +885,9 @@ public partial class PrivateMessagingWindowViewModel : ObservableObject, IPrivat
                 JoinSelectedUserGameCommand));
         }
 
-        UserContextMenuItems = items;
+        UserContextMenuItems.Clear();
+        foreach (var item in items)
+            UserContextMenuItems.Add(item);
     }
 
     private void BuildMessageContextMenuItems()
