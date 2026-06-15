@@ -34,6 +34,8 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     bool IsConnected { get; }
     bool IsVisible { get; }
     IGameCreationWindowViewModel? GameCreationWindowViewModel { get; }
+    ITunnelSelectionWindowViewModel? TunnelSelectionWindowViewModel { get; }
+    IPasswordRequestWindowViewModel? PasswordRequestWindowViewModel { get; }
     IReadOnlyList<IIRCColor> ColorOptions { get; }
     IReadOnlyList<string> ChannelOptions { get; }
 
@@ -43,6 +45,8 @@ public interface ICnCNetLobbyViewModel : INotifyPropertyChanged
     bool IsLoginWindowVisible { get; }
     ICnCNetLoginWindowViewModel LoginWindowViewModel { get; }
     bool IsGameCreationPanelVisible { get; }
+    bool IsTunnelSelectionVisible { get; }
+    bool IsPasswordRequestVisible { get; }
     IPendingGameInviteData? PendingGameInvite { get; }
     string? SoundToPlay { get; }
 

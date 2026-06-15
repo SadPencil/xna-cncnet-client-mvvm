@@ -356,6 +356,20 @@
       </Panel>
     </Border>
 
+    <!-- Tunnel Selection Overlay -->
+    <Border IsVisible="{Binding IsTunnelSelectionVisible}"
+            Background="#80000000"
+            Width="1220" Height="720">
+      <local:TunnelSelectionWindow DataContext="{Binding TunnelSelectionWindowViewModel}" />
+    </Border>
+
+    <!-- Password Request Overlay -->
+    <Border IsVisible="{Binding IsPasswordRequestVisible}"
+            Background="#80000000"
+            Width="1220" Height="720">
+      <local:PasswordRequestWindow DataContext="{Binding PasswordRequestWindowViewModel}" />
+    </Border>
+
     <!-- Game Lobby Overlay (shown when creating/joining a game) -->
     <gamelobby:CnCNetGameLobby x:Name="gameLobby"
                                DataContext="{Binding GameLobby}" />

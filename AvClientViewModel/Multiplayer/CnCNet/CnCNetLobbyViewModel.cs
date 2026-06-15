@@ -161,6 +161,12 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     public partial bool IsGameCreationPanelVisible { get; set; }
 
     [ObservableProperty]
+    public partial bool IsTunnelSelectionVisible { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsPasswordRequestVisible { get; set; }
+
+    [ObservableProperty]
     public partial IPendingGameInviteData? PendingGameInvite { get; set; }
 
     [ObservableProperty]
@@ -209,6 +215,14 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
     private GameCreationWindowViewModel? gameCreationWindowViewModel;
     public IGameCreationWindowViewModel? GameCreationWindowViewModel => gameCreationWindowViewModel;
+
+    private TunnelSelectionWindowViewModel? _tunnelSelectionViewModel;
+    public ITunnelSelectionWindowViewModel? TunnelSelectionWindowViewModel => _tunnelSelectionViewModel;
+
+    private PasswordRequestWindowViewModel? _passwordRequestViewModel;
+    public IPasswordRequestWindowViewModel? PasswordRequestWindowViewModel => _passwordRequestViewModel;
+
+    private HostedCnCNetGame? pendingPasswordGame;
 
     private readonly CnCNetLoginWindowViewModel _loginWindowViewModel;
     public ICnCNetLoginWindowViewModel LoginWindowViewModel => _loginWindowViewModel;
@@ -295,6 +309,40 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         gameLobby.GameLeft += (s, e) => OnGameLobbyLeft();
         gameLoadingLobby.GameLeft += (s, e) => OnGameLoadingLobbyLeft();
+
+        // Tunnel selection: handle Change Tunnel server requests from game lobbies
+        gameLobby.TunnelSelectionRequested += (s, msg) =>
+        {
+            if (_tunnelSelectionViewModel == null)
+            {
+                _tunnelSelectionViewModel = new TunnelSelectionWindowViewModel(tunnelHandler,
+                    onTunnelSelected: tunnel => gameLobby.OnTunnelSelected((CnCNetTunnel)tunnel),
+                    onCancelled: () => IsTunnelSelectionVisible = false);
+                OnPropertyChanged(nameof(TunnelSelectionWindowViewModel));
+            }
+            _tunnelSelectionViewModel.Open(msg);
+            IsTunnelSelectionVisible = true;
+        };
+        gameLoadingLobby.TunnelSelectionRequested += (s, e) =>
+        {
+            if (_tunnelSelectionViewModel == null)
+            {
+                _tunnelSelectionViewModel = new TunnelSelectionWindowViewModel(tunnelHandler,
+                    onTunnelSelected: tunnel => gameLoadingLobby.OnTunnelSelected((CnCNetTunnel)tunnel),
+                    onCancelled: () => IsTunnelSelectionVisible = false);
+                OnPropertyChanged(nameof(TunnelSelectionWindowViewModel));
+            }
+            _tunnelSelectionViewModel.Open("Select tunnel server:".L10N("Client:Main:SelectTunnelServer"));
+            IsTunnelSelectionVisible = true;
+        };
+
+        // Password request: create VM with callback to OnPasswordEntered
+        _passwordRequestViewModel = new PasswordRequestWindowViewModel(e =>
+        {
+            IsPasswordRequestVisible = false;
+            if (pendingPasswordGame != null)
+                OnPasswordEntered(pendingPasswordGame, e.Password);
+        });
 
         invitationIndex = new Dictionary<Tuple<string, string>, WeakReference>();
     }
@@ -1371,8 +1419,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         {
             if (string.IsNullOrEmpty(password))
             {
-                // Need to request password from user
-                // This is handled via the password request window
+                pendingPasswordGame = hg;
+                _passwordRequestViewModel?.Open(hg);
+                IsPasswordRequestVisible = true;
                 return true;
             }
         }
