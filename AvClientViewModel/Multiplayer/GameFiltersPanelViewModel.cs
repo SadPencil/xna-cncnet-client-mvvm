@@ -27,7 +27,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     // --- Game option filters ---
 
     private readonly CovariantReadOnlyObservableCollection<GameOptionFilterDefinition, IGameOptionFilterDefinition> _filterDefinitionsAdapter = new();
-    private readonly List<GameOptionFilterValue> _filterValues = new();
+    private readonly CovariantReadOnlyObservableCollection<GameOptionFilterValue, IGameOptionFilterValue> _filterValuesAdapter = new();
 
     /// <summary>
     /// The available game option filter definitions.
@@ -39,7 +39,8 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
     /// <summary>
     /// The current filter values. The View binds dropdown selected indices to these.
     /// </summary>
-    public IReadOnlyList<IGameOptionFilterValue> FilterValues => _filterValues;
+    public ObservableCollection<GameOptionFilterValue> FilterValues => _filterValuesAdapter.Source;
+    IReadOnlyList<IGameOptionFilterValue> IGameFiltersPanelViewModel.FilterValues => _filterValuesAdapter.Target;
 
     // --- Observable state ---
 
@@ -107,7 +108,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
         FilterDefinitions.Clear();
         foreach (var d in definitions)
             FilterDefinitions.Add(d);
-        _filterValues.Clear();
+        FilterValues.Clear();
 
         foreach (var def in FilterDefinitions)
         {
@@ -133,7 +134,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
                 selectedIndex = storedValue == null ? 0 : storedValue.Value + 1;
             }
 
-            _filterValues.Add(new GameOptionFilterValue
+            FilterValues.Add(new GameOptionFilterValue
             {
                 Definition = def,
                 SelectedIndex = selectedIndex
@@ -152,7 +153,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
         MaxPlayerCount = iniSettings.MaxPlayerCount.Value;
 
         // Reload game option filter values
-        foreach (var filterValue in _filterValues)
+        foreach (var filterValue in FilterValues)
         {
             int? storedValue = iniSettings.GetGameOptionFilterValue(filterValue.Definition.OptionName);
 
@@ -182,7 +183,7 @@ public partial class GameFiltersPanelViewModel : ObservableObject, IGameFiltersP
         iniSettings.MaxPlayerCount.Value = MaxPlayerCount;
 
         // Save game option filter values
-        foreach (var filterValue in _filterValues)
+        foreach (var filterValue in FilterValues)
         {
             if (filterValue.Definition.IsCheckbox)
             {
