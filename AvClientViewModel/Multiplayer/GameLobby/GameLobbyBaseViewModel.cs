@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -221,11 +222,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         {
             var slot = new PlayerSlotObservable();
             int slotIdx = i;
-            slot.Name.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
-            slot.Side.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
-            slot.Color.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: false);
-            slot.Start.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
-            slot.Team.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
+            slot.Name.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReadyStatuses: true);
+            slot.Side.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReadyStatuses: true);
+            slot.Color.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReadyStatuses: false);
+            slot.Start.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReadyStatuses: true);
+            slot.Team.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReadyStatuses: true);
             InitPlayerSlotOptions(slot, sides, selectorNames);
             slots.Add(slot);
         }
@@ -1227,19 +1228,14 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         PlayerUpdatingInProgress = false;
     }
 
-    private static readonly string[] PlayerSlotUserEditableProperties = new[]
-    {
-        nameof(PlayerSlotDropdown<IPlayerName>.SelectedOption),
-    };
-
-    private void PlayerSlotDropdown_PropertyChanged(int slotIdx, System.ComponentModel.PropertyChangedEventArgs e, bool clearReady = true)
+    private void PlayerSlotDropdown_PropertyChanged(int slotIdx, PropertyChangedEventArgs e, bool clearReadyStatuses = true)
     {
         if (PlayerUpdatingInProgress)
             return;
         if (e.PropertyName != nameof(PlayerSlotDropdown<IPlayerName>.SelectedOption))
             return;
 
-        CopyPlayerDataFromUI(clearReady);
+        CopyPlayerDataFromUI(clearReadyStatuses);
     }
 
     protected virtual void CopyPlayerDataFromUI(bool clearReadyStatuses = true)
