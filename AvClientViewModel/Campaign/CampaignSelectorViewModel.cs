@@ -4,6 +4,7 @@ using AvClientMvvmContract.Campaign;
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -113,8 +114,9 @@ namespace AvClientViewModel.Campaign
 
         #region Observable Properties
 
-        [ObservableProperty]
-        public partial IReadOnlyList<ICampaignListItem> CampaignListItems { get; set; } = [];
+        private readonly CovariantReadOnlyObservableCollection<CampaignListItem, ICampaignListItem> _campaignListItemsAdapter = new();
+        public ObservableCollection<CampaignListItem> CampaignListItems => _campaignListItemsAdapter.Source;
+        IReadOnlyList<ICampaignListItem> ICampaignSelectorViewModel.CampaignListItems => _campaignListItemsAdapter.Target;
 
         [ObservableProperty]
         public partial int SelectedCampaignIndex { get; set; } = -1;
@@ -405,7 +407,9 @@ namespace AvClientViewModel.Campaign
                 });
             }
 
-            CampaignListItems = items;
+            CampaignListItems.Clear();
+            foreach (var item in items)
+                CampaignListItems.Add(item);
         }
 
         #endregion

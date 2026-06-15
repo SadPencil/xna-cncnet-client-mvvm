@@ -346,7 +346,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 #endif
 
         foreach (var msg in _pinnedMessages)
-            ChatMessages.Add(msg);
+            ChatMessages.Add((ChatMessage)msg);
 
         InitializeChannelList();
 
@@ -1075,7 +1075,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 
         // Re-add pinned messages that must persist across channel switches
         foreach (var msg in _pinnedMessages)
-            ChatMessages.Add(msg);
+            ChatMessages.Add((ChatMessage)msg);
 
         if (currentChatChannel.Messages != null)
         {
@@ -2206,7 +2206,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
 /// <summary>
 /// Simple DTO implementing IPlayerListItem for the View's player list binding.
 /// </summary>
-internal record PlayerListItem : IPlayerListItem
+public record PlayerListItem : IPlayerListItem
 {
     public PlayerListItem(string name, bool isAdmin, bool isFriend, bool isIgnored, bool hasVoice, int gameId)
     {
