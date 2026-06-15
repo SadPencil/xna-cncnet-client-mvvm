@@ -120,11 +120,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
     protected ObservableCollection<PlayerSlotObservable> PlayerSlots => _playerSlotsAdapter.Source;
 
     private readonly CovariantReadOnlyObservableCollection<GameOptionCheckBox, IGameOptionCheckBox> _checkBoxesAdapter = new();
-    protected ObservableCollection<GameOptionCheckBox> CheckBoxes => _checkBoxesAdapter.Source;
+    public ObservableCollection<GameOptionCheckBox> CheckBoxes => _checkBoxesAdapter.Source;
     IReadOnlyList<IGameOptionCheckBox> IGameLobbyViewModel.CheckBoxes => _checkBoxesAdapter.Target;
 
     private readonly CovariantReadOnlyObservableCollection<GameOptionDropDown, IGameOptionDropDown> _dropDownsAdapter = new();
-    protected ObservableCollection<GameOptionDropDown> DropDowns => _dropDownsAdapter.Source;
+    public ObservableCollection<GameOptionDropDown> DropDowns => _dropDownsAdapter.Source;
     IReadOnlyList<IGameOptionDropDown> IGameLobbyViewModel.DropDowns => _dropDownsAdapter.Target;
 
     [ObservableProperty]
