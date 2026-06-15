@@ -222,10 +222,10 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     [RelayCommand]
     private void JoinSelectedGame()
     {
-        if (SelectedGameIndex < 0 || SelectedGameIndex >= hostedGames.Count)
+        if (SelectedGameIndex < 0 || SelectedGameIndex >= games.Count)
             return;
 
-        HostedLANGame hg = hostedGames[SelectedGameIndex];
+        HostedLANGame hg = (HostedLANGame)games[SelectedGameIndex];
 
         if (hg.Game.InternalName.ToUpper() != localGame.ToUpper())
         {

@@ -315,10 +315,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
             return;
         }
-        int gameIndex = hostedGames.IndexOf(game);
-        if (gameIndex >= 0)
-            SelectedGameIndex = gameIndex;
-        JoinGameByIndex(gameIndex, string.Empty);
+        int displayIndex = games.IndexOf(game);
+        int hostIndex = hostedGames.IndexOf(game);
+        SelectedGameIndex = displayIndex;
+        JoinGameByIndex(hostIndex, string.Empty);
     }
 
     public void Initialize()
@@ -549,10 +549,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
             return;
         }
-        int gameIndex = hostedGames.IndexOf(game);
-        if (gameIndex >= 0)
-            SelectedGameIndex = gameIndex;
-        JoinGameByIndex(gameIndex, string.Empty);
+        int displayIndex = games.IndexOf(game);
+        int hostIndex = hostedGames.IndexOf(game);
+        SelectedGameIndex = displayIndex;
+        JoinGameByIndex(hostIndex, string.Empty);
     }
 
     // --- Chat message context menu ---
@@ -608,10 +608,10 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             connectionManager.MainChannel?.AddMessage(new ChatMessage(Rgb24Color.White, string.Format("{0} is not in a game!".L10N("Client:Main:UserNotInGame"), user.Name)));
             return;
         }
-        int gameIndex = hostedGames.IndexOf(game);
-        if (gameIndex >= 0)
-            SelectedGameIndex = gameIndex;
-        JoinGameByIndex(gameIndex, string.Empty);
+        int displayIndex = games.IndexOf(game);
+        int hostIndex = hostedGames.IndexOf(game);
+        SelectedGameIndex = displayIndex;
+        JoinGameByIndex(hostIndex, string.Empty);
     }
 
     [RelayCommand]
@@ -874,9 +874,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     /// </summary>
     public HostedCnCNetGame? GetSelectedHostedGame()
     {
-        if (SelectedGameIndex < 0 || SelectedGameIndex >= hostedGames.Count)
+        if (SelectedGameIndex < 0 || SelectedGameIndex >= games.Count)
             return null;
-        return hostedGames[SelectedGameIndex];
+        return (HostedCnCNetGame)games[SelectedGameIndex];
     }
 
     /// <summary>
@@ -2167,13 +2167,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void BuildGameContextMenuItems()
     {
         var items = new List<IContextMenuItem>();
-        if (SelectedGameIndex < 0 || SelectedGameIndex >= hostedGames.Count)
+        if (SelectedGameIndex < 0 || SelectedGameIndex >= games.Count)
         {
             GameContextMenuItems = items;
             return;
         }
 
-        var game = hostedGames[SelectedGameIndex];
+        var game = games[SelectedGameIndex];
         string hostName = game.HostName;
         bool isFriend = cncnetUserData.IsFriend(hostName);
         bool isIgnored = cncnetUserData.IsIgnored(connectionManager.UserList.Find(u => u.Name == hostName)?.Ident);
