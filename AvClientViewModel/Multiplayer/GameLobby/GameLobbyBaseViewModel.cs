@@ -221,11 +221,11 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         {
             var slot = new PlayerSlotObservable();
             int slotIdx = i;
-            slot.Name.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
-            slot.Side.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
-            slot.Color.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
-            slot.Start.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
-            slot.Team.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e);
+            slot.Name.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
+            slot.Side.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
+            slot.Color.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: false);
+            slot.Start.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
+            slot.Team.PropertyChanged += (s, e) => PlayerSlotDropdown_PropertyChanged(slotIdx, e, clearReady: true);
             InitPlayerSlotOptions(slot, sides, selectorNames);
             slots.Add(slot);
         }
@@ -1232,22 +1232,23 @@ public abstract partial class GameLobbyBaseViewModel : ObservableObject, IGameLo
         nameof(PlayerSlotDropdown<IPlayerName>.SelectedOption),
     };
 
-    private void PlayerSlotDropdown_PropertyChanged(int slotIdx, System.ComponentModel.PropertyChangedEventArgs e)
+    private void PlayerSlotDropdown_PropertyChanged(int slotIdx, System.ComponentModel.PropertyChangedEventArgs e, bool clearReady = true)
     {
         if (PlayerUpdatingInProgress)
             return;
         if (e.PropertyName != nameof(PlayerSlotDropdown<IPlayerName>.SelectedOption))
             return;
 
-        CopyPlayerDataFromUI();
+        CopyPlayerDataFromUI(clearReady);
     }
 
-    protected virtual void CopyPlayerDataFromUI()
+    protected virtual void CopyPlayerDataFromUI(bool clearReadyStatuses = true)
     {
         if (PlayerUpdatingInProgress)
             return;
 
-        ClearReadyStatuses();
+        if (clearReadyStatuses)
+            ClearReadyStatuses();
 
         var slots = PlayerSlots;
 

@@ -653,14 +653,14 @@ public abstract partial class MultiplayerGameLobbyViewModel : GameLobbyBaseViewM
         UpdateMapPreviewBoxEnabledStatus();
     }
 
-    protected override void CopyPlayerDataFromUI()
+    protected override void CopyPlayerDataFromUI(bool clearReadyStatuses = true)
     {
         if (PlayerUpdatingInProgress)
             return;
 
         if (IsHost)
         {
-            base.CopyPlayerDataFromUI();
+            base.CopyPlayerDataFromUI(clearReadyStatuses);
             BroadcastPlayerOptions();
             return;
         }

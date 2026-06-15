@@ -495,9 +495,9 @@ public partial class SkirmishLobbyViewModel : GameLobbyBaseViewModel, ISkirmishL
         RandomSeed = random.Next();
     }
 
-    protected override void CopyPlayerDataFromUI()
+    protected override void CopyPlayerDataFromUI(bool clearReadyStatuses = true)
     {
-        base.CopyPlayerDataFromUI();
+        base.CopyPlayerDataFromUI(clearReadyStatuses);
         UpdateDiscordPresence();
     }
 
