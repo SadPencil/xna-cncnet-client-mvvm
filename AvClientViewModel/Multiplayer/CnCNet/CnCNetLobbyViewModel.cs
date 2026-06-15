@@ -180,8 +180,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     IReadOnlyList<IHostedCnCNetGame> ICnCNetLobbyViewModel.Games => _gamesAdapter.Target;
 
     // Player list — updated in-place via ObservableCollection.
-    private readonly ObservableCollection<IPlayerListItem> players = new();
-    public IReadOnlyList<IPlayerListItem> Players => players;
+    private readonly CovariantReadOnlyObservableCollection<PlayerListItem, IPlayerListItem> _playersAdapter = new();
+    public ObservableCollection<PlayerListItem> Players => _playersAdapter.Source;
+    IReadOnlyList<IPlayerListItem> ICnCNetLobbyViewModel.Players => _playersAdapter.Target;
 
     private readonly ObservableCollection<IChatMessage> chatMessages = new();
     public IReadOnlyList<IChatMessage> ChatMessages => chatMessages;
@@ -485,27 +486,27 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void OpenSelectedPlayerPrivateMessage()
     {
-        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= Players.Count)
             return;
-        var player = players[SelectedPlayerIndex];
+        var player = Players[SelectedPlayerIndex];
         pmWindow?.InitPM(player.Name);
     }
 
     [RelayCommand]
     private void ToggleSelectedPlayerFriend()
     {
-        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= Players.Count)
             return;
-        var player = players[SelectedPlayerIndex];
+        var player = Players[SelectedPlayerIndex];
         cncnetUserData.ToggleFriend(player.Name);
     }
 
     [RelayCommand]
     private void ToggleSelectedPlayerIgnore()
     {
-        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= Players.Count)
             return;
-        var player = players[SelectedPlayerIndex];
+        var player = Players[SelectedPlayerIndex];
         var ident = connectionManager.UserList.Find(u => u.Name == player.Name)?.Ident;
         if (!string.IsNullOrEmpty(ident))
             cncnetUserData.ToggleIgnoreUser(ident);
@@ -514,13 +515,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void InviteSelectedPlayerToGame()
     {
-        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= Players.Count)
             return;
 
         if (ProgramConstants.IsInGame || string.IsNullOrEmpty(inviteChannelName))
             return;
 
-        var player = players[SelectedPlayerIndex];
+        var player = Players[SelectedPlayerIndex];
         string messageBody = ProgramConstants.GAME_INVITE_CTCP_COMMAND + " "
             + inviteChannelName + ";" + inviteGameName;
 
@@ -535,9 +536,9 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     [RelayCommand]
     private void JoinSelectedPlayerGame()
     {
-        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= Players.Count)
             return;
-        var player = players[SelectedPlayerIndex];
+        var player = Players[SelectedPlayerIndex];
         var user = connectionManager.UserList.Find(u => u.Name == player.Name);
         if (user == null)
         {
@@ -1094,7 +1095,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (currentChatChannel == null)
             return;
 
-        var list = new List<IPlayerListItem>();
+        var list = new List<PlayerListItem>();
         var current = currentChatChannel.Users.GetFirst();
         while (current != null)
         {
@@ -1111,16 +1112,16 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             current = current.Next;
         }
         // Apply only changed positions to ObservableCollection
-        int common = Math.Min(players.Count, list.Count);
+        int common = Math.Min(Players.Count, list.Count);
         for (int i = 0; i < common; i++)
         {
-            if (players[i].Name != list[i].Name)
-                players[i] = list[i];
+            if (Players[i].Name != list[i].Name)
+                Players[i] = list[i];
         }
-        while (players.Count > list.Count)
-            players.RemoveAt(players.Count - 1);
-        for (int i = players.Count; i < list.Count; i++)
-            players.Add(list[i]);
+        while (Players.Count > list.Count)
+            Players.RemoveAt(Players.Count - 1);
+        for (int i = Players.Count; i < list.Count; i++)
+            Players.Add(list[i]);
     }
 
     private void UI_RefreshPlayerList()
@@ -1568,7 +1569,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
             IsGameSearchEnabled = false;
             IsConnected = false;
 
-            players.Clear();
+            Players.Clear();
             Games.Clear();
             hostedGames.Clear();
             followedGames.Clear();
@@ -2054,13 +2055,13 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private void BuildPlayerContextMenuItems()
     {
         var items = new List<IContextMenuItem>();
-        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= players.Count)
+        if (SelectedPlayerIndex < 0 || SelectedPlayerIndex >= Players.Count)
         {
             PlayerContextMenuItems = items;
             return;
         }
 
-        var player = players[SelectedPlayerIndex];
+        var player = Players[SelectedPlayerIndex];
         var ircUser = connectionManager.UserList.Find(u => u.Name == player.Name);
         bool isOnline = ircUser != null;
         bool showInvite = !string.IsNullOrEmpty(inviteChannelName) && !ProgramConstants.IsInGame;
