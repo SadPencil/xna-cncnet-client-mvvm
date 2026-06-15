@@ -8,7 +8,6 @@ using System.Text;
 using System.Timers;
 
 using AvClientMvvmContract;
-using AvClientMvvmContract.Domain.Multiplayer;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.GameLobby;
 using AvClientMvvmContract.Online;
@@ -31,7 +30,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rampastring.Tools;
-
 using Timer = System.Timers.Timer;
 
 namespace AvClientViewModel.Multiplayer;
@@ -127,9 +125,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     // --- Observable collections ---
 
-    private ObservableCollection<HostedLANGame> Games => _gamesAdapter.Source;
-    private readonly CovariantReadOnlyObservableCollection<HostedLANGame, ILANHostedGame> _gamesAdapter = new();
-    ReadOnlyObservableCollection<ILANHostedGame> ILANLobbyViewModel.Games => _gamesAdapter.Target;
+    private readonly ObservableCollection<ILANHostedGame> games = new();
+    public IReadOnlyList<ILANHostedGame> Games => games;
 
     [ObservableProperty]
     public partial int SelectedChatMessageIndex { get; set; } = -1;
@@ -225,10 +222,10 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     [RelayCommand]
     private void JoinSelectedGame()
     {
-        if (SelectedGameIndex < 0 || SelectedGameIndex >= Games.Count)
+        if (SelectedGameIndex < 0 || SelectedGameIndex >= games.Count)
             return;
 
-        HostedLANGame hg = Games[SelectedGameIndex];
+        HostedLANGame hg = (HostedLANGame)games[SelectedGameIndex];
 
         if (hg.Game.InternalName.ToUpper() != localGame.ToUpper())
         {
@@ -409,7 +406,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         playerManager.Clear();
         messageDeduplicator.Clear();
         hostedGames.Clear();
-        Games.Clear();
+        games.Clear();
 
         IsLobbyActiveValue = true;
 
@@ -470,7 +467,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
 
     partial void OnHoveredGameIndexChanged(int value)
     {
-        if (value >= Games.Count)
+        if (value >= games.Count)
             HoveredGameIndex = -1;
     }
 
@@ -692,7 +689,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
     private void UpdateGameList()
     {
         // Index hosted games by endpoint for fast lookup
-        var byEndpoint = new Dictionary<string, HostedLANGame>();
+        var byEndpoint = new Dictionary<string, ILANHostedGame>();
         foreach (var g in hostedGames)
             byEndpoint[g.EndPoint.ToString()] = g;
         var presentEndpoints = new HashSet<string>(byEndpoint.Keys);
@@ -700,12 +697,12 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         var oldList = Games;
 
         // Pass 1: build list preserving positions of still-existing games
-        List<HostedLANGame?> build = new(oldList.Count);
+        List<ILANHostedGame?> build = new(oldList.Count);
         var gaps = new List<int>();
 
         for (int i = 0; i < oldList.Count; i++)
         {
-            var key = (oldList[i]).EndPoint.ToString();
+            var key = ((HostedLANGame)oldList[i]).EndPoint.ToString();
             if (presentEndpoints.Contains(key))
             {
                 build.Add(byEndpoint[key]);
@@ -746,7 +743,7 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         }
 
         // Trim nulls and append leftover new games
-        var result = new List<HostedLANGame>(build.Count);
+        var result = new List<ILANHostedGame>(build.Count);
         foreach (var g in build)
         {
             if (g != null)
@@ -762,8 +759,8 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         {
             for (int i = 0; i < result.Count; i++)
             {
-                if ((old[i]).EndPoint.ToString()
-                    != (result[i]).EndPoint.ToString())
+                if (((HostedLANGame)old[i]).EndPoint.ToString()
+                    != ((HostedLANGame)result[i]).EndPoint.ToString())
                 {
                     changed = true;
                     break;
@@ -772,21 +769,21 @@ public partial class LANLobbyViewModel : ObservableObject, ILANLobbyViewModel
         }
 
         string? hoveredBefore = (HoveredGameIndex >= 0 && HoveredGameIndex < old.Count)
-            ? (old[HoveredGameIndex]).EndPoint.ToString() : null;
+            ? ((HostedLANGame)old[HoveredGameIndex]).EndPoint.ToString() : null;
         string? hoveredAfter = null;
 
         // Apply only changed positions
-        int common = Math.Min(Games.Count, result.Count);
+        int common = Math.Min(games.Count, result.Count);
         for (int i = 0; i < common; i++)
         {
-            if ((Games[i]).EndPoint.ToString()
-                != (result[i]).EndPoint.ToString())
-                Games[i] = result[i];
+            if (((HostedLANGame)games[i]).EndPoint.ToString()
+                != ((HostedLANGame)result[i]).EndPoint.ToString())
+                games[i] = result[i];
         }
-        while (Games.Count > result.Count)
-            Games.RemoveAt(Games.Count - 1);
-        for (int i = Games.Count; i < result.Count; i++)
-            Games.Add(result[i]);
+        while (games.Count > result.Count)
+            games.RemoveAt(games.Count - 1);
+        for (int i = games.Count; i < result.Count; i++)
+            games.Add(result[i]);
     }
 
     private void AddChatMessage(string message)
