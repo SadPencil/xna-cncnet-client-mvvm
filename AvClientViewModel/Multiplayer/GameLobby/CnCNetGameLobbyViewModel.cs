@@ -321,6 +321,7 @@ public partial class CnCNetGameLobbyViewModel : MultiplayerGameLobbyViewModel, I
             channel.SendCTCPMessage("FHSH " + gameFilesHash, QueuedMessageType.SYSTEM_MESSAGE, 10);
         }
 
+        IsEnabled = true;
         ResetAutoReadyCheckbox();
         UpdatePing();
         UpdateDiscordPresence(true);
