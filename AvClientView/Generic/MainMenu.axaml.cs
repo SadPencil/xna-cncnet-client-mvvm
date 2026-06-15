@@ -13,8 +13,6 @@ using Avalonia.Threading;
 using AvClientMvvmContract.Campaign;
 using AvClientMvvmContract.Generic;
 using AvClientMvvmContract.Generic.OptionPanels;
-
-using ClientCore.Extensions;
 using AvClientMvvmContract.Messages;
 using AvClientMvvmContract.Multiplayer;
 using AvClientMvvmContract.Multiplayer.CnCNet;
@@ -22,6 +20,8 @@ using AvClientMvvmContract.Multiplayer.GameLobby;
 
 using AvClientView.Controls;
 using AvClientView.Services;
+
+using ClientCore.Extensions;
 
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;

@@ -34,7 +34,7 @@ public sealed class CovariantReadOnlyObservableCollectionAdapter<TSource, TTarge
 
         _source.CollectionChanged += Source_CollectionChanged;
     }
-    
+
     public ObservableCollection<TSource> Source => _source;
 
     public ReadOnlyObservableCollection<TTarget> Target => _readOnlyShadow;

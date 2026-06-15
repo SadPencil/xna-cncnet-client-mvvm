@@ -15,9 +15,9 @@ using AvClientMvvmContract.ViewServices;
 
 using AvClientView.Controls;
 using AvClientView.Converters;
+using AvClientView.Services;
 
 using ClientCore.Extensions;
-using AvClientView.Services;
 
 
 namespace AvClientView.Multiplayer.GameLobby;

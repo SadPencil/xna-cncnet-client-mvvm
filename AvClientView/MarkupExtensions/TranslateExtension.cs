@@ -1,5 +1,7 @@
 using System;
+
 using Avalonia.Markup.Xaml;
+
 using ClientCore.I18N;
 
 namespace AvClientView.MarkupExtensions;
