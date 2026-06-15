@@ -1451,6 +1451,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         if (e.User.IRCUser.Name == ProgramConstants.PLAYERNAME)
         {
             ClearGameChannelEvents(gameChannel);
+            gameLobby.IsEnabled = true;
             gameLobby.OnJoined();
             isInGameRoom = true;
             UpdateLogoutButtonText();
