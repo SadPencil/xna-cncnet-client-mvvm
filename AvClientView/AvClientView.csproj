@@ -22,4 +22,21 @@
     <ProjectReference Include="..\AvClientMvvmContract\AvClientMvvmContract.csproj" />
     <ProjectReference Include="..\ClientCore\ClientCore.csproj" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">    
+    <!-- The .NET 4.8 build failed to include av_libglesv2.dll somehow. Manually import the package and copy the file -->
+    <PackageReference Include="Avalonia.Angle.Windows.Natives" GeneratePathProperty="true" />
+    <None Include="$(PkgAvalonia_Angle_Windows_Natives)\runtimes\win-x86\native\av_libglesv2.dll">
+      <Link>x86/av_libglesv2.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="$(PkgAvalonia_Angle_Windows_Natives)\runtimes\win-x64\native\av_libglesv2.dll">
+      <Link>x64/av_libglesv2.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="$(PkgAvalonia_Angle_Windows_Natives)\runtimes\win-arm64\native\av_libglesv2.dll">
+      <Link>arm64/av_libglesv2.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

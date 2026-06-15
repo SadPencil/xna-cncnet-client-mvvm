@@ -16,7 +16,7 @@
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="System.Text.Json" />
     <PackageReference Include="System.Management" />
-    <PackageReference Include="Facepunch.Steamworks" />
+    <PackageReference Include="Facepunch.Steamworks" GeneratePathProperty="true" />
     <PackageReference Include="System.DirectoryServices" />
     <PackageReference Include="Serilog" />
   </ItemGroup>
@@ -25,7 +25,22 @@
     <ProjectReference Include="..\ClientUpdater\ClientUpdater.csproj" />
     <ProjectReference Include="..\AvClientMvvmContract\AvClientMvvmContract.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <None Include="$(PkgFacepunch_Steamworks)\content\steam_api64.dll">
+      <Link>x64/steam_api64.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
+    <None Include="$(PkgFacepunch_Steamworks)\content\steam_api64.dll">
+      <Link>runtimes/win-x64/native/steam_api64.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
