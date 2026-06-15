@@ -203,7 +203,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
     private List<Channel> channelOptionChannels = new();
 
     // Messages pinned to the top of the chat that persist across channel switches.
-    private readonly CovariantReadOnlyObservableCollection<ChatMessage, IChatMessage> _pinnedMessagesAdapter = new();
+    private readonly CovariantReadOnlyObservableCollectionAdapter<ChatMessage, IChatMessage> _pinnedMessagesAdapter = new();
     public ObservableCollection<ChatMessage> PinnedMessages => _pinnedMessagesAdapter.Source;
 
     private GameCreationWindowViewModel? gameCreationWindowViewModel;
@@ -2084,7 +2084,7 @@ public partial class CnCNetLobbyViewModel : ObservableObject, ICnCNetLobbyViewMo
         items.Add(new ContextMenuItem(
             player.IsIgnored ? "Unblock".L10N("Client:Main:Unblock") : "Block".L10N("Client:Main:Block"),
             ToggleSelectedPlayerIgnoreCommand,
-            IsEnabled:!player.IsAdmin));
+            IsEnabled: !player.IsAdmin));
 
         if (showInvite && isOnline)
         {
