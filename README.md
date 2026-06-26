@@ -10,7 +10,7 @@
 4. Extract the `Binaries` and `BinariesNET8` folders in the build output to the YR `Resources` directory
 5. Run `clientav.exe` from `Resources\Binaries` to launch the client. Do not use `CnCNetYRLauncher.exe`.
 
-Note: expect a lot of bugs, massive bugs, tons of bugs. Report them in the issue tracker.
+Note: expect a lot of bugs, massive bugs, tons of bugs. Report them in the issue tracker. Also, there is a [Chinese issue tracker](https://www.phoboscn.top/t/topic/561/25).
 
 ## Motivation
 
