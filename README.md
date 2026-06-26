@@ -2,6 +2,11 @@
 
 **MVVM migration is in progress. This branch is in a very early stage, and is quite away from completed. Do not use it now. Also, the commits will be squashed in the end.**
 
+## Quick start
+
+1. Double click `AvClient.slnx`
+2. Press F5 in Visual Studio.
+
 ## Early test
 
 1. Download and install CnCNet YR
